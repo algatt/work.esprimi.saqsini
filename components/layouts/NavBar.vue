@@ -2,7 +2,7 @@
   <span>
     <div class="hidden md:flex flex-col justify-between h-full">
       <div class="flex flex-col">
-        <h5 style="font-family: 'Poppins'" class="h-10">
+        <h5 style="font-family: 'Poppins'" class="h-10 py-3 mb-2">
           <span
             :class="isVisible ? 'opacity-100' : 'opacity-0'"
             class="transition-all duration-300"
@@ -43,7 +43,39 @@
         </span>
       </div>
     </div>
-    <div class="flex md:hidden w-full">a</div>
+    <div
+      class="flex md:hidden w-full bg-blue-600 justify-between py-1 px-2 relative"
+    >
+      <h5>Saqsini</h5>
+      <button
+        class="relative text-white w-8 font-medium tracking-wider transform hover:scale-110 active:bg-white active:text-blue-600 transition duration-300 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-blue-700"
+        @click="showSubMenu = !showSubMenu"
+      >
+        <i class="fas fa-bars fa-fw"></i>
+      </button>
+      <div
+        v-if="showSubMenu"
+        class="absolute top-0 left-0 w-full h-screen bg-blue-600 flex-col p-4 text-2xl flex"
+        style="font-family: 'Poppins'"
+      >
+        <div class="flex justify-end">
+          <button
+            class="text-white transform hover:scale-110 transition duration-300"
+            @click="showSubMenu = false"
+          >
+            <i class="fas fa-times fa-fw"></i>
+          </button>
+        </div>
+        <button
+          v-for="(item, index) in menu"
+          :key="'menu' + index"
+          class="w-full flex items-center text-white justify-center my-3 hover:bg-white hover:text-blue-600 py-1 transition duration-300"
+        >
+          <p>{{ item.text }}</p>
+          <i :class="item.icon" class="fa-fw ml-3"></i>
+        </button>
+      </div>
+    </div>
   </span>
 </template>
 
@@ -58,6 +90,7 @@ export default {
   },
   data() {
     return {
+      showSubMenu: false,
       menu: [
         { text: 'Surveys', link: '', icon: 'far fa-clipboard' },
         { text: 'Contacts', link: '', icon: 'far fa-address-book' },
@@ -73,27 +106,8 @@ export default {
 
 <style scoped>
 h5 {
-  @apply text-white uppercase tracking-wider text-xl text-center font-bold py-3 cursor-pointer transform hover:scale-110 transition duration-300;
+  @apply text-white uppercase tracking-wider text-xl text-center font-bold cursor-pointer transform hover:scale-110 transition duration-300;
 }
-
-@keyframes moveLeftThenDisappear {
-  0% {
-    transform: translateX(0px);
-    visibility: visible;
-    opacity: 1;
-  }
-  50% {
-    transform: translateX(-150px);
-    visibility: visible;
-    opacity: 0.75;
-  }
-  100% {
-    transform: translateX(-300px);
-    opacity: 1;
-    visibility: hidden;
-  }
-}
-
 @keyframes moveLeft {
   0% {
     transform: translateX(0px);
@@ -113,8 +127,6 @@ h5 {
 }
 
 .moveLeft {
-  /* animation: moveLeftThenDisappear 3s 1;
-  animation-fill-mode: forwards;*/
   animation: moveLeft 0.3s 1 forwards;
 }
 
