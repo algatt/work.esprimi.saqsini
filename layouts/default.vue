@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-red-300 md:flex">
+  <div class="md:flex">
     <aside
       class="h-screen sticky top-0 bg-blue-600 transition-all duration-300 hidden md:block"
       :class="!menuShow ? 'w-12' : 'w-52'"

@@ -14,6 +14,7 @@
           :key="'menu' + index"
           class="text-white h-10 font-medium tracking-wider py-2 w-full hover:bg-blue-700 active:bg-white active:text-blue-600 transition duration-300 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-blue-700"
           style="font-family: Poppins"
+          @click="gotoPage(item.link)"
         >
           <span
             class="w-40 flex items-center justify-between mx-auto"
@@ -70,6 +71,7 @@
           v-for="(item, index) in menu"
           :key="'menu' + index"
           class="w-full flex items-center text-white justify-center my-3 hover:bg-white hover:text-blue-600 py-1 transition duration-300"
+          @click="gotoPage(item.link)"
         >
           <p>{{ item.text }}</p>
           <i :class="item.icon" class="fa-fw ml-3"></i>
@@ -92,14 +94,23 @@ export default {
     return {
       showSubMenu: false,
       menu: [
-        { text: 'Surveys', link: '', icon: 'far fa-clipboard' },
-        { text: 'Contacts', link: '', icon: 'far fa-address-book' },
-        { text: 'Companies', link: '', icon: 'far fa-building' },
-        { text: 'Accounts', link: '', icon: 'far fa-user-circle' },
-        { text: 'Notifications', link: '', icon: 'far fa-envelope' },
-        { text: 'Logout', link: '', icon: 'fas fa-sign-out-alt' },
+        { text: 'Surveys', link: 'surveys', icon: 'far fa-clipboard' },
+        { text: 'Contacts', link: 'contacts', icon: 'far fa-address-book' },
+        { text: 'Companies', link: 'companies', icon: 'far fa-building' },
+        { text: 'Account', link: 'account', icon: 'far fa-user-circle' },
+        {
+          text: 'Notifications',
+          link: 'notifications',
+          icon: 'far fa-envelope',
+        },
+        { text: 'Logout', link: 'account-logout', icon: 'fas fa-sign-out-alt' },
       ],
     }
+  },
+  methods: {
+    gotoPage(page) {
+      this.$router.push({ name: page })
+    },
   },
 }
 </script>

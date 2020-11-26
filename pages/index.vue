@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-pink-600">Main Paasasagasasae dfdss</div>
+  <div></div>
 </template>
 
 <script>
