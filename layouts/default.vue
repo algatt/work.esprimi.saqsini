@@ -1,27 +1,16 @@
 <template>
-  <div class="flex bg-white">
+  <div class="flex bg-red-300">
     <aside
-      class="h-screen sticky top-0 bg-blue-600"
-      :class="
-        !menuShow
-          ? 'transform -translate-x-40 transition duration-300'
-          : 'transition duration-300'
-      "
-      style="width: 210px"
+      class="h-screen sticky top-0 bg-blue-600 transition-all duration-300"
+      :class="!menuShow ? 'w-12' : 'w-52'"
     >
       <nav-bar
-        :is-hidden="menuShow"
+        :is-visible="menuShow"
         @clickToggle="menuShow = !menuShow"
       ></nav-bar>
     </aside>
-    <Nuxt
-      class="px-3"
-      :class="
-        !menuShow
-          ? 'transform -translate-x-40 transition duration-300'
-          : 'transition duration-300'
-      "
-    />
+    <!--<nav-bar class="flex w-full bg-green-500 flex-wrap md:hidden"></nav-bar>-->
+    <Nuxt class="px-3 flex-grow" />
   </div>
 </template>
 
