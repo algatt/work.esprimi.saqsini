@@ -1,7 +1,7 @@
 <template>
   <div class="md:flex">
     <aside
-      class="h-screen sticky top-0 bg-primary-de transition-all duration-300 hidden md:block"
+      class="h-screen sticky top-0 bg-primary transition-all duration-300 hidden md:block"
       :class="!menuShow ? 'w-12' : 'w-52'"
     >
       <nav-bar

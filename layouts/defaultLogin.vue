@@ -1,6 +1,6 @@
 <template>
   <div
-    class="h-screen w-full bg-gradient-to-b from-primary-de to-primary-dark flex items-center justify-center"
+    class="h-screen w-full bg-gradient-to-b from-primary to-primary-dark flex items-center justify-center"
   >
     <nuxt></nuxt>
   </div>

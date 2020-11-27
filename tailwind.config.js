@@ -8,7 +8,7 @@ module.exports = {
         primary: {
           light: 'var(--primary-light)',
           lighter: 'var(--primary-lighter)',
-          de: 'var(--primary)',
+          DEFAULT: 'var(--primary)',
           darker: 'var(--primary-darker)',
           dark: 'var(--primary-dark)',
         },
