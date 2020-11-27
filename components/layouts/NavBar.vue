@@ -109,7 +109,11 @@ export default {
   },
   methods: {
     gotoPage(page) {
-      this.$router.push({ name: page })
+      if (page !== 'account-logout') this.$router.push({ name: page })
+      else
+        this.$store.dispatch('auth/logout').then(() => {
+          this.$router.push({ name: 'login' })
+        })
     },
   },
 }

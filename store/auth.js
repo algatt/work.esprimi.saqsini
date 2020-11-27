@@ -14,7 +14,7 @@ export const actions = {
         .post('/auth/auth/login', qs.stringify({ email, password }))
         .then((response) => {
           commit('setAuthToken', response.headers.token)
-          console.log(response.headers.token)
+
           cookies.set('x-access-token', response.headers.token, {
             expires: 7,
             sameSite: 'None',
@@ -28,6 +28,12 @@ export const actions = {
         })
         .catch((error) => reject(error))
     })
+  },
+
+  async loginWithToken({ dispatch, commit }, token) {
+    commit('setAuthToken', token)
+    await dispatch('getUserDetails')
+    await dispatch('getUserAvatar')
   },
 
   getUserDetails({ commit, rootState }) {
@@ -62,6 +68,21 @@ export const actions = {
           }
 
           resolve(avatar)
+        })
+        .catch((error) => reject(error))
+    })
+  },
+
+  logout({ commit }) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .$get('auth/auth/logout')
+        .then(() => {
+          commit('setAuthToken', null)
+          commit('setAuthAvatar', null)
+          commit('setAuthUser', null)
+          cookies.remove('x-access-token')
+          resolve()
         })
         .catch((error) => reject(error))
     })

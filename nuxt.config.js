@@ -35,6 +35,7 @@ export default {
   plugins: [
     '@/plugins/axios.js',
     { src: '@/plugins/plugins-client.js', ssr: false },
+    { src: '@/plugins/refresh.js', ssr: false },
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
