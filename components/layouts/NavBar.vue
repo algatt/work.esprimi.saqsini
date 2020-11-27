@@ -12,7 +12,7 @@
         <button
           v-for="(item, index) in menu"
           :key="'menu' + index"
-          class="text-white h-10 font-medium tracking-wider py-2 w-full hover:bg-blue-700 active:bg-white active:text-blue-600 transition duration-300 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-blue-700"
+          class="text-white h-10 font-medium tracking-wider py-2 w-full hover:bg-primary-darker active:bg-white active:text-primary-de transition duration-300 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-primary-darker"
           style="font-family: Poppins"
           @click="gotoPage(item.link)"
         >
@@ -31,32 +31,32 @@
       <div class="w-full mb-3 text-white flex">
         <span class="w-10/12 mx-auto flex justify-end">
           <button
-            class="focus:outline-none focus:ring-1 focus:ring-inset focus:ring-blue-700"
+            class="focus:outline-none focus:ring-1 focus:ring-inset focus:ring-primary-darker"
             @click="$emit('clickToggle')"
           >
             <i
               :class="
                 isVisible ? 'fa-angle-double-left' : 'fa-angle-double-right'
               "
-              class="fas fa-fw h-6 w-6 flex items-center justify-center ring-0 rounded-full transition duration-300 hover:bg-white hover:text-blue-600"
+              class="fas fa-fw h-6 w-6 flex items-center justify-center ring-0 rounded-full transition duration-300 hover:bg-white hover:text-primary-de"
             ></i>
           </button>
         </span>
       </div>
     </div>
     <div
-      class="flex md:hidden w-full bg-blue-600 justify-between py-1 px-2 relative"
+      class="flex md:hidden w-full bg-primary-de justify-between py-1 px-2 relative"
     >
       <h5>Saqsini</h5>
       <button
-        class="relative text-white w-8 font-medium tracking-wider transform hover:scale-110 active:bg-white active:text-blue-600 transition duration-300 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-blue-700"
+        class="relative text-white w-8 font-medium tracking-wider transform hover:scale-110 active:bg-white active:text-primary-de transition duration-300 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-primary-darker"
         @click="showSubMenu = !showSubMenu"
       >
         <i class="fas fa-bars fa-fw"></i>
       </button>
       <div
         v-if="showSubMenu"
-        class="absolute top-0 left-0 w-full h-screen bg-blue-600 flex-col p-4 text-2xl flex"
+        class="absolute top-0 left-0 w-full h-screen bg-primary-de flex-col p-4 text-2xl flex"
         style="font-family: 'Poppins'"
       >
         <div class="flex justify-end">
@@ -70,7 +70,7 @@
         <button
           v-for="(item, index) in menu"
           :key="'menu' + index"
-          class="w-full flex items-center text-white justify-center my-3 hover:bg-white hover:text-blue-600 py-1 transition duration-300"
+          class="w-full flex items-center text-white justify-center my-3 hover:bg-white hover:text-primary-de py-1 transition duration-300"
           @click="gotoPage(item.link)"
         >
           <p>{{ item.text }}</p>

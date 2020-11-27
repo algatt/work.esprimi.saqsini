@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --primary-light: rgb(147, 197, 253);
+    --primary-lighter: rgb(96, 165, 250);
+    --primary: rgb(37, 99, 235);
+    --primary-darker: rgb(29, 78, 216);
+    --primary-dark: rgb(30, 64, 175);
+}
+
+
 body {
     font-family: 'Quicksand', sans-serif;
     @apply font-medium;

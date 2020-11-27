@@ -1,9 +1,9 @@
 <template>
   <div
-    class="bg-white w-11/12 md:w-auto rounded-sm border border-blue-600 shadow-xl py-4 px-10 mb-20 flex flex-col"
+    class="bg-white w-11/12 md:w-auto rounded-sm border border-primary-de shadow-xl py-4 px-10 mb-20 flex flex-col"
   >
     <h5
-      class="text-2xl text-blue-600 font-bold text-center mb-4"
+      class="text-2xl text-primary-de font-bold text-center mb-4"
       style="font-family: 'Poppins'"
     >
       saqsini<i class="far fa-comments fa-fw ml-1"></i>
@@ -27,7 +27,7 @@
       @keyup="$v.password.$touch"
     />
     <button
-      class="bg-blue-600 text-white py-2 rounded-sm hover:bg-blue-700 transition duration-300 disabled:opacity-50 disabled:bg-blue-600 mt-3 outline-none focus:ring"
+      class="bg-blue-primary-de text-white py-2 rounded-sm hover:bg-blue-700 transition duration-300 disabled:opacity-50 disabled:bg-blue-600 mt-3 outline-none focus:ring"
       :disabled="$v.$invalid || inProgress"
       @click="attemptLogin"
     >
@@ -99,6 +99,6 @@ export default {
 
 <style scoped>
 .input-login {
-  @apply border-2 border-gray-300 rounded-sm px-3 py-2 focus:bg-gray-100 focus:border-blue-600 transition duration-500 outline-none;
+  @apply border-2 border-gray-300 rounded-sm px-3 py-2 focus:bg-gray-100 focus:border-primary-de transition duration-500 outline-none;
 }
 </style>

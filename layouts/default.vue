@@ -1,7 +1,7 @@
 <template>
   <div class="md:flex">
     <aside
-      class="h-screen sticky top-0 bg-blue-600 transition-all duration-300 hidden md:block"
+      class="h-screen sticky top-0 bg-primary-de transition-all duration-300 hidden md:block"
       :class="!menuShow ? 'w-12' : 'w-52'"
     >
       <nav-bar
@@ -10,7 +10,7 @@
       ></nav-bar>
     </aside>
     <nav-bar
-      class="flex w-full bg-green-500 flex-wrap md:hidden"
+      class="flex w-full flex-wrap md:hidden"
       :is-visible="menuShow"
     ></nav-bar>
     <Nuxt class="px-3 flex-grow" />
