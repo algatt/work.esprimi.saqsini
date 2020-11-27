@@ -1,5 +1,8 @@
 export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
+  server: {
+    port: 8000,
+  },
   head: {
     title: 'saqsini',
     meta: [
@@ -13,7 +16,7 @@ export default {
       {
         rel: 'stylesheet',
         href:
-          'https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&family=Open+Sans:wght@400;600;700&display=swap',
+          'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Quicksand:wght@400;500;600;700&display=swap',
       },
     ],
     script: [
