@@ -23,12 +23,19 @@ export default {
       },
     ],
   },
+  env: {
+    api_auth: '/api/v0.3/',
+    api_path: 'https://com-lobeslab-sdc-api-test.herokuapp.com',
+  },
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
   css: [],
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
-  plugins: [],
+  plugins: [
+    '@/plugins/axios.js',
+    { src: '@/plugins/plugins-client.js', ssr: false },
+  ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
   components: true,
@@ -48,7 +55,18 @@ export default {
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
-  axios: {},
+  axios: {
+    proxy: true,
+  },
+
+  proxy: {
+    '/auth/': {
+      target: 'https://com-lobeslab-sdc-api-test.herokuapp.com/',
+      pathRewrite: {
+        '^/auth/': '/api/v0.3/',
+      },
+    },
+  },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {},

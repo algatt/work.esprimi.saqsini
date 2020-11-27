@@ -21,6 +21,7 @@
 import NavBar from '~/components/layouts/NavBar'
 export default {
   components: { NavBar },
+  middleware: 'auth',
   data() {
     return {
       menuShow: true,

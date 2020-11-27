@@ -12,8 +12,12 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.12.2",
+    "cookie": "^0.4.1",
     "core-js": "^3.6.5",
-    "nuxt": "^2.14.6"
+    "js-cookie": "^2.2.1",
+    "nuxt": "^2.14.6",
+    "vue-toasted": "^1.1.28",
+    "vuelidate": "^0.7.6"
   },
   "devDependencies": {
     "@nuxt/types": "^2.14.7",
