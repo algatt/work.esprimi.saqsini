@@ -55,6 +55,7 @@ export const actions = {
 
       deleteMultipleByCode()
         .then(() => {
+          commit('setSelectedItems', [])
           resolve()
         })
         .catch((error) => {

@@ -2,7 +2,7 @@
   <div v-if="!loading">
     <top-info-bar
       v-if="selectedItemsLength > 0"
-      store-object="typeOfObject"
+      :store-object="typeOfObject"
     ></top-info-bar>
     <top-header-bar v-else
       ><template v-slot:title><slot name="title"></slot></template>
