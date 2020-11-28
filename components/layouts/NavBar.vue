@@ -14,6 +14,7 @@
           :key="'menu' + index"
           class="text-white h-10 font-medium tracking-wider py-2 w-full hover:bg-primary-darker active:bg-white active:text-primary transition duration-300 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-primary-darker"
           style="font-family: Poppins"
+          :class="currentRoute === item.link ? 'bg-primary-darker' : null"
           @click="gotoPage(item.link)"
         >
           <span
@@ -29,16 +30,19 @@
         </button>
       </div>
       <div class="w-full mb-3 text-white flex">
-        <span class="w-10/12 mx-auto flex justify-end">
+        <span
+          class="w-10/12 mx-auto flex"
+          :class="isVisible ? 'justify-end' : 'justify-center'"
+        >
           <button
-            class="focus:outline-none focus:ring-1 focus:ring-inset focus:ring-primary-darker"
+            class="bg-primary h-7 w-7 rounded-full text-white hover:bg-primary-darker focus:ring-2 ring-primary-darker transition duration-300 ring-offset-2 focus:outline-none"
             @click="$emit('clickToggle')"
           >
             <i
               :class="
                 isVisible ? 'fa-angle-double-left' : 'fa-angle-double-right'
               "
-              class="fas fa-fw h-6 w-6 flex items-center justify-center ring-0 rounded-full transition duration-300 hover:bg-white hover:text-primary"
+              class="fas fa-fw"
             ></i>
           </button>
         </span>
@@ -106,6 +110,11 @@ export default {
         { text: 'Logout', link: 'account-logout', icon: 'fas fa-sign-out-alt' },
       ],
     }
+  },
+  computed: {
+    currentRoute() {
+      return this.$route.name
+    },
   },
   methods: {
     gotoPage(page) {

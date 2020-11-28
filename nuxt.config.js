@@ -70,6 +70,13 @@ export default {
         '^/auth/': '/api/v0.3/',
       },
     },
+    '/contact/': {
+      // target: 'https://com-lobeslab-sdc-api-test.herokuapp.com/api/v0.3/',
+      target: 'https://com-lobeslab-sdc-api-test.herokuapp.com/',
+      pathRewrite: {
+        '^/contact/': '/contactbook/v0.3/',
+      },
+    },
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)

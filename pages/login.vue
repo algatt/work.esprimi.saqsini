@@ -24,7 +24,7 @@
       @keyup="$v.password.$touch"
     />
     <button
-      class="btn-primary"
+      class="btn-primary my-3"
       :disabled="$v.$invalid || inProgress"
       @click="attemptLogin"
     >
