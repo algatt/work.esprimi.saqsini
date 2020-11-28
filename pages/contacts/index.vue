@@ -59,7 +59,7 @@ import EditObjectModal from '~/components/layouts/EditObjectModal'
 import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
 import NewContact from '~/components/contacts/NewContact'
 export default {
-  name: 'IndexVue',
+  name: 'ContactsList',
   components: {
     NewContact,
     DisplayTableComponent,

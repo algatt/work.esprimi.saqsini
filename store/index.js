@@ -1,10 +1,19 @@
 import cookie from 'cookie'
 
-const deleteCalls = { contacts: 'contacts/deleteContact' }
+const deleteCalls = {
+  contacts: 'contacts/deleteContact',
+  companies: 'companies/deleteCompany',
+}
 
-const newCalls = { contacts: 'contacts/newContact' }
+const newCalls = {
+  contacts: 'contacts/newContact',
+  companies: 'companies/newCompany',
+}
 
-const updateCalls = { contacts: 'contacts/updateContact' }
+const updateCalls = {
+  contacts: 'contacts/updateContact',
+  companies: 'companies/updateCompany',
+}
 
 export const state = () => ({
   selectedItems: [],
