@@ -25,6 +25,10 @@ body {
    @apply bg-primary text-white py-2 rounded-sm hover:bg-primary-darker transition duration-300 disabled:opacity-50 disabled:bg-primary focus:ring-2 ring-primary-darker  ring-offset-2 focus:outline-none;
 }
 
+.btn-danger {
+    @apply bg-red-500 text-white py-2 rounded-sm hover:bg-red-600 transition duration-300 disabled:opacity-50 disabled:bg-red-500 focus:ring-2 ring-red-600  ring-offset-2 focus:outline-none;
+}
+
 .btn-round-primary {
     @apply bg-primary h-7 w-7 rounded-full text-white hover:bg-primary-darker focus:ring-2 ring-primary-darker transition duration-300 shadow ring-offset-2 focus:outline-none;
 }

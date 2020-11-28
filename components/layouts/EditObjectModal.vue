@@ -25,6 +25,7 @@ export default {
     },
   },
   mounted() {
+    this.$store.dispatch('emptySelectedItems')
     document.documentElement.style.overflow = 'hidden'
     document.body.scroll = 'no'
   },

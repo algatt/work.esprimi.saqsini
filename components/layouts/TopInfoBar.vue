@@ -6,7 +6,7 @@
           <button class="btn-round-primary mr-2" @click="emptySelectedItems">
             <i class="fas fa-times fa-fw"></i>
           </button>
-          <button class="btn-round-danger mr-2" @click="deleteSelectedItems">
+          <button class="btn-round-danger mr-2" @click="showModal = true">
             <i class="far fa-trash-alt fa-fw"></i>
           </button>
           <span v-if="selectedItems === 1"
@@ -18,18 +18,39 @@
         </span>
       </transition>
     </div>
-    <div></div>
+    <modal-confirm
+      v-if="showModal"
+      @cancel="showModal = false"
+      @confirm="deleteSelectedItems"
+    >
+      <template v-slot:title>Warning</template>
+      <template v-slot:message
+        ><p>
+          You are deleting
+          <template v-if="selectedItems === 1">this record. </template>
+          <template v-else> {{ selectedItems }} items.</template>
+        </p>
+        <p>Are you sure?</p>
+      </template>
+    </modal-confirm>
   </div>
 </template>
 
 <script>
+import ModalConfirm from '~/components/layouts/ModalConfirm'
 export default {
   name: 'BottomInfoBar',
+  components: { ModalConfirm },
   props: {
     storeObject: {
       type: String,
       required: true,
     },
+  },
+  data() {
+    return {
+      showModal: false,
+    }
   },
   computed: {
     selectedItems() {
