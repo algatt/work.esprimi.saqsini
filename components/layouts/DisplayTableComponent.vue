@@ -28,8 +28,6 @@
         </template>
       </row-component>
     </div>
-
-    <slot name="extraContent"></slot>
   </div>
   <spinner v-else></spinner>
 </template>
@@ -68,5 +66,3 @@ export default {
   },
 }
 </script>
-
-<style scoped></style>

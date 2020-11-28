@@ -15,7 +15,9 @@
     "cookie": "^0.4.1",
     "core-js": "^3.6.5",
     "js-cookie": "^2.2.1",
+    "moment": "^2.29.1",
     "nuxt": "^2.14.6",
+    "vue-tel-input": "^4.4.2",
     "vue-toasted": "^1.1.28",
     "vuelidate": "^0.7.6"
   },

@@ -1,3 +1,5 @@
+import qs from 'qs'
+
 export const state = () => ({
   items: [],
 })
@@ -32,6 +34,42 @@ export const actions = {
           commit(
             'removeItemFromState',
             { which: 'contacts', code },
+            { root: true }
+          )
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  newContact({ commit, dispatch, state }, contact) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('contact/contact/', qs.stringify(contact))
+        .then((response) => {
+          commit(
+            'addItemToState',
+            { which: 'contacts', item: response.data },
+            { root: true }
+          )
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  updateContact({ commit }, contact) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .put('contact/contact/' + contact.code, qs.stringify(contact))
+        .then((response) => {
+          commit(
+            'updateItemInState',
+            { which: 'contacts', item: response.data },
             { root: true }
           )
           resolve()

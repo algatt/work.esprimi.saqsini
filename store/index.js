@@ -73,6 +73,12 @@ export const actions = {
       }
     })
   },
+  addItemToState({ commit }, { which, item }) {
+    commit('addItemToState', { which, item })
+  },
+  updateItemInState({ commit }, { which, item }) {
+    commit('updateItemInState', { which, item })
+  },
 
   removeItemFromState({ commit }, { which, code }) {
     commit('removeItemFromState', { which, code })
@@ -98,6 +104,17 @@ export const mutations = {
 
   setItems(rootState, { which, items }) {
     rootState[which].items = items
+  },
+
+  addItemToState(rootState, { which, item }) {
+    rootState[which].items.push(item)
+  },
+
+  updateItemInState(rootState, { which, item }) {
+    const itemToUpdate = rootState[which].items.find((el) => {
+      return el.code === item.code
+    })
+    Object.assign(itemToUpdate, item)
   },
 
   setSelectedItems(state, items) {

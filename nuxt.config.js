@@ -39,6 +39,7 @@ export default {
     '@/plugins/axios.js',
     { src: '@/plugins/plugins-client.js', ssr: false },
     { src: '@/plugins/refresh.js', ssr: false },
+    '@/plugins/vuetelinput.js',
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)

@@ -33,8 +33,39 @@ body {
     @apply bg-red-600 h-7 w-7 rounded-full text-white hover:bg-red-700 focus:ring-2 transition duration-300 shadow ring-red-700 ring-offset-2 focus:outline-none;
 }
 
+.btn-round-primary:disabled, .btn-round-danger:disabled {
+    @apply bg-gray-400 h-7 w-7 rounded-full text-white;
+}
+
+
+
 .input {
     @apply border-2 border-gray-300 rounded-sm px-3 py-2 focus:bg-gray-100 focus:border-primary transition duration-500 ring-offset-2 focus:outline-none;
+}
+
+.select {
+    @apply  appearance-none;
+    background-image: url('/dropdown.svg');
+    background-repeat: no-repeat;
+    background-position: right 0.5em top 50%;
+    background-size: 1em auto;
+}
+
+.label {
+    @apply py-3;
+}
+
+.label-required {
+    @apply py-3;
+}
+
+.label-required::after {
+    content: '*';
+    @apply ml-1 text-red-500 font-semibold;
+}
+
+.error {
+    @apply text-xs text-red-500 py-2;
 }
 
 .btn-link {
