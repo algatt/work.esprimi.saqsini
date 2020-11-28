@@ -60,7 +60,7 @@
       </button>
       <div
         v-if="showSubMenu"
-        class="absolute top-0 left-0 w-full h-screen bg-primary flex-col p-4 text-2xl flex"
+        class="fixed top-0 left-0 w-full h-full bg-primary flex-col p-4 text-2xl flex"
         style="font-family: 'Poppins'"
       >
         <div class="flex justify-end">
@@ -118,6 +118,7 @@ export default {
   },
   methods: {
     gotoPage(page) {
+      this.showSubMenu = false
       if (page !== 'account-logout') this.$router.push({ name: page })
       else
         this.$store.dispatch('auth/logout').then(() => {

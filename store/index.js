@@ -77,6 +77,10 @@ export const actions = {
     commit('removeItemFromState', { which, code })
   },
 
+  setLoading({ commit }, value) {
+    commit('setLoading', value)
+  },
+
   setCurrentItemToBeEdited({ commit }, item) {
     commit('setCurrentItemToBeEdited', item)
   },

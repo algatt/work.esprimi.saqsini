@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col">
+  <div v-if="!loading">
     <top-info-bar
       v-if="selectedItemsLength > 0"
       store-object="typeOfObject"
@@ -31,16 +31,19 @@
 
     <slot name="extraContent"></slot>
   </div>
+  <spinner v-else></spinner>
 </template>
 
 <script>
 import TopInfoBar from '~/components/layouts/TopInfoBar'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 import TopTitleBar from '~/components/layouts/TopTitleBar'
+import RowComponent from '~/components/layouts/RowComponent'
+import Spinner from '~/components/layouts/Spinner'
 
 export default {
   name: 'DisplayTableComponent',
-  components: { TopInfoBar, TopTitleBar, TopHeaderBar },
+  components: { Spinner, TopInfoBar, TopTitleBar, TopHeaderBar, RowComponent },
   props: {
     typeOfObject: {
       type: String,
@@ -53,6 +56,9 @@ export default {
     },
     items() {
       return this.$store.getters.getItems(this.typeOfObject)
+    },
+    loading() {
+      return this.$store.state.loading
     },
   },
   methods: {

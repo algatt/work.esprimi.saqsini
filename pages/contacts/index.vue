@@ -70,7 +70,12 @@ export default {
     },
   },
   created() {
-    this.$store.dispatch('contacts/getContacts', { limit: 100, offset: 0 })
+    this.$store.dispatch('setLoading', true)
+    this.$store
+      .dispatch('contacts/getContacts', { limit: 100, offset: 0 })
+      .finally(() => {
+        this.$store.dispatch('setLoading', false)
+      })
   },
   methods: {
     setCurrentItem(item) {
