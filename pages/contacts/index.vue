@@ -1,6 +1,6 @@
 <template>
   <div>
-    <DisplayTableComponent
+    <display-table-component
       type-of-object="contacts"
       @hovered="hovered = $event"
     >
@@ -42,14 +42,14 @@
           <span v-else>&nbsp;</span>
         </p>
       </template>
-    </DisplayTableComponent>
+    </display-table-component>
 
     <transition name="fade">
-      <EditObjectModal v-if="currentItemToBeEdited">
-        <template v-slot:content="slotProps">
-          <NewContact :item="slotProps.item"></NewContact>
+      <edit-object-modal v-if="currentItemToBeEdited">
+        <template v-slot:content>
+          <new-contact></new-contact>
         </template>
-      </EditObjectModal>
+      </edit-object-modal>
     </transition>
   </div>
 </template>
@@ -77,7 +77,7 @@ export default {
       return this.$store.state.loading
     },
     currentItemToBeEdited() {
-      return !!this.$store.state.currentItemToBeEdited
+      return this.$store.state.currentItemToBeEdited
     },
   },
   created() {

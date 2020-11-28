@@ -31,11 +31,6 @@ export const actions = {
       this.$axios
         .delete('/contact/contact/' + code)
         .then(() => {
-          commit(
-            'removeItemFromState',
-            { which: 'contacts', code },
-            { root: true }
-          )
           resolve()
         })
         .catch((error) => {
@@ -49,12 +44,7 @@ export const actions = {
       this.$axios
         .post('contact/contact/', qs.stringify(contact))
         .then((response) => {
-          commit(
-            'addItemToState',
-            { which: 'contacts', item: response.data },
-            { root: true }
-          )
-          resolve()
+          resolve(response.data)
         })
         .catch((error) => {
           reject(error)
@@ -63,16 +53,13 @@ export const actions = {
   },
 
   updateContact({ commit }, contact) {
+    const code = contact.code
+    delete contact.code
     return new Promise((resolve, reject) => {
       this.$axios
-        .put('contact/contact/' + contact.code, qs.stringify(contact))
+        .put('contact/contact/' + code, qs.stringify(contact))
         .then((response) => {
-          commit(
-            'updateItemInState',
-            { which: 'contacts', item: response.data },
-            { root: true }
-          )
-          resolve()
+          resolve(response.data)
         })
         .catch((error) => {
           reject(error)

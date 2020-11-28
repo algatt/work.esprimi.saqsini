@@ -1,0 +1,79 @@
+<template>
+  <div
+    class="flex flex-wrap absolute bottom-0 left-0 w-full justify-end px-5 pb-3 h-16 justify-between items-center"
+  >
+    <div class="flex flex-wrap items-center w-6/12">
+      <button class="btn-round-primary mr-2" @click="cancelCurrentItem">
+        <i class="fas fa-times fa-fw"></i>
+      </button>
+      <button
+        v-if="form.code !== -1"
+        class="btn-round-danger mr-2"
+        :disabled="form.code === -1"
+        @click="deleteItem"
+      >
+        <i class="far fa-trash-alt fa-fw"></i>
+      </button>
+    </div>
+
+    <div class="flex flex-wrap items-center w-6/12 justify-end">
+      <button
+        class="btn-round-primary mr-2"
+        :disabled="!isValid"
+        @click="saveItem"
+      >
+        <i class="fas fa-save fa-fw"></i>
+      </button>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'EditObjectModalBottomPart',
+  props: {
+    form: {
+      required: true,
+      type: Object,
+    },
+    which: {
+      required: true,
+      type: String,
+    },
+    isValid: {
+      required: true,
+      type: Boolean,
+    },
+  },
+  methods: {
+    cancelCurrentItem() {
+      this.$store.dispatch('setCurrentItemToBeEdited', null)
+    },
+    saveItem() {
+      if (this.form.code === -1) {
+        this.$store
+          .dispatch('newItem', { which: this.which, item: this.form })
+          .then(() => {
+            this.cancelCurrentItem()
+          })
+      } else {
+        this.$store
+          .dispatch('updateItem', {
+            which: this.which,
+            item: this.form,
+          })
+          .then(() => {
+            this.cancelCurrentItem()
+          })
+      }
+    },
+    deleteItem() {
+      this.$store
+        .dispatch('deleteItem', { which: this.which, code: this.form.code })
+        .then(() => {
+          this.cancelCurrentItem()
+        })
+    },
+  },
+}
+</script>

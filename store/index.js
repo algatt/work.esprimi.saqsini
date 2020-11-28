@@ -2,6 +2,10 @@ import cookie from 'cookie'
 
 const deleteCalls = { contacts: 'contacts/deleteContact' }
 
+const newCalls = { contacts: 'contacts/newContact' }
+
+const updateCalls = { contacts: 'contacts/updateContact' }
+
 export const state = () => ({
   selectedItems: [],
   currentItemToBeEdited: null,
@@ -29,6 +33,11 @@ export const actions = {
       }
     }
   },
+
+  setCurrentItemToBeEdited({ commit }, item) {
+    commit('setCurrentItemToBeEdited', item)
+  },
+
   selectedItemsManage({ state, commit }, item) {
     let items = JSON.parse(JSON.stringify(state.selectedItems))
 
@@ -69,52 +78,36 @@ export const actions = {
         for (let index = 0; index < codesToDelete.length; index++) {
           const code = codesToDelete[index]
           await dispatch(deleteCalls[which], code)
+          commit('deleteItem', { which, code })
         }
       }
     })
   },
-  addItemToState({ commit }, { which, item }) {
-    commit('addItemToState', { which, item })
-  },
-  updateItemInState({ commit }, { which, item }) {
-    commit('updateItemInState', { which, item })
-  },
 
-  removeItemFromState({ commit }, { which, code }) {
-    commit('removeItemFromState', { which, code })
+  newItem({ commit, dispatch }, { which, item }) {
+    dispatch(newCalls[which], item).then((response) => {
+      commit('newItem', { which, item: response })
+    })
+  },
+  updateItem({ commit, dispatch }, { which, item }) {
+    dispatch(updateCalls[which], item).then((response) => {
+      commit('updateItem', { which, item: response })
+    })
+  },
+  deleteItem({ commit, dispatch }, { which, code }) {
+    dispatch(deleteCalls[which], code).then(() => {
+      commit('deleteItem', { which, code })
+    })
   },
 
   setLoading({ commit }, value) {
     commit('setLoading', value)
   },
-
-  setCurrentItemToBeEdited({ commit }, item) {
-    commit('setCurrentItemToBeEdited', item)
-  },
 }
 
 export const mutations = {
-  setLoading(state, value) {
-    state.loading = value
-  },
-
   setCurrentItemToBeEdited(state, item) {
-    state.currentItemToBeEdited = item
-  },
-
-  setItems(rootState, { which, items }) {
-    rootState[which].items = items
-  },
-
-  addItemToState(rootState, { which, item }) {
-    rootState[which].items.push(item)
-  },
-
-  updateItemInState(rootState, { which, item }) {
-    const itemToUpdate = rootState[which].items.find((el) => {
-      return el.code === item.code
-    })
-    Object.assign(itemToUpdate, item)
+    state.currentItemToBeEdited = JSON.parse(JSON.stringify(item))
   },
 
   setSelectedItems(state, items) {
@@ -125,10 +118,29 @@ export const mutations = {
     state.selectedItems = []
   },
 
-  removeItemFromState(rootState, { which, code }) {
+  newItem(rootState, { which, item }) {
+    rootState[which].items.push(item)
+  },
+
+  updateItem(rootState, { which, item }) {
+    const itemToUpdate = rootState[which].items.find((el) => {
+      return el.code === item.code
+    })
+    Object.assign(itemToUpdate, item)
+  },
+
+  deleteItem(rootState, { which, code }) {
     rootState[which].items = rootState[which].items.filter((x) => {
       return x.code !== code
     })
+  },
+
+  setLoading(state, value) {
+    state.loading = value
+  },
+
+  setItems(rootState, { which, items }) {
+    rootState[which].items = items
   },
 }
 

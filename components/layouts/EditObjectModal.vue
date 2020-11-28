@@ -9,7 +9,7 @@
         </h6>
       </div>
       <div class="flex flex-col p-5 bg-red overflow-y-auto mb-10">
-        <slot name="content" :item="currentItemToBeEdited"></slot>
+        <slot name="content"></slot>
       </div>
     </div>
   </div>
@@ -18,6 +18,7 @@
 <script>
 export default {
   name: 'EditObjectModal',
+
   computed: {
     currentItemToBeEdited() {
       return this.$store.state.currentItemToBeEdited
@@ -38,5 +39,3 @@ export default {
   },
 }
 </script>
-
-<style scoped></style>
