@@ -4,6 +4,7 @@ const deleteCalls = { contacts: 'contacts/deleteContact' }
 
 export const state = () => ({
   selectedItems: [],
+  currentItemToBeEdited: null,
   loading: false,
 })
 
@@ -75,11 +76,19 @@ export const actions = {
   removeItemFromState({ commit }, { which, code }) {
     commit('removeItemFromState', { which, code })
   },
+
+  setCurrentItemToBeEdited({ commit }, item) {
+    commit('setCurrentItemToBeEdited', item)
+  },
 }
 
 export const mutations = {
   setLoading(state, value) {
     state.loading = value
+  },
+
+  setCurrentItemToBeEdited(state, item) {
+    state.currentItemToBeEdited = item
   },
 
   setItems(rootState, { which, items }) {
