@@ -2,7 +2,7 @@
   <div class="flex flex-col">
     <div class="h-16 flex items-center font-bold">Sectors and Industries</div>
     <button
-      class="w-full flex items-center justify-between mb-1 p-1 font-medium hover:text-primary transition duration-300"
+      class="w-full flex items-center justify-between mb-1 p-1 font-medium hover:text-primary transition duration-300 focus:outline-none"
       :class="selectedParent === -1 ? 'text-primary' : 'text-gray-600'"
       @click="selectParent({ code: -1 })"
     >
@@ -24,7 +24,7 @@
       class="mb-1 p-1 flex flex-col"
     >
       <button
-        class="w-full flex items-center justify-between font-medium mb-1 hover:text-primary transition duration-300"
+        class="w-full flex items-center justify-between font-medium mb-1 hover:text-primary transition duration-300 focus:outline-none"
         :class="
           selectedParent === parentItem.code ? 'text-primary' : 'text-gray-600'
         "
@@ -59,7 +59,7 @@
           class="flex flex-col pl-2 mb-1"
         >
           <button
-            class="w-full flex items-center justify-between font-medium hover:text-primary transition duration-300"
+            class="w-full flex items-center justify-between font-medium hover:text-primary transition duration-300 focus:outline-none"
             :class="
               selectedChild === childItem.code
                 ? 'text-primary'
@@ -92,8 +92,13 @@
         </div>
         <div class="flex flex-col pl-2 mb-1">
           <button
-            class="w-full flex items-center justify-between font-medium text-gray-600 hover:text-primary transition duration-300"
-            @click="$emit('newChild', { code: -1 })"
+            class="w-full flex items-center justify-between font-medium text-gray-600 hover:text-primary transition duration-300 focus:outline-none"
+            @click="
+              $emit('newChild', {
+                code: -1,
+                [parentCodeName]: parentItem.code,
+              })
+            "
           >
             <span
               ><i class="fas fa-fw fa-folder-plus mr-1 text-gray-400"></i
@@ -104,7 +109,7 @@
       </template>
     </div>
     <button
-      class="w-full flex items-center justify-between mb-1 p-1 font-medium hover:text-primary transition duration-300 text-gray-600"
+      class="w-full flex items-center justify-between mb-1 p-1 font-medium hover:text-primary transition duration-300 text-gray-600 focus:outline-none"
       @click="$emit('newParent', { code: -1 })"
     >
       <span

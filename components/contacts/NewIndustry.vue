@@ -1,5 +1,13 @@
 <template>
   <div class="flex flex-col w-full md:w-10/12">
+    <label for="inputSector" class="label-required">Sector</label>
+    <select id="inputSector" v-model="form.sectorCode" class="input select">
+      <option v-for="sector in sectors" :key="sector.code" :value="sector.code">
+        {{ sector.name }}
+      </option>
+    </select>
+    <span>&nbsp;</span>
+
     <label for="inputName" class="label-required">Industry</label>
     <input
       id="inputName"
@@ -12,12 +20,32 @@
     <span v-else>
       <span v-if="!$v.form.name.required" class="error"
         >The name is required.</span
+      ><span v-else-if="!$v.form.name.uniqueNames" class="error"
+        >This industry already exists.</span
+      ></span
+    >
+
+    <label for="inputAbbr" class="label-required">Abbreviation</label>
+    <input
+      id="inputAbbr"
+      v-model="form.abbr"
+      placeholder="Enter abbreviation"
+      class="input"
+      @change="$v.form.abbr.$touch()"
+    />
+    <span v-if="!$v.form.abbr.$error">&nbsp;</span>
+    <span v-else>
+      <span v-if="!$v.form.abbr.required" class="error"
+        >The name is required.</span
+      >
+      <span v-else-if="!$v.form.abbr.uniqueAbbr" class="error"
+        >This abbreviation already exists.</span
       ></span
     >
 
     <edit-object-modal-bottom-part
       :form="form"
-      which="'industries'"
+      which="industries"
       :is-valid="isValid"
     ></edit-object-modal-bottom-part>
   </div>
@@ -25,7 +53,7 @@
 
 <script>
 import { validationMixin } from 'vuelidate'
-// import { required, email } from 'vuelidate/lib/validators'
+import { required } from 'vuelidate/lib/validators'
 
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
 
@@ -35,7 +63,18 @@ export default {
   mixins: [validationMixin],
   validations: {
     form: {
-      name: {},
+      name: {
+        required,
+        uniqueNames(value) {
+          return !this.uniqueNames.includes(value.trim().toLowerCase())
+        },
+      },
+      abbr: {
+        required,
+        uniqueAbbr(value) {
+          return !this.uniqueAbbr.includes(value.trim().toLowerCase())
+        },
+      },
     },
   },
   data() {
@@ -50,12 +89,36 @@ export default {
     item() {
       return this.$store.state.currentItemToBeEdited
     },
+    sectors() {
+      const x = JSON.parse(
+        JSON.stringify(this.$store.getters.getItems('sectors'))
+      )
+      return x.sort((a, b) => {
+        return a.name > b.name ? 1 : -1
+      })
+    },
+    industries() {
+      return this.$store.getters.getItems('industries')
+    },
+    uniqueNames() {
+      return this.industries.map((el) => {
+        return el.code !== this.form.code ? el.name.toLowerCase() : ''
+      })
+    },
+    uniqueAbbr() {
+      return this.industries.map((el) => {
+        return el.code !== this.form.code &&
+          el.sectorCode === this.form.sectorCode
+          ? el.name.toLowerCase()
+          : ''
+      })
+    },
   },
   created() {
     this.form = JSON.parse(JSON.stringify(this.item))
   },
   mounted() {
-    // document.getElementById('inputName').focus()
+    document.getElementById('inputName').focus()
   },
   methods: {},
 }

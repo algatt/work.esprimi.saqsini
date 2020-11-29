@@ -4,18 +4,21 @@ const deleteCalls = {
   contacts: 'contacts/deleteContact',
   companies: 'companies/deleteCompany',
   sectors: 'sectors/deleteSector',
+  industries: 'industries/deleteIndustry',
 }
 
 const newCalls = {
   contacts: 'contacts/newContact',
   companies: 'companies/newCompany',
   sectors: 'sectors/newSector',
+  industries: 'industries/newIndustry',
 }
 
 const updateCalls = {
   contacts: 'contacts/updateContact',
   companies: 'companies/updateCompany',
   sectors: 'sectors/updateSector',
+  industries: 'industries/updateIndustry',
 }
 
 const getCalls = {

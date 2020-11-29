@@ -1,6 +1,6 @@
 <template>
-  <div class="flex">
-    <div class="w-2/12">
+  <div class="flex flex-wrap">
+    <div class="w-full md:w-2/12">
       <side-tree-nav
         parent="sectors"
         child="industries"
@@ -12,7 +12,7 @@
       ></side-tree-nav>
     </div>
     <display-table-component
-      class="w-10/12"
+      class="w-full md:w-10/12"
       :items="companies"
       @hovered="hovered = $event"
     >
