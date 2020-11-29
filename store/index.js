@@ -15,6 +15,11 @@ const updateCalls = {
   companies: 'companies/updateCompany',
 }
 
+const getCalls = {
+  sectors: 'sectors/getSectors',
+  industries: 'industries/getIndustries',
+}
+
 export const state = () => ({
   selectedItems: [],
   currentItemToBeEdited: null,
@@ -106,6 +111,11 @@ export const actions = {
   deleteItem({ commit, dispatch }, { which, code }) {
     dispatch(deleteCalls[which], code).then(() => {
       commit('deleteItem', { which, code })
+    })
+  },
+  getItems({ commit, dispatch }, which) {
+    dispatch(getCalls[which]).then((response) => {
+      commit('setItems', { which, items: response })
     })
   },
 

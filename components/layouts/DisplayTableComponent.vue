@@ -43,17 +43,14 @@ export default {
   name: 'DisplayTableComponent',
   components: { Spinner, TopInfoBar, TopTitleBar, TopHeaderBar, RowComponent },
   props: {
-    typeOfObject: {
-      type: String,
+    items: {
+      type: Array,
       required: true,
     },
   },
   computed: {
     selectedItemsLength() {
       return this.$store.state.selectedItems.length
-    },
-    items() {
-      return this.$store.getters.getItems(this.typeOfObject)
     },
     loading() {
       return this.$store.state.loading

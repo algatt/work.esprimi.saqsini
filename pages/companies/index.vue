@@ -1,7 +1,19 @@
 <template>
-  <div>
+  <div class="flex">
+    <div class="w-2/12">
+      <side-tree-nav
+        parent="sectors"
+        child="industries"
+        parent-code-name="sectorCode"
+        @parentChanged="parentChanged"
+        @childChanged="childChanged"
+        @newParent="newParent"
+        @newChild="newChild"
+      ></side-tree-nav>
+    </div>
     <display-table-component
-      type-of-object="companies"
+      class="w-10/12"
+      :items="companies"
       @hovered="hovered = $event"
     >
       <template v-slot:title>Companies</template>
@@ -32,9 +44,16 @@
     </display-table-component>
 
     <transition name="fade">
-      <edit-object-modal v-if="currentItemToBeEdited">
+      <edit-object-modal
+        v-if="currentItemToBeEdited"
+        @modalClosed="modalClosed"
+      >
         <template v-slot:content>
-          <new-contact></new-contact>
+          <new-contact v-if="!objectToCreate"></new-contact>
+          <new-industry
+            v-else-if="objectToCreate === 'industry'"
+          ></new-industry>
+          <new-sector v-else-if="objectToCreate === 'sector'"></new-sector>
         </template>
       </edit-object-modal>
     </transition>
@@ -45,9 +64,15 @@
 import EditObjectModal from '~/components/layouts/EditObjectModal'
 import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
 import NewContact from '~/components/contacts/NewContact'
+import SideTreeNav from '~/components/layouts/SideTreeNav'
+import NewIndustry from '~/components/contacts/NewIndustry'
+import NewSector from '~/components/contacts/NewSector'
 export default {
   name: 'CompaniesList',
   components: {
+    NewSector,
+    NewIndustry,
+    SideTreeNav,
     NewContact,
     DisplayTableComponent,
     EditObjectModal,
@@ -57,6 +82,9 @@ export default {
       hovered: null,
       disableSave: true,
       startSaveItem: false,
+      selectedParentCode: -1,
+      selectedChildCode: null,
+      objectToCreate: null,
     }
   },
   computed: {
@@ -65,6 +93,23 @@ export default {
     },
     currentItemToBeEdited() {
       return this.$store.state.currentItemToBeEdited
+    },
+    companies() {
+      let tempResults = this.$store.getters.getItems('companies')
+
+      if (this.selectedParentCode === -1) return tempResults
+
+      if (this.selectedChildCode) {
+        tempResults = tempResults.filter((el) => {
+          return el.industryCode === this.selectedChildCode
+        })
+      } else {
+        tempResults = tempResults.filter((el) => {
+          return el.sectorCode === this.selectedParentCode
+        })
+      }
+
+      return tempResults
     },
   },
   created() {
@@ -78,6 +123,24 @@ export default {
   methods: {
     setCurrentItem(item) {
       this.$store.dispatch('setCurrentItemToBeEdited', item)
+    },
+    parentChanged(ev) {
+      this.selectedParentCode = ev
+      this.selectedChildCode = null
+    },
+    childChanged(ev) {
+      this.selectedChildCode = ev
+    },
+    newParent(ev) {
+      this.objectToCreate = 'sector'
+      this.setCurrentItem(ev)
+    },
+    newChild(ev) {
+      this.objectToCreate = 'industry'
+      this.setCurrentItem(ev)
+    },
+    modalClosed() {
+      this.objectToCreate = null
     },
   },
 }

@@ -32,6 +32,7 @@ export default {
   destroyed() {
     document.documentElement.style.overflow = 'visible'
     document.body.scroll = 'yes'
+    this.$emit('modalClosed')
   },
   methods: {
     cancelCurrentItem() {
