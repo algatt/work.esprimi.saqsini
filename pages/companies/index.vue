@@ -5,6 +5,7 @@
         parent="sectors"
         child="industries"
         parent-code-name="sectorCode"
+        count-name="companyCount"
         @parentChanged="parentChanged"
         @childChanged="childChanged"
         @newParent="newParent"
@@ -38,13 +39,13 @@
         </p>
         <p class="w-6/12 md:w-2/12 md:pl-5">
           <nuxt-link
-            class="btn-round-primary px-2"
+            class="btn-round-primary px-3"
             :to="{
               name: 'companies-departments-id',
               params: { id: slotProps.item.code },
             }"
             @click.stop.native
-            >0</nuxt-link
+            >{{ slotProps.item.departmentCount }}</nuxt-link
           >
         </p>
         <p class="w-full md:w-1/12 flex justify-end">

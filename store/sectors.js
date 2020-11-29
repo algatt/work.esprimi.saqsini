@@ -21,10 +21,7 @@ export const actions = {
   newSector({ commit }, sector) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post(
-          '/contact/sector/',
-          qs.stringify({ name: sector.name, abbreviation: sector.abbr })
-        )
+        .post('/contact/sector/', qs.stringify(sector))
         .then((response) => {
           resolve(response.data)
         })
@@ -35,15 +32,11 @@ export const actions = {
   },
 
   updateSector({ commit }, sector) {
+    const code = sector.code
+    delete sector.code
     return new Promise((resolve, reject) => {
       this.$axios
-        .put(
-          '/contact/sector/' + sector.code,
-          qs.stringify({
-            name: sector.name,
-            abbreviation: sector.abbr,
-          })
-        )
+        .put('/contact/sector/' + code, qs.stringify(sector))
         .then((response) => {
           resolve(response.data)
         })

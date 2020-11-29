@@ -66,6 +66,23 @@
     <span v-if="isPhoneValid">&nbsp;</span>
     <span v-else class="error">Invalid phone</span>
 
+    <label class="label" for="inputActive"
+      >Currently Active in this Position</label
+    >
+    <div class="flex space-x-2 items-center">
+      <p class="text-sm">No</p>
+      <input
+        id="inputActive"
+        v-model="form.isActive"
+        type="checkbox"
+        class="checkbox"
+      /><label for="inputActive" class="switch"></label>
+      <p class="text-sm">Yes</p>
+    </div>
+
+    <span v-if="isPhoneValid">&nbsp;</span>
+    <span v-else class="error">Invalid phone</span>
+
     <edit-object-modal-bottom-part
       :form="form"
       which="jobs"
@@ -140,6 +157,8 @@ export default {
         ' ' +
         this.form.contactNumber
       ).trim()
+    if (this.form.flags)
+      this.form.isActive = this.form.flags.includes('ONGOING')
   },
   mounted() {
     document.getElementById('inputCompany').focus()

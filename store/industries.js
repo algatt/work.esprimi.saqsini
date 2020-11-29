@@ -21,14 +21,7 @@ export const actions = {
   newIndustry({ commit, dispatch }, industry) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post(
-          '/contact/industry/',
-          qs.stringify({
-            name: industry.name,
-            abbreviation: industry.abbr,
-            sectorCode: industry.sectorCode,
-          })
-        )
+        .post('/contact/industry/', qs.stringify(industry))
         .then((response) => {
           resolve(response.data)
         })
@@ -39,16 +32,11 @@ export const actions = {
   },
 
   updateIndustry({ commit }, industry) {
+    const code = industry.code
+    delete industry.code
     return new Promise((resolve, reject) => {
       this.$axios
-        .put(
-          '/contact/industry/' + industry.code,
-          qs.stringify({
-            name: industry.name,
-            abbreviation: industry.abbr,
-            sectorCode: industry.sectorCode,
-          })
-        )
+        .put('/contact/industry/' + code, qs.stringify(industry))
         .then((response) => {
           resolve(response.data)
         })

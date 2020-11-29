@@ -54,7 +54,7 @@ export const actions = {
 
   newCompany({ commit, dispatch, state }, company) {
     const data = new FormData()
-    data.append('abbreviation', company.abbr)
+    data.append('abbr', company.abbr)
     data.append('name', company.name)
     if (company.size) data.append('size', company.size)
     if (company.logo) data.append('logo', convertImageToBlob(company.logo))
@@ -78,7 +78,7 @@ export const actions = {
 
   updateCompany({ commit }, company) {
     const data = new FormData()
-    data.append('abbreviation', company.abbr)
+    data.append('abbr', company.abbr)
     data.append('name', company.name)
     if (company.size) data.append('size', company.size)
     if (company.logo) data.append('logo', convertImageToBlob(company.logo))

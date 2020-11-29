@@ -49,7 +49,11 @@
           >
             <i class="fas fa-pencil-alt fa-fw"></i>
           </button>
-          <span v-if="countName">{{ parentItem[countName] }}</span>
+          <span
+            v-if="countName"
+            class="bg-gray-200 ml-1 w-6 rounded text-gray-600 text-sm"
+            >{{ parentItem[countName] }}</span
+          >
         </div>
       </button>
       <template v-if="selectedParent === parentItem.code">
@@ -86,7 +90,11 @@
               >
                 <i class="fas fa-pencil-alt fa-fw"></i>
               </button>
-              <span v-if="countName">{{ childItem[countName] }}</span>
+              <span
+                v-if="countName"
+                class="bg-gray-200 ml-1 w-6 rounded text-gray-600 text-sm"
+                >{{ childItem[countName] }}</span
+              >
             </div>
           </button>
         </div>

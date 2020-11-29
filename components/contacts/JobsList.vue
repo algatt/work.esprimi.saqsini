@@ -24,24 +24,16 @@
       </template>
       <template v-slot:content="slotProps"
         ><p class="w-full md:w-3/12 md:pl-1">
-          {{
-            getValueFromObject(companies, 'name', slotProps.item.companyCode)
-          }}
+          {{ slotProps.item.companyName }}
         </p>
         <p class="w-full md:w-3/12 md:pl-1">
-          {{
-            getValueFromObject(
-              departments,
-              'name',
-              slotProps.item.departmentCode
-            )
-          }}
+          {{ slotProps.item.departmentName }}
         </p>
         <p class="w-full md:w-3/12 md:pl-1">
-          {{ getValueFromObject(roles, 'name', slotProps.item.roleCode) }}
+          {{ slotProps.item.roleName }}
         </p>
         <p class="w-full md:w-2/12 md:pl-1">
-          <span v-if="slotProps.item.flags.includes('ACTIVE')">Active</span>
+          <span v-if="slotProps.item.flags.includes('ONGOING')">Active</span>
           <span v-else>Stopped</span>
         </p>
 

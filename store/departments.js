@@ -46,14 +46,7 @@ export const actions = {
   newDepartment({ commit }, department) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post(
-          '/contact/department/',
-          qs.stringify({
-            name: department.name,
-            abbreviation: department.abbr,
-            companyCode: department.companyCode,
-          })
-        )
+        .post('/contact/department/', qs.stringify(department))
         .then((response) => {
           resolve(response.data)
         })
@@ -64,16 +57,11 @@ export const actions = {
   },
 
   updateDepartment({ commit }, department) {
+    const code = department.code
+    delete department.code
     return new Promise((resolve, reject) => {
       this.$axios
-        .put(
-          '/contact/department/' + department.code,
-          qs.stringify({
-            name: department.name,
-            abbreviation: department.abbr,
-            companyCode: department.companyCode,
-          })
-        )
+        .put('/contact/department/' + code, qs.stringify(department))
         .then((response) => {
           resolve(response.data)
         })
