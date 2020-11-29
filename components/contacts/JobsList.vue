@@ -61,7 +61,7 @@
     <transition name="fade">
       <edit-object-modal v-if="currentItemToBeEdited">
         <template v-slot:content>
-          <new-contact></new-contact>
+          <new-job></new-job>
         </template>
       </edit-object-modal>
     </transition>
@@ -69,13 +69,24 @@
 </template>
 
 <script>
+import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
+import EditObjectModal from '~/components/layouts/EditObjectModal'
+import NewJob from '~/components/contacts/NewJob'
 export default {
   name: 'JobsList',
+  components: { DisplayTableComponent, EditObjectModal, NewJob },
   props: {
     contacts: {
-      type: Object,
+      type: Array,
       required: true,
     },
+  },
+  data() {
+    return {
+      hovered: null,
+      disableSave: true,
+      startSaveItem: false,
+    }
   },
   computed: {
     loading() {

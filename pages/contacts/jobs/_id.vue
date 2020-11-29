@@ -8,13 +8,6 @@ export default {
   name: 'JobsContactsPage',
   components: { JobsList },
 
-  data() {
-    return {
-      hovered: null,
-      disableSave: true,
-      startSaveItem: false,
-    }
-  },
   computed: {
     contacts() {
       return this.$store.getters.getItems('contacts')

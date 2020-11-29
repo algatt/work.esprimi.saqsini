@@ -27,7 +27,7 @@ const updateCalls = {
   industries: 'industries/updateIndustry',
   departments: 'departments/updateDepartment',
   roles: 'roles/updateRole',
-  jobs: 'jobs/updateJobs',
+  jobs: 'jobs/updateJob',
 }
 
 const getCalls = {
@@ -181,5 +181,12 @@ export const mutations = {
 export const getters = {
   getItems: (rootState) => (which) => {
     return rootState[which].items
+  },
+
+  getSortedItems: (rootState) => (which) => {
+    const x = JSON.parse(JSON.stringify(rootState[which].items))
+    return x.sort((a, b) => {
+      return a > b ? -1 : 1
+    })
   },
 }

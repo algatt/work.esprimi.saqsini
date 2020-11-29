@@ -1,46 +1,45 @@
 <template>
   <div class="flex flex-col w-full md:w-10/12">
-    <label for="inputName" class="label-required">Full Name</label>
-    <input
-      id="inputName"
-      v-model="form.displayName"
-      placeholder="Enter full name"
-      class="input"
-      @change="$v.form.displayName.$touch()"
-    />
-    <span v-if="!$v.form.displayName.$error">&nbsp;</span>
-    <span v-else>
-      <span v-if="!$v.form.displayName.required" class="error"
-        >The name is required.</span
-      ></span
+    <label for="inputCompany" class="label-required">Company</label>
+    <select
+      id="inputCompany"
+      v-model="form.companyCode"
+      class="input select"
+      @change="form.departmentCode = null"
     >
-
-    <label for="inputGender" class="label">Gender</label>
-    <select id="inputGender" v-model="form.gender" class="input select">
       <option
-        v-for="genderItem in gender"
-        :key="genderItem.value"
-        :value="genderItem.value"
+        v-for="company in companies"
+        :key="company.code"
+        :value="company.code"
       >
-        {{ genderItem.text }}
+        {{ company.name }}
       </option>
     </select>
     <span>&nbsp;</span>
 
-    <label for="inputDob" class="label">Birth Date</label>
-    <input
-      id="inputDob"
-      v-model="form.dateOfBirth"
-      class="input"
-      type="date"
-      @change="$v.form.dateOfBirth.$touch()"
-    />
-    <span v-if="!$v.form.dateOfBirth.$error">&nbsp;</span>
-    <span v-else>
-      <span v-if="!$v.form.dateOfBirth.between" class="error"
-        >Date cannot be before 1900 or in the future.</span
-      ></span
+    <label for="inputDepartment" class="label-required">Department</label>
+    <select
+      id="inputDepartment"
+      v-model="form.departmentCode"
+      class="input select"
     >
+      <option
+        v-for="department in departments"
+        :key="department.code"
+        :value="department.code"
+      >
+        {{ department.name }}
+      </option>
+    </select>
+    <span>&nbsp;</span>
+
+    <label for="inputRole" class="label-required">Role</label>
+    <select id="inputRole" v-model="form.roleCode" class="input select">
+      <option v-for="role in roles" :key="role.code" :value="role.code">
+        {{ role.name }}
+      </option>
+    </select>
+    <span>&nbsp;</span>
 
     <label for="inputEmail" class="label">Email</label>
     <input
@@ -69,49 +68,39 @@
 
     <edit-object-modal-bottom-part
       :form="form"
-      which="contacts"
-      :is-valid="isValid"
+      which="jobs"
+      :is-valid="true"
     ></edit-object-modal-bottom-part>
   </div>
 </template>
 
 <script>
 import { validationMixin } from 'vuelidate'
-import { required, email } from 'vuelidate/lib/validators'
-import moment from 'moment'
+import { email, required } from 'vuelidate/lib/validators'
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
 
 export default {
-  name: 'NewContact',
+  name: 'NewJob',
   components: { EditObjectModalBottomPart },
   mixins: [validationMixin],
-  validations: {
-    form: {
-      displayName: {
-        required,
-      },
-      dateOfBirth: {
-        between(value) {
-          if (value === '' || value === undefined) return true
-          return !(moment(value) > moment() || moment(value).get('year') < 1900)
-        },
-      },
-      email: {
-        email,
-      },
-    },
-  },
+
   data() {
     return {
       form: null,
       phoneNumber: '',
       checkPhoneState: true,
-      gender: [
-        { text: 'Female', value: 'F' },
-        { text: 'Male', value: 'M' },
-        { text: 'Unspecified', value: 'X' },
-      ],
     }
+  },
+  validations: {
+    form: {
+      displayName: {
+        required,
+      },
+
+      email: {
+        email,
+      },
+    },
   },
   computed: {
     isPhoneValid() {
@@ -123,10 +112,28 @@ export default {
     item() {
       return this.$store.state.currentItemToBeEdited
     },
+    companies() {
+      return this.$store.getters.getSortedItems('companies')
+    },
+    departments() {
+      let x = this.$store.getters.getSortedItems('departments')
+      x = x.filter((el) => {
+        return el.companyCode === this.form.companyCode
+      })
+      x.unshift({ code: null, name: 'No Department' })
+      return x
+    },
+    roles() {
+      return this.$store.getters.getSortedItems('roles')
+    },
   },
   created() {
     this.form = JSON.parse(JSON.stringify(this.item))
-    if (!this.form.gender) this.form.gender = 'X'
+    if (!this.form.companyCode)
+      this.form.companyCode = Number(this.companies[0].code)
+    if (!this.form.departmentCode) this.form.departmentCode = null
+    if (!this.form.roleCode) this.form.roleCode = this.roles[0].code
+    this.form.contactCode = this.$route.params.id
     if (this.form.contactNumber)
       this.phoneNumber = (
         this.form.countryExtension +
@@ -135,8 +142,9 @@ export default {
       ).trim()
   },
   mounted() {
-    document.getElementById('inputName').focus()
+    document.getElementById('inputCompany').focus()
   },
+
   methods: {
     validatePhone(ev) {
       this.checkPhoneState = ev.valid

@@ -24,6 +24,7 @@ export const actions = {
   },
 
   newJob({ commit }, job) {
+    delete job.code
     return new Promise((resolve, reject) => {
       this.$axios
         .post('/contact/job/', qs.stringify(job))
