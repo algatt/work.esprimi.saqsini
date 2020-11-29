@@ -20,20 +20,32 @@
       <template v-slot:title>Companies</template>
       <template v-slot:titleContent>
         <p class="w-5/12">Name</p>
-        <p class="w-3/12">Size</p>
-        <p class="w-3/12">Logo</p>
+        <p class="w-2/12">Size</p>
+        <p class="w-2/12">Logo</p>
+        <p class="w-full md:w-2/12">Departments</p>
       </template>
       <template v-slot:content="slotProps"
-        ><p class="w-full md:w-5/12 md:pl-1">
+        ><p class="w-6/12 md:w-5/12 md:pl-1">
           {{ slotProps.item.name }}
         </p>
-        <p class="w-full md:w-3/12 md:pl-1">{{ slotProps.item.size }}</p>
-        <p class="w-full md:w-3/12 md:pl-1">
+        <p class="w-6/12 md:w-2/12 md:pl-1">{{ slotProps.item.size }}</p>
+        <p class="w-6/12 md:w-2/12 md:pl-1">
           <img
             v-if="slotProps.item.logo"
             :src="slotProps.item.logo"
             class="w-8 h-8 rounded-full bg-cover"
           />
+        </p>
+        <p class="w-6/12 md:w-2/12 md:pl-5">
+          <nuxt-link
+            class="btn-round-primary px-2"
+            :to="{
+              name: 'companies-departments-id',
+              params: { id: slotProps.item.code },
+            }"
+            @click.stop.native
+            >0</nuxt-link
+          >
         </p>
         <p class="w-full md:w-1/12 flex justify-end">
           <span v-if="hovered === slotProps.item.code" class="flex items-center"
