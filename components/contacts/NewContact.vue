@@ -30,14 +30,14 @@
     <label for="inputDob" class="label">Birth Date</label>
     <input
       id="inputDob"
-      v-model="form.dateOfBirth"
+      v-model="form.dob"
       class="input"
       type="date"
-      @change="$v.form.dateOfBirth.$touch()"
+      @change="$v.form.dob.$touch()"
     />
-    <span v-if="!$v.form.dateOfBirth.$error">&nbsp;</span>
+    <span v-if="!$v.form.dob.$error">&nbsp;</span>
     <span v-else>
-      <span v-if="!$v.form.dateOfBirth.between" class="error"
+      <span v-if="!$v.form.dob.between" class="error"
         >Date cannot be before 1900 or in the future.</span
       ></span
     >
@@ -90,7 +90,7 @@ export default {
       displayName: {
         required,
       },
-      dateOfBirth: {
+      dob: {
         between(value) {
           if (value === '' || value === undefined) return true
           return !(moment(value) > moment() || moment(value).get('year') < 1900)

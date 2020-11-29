@@ -40,6 +40,7 @@ export const actions = {
   },
 
   newContact({ commit, dispatch, state }, contact) {
+    delete contact.code
     return new Promise((resolve, reject) => {
       this.$axios
         .post('contact/contact/', qs.stringify(contact))
