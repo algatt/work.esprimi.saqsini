@@ -1,7 +1,9 @@
 <template>
   <div class="w-11/12 mx-auto flex justify-between px-1 h-16 items-center">
     <h6 class="text-lg"><slot name="title"> </slot></h6>
-    <slot name="button"></slot>
+    <div>
+      <slot name="button"></slot>
+    </div>
   </div>
 </template>
 

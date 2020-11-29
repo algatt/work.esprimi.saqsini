@@ -6,6 +6,7 @@ const deleteCalls = {
   sectors: 'sectors/deleteSector',
   industries: 'industries/deleteIndustry',
   departments: 'departments/deleteDepartment',
+  roles: 'roles/deleteRole',
 }
 
 const newCalls = {
@@ -14,6 +15,7 @@ const newCalls = {
   sectors: 'sectors/newSector',
   industries: 'industries/newIndustry',
   departments: 'departments/newDepartment',
+  roles: 'roles/newRole',
 }
 
 const updateCalls = {
@@ -22,6 +24,7 @@ const updateCalls = {
   sectors: 'sectors/updateSector',
   industries: 'industries/updateIndustry',
   departments: 'departments/updateDepartment',
+  roles: 'roles/updateRole',
 }
 
 const getCalls = {

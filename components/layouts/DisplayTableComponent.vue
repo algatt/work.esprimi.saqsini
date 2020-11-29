@@ -4,6 +4,7 @@
     <top-header-bar v-else
       ><template v-slot:title><slot name="title"></slot></template>
       <template v-slot:button>
+        <slot name="button"></slot>
         <button class="btn-primary px-5" @click="setCurrentItem({ code: -1 })">
           New
         </button></template

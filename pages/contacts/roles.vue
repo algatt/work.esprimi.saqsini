@@ -1,42 +1,21 @@
 <template>
   <div>
     <display-table-component
-      :items="contacts"
-      which="contacts"
+      :items="roles"
+      which="roles"
       @hovered="hovered = $event"
     >
-      <template v-slot:title>Contacts</template>
-      <template v-slot:button
-        ><nuxt-link :to="{ name: 'contacts-roles' }">
-          <button class="btn-primary w-16 mr-3">Roles</button></nuxt-link
-        ></template
-      >
+      <template v-slot:title>Roles</template>
       <template v-slot:titleContent>
-        <p class="w-3/12">Name</p>
-        <p class="w-2/12">Birth Date</p>
-        <p class="w-3/12">Email</p>
-        <p class="w-1/12">Gender</p>
-        <p class="w-2/12">Phone</p>
+        <p class="w-7/12">Name</p>
+        <p class="w-4/12">Abbreviation</p>
       </template>
       <template v-slot:content="slotProps"
-        ><p class="w-full md:w-3/12 md:pl-1">
-          {{ slotProps.item.displayName }}
+        ><p class="w-full md:w-7/12 md:pl-1">
+          {{ slotProps.item.name }}
         </p>
-        <p class="w-full md:w-2/12 md:pl-1">{{ slotProps.item.dob }}</p>
-        <p class="w-full md:w-3/12 md:pl-1">
-          {{ slotProps.item.email }}
-        </p>
-        <p class="w-full md:w-1/12 md:pl-1">
-          <template v-if="slotProps.item.gender !== 'X'">{{
-            slotProps.item.gender
-          }}</template>
-        </p>
-        <p class="w-full md:w-2/12 md:pl-1">
-          <template v-if="slotProps.item.contactNumber !== 0"
-            >{{ slotProps.item.countryExtension }}
-            {{ slotProps.item.contactNumber }}</template
-          >
-        </p>
+        <p class="w-full md:w-4/12 md:pl-1">{{ slotProps.item.abbr }}</p>
+
         <p class="w-full md:w-1/12 flex justify-end">
           <span v-if="hovered === slotProps.item.code" class="flex items-center"
             ><button
@@ -53,7 +32,7 @@
     <transition name="fade">
       <edit-object-modal v-if="currentItemToBeEdited">
         <template v-slot:content>
-          <new-contact></new-contact>
+          <new-role></new-role>
         </template>
       </edit-object-modal>
     </transition>
@@ -63,11 +42,11 @@
 <script>
 import EditObjectModal from '~/components/layouts/EditObjectModal'
 import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
-import NewContact from '~/components/contacts/NewContact'
+import NewRole from '~/components/contacts/NewRole'
 export default {
-  name: 'ContactsList',
+  name: 'RolesList',
   components: {
-    NewContact,
+    NewRole,
     DisplayTableComponent,
     EditObjectModal,
   },
@@ -85,14 +64,14 @@ export default {
     currentItemToBeEdited() {
       return this.$store.state.currentItemToBeEdited
     },
-    contacts() {
-      return this.$store.getters.getItems('contacts')
+    roles() {
+      return this.$store.getters.getItems('roles')
     },
   },
   created() {
     this.$store.dispatch('setLoading', true)
     this.$store
-      .dispatch('contacts/getContacts', { limit: 100, offset: 0 })
+      .dispatch('roles/getRoles', this.$route.params.id)
       .finally(() => {
         this.$store.dispatch('setLoading', false)
       })
