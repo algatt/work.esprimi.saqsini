@@ -83,7 +83,7 @@ import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBotto
 
 export default {
   name: 'NewContact',
-  components: [EditObjectModalBottomPart],
+  components: { EditObjectModalBottomPart },
   mixins: [validationMixin],
   validations: {
     form: {

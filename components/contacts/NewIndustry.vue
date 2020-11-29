@@ -31,7 +31,7 @@ import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBotto
 
 export default {
   name: 'NewIndustry',
-  components: [EditObjectModalBottomPart],
+  components: { EditObjectModalBottomPart },
   mixins: [validationMixin],
   validations: {
     form: {
