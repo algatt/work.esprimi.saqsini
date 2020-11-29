@@ -1,9 +1,6 @@
 <template>
   <div v-if="!loading">
-    <top-info-bar
-      v-if="selectedItemsLength > 0"
-      :store-object="typeOfObject"
-    ></top-info-bar>
+    <top-info-bar v-if="selectedItemsLength > 0" :which="which"></top-info-bar>
     <top-header-bar v-else
       ><template v-slot:title><slot name="title"></slot></template>
       <template v-slot:button>
@@ -45,6 +42,10 @@ export default {
   props: {
     items: {
       type: Array,
+      required: true,
+    },
+    which: {
+      type: String,
       required: true,
     },
   },

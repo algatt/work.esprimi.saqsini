@@ -1,6 +1,10 @@
 <template>
   <div>
-    <display-table-component :items="contacts" @hovered="hovered = $event">
+    <display-table-component
+      :items="contacts"
+      which="contacts"
+      @hovered="hovered = $event"
+    >
       <template v-slot:title>Contacts</template>
       <template v-slot:titleContent>
         <p class="w-3/12">Name</p>

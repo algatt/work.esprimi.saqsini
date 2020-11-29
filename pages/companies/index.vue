@@ -14,6 +14,7 @@
     <display-table-component
       class="w-full md:w-10/12"
       :items="companies"
+      which="companies"
       @hovered="hovered = $event"
     >
       <template v-slot:title>Companies</template>
@@ -28,7 +29,11 @@
         </p>
         <p class="w-full md:w-3/12 md:pl-1">{{ slotProps.item.size }}</p>
         <p class="w-full md:w-3/12 md:pl-1">
-          {{ slotProps.item.logo }}
+          <img
+            v-if="slotProps.item.logo"
+            :src="slotProps.item.logo"
+            class="w-8 h-8 rounded-full bg-cover"
+          />
         </p>
         <p class="w-full md:w-1/12 flex justify-end">
           <span v-if="hovered === slotProps.item.code" class="flex items-center"
@@ -49,7 +54,7 @@
         @modalClosed="modalClosed"
       >
         <template v-slot:content>
-          <new-contact v-if="!objectToCreate"></new-contact>
+          <new-company v-if="!objectToCreate"></new-company>
           <new-industry
             v-else-if="objectToCreate === 'industry'"
           ></new-industry>
@@ -63,7 +68,7 @@
 <script>
 import EditObjectModal from '~/components/layouts/EditObjectModal'
 import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
-import NewContact from '~/components/contacts/NewContact'
+import NewCompany from '~/components/contacts/NewCompany'
 import SideTreeNav from '~/components/layouts/SideTreeNav'
 import NewIndustry from '~/components/contacts/NewIndustry'
 import NewSector from '~/components/contacts/NewSector'
@@ -73,7 +78,7 @@ export default {
     NewSector,
     NewIndustry,
     SideTreeNav,
-    NewContact,
+    NewCompany,
     DisplayTableComponent,
     EditObjectModal,
   },

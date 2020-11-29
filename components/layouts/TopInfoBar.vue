@@ -42,7 +42,7 @@ export default {
   name: 'BottomInfoBar',
   components: { ModalConfirm },
   props: {
-    storeObject: {
+    which: {
       type: String,
       required: true,
     },
@@ -63,7 +63,7 @@ export default {
     },
 
     deleteSelectedItems() {
-      this.$store.dispatch('deleteSelectedItems', this.storeObject)
+      this.$store.dispatch('deleteSelectedItems', this.which)
     },
   },
 }

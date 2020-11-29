@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-wrap p-4 transition duration-300 border-b border-gray-200 hover:bg-gray-100"
+    class="flex flex-wrap p-4 transition duration-300 border-b border-gray-200 hover:bg-gray-100 items-center"
     :class="existsInSelectedItems ? 'bg-gray-100' : null"
     @click="selectItem(item)"
     @mouseover="$emit('hovered', item.code)"
@@ -14,7 +14,7 @@
         :class="existsInSelectedItems ? 'visible' : 'invisible'"
       ></i>
     </p>
-    <span class="flex flex-wrap md:flex-grow w-full md:w-auto">
+    <span class="flex flex-wrap md:flex-grow w-full md:w-auto items-center">
       <slot name="content"></slot
     ></span>
   </div>
