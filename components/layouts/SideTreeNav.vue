@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col">
+  <div class="flex flex-col pl-4">
     <div class="h-16 flex items-center font-bold">Sectors and Industries</div>
     <button
       class="w-full flex items-center justify-between mb-1 p-1 font-medium hover:text-primary transition duration-300 focus:outline-none"
@@ -39,7 +39,7 @@
                 : 'fa-folder text-gray-400'
             "
           ></i
-          >{{ parentItem.name }}</span
+          >{{ truncateString(parentItem.name) }}</span
         >
         <div class="flex items-center justify-end">
           <button
@@ -76,7 +76,7 @@
                     : 'fa-folder text-gray-400'
                 "
               ></i
-              >{{ childItem.name }}</span
+              >{{ truncateString(childItem.name) }}</span
             >
             <div class="flex items-center justify-end">
               <button
@@ -161,6 +161,9 @@ export default {
     this.$store.dispatch('getItems', this.child)
   },
   methods: {
+    truncateString(str) {
+      return str.length < 15 ? str : str.substring(0, 12) + '...'
+    },
     selectParent(item) {
       this.selectedParent = item.code
       this.$emit('parentChanged', this.selectedParent)

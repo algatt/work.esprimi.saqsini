@@ -69,7 +69,7 @@
 
     <edit-object-modal-bottom-part
       :form="form"
-      which="'contacts'"
+      which="contacts"
       :is-valid="isValid"
     ></edit-object-modal-bottom-part>
   </div>
