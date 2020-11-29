@@ -14,27 +14,37 @@
       <template v-slot:titleContent>
         <p class="w-3/12">Name</p>
         <p class="w-2/12">Birth Date</p>
-        <p class="w-3/12">Email</p>
+        <p class="w-3/12">Contact</p>
         <p class="w-1/12">Gender</p>
-        <p class="w-2/12">Phone</p>
+        <p class="w-2/12">Job History</p>
       </template>
       <template v-slot:content="slotProps"
         ><p class="w-full md:w-3/12 md:pl-1">
           {{ slotProps.item.displayName }}
         </p>
         <p class="w-full md:w-2/12 md:pl-1">{{ slotProps.item.dob }}</p>
-        <p class="w-full md:w-3/12 md:pl-1">
-          {{ slotProps.item.email }}
+        <p class="w-full md:w-3/12 md:pl-1 flex flex-col">
+          <span v-if="slotProps.item.email">{{ slotProps.item.email }}</span>
+
+          <span v-if="slotProps.item.contactNumber !== 0"
+            >{{ slotProps.item.countryExtension }}
+            {{ slotProps.item.contactNumber }}</span
+          >
         </p>
         <p class="w-full md:w-1/12 md:pl-1">
           <template v-if="slotProps.item.gender !== 'X'">{{
             slotProps.item.gender
           }}</template>
         </p>
-        <p class="w-full md:w-2/12 md:pl-1">
-          <template v-if="slotProps.item.contactNumber !== 0"
-            >{{ slotProps.item.countryExtension }}
-            {{ slotProps.item.contactNumber }}</template
+        <p class="w-full md:w-2/12 md:pl-5">
+          <nuxt-link
+            class="btn-round-primary px-2"
+            :to="{
+              name: 'contacts-jobs-id',
+              params: { id: slotProps.item.code },
+            }"
+            @click.stop.native
+            >0</nuxt-link
           >
         </p>
         <p class="w-full md:w-1/12 flex justify-end">

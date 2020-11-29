@@ -25,6 +25,24 @@ export const actions = {
     })
   },
 
+  getAllDepartments({ commit }, { limit, offset }) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .get(`/contact/department?limit=${limit}&offset=${offset}`)
+        .then((response) => {
+          commit(
+            'setItems',
+            { which: 'departments', items: response.data },
+            { root: true }
+          )
+          resolve(response.data)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
   newDepartment({ commit }, department) {
     return new Promise((resolve, reject) => {
       this.$axios

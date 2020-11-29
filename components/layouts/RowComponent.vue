@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-wrap p-4 transition duration-300 border-b border-gray-200 hover:bg-gray-100 items-center"
+    class="flex flex-wrap p-4 transition duration-300 border-b border-gray-200 hover:bg-gray-100 items-center md:h-20"
     :class="existsInSelectedItems ? 'bg-gray-100' : null"
     @click="selectItem(item)"
     @mouseover="$emit('hovered', item.code)"
