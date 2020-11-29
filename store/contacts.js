@@ -55,11 +55,13 @@ export const actions = {
 
   updateContact({ commit }, contact) {
     const code = contact.code
+    const jobCount = contact.jobCount
     delete contact.code
     return new Promise((resolve, reject) => {
       this.$axios
         .put('contact/contact/' + code, qs.stringify(contact))
         .then((response) => {
+          response.data.jobCount = jobCount
           resolve(response.data)
         })
         .catch((error) => {

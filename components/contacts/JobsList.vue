@@ -2,6 +2,7 @@
   <div>
     <display-table-component
       :items="jobs"
+      :disable-new-button="disableNewButton"
       which="jobs"
       @hovered="hovered = $event"
     >
@@ -46,6 +47,27 @@
               <i class="fas fa-pencil-alt fa-fw"></i></button
           ></span>
           <span v-else>&nbsp;</span>
+        </p>
+      </template>
+
+      <template v-if="disableNewButton" v-slot:extra>
+        <p
+          v-if="companies.length === 0 && roles.length === 0"
+          class="flex w-full items-center justify-center p-4"
+        >
+          You cannot create a job entry right now. Make sure to have at least
+          one company and one role.
+        </p>
+        <p
+          v-else-if="companies.length === 0"
+          class="flex w-full items-center justify-center p-4"
+        >
+          You cannot create a job entry right now. Make sure to have at least
+          one company.
+        </p>
+        <p v-else class="flex w-full items-center justify-center p-4">
+          You cannot create a job entry right now. Make sure to have at least
+          one role.
         </p>
       </template>
     </display-table-component>
@@ -98,6 +120,9 @@ export default {
     },
     departments() {
       return this.$store.getters.getItems('departments')
+    },
+    disableNewButton() {
+      return this.companies.length === 0 || this.roles.length === 0
     },
   },
   created() {

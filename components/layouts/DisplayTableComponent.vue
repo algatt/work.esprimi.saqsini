@@ -5,7 +5,11 @@
       ><template v-slot:title><slot name="title"></slot></template>
       <template v-slot:button>
         <slot name="button"></slot>
-        <button class="btn-primary px-5" @click="setCurrentItem({ code: -1 })">
+        <button
+          class="btn-primary px-5"
+          :disabled="!!disableNewButton"
+          @click="setCurrentItem({ code: -1 })"
+        >
           New
         </button></template
       ></top-header-bar
@@ -25,6 +29,10 @@
           <slot name="content" :item="item"></slot>
         </template>
       </row-component>
+    </div>
+
+    <div class="flex flex-col w-11/12 mx-auto">
+      <slot name="extra"></slot>
     </div>
   </div>
   <spinner v-else></spinner>
@@ -48,6 +56,11 @@ export default {
     which: {
       type: String,
       required: true,
+    },
+    disableNewButton: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {

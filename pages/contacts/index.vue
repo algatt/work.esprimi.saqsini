@@ -38,13 +38,13 @@
         </p>
         <p class="w-full md:w-2/12 md:pl-5">
           <nuxt-link
-            class="btn-round-primary px-2"
+            class="btn-round-primary px-3"
             :to="{
               name: 'contacts-jobs-id',
               params: { id: slotProps.item.code },
             }"
             @click.stop.native
-            >0</nuxt-link
+            >{{ slotProps.item.jobCount }}</nuxt-link
           >
         </p>
         <p class="w-full md:w-1/12 flex justify-end">

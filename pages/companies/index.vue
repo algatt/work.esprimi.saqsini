@@ -16,6 +16,7 @@
       class="w-full md:w-10/12"
       :items="companies"
       which="companies"
+      :disable-new-button="disableNewButton"
       @hovered="hovered = $event"
     >
       <template v-slot:title>Companies</template>
@@ -25,8 +26,8 @@
         <p class="w-2/12">Logo</p>
         <p class="w-full md:w-2/12">Departments</p>
       </template>
-      <template v-slot:content="slotProps"
-        ><p class="w-6/12 md:w-5/12 md:pl-1">
+      <template v-slot:content="slotProps">
+        <p class="w-6/12 md:w-5/12 md:pl-1">
           {{ slotProps.item.name }}
         </p>
         <p class="w-6/12 md:w-2/12 md:pl-1">{{ slotProps.item.size }}</p>
@@ -59,6 +60,13 @@
           <span v-else>&nbsp;</span>
         </p>
       </template>
+
+      <template v-if="disableNewButton" v-slot:extra>
+        <p class="flex w-full items-center justify-center p-4">
+          You cannot create a company right now. Make sure to have sectors and
+          at least one industry.
+        </p>
+      </template>
     </display-table-component>
 
     <transition name="fade">
@@ -67,7 +75,11 @@
         @modalClosed="modalClosed"
       >
         <template v-slot:content>
-          <new-company v-if="!objectToCreate"></new-company>
+          <new-company
+            v-if="!objectToCreate"
+            :selected-sector-code="selectedParentCode"
+            :selected-industry-code="selectedChildCode"
+          ></new-company>
           <new-industry
             v-else-if="objectToCreate === 'industry'"
           ></new-industry>
@@ -109,6 +121,12 @@ export default {
     loading() {
       return this.$store.state.loading
     },
+    disableNewButton() {
+      return (
+        this.$store.getters.getItems('sectors').length === 0 ||
+        this.$store.getters.getItems('industries').length === 0
+      )
+    },
     currentItemToBeEdited() {
       return this.$store.state.currentItemToBeEdited
     },
@@ -132,11 +150,13 @@ export default {
   },
   created() {
     this.$store.dispatch('setLoading', true)
-    this.$store
-      .dispatch('companies/getCompanies', { limit: 100, offset: 0 })
-      .finally(() => {
-        this.$store.dispatch('setLoading', false)
-      })
+    Promise.all([
+      this.$store.dispatch('sectors/getSectors'),
+      this.$store.dispatch('industries/getIndustries'),
+      this.$store.dispatch('companies/getCompanies', { limit: 100, offset: 0 }),
+    ]).then(() => {
+      this.$store.dispatch('setLoading', false)
+    })
   },
   methods: {
     setCurrentItem(item) {

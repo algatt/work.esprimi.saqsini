@@ -84,12 +84,15 @@ export const actions = {
     if (company.logo) data.append('logo', convertImageToBlob(company.logo))
     data.append('industryCode', company.industryCode)
 
+    const departmentCount = company.departmentCount
+
     const code = company.code
     delete company.code
     return new Promise((resolve, reject) => {
       this.$axios
         .put('contact/company/' + code, data)
         .then((response) => {
+          response.data.departmentCount = departmentCount
           resolve(response.data)
         })
         .catch((error) => {

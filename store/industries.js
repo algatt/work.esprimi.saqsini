@@ -33,11 +33,13 @@ export const actions = {
 
   updateIndustry({ commit }, industry) {
     const code = industry.code
+    const companyCount = industry.companyCount
     delete industry.code
     return new Promise((resolve, reject) => {
       this.$axios
         .put('/contact/industry/' + code, qs.stringify(industry))
         .then((response) => {
+          response.data.companyCount = companyCount
           resolve(response.data)
         })
         .catch((error) => {

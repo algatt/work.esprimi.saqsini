@@ -25,10 +25,18 @@ export const actions = {
 
   newJob({ commit }, job) {
     delete job.code
+
+    const companyName = job.companyName
+    const departmentName = job.departmentName
+    const roleName = job.roleName
+
     return new Promise((resolve, reject) => {
       this.$axios
         .post('/contact/job/', qs.stringify(job))
         .then((response) => {
+          response.data.companyName = companyName
+          response.data.departmentName = departmentName
+          response.data.roleName = roleName
           resolve(response.data)
         })
         .catch((error) => {
@@ -40,6 +48,10 @@ export const actions = {
   async updateJob({ commit }, job) {
     const code = job.code
     delete job.code
+
+    const companyName = job.companyName
+    const departmentName = job.departmentName
+    const roleName = job.roleName
 
     if (job.isActive)
       await this.$axios.patch(
@@ -66,6 +78,9 @@ export const actions = {
       this.$axios
         .put('/contact/job/' + code, qs.stringify(job))
         .then((response) => {
+          response.data.companyName = companyName
+          response.data.departmentName = departmentName
+          response.data.roleName = roleName
           resolve(response.data)
         })
         .catch((error) => {

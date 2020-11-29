@@ -5,12 +5,16 @@
       id="inputCompany"
       v-model="form.companyCode"
       class="input select"
-      @change="form.departmentCode = null"
+      @change="
+        updateDepartments()
+        form.departmentCode = null
+      "
     >
       <option
         v-for="company in companies"
         :key="company.code"
         :value="company.code"
+        @click="form.companyName = company.name"
       >
         {{ company.name }}
       </option>
@@ -27,6 +31,7 @@
         v-for="department in departments"
         :key="department.code"
         :value="department.code"
+        @click="form.departmentName = department.name"
       >
         {{ department.name }}
       </option>
@@ -35,7 +40,12 @@
 
     <label for="inputRole" class="label-required">Role</label>
     <select id="inputRole" v-model="form.roleCode" class="input select">
-      <option v-for="role in roles" :key="role.code" :value="role.code">
+      <option
+        v-for="role in roles"
+        :key="role.code"
+        :value="role.code"
+        @click="form.roleName = role.name"
+      >
         {{ role.name }}
       </option>
     </select>
@@ -106,6 +116,7 @@ export default {
       form: null,
       phoneNumber: '',
       checkPhoneState: true,
+      departments: '',
     }
   },
   validations: {
@@ -132,13 +143,8 @@ export default {
     companies() {
       return this.$store.getters.getSortedItems('companies')
     },
-    departments() {
-      let x = this.$store.getters.getSortedItems('departments')
-      x = x.filter((el) => {
-        return el.companyCode === this.form.companyCode
-      })
-      x.unshift({ code: null, name: 'No Department' })
-      return x
+    depts() {
+      return this.$store.getters.getSortedItems('departments')
     },
     roles() {
       return this.$store.getters.getSortedItems('roles')
@@ -146,10 +152,16 @@ export default {
   },
   created() {
     this.form = JSON.parse(JSON.stringify(this.item))
-    if (!this.form.companyCode)
+
+    if (!this.form.companyCode) {
       this.form.companyCode = Number(this.companies[0].code)
+      this.form.companyName = this.companies[0].name
+    }
     if (!this.form.departmentCode) this.form.departmentCode = null
-    if (!this.form.roleCode) this.form.roleCode = this.roles[0].code
+    if (!this.form.roleCode) {
+      this.form.roleCode = this.roles[0].code
+      this.form.roleName = this.roles[0].name
+    }
     this.form.contactCode = this.$route.params.id
     if (this.form.contactNumber)
       this.phoneNumber = (
@@ -157,11 +169,14 @@ export default {
         ' ' +
         this.form.contactNumber
       ).trim()
+
     if (this.form.flags)
       this.form.isActive = this.form.flags.includes('ONGOING')
+    else this.form.isActive = true
   },
   mounted() {
     document.getElementById('inputCompany').focus()
+    this.updateDepartments()
   },
 
   methods: {
@@ -178,6 +193,14 @@ export default {
           .trim()
           .replace(' ', '')
       }
+    },
+    updateDepartments() {
+      let x = JSON.parse(JSON.stringify(this.depts))
+      x = x.filter((el) => {
+        return el.companyCode === this.form.companyCode
+      })
+      x.unshift({ code: null, name: 'No Department' })
+      this.departments = x
     },
   },
 }

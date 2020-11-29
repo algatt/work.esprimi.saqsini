@@ -114,6 +114,18 @@ export default {
       },
     },
   },
+  props: {
+    selectedSectorCode: {
+      type: Number,
+      required: false,
+      default: -1,
+    },
+    selectedIndustryCode: {
+      type: Number,
+      required: false,
+      default: -1,
+    },
+  },
   data() {
     return {
       form: null,
@@ -161,18 +173,26 @@ export default {
   },
   created() {
     this.form = JSON.parse(JSON.stringify(this.item))
+
     if (this.form.industryCode) {
       const getIndustry = this.industries.find((el) => {
         return el.code === this.form.industryCode
       })
       this.sectorCode = getIndustry.sectorCode
-    } else {
+    } else if (this.selectedIndustryCode) {
+      this.sectorCode = this.selectedSectorCode
+      this.form.industryCode = this.selectedIndustryCode
+    } else if (
+      Number(this.selectedSectorCode) === -1 ||
+      (Number(this.selectedSectorCode) !== -1 &&
+        this.selectedIndustryCode === null)
+    ) {
       this.sectorCode = this.sectors[0].code
       this.form.industryCode = this.industries[0].code
     }
   },
   mounted() {
-    // document.getElementById('inputName').focus()
+    document.getElementById('inputName').focus()
   },
   methods: {
     activateInput() {
