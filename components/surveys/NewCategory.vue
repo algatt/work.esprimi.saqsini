@@ -1,10 +1,10 @@
 <template>
   <div class="flex flex-col w-full md:w-10/12">
-    <label for="inputName" class="label-required">Sector</label>
+    <label for="inputName" class="label-required">Category</label>
     <input
       id="inputName"
       v-model="form.name"
-      placeholder="Enter sector name"
+      placeholder="Enter category name"
       class="input"
       @change="$v.form.name.$touch()"
     />
@@ -14,31 +14,13 @@
         >The name is required.</span
       >
       <span v-else-if="!$v.form.name.uniqueNames" class="error"
-        >This sector already exists.</span
-      ></span
-    >
-
-    <label for="inputAbbr" class="label-required">Abbreviation</label>
-    <input
-      id="inputAbbr"
-      v-model="form.abbr"
-      placeholder="Enter abbreviation"
-      class="input"
-      @change="$v.form.abbr.$touch()"
-    />
-    <span v-if="!$v.form.abbr.$error">&nbsp;</span>
-    <span v-else>
-      <span v-if="!$v.form.abbr.required" class="error"
-        >The abbreviation is required.</span
-      >
-      <span v-else-if="!$v.form.abbr.uniqueAbbr" class="error"
-        >This abbreviation already exists.</span
+        >This category already exists.</span
       ></span
     >
 
     <edit-object-modal-bottom-part
       :form="form"
-      which="sectors"
+      which="categories"
       :is-valid="isValid"
     ></edit-object-modal-bottom-part>
   </div>
@@ -51,7 +33,7 @@ import { required } from 'vuelidate/lib/validators'
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
 
 export default {
-  name: 'NewSector',
+  name: 'NewCategory',
   components: { EditObjectModalBottomPart },
   mixins: [validationMixin],
   validations: {
@@ -60,12 +42,6 @@ export default {
         required,
         uniqueNames(value) {
           return !this.uniqueNames.includes(value.trim().toLowerCase())
-        },
-      },
-      abbr: {
-        required,
-        uniqueAbbr(value) {
-          return !this.uniqueAbbr.includes(value.trim().toLowerCase())
         },
       },
     },
@@ -82,17 +58,12 @@ export default {
     item() {
       return this.$store.state.currentItemToBeEdited
     },
-    sectors() {
-      return this.$store.getters.getItems('sectors')
+    categories() {
+      return this.$store.getters.getItems('categories')
     },
     uniqueNames() {
-      return this.sectors.map((el) => {
+      return this.categories.map((el) => {
         return el.code !== this.form.code ? el.name.toLowerCase() : ''
-      })
-    },
-    uniqueAbbr() {
-      return this.sectors.map((el) => {
-        return el.code !== this.form.code ? el.abbr.toLowerCase() : ''
       })
     },
   },

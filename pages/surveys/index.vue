@@ -11,7 +11,7 @@
         @newParent="newParent"
         @newChild="newChild"
       >
-        <template v-slot:title>Categories</template>
+        <template v-slot:title>Categories </template>
         <template v-slot:newText>New Category</template>
       </side-tree-nav>
     </div>
@@ -91,24 +91,26 @@
     <!--      </template>-->
     <!--    </display-table-component>-->
 
-    <!--    <transition name="fade">-->
-    <!--      <edit-object-modal-->
-    <!--          v-if="currentItemToBeEdited"-->
-    <!--          @modalClosed="modalClosed"-->
-    <!--      >-->
-    <!--        <template v-slot:content>-->
-    <!--          <new-company-->
-    <!--              v-if="!objectToCreate"-->
-    <!--              :selected-sector-code="selectedParentCode"-->
-    <!--              :selected-industry-code="selectedChildCode"-->
-    <!--          ></new-company>-->
-    <!--          <new-industry-->
-    <!--              v-else-if="objectToCreate === 'industry'"-->
-    <!--          ></new-industry>-->
-    <!--          <new-sector v-else-if="objectToCreate === 'sector'"></new-sector>-->
-    <!--        </template>-->
-    <!--      </edit-object-modal>-->
-    <!--    </transition>-->
+    <transition name="fade">
+      <edit-object-modal
+        v-if="currentItemToBeEdited"
+        @modalClosed="modalClosed"
+      >
+        <template v-slot:content>
+          <new-company
+            v-if="!objectToCreate"
+            :selected-sector-code="selectedParentCode"
+            :selected-industry-code="selectedChildCode"
+          ></new-company>
+          <new-category
+            v-else-if="objectToCreate === 'category'"
+          ></new-category>
+          <new-subcategory
+            v-else-if="objectToCreate === 'subcategory'"
+          ></new-subcategory>
+        </template>
+      </edit-object-modal>
+    </transition>
   </div>
 </template>
 
@@ -116,10 +118,14 @@
 // import EditObjectModal from '~/components/layouts/EditObjectModal'
 // import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
 import SideTreeNav from '~/components/layouts/SideTreeNav'
+import NewCategory from '~/components/surveys/NewCategory'
+import NewSubcategory from '~/components/surveys/NewSubcategory'
 
 export default {
   name: 'CompaniesList',
   components: {
+    NewSubcategory,
+    NewCategory,
     SideTreeNav,
 
     //  DisplayTableComponent,

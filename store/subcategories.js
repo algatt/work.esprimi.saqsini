@@ -6,6 +6,7 @@ export const state = () => ({
 
 export const actions = {
   newSubcategory({ commit, dispatch }, subcategory) {
+    delete subcategory.code
     return new Promise((resolve, reject) => {
       this.$axios
         .post('/builder/subCategory/', qs.stringify(subcategory))

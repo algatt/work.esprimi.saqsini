@@ -91,7 +91,7 @@ export default {
     },
     uniqueAbbr() {
       return this.roles.map((el) => {
-        return el.code !== this.form.code ? el.name.toLowerCase() : ''
+        return el.code !== this.form.code ? el.abbr.toLowerCase() : ''
       })
     },
   },
