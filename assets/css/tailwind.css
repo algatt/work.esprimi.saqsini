@@ -3,126 +3,125 @@
 @tailwind utilities;
 
 :root {
-    --primary-light: rgb(147, 197, 253);
-    --primary-lighter: rgb(96, 165, 250);
-    --primary: rgb(37, 99, 235);
-    --primary-darker: rgb(29, 78, 216);
-    --primary-dark: rgb(30, 64, 175);
+  --primary-light: rgb(147, 197, 253);
+  --primary-lighter: rgb(96, 165, 250);
+  --primary: rgb(37, 99, 235);
+  --primary-darker: rgb(29, 78, 216);
+  --primary-dark: rgb(30, 64, 175);
 }
 
-
-h1, h2, h3, h4, h5, h6 {
-    font-family: 'Poppins', sans-serif;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Poppins', sans-serif;
 }
 
 body {
-    font-family: 'Quicksand', sans-serif;
-    @apply font-medium;
-    font-size: 0.9em;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 500;
+  font-size: 0.85em;
 }
 
 .btn-primary {
-   @apply bg-primary text-white py-1 rounded-sm hover:bg-primary-darker transition duration-300 disabled:opacity-50 disabled:bg-primary focus:ring-2 ring-primary-darker  ring-offset-2 focus:outline-none;
+  @apply bg-primary text-white py-1 rounded-sm hover:bg-primary-darker transition duration-300 disabled:opacity-50 disabled:bg-primary focus:ring-2 ring-primary-darker  ring-offset-2 focus:outline-none;
 }
 
 .btn-danger {
-    @apply bg-red-500 text-white py-1 rounded-sm hover:bg-red-600 transition duration-300 disabled:opacity-50 disabled:bg-red-500 focus:ring-2 ring-red-600  ring-offset-2 focus:outline-none;
+  @apply bg-red-500 text-white py-1 rounded-sm hover:bg-red-600 transition duration-300 disabled:opacity-50 disabled:bg-red-500 focus:ring-2 ring-red-600  ring-offset-2 focus:outline-none;
 }
 
 .btn-round-primary {
-    @apply bg-primary h-7 w-7 rounded-full text-white hover:bg-primary-darker focus:ring-2 ring-primary-darker transition duration-300 shadow ring-offset-2 focus:outline-none;
+  @apply bg-primary h-7 w-7 rounded-full text-white hover:bg-primary-darker focus:ring-2 ring-primary-darker transition duration-300 shadow ring-offset-2 focus:outline-none;
 }
 
 .btn-round-danger {
-    @apply bg-red-600 h-7 w-7 rounded-full text-white hover:bg-red-700 focus:ring-2 transition duration-300 shadow ring-red-700 ring-offset-2 focus:outline-none;
+  @apply bg-red-600 h-7 w-7 rounded-full text-white hover:bg-red-700 focus:ring-2 transition duration-300 shadow ring-red-700 ring-offset-2 focus:outline-none;
 }
 
-.btn-round-primary:disabled, .btn-round-danger:disabled {
-    @apply bg-gray-400 h-7 w-7 rounded-full text-white;
+.btn-round-primary:disabled,
+.btn-round-danger:disabled {
+  @apply bg-gray-400 h-7 w-7 rounded-full text-white;
 }
 
-
-.badge-gray{
-  @apply  mx-1 bg-gray-200 rounded text-sm px-1.5 py-0.5 border border-gray-300;
+.badge-gray {
+  @apply mx-1 bg-gray-200 rounded text-sm px-1.5 py-0.5 border border-gray-300;
 }
-
-
 
 .input {
-    @apply border-2 border-gray-300 rounded-sm px-3 py-2 focus:bg-gray-100 focus:border-primary transition duration-500 ring-offset-2 focus:outline-none;
+  @apply border-2 border-gray-300 rounded-sm px-3 py-2 focus:bg-gray-100 focus:border-primary transition duration-500 ring-offset-2 focus:outline-none;
 }
 
 .select {
-    @apply  appearance-none;
-    background-image: url('/dropdown.svg');
-    background-repeat: no-repeat;
-    background-position: right 0.5em top 50%;
-    background-size: 1em auto;
+  @apply appearance-none;
+  background-image: url('/dropdown.svg');
+  background-repeat: no-repeat;
+  background-position: right 0.5em top 50%;
+  background-size: 1em auto;
 }
 
 .label {
-    @apply py-3;
+  @apply py-3;
 }
 
 .label-required {
-    @apply py-3;
+  @apply py-3;
 }
 
 .label-required::after {
-    content: '*';
-    @apply ml-1 text-red-500 font-semibold;
+  content: '*';
+  @apply ml-1 text-red-500 font-semibold;
 }
 
 .switch {
-    @apply cursor-pointer;
-    position: relative;
-    display: inline-block;
-    width: 40px;
-    height: 20px;
-    background-color: #eee;
-    border-radius: 20px;
+  @apply cursor-pointer;
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+  background-color: #eee;
+  border-radius: 20px;
 }
 .switch::after {
-    content: '';
-    position: absolute;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background-color: var(--primary);
-    top: 1px;
-    left: 1px;
-    transition: all 0.3s;
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: var(--primary);
+  top: 1px;
+  left: 1px;
+  transition: all 0.3s;
 }
 .checkbox:checked + .switch::after {
-    left: 20px;
+  left: 20px;
 }
-
 
 .checkbox:checked + .switch {
 }
 
 .checkbox {
-    display: none;
+  display: none;
 }
 
 .checkbox:disabled + .switch::after {
-    @apply bg-gray-400;
+  @apply bg-gray-400;
 }
 
-
 .error {
-    @apply text-xs text-red-500 py-2;
+  @apply text-xs text-red-500 py-2;
 }
 
 .btn-link {
-    @apply text-gray-500 hover:text-primary transition duration-300 focus:outline-none;
+  @apply text-gray-500 hover:text-primary transition duration-300 focus:outline-none;
 }
-
 
 .fade-enter-active,
 .fade-leave-active {
-    transition: opacity 0.5s;
+  transition: opacity 0.5s;
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-    opacity: 0;
+  opacity: 0;
 }

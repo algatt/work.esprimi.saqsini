@@ -15,6 +15,7 @@
         <template v-slot:newText>New Category</template>
       </side-tree-nav>
     </div>
+
     <!--    <display-table-component-->
     <!--        class="w-full md:w-10/12"-->
     <!--        :items="companies"-->

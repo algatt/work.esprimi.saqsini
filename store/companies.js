@@ -43,7 +43,8 @@ export const actions = {
     return new Promise((resolve, reject) => {
       this.$axios
         .delete('/contact/company/' + code)
-        .then(() => {
+        .then(async () => {
+          await dispatch('sectors/getSectors', null, { root: true })
           resolve()
         })
         .catch((error) => {
@@ -67,7 +68,8 @@ export const actions = {
             'Content-Type': 'multipart/form-data',
           },
         })
-        .then((response) => {
+        .then(async (response) => {
+          await dispatch('sectors/getSectors', null, { root: true })
           resolve(response.data)
         })
         .catch((error) => {

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-wrap absolute bottom-0 left-0 w-full justify-end px-5 pb-3 h-16 justify-between items-center"
+    class="flex flex-wrap absolute bottom-0 left-0 w-full px-5 pb-3 h-16 justify-between items-center"
   >
     <div class="flex flex-wrap items-center w-6/12">
       <button class="btn-round-primary mr-2" @click="cancelCurrentItem">
@@ -45,7 +45,18 @@ export default {
       type: Boolean,
     },
   },
+  mounted() {
+    document.addEventListener('keydown', this.mapEscape)
+  },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.mapEscape)
+  },
   methods: {
+    mapEscape(key) {
+      if (key.key === 'Escape') {
+        this.cancelCurrentItem()
+      }
+    },
     cancelCurrentItem() {
       this.$store.dispatch('setCurrentItemToBeEdited', null)
     },

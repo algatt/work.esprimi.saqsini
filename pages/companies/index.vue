@@ -2,6 +2,7 @@
   <div class="flex flex-wrap">
     <div class="w-full md:w-2/12">
       <side-tree-nav
+        v-if="!loading"
         :parents="sectors"
         :children="industries"
         parent-code-name="sectorCode"
