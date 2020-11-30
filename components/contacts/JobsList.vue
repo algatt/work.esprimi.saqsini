@@ -33,12 +33,12 @@
         <p class="w-full md:w-3/12 md:pl-1">
           {{ slotProps.item.roleName }}
         </p>
-        <p class="w-full md:w-2/12 md:pl-1">
+        <p class="w-11/12 md:w-2/12 md:pl-1">
           <span v-if="slotProps.item.flags.includes('ONGOING')">Active</span>
           <span v-else>Stopped</span>
         </p>
 
-        <p class="w-full md:w-1/12 flex justify-end">
+        <p class="w-1/12 flex justify-end">
           <span v-if="hovered === slotProps.item.code" class="flex items-center"
             ><button
               class="btn-link"

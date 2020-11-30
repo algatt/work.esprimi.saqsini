@@ -1,13 +1,13 @@
 <template>
   <div
-    class="flex flex-wrap p-4 transition duration-300 border-b border-gray-200 hover:bg-gray-100 items-center md:h-20"
-    :class="existsInSelectedItems ? 'bg-gray-100' : null"
+    class="flex flex-wrap px-4 py-3 md:py-2 transition duration-300 border-b border-gray-200 hover:bg-gray-100 items-center"
+    :class="existsInSelectedItems ? 'bg-gray-100 ' + heightOfRow : heightOfRow"
     @click="selectItem(item)"
     @mouseover="$emit('hovered', item.code)"
     @mouseleave="$emit('hovered', null)"
   >
     <p
-      class="w-full md:w-8 flex justify-end md:justify-center text-primary items-center"
+      class="hidden md:flex w-full md:w-8 justify-end md:justify-center text-primary items-center"
     >
       <i
         class="fas fa-check-circle"
@@ -27,6 +27,11 @@ export default {
     item: {
       required: true,
       type: Object,
+    },
+    heightOfRow: {
+      required: false,
+      type: String,
+      default: 'h-auto md:h-14',
     },
   },
   computed: {

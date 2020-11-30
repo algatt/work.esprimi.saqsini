@@ -7,16 +7,15 @@
     >
       <template v-slot:title>Roles</template>
       <template v-slot:titleContent>
-        <p class="w-7/12">Name</p>
-        <p class="w-4/12">Abbreviation</p>
+        <p class="w-full">Role</p>
       </template>
       <template v-slot:content="slotProps"
-        ><p class="w-full md:w-7/12 md:pl-1">
+        ><p class="w-11/12 md:pl-1">
           {{ slotProps.item.name }}
+          <span class="badge-gray">{{ slotProps.item.abbr }}</span>
         </p>
-        <p class="w-full md:w-4/12 md:pl-1">{{ slotProps.item.abbr }}</p>
 
-        <p class="w-full md:w-1/12 flex justify-end">
+        <p class="w-1/12 flex justify-end">
           <span v-if="hovered === slotProps.item.code" class="flex items-center"
             ><button
               class="btn-link"

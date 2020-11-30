@@ -23,6 +23,7 @@
         v-for="item in items"
         :key="item.code"
         :item="item"
+        :height-of-row="heightOfRow"
         @hovered="$emit('hovered', $event)"
       >
         <template v-slot:content>
@@ -61,6 +62,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    heightOfRow: {
+      required: false,
+      type: String,
+      default: 'h-auto md:h-14',
     },
   },
   computed: {

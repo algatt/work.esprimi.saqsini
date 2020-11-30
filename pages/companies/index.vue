@@ -21,24 +21,40 @@
     >
       <template v-slot:title>Companies</template>
       <template v-slot:titleContent>
-        <p class="w-5/12">Name</p>
+        <p class="w-7/12">Name</p>
         <p class="w-2/12">Size</p>
-        <p class="w-2/12">Logo</p>
         <p class="w-full md:w-2/12">Departments</p>
       </template>
       <template v-slot:content="slotProps">
-        <p class="w-6/12 md:w-5/12 md:pl-1">
-          {{ slotProps.item.name }}
+        <p
+          class="w-full md:w-7/12 md:pl-1 flex items-center justify-between md:justify-start"
+        >
+          <span class="hidden md:flex">
+            <img
+              v-if="slotProps.item.logo"
+              :src="slotProps.item.logo"
+              class="w-8 h-8 rounded-full bg-cover mr-2"
+            />
+            <span v-else class="w-8 h-8 mr-2">&nbsp;</span>
+          </span>
+          <span> {{ slotProps.item.name }}</span>
+          <span class="visible md:hidden">
+            <img
+              v-if="slotProps.item.logo"
+              :src="slotProps.item.logo"
+              class="w-8 h-8 rounded-full bg-cover mr-2"
+            />
+          </span>
         </p>
-        <p class="w-6/12 md:w-2/12 md:pl-1">{{ slotProps.item.size }}</p>
-        <p class="w-6/12 md:w-2/12 md:pl-1">
-          <img
-            v-if="slotProps.item.logo"
-            :src="slotProps.item.logo"
-            class="w-8 h-8 rounded-full bg-cover"
-          />
+
+        <p class="w-full md:w-2/12 md:pl-1 pl-1 my-1 md:mt-0">
+          <template v-if="slotProps.item.size !== 0">
+            <span class="block md:hidden">Company Size </span
+            ><span>{{ slotProps.item.size }}</span>
+          </template>
         </p>
-        <p class="w-6/12 md:w-2/12 md:pl-5">
+
+        <p class="w-11/12 md:w-2/12 md:pl-5 my-1 md:my-0">
           <nuxt-link
             class="btn-round-primary px-3"
             :to="{
@@ -46,10 +62,13 @@
               params: { id: slotProps.item.code },
             }"
             @click.stop.native
-            >{{ slotProps.item.departmentCount }}</nuxt-link
+            >{{ slotProps.item.departmentCount
+            }}<span class="visible md:hidden"
+              >&nbsp; departments
+            </span></nuxt-link
           >
         </p>
-        <p class="w-full md:w-1/12 flex justify-end">
+        <p class="w-1/12 flex justify-end">
           <span v-if="hovered === slotProps.item.code" class="flex items-center"
             ><button
               class="btn-link"
