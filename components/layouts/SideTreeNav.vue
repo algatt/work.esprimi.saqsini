@@ -1,6 +1,8 @@
 <template>
   <div class="flex flex-col pl-4">
-    <div class="h-16 flex items-center font-bold">Sectors and Industries</div>
+    <div class="h-16 flex items-center font-bold">
+      <slot name="title"></slot>
+    </div>
     <button
       class="w-full flex items-center justify-between mb-1 p-1 font-medium hover:text-primary transition duration-300 focus:outline-none"
       :class="selectedParent === -1 ? 'text-primary' : 'text-gray-600'"
@@ -121,9 +123,9 @@
       @click="$emit('newParent', { code: -1 })"
     >
       <span
-        ><i class="fas fa-fw fa-folder-plus mr-1 text-gray-400"></i>New
-        Sector</span
-      >
+        ><i class="fas fa-fw fa-folder-plus mr-1 text-gray-400"></i
+        ><slot name="newText"></slot
+      ></span>
     </button>
   </div>
 </template>
@@ -132,12 +134,12 @@
 export default {
   name: 'SideTreeNav',
   props: {
-    parent: {
-      type: String,
+    parents: {
+      type: Array,
       required: true,
     },
-    child: {
-      type: String,
+    children: {
+      type: Array,
       required: true,
     },
     parentCodeName: {
@@ -156,18 +158,7 @@ export default {
       selectedChild: null,
     }
   },
-  computed: {
-    parents() {
-      return this.$store.getters.getItems(this.parent)
-    },
-    children() {
-      return this.$store.getters.getItems(this.child)
-    },
-  },
-  created() {
-    this.$store.dispatch('getItems', this.parent)
-    this.$store.dispatch('getItems', this.child)
-  },
+
   methods: {
     truncateString(str) {
       return str.length < 15 ? str : str.substring(0, 12) + '...'

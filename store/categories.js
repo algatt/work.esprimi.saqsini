@@ -5,14 +5,25 @@ export const state = () => ({
 })
 
 export const actions = {
-  getSectors({ commit }) {
+  getCategories({ commit }) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .get(`/contact/sector/`)
+        .get(`/builder/category/`)
         .then((response) => {
           commit(
             'setItems',
-            { which: 'sectors', items: response.data },
+            {
+              which: 'categories',
+              items: response.data.categories,
+            },
+            { root: true }
+          )
+          commit(
+            'setItems',
+            {
+              which: 'subcategories',
+              items: response.data.subcategories,
+            },
             { root: true }
           )
           resolve(response.data)
@@ -23,10 +34,10 @@ export const actions = {
     })
   },
 
-  newSector({ commit }, sector) {
+  newCategory({ commit }, category) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .post('/contact/sector/', qs.stringify(sector))
+        .post('/builder/category/', qs.stringify(category))
         .then((response) => {
           resolve(response.data)
         })
@@ -36,15 +47,15 @@ export const actions = {
     })
   },
 
-  updateSector({ commit }, sector) {
-    const code = sector.code
-    const companyCount = sector.companyCount
-    delete sector.code
+  updateCategory({ commit }, category) {
+    const code = category.code
+    const surveyCount = category.surveyCount
+    delete category.code
     return new Promise((resolve, reject) => {
       this.$axios
-        .put('/contact/sector/' + code, qs.stringify(sector))
+        .put('/builder/category/' + code, qs.stringify(category))
         .then((response) => {
-          response.data.companyCount = companyCount
+          response.data.surveyCount = surveyCount
           resolve(response.data)
         })
         .catch((error) => {
@@ -53,10 +64,10 @@ export const actions = {
     })
   },
 
-  deleteSector({ state, commit, dispatch }, code) {
+  deleteCategory({ state, commit, dispatch }, code) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .delete('/contact/sector/' + code)
+        .delete('/builder/category/' + code)
         .then(() => {
           resolve()
         })

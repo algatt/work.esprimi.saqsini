@@ -8,6 +8,8 @@ const deleteCalls = {
   departments: 'departments/deleteDepartment',
   roles: 'roles/deleteRole',
   jobs: 'jobs/deleteJob',
+  categories: 'categories/deleteCategory',
+  subcategories: 'subcategories/deleteSubcategory',
 }
 
 const newCalls = {
@@ -18,6 +20,8 @@ const newCalls = {
   departments: 'departments/newDepartment',
   roles: 'roles/newRole',
   jobs: 'jobs/newJob',
+  categories: 'categories/newCategory',
+  subcategories: 'subcategories/newSubcategory',
 }
 
 const updateCalls = {
@@ -28,11 +32,8 @@ const updateCalls = {
   departments: 'departments/updateDepartment',
   roles: 'roles/updateRole',
   jobs: 'jobs/updateJob',
-}
-
-const getCalls = {
-  sectors: 'sectors/getSectors',
-  industries: 'industries/getIndustries',
+  categories: 'categories/updateCategory',
+  subcategories: 'subcategories/updateSubcategory',
 }
 
 export const state = () => ({
@@ -126,11 +127,6 @@ export const actions = {
   deleteItem({ commit, dispatch }, { which, code }) {
     dispatch(deleteCalls[which], code).then(() => {
       commit('deleteItem', { which, code })
-    })
-  },
-  getItems({ commit, dispatch }, which) {
-    dispatch(getCalls[which]).then((response) => {
-      commit('setItems', { which, items: response })
     })
   },
 

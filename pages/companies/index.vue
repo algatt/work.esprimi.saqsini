@@ -2,15 +2,18 @@
   <div class="flex flex-wrap">
     <div class="w-full md:w-2/12">
       <side-tree-nav
-        parent="sectors"
-        child="industries"
+        :parents="sectors"
+        :children="industries"
         parent-code-name="sectorCode"
         count-name="companyCount"
         @parentChanged="parentChanged"
         @childChanged="childChanged"
         @newParent="newParent"
         @newChild="newChild"
-      ></side-tree-nav>
+      >
+        <template v-slot:title>Sectors and Industries</template>
+        <template v-slot:newText>New Sector</template>
+      </side-tree-nav>
     </div>
     <display-table-component
       class="w-full md:w-10/12"
@@ -140,11 +143,14 @@ export default {
     loading() {
       return this.$store.state.loading
     },
+    sectors() {
+      return this.$store.getters.getItems('sectors')
+    },
+    industries() {
+      return this.$store.getters.getItems('industries')
+    },
     disableNewButton() {
-      return (
-        this.$store.getters.getItems('sectors').length === 0 ||
-        this.$store.getters.getItems('industries').length === 0
-      )
+      return this.sectors.length === 0 || this.industries.length === 0
     },
     currentItemToBeEdited() {
       return this.$store.state.currentItemToBeEdited

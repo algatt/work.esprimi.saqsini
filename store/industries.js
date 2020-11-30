@@ -5,11 +5,16 @@ export const state = () => ({
 })
 
 export const actions = {
-  getIndustries() {
+  getIndustries({ commit }) {
     return new Promise((resolve, reject) => {
       this.$axios
         .get(`/contact/industry/`)
         .then((response) => {
+          commit(
+            'setItems',
+            { which: 'industries', items: response.data },
+            { root: true }
+          )
           resolve(response.data)
         })
         .catch((error) => {
