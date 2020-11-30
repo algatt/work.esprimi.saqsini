@@ -49,7 +49,7 @@
       </div>
     </div>
     <div
-      class="flex md:hidden w-full bg-primary justify-between py-1 px-2 relative"
+      class="flex md:hidden w-full bg-primary justify-between py-3 px-2 relative"
     >
       <h5>Saqsini</h5>
       <button
