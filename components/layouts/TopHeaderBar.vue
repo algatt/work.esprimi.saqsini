@@ -1,26 +1,29 @@
 <template>
   <div
-    class="w-11/12 mx-auto flex flex-wrap justify-between px-3 h-16 items-center mb-3 md:mb-0"
+    class="w-full flex flex-wrap justify-between items-center h-auto md:h-10 mb-3"
   >
-    <h6 class="text-lg w-full md:w-8/12 mb-1 md:mb-0">
+    <h6 class="w-full md:w-auto text-lg">
       <slot name="title"> </slot>
     </h6>
     <div
-      v-if="selectedItems === 0"
-      class="w-full md:w-4/12 flex justify-start md:justify-end"
+      class="flex justify-start w-full md:w-auto md:justify-end pt-2 md:pt-0 items-center"
     >
-      <slot name="button"></slot>
-    </div>
-    <div v-else>
-      <button class="btn-round-primary mr-2" @click="emptySelectedItems">
-        <i class="fas fa-times fa-fw"></i>
-      </button>
-      <button class="btn-round-danger mr-2" @click="showModal = true">
-        <i class="far fa-trash-alt fa-fw"></i>
-      </button>
-      <span v-if="selectedItems === 1">{{ selectedItems }} item selected</span>
-      <span v-else-if="selectedItems > 1"
-        >{{ selectedItems }} items selected</span
+      <template v-if="selectedItems === 0">
+        <slot name="button"></slot
+      ></template>
+      <template v-else
+        ><button class="btn-round-primary mr-2" @click="emptySelectedItems">
+          <i class="fas fa-times fa-fw"></i>
+        </button>
+        <button class="btn-round-danger mr-2" @click="showModal = true">
+          <i class="far fa-trash-alt fa-fw"></i>
+        </button>
+        <span v-if="selectedItems === 1"
+          >{{ selectedItems }} item selected</span
+        >
+        <span v-else-if="selectedItems > 1"
+          >{{ selectedItems }} items selected</span
+        ></template
       >
     </div>
 

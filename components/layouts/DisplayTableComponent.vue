@@ -15,18 +15,18 @@
     >
 
     <div class="flex w-full flex-wrap">
-      <div :class="$slots.sideNav ? 'w-11/12 mx-auto md:w-2/12' : 'hidden'">
+      <div :class="$slots.sideNav ? 'w-full md:mx-auto md:w-2/12' : 'hidden'">
         <slot name="sideNav"></slot>
       </div>
 
       <div
-        class="flex flex-col px-3"
-        :class="
-          $slots.sideNav ? 'w-11/12 md:w-10/12 mx-auto' : 'w-11/12 mx-auto'
-        "
+        class="flex flex-col pl-0 md:pl-3"
+        :class="$slots.sideNav ? 'w-full md:w-10/12 mx-auto' : 'w-full mx-auto'"
       >
         <top-title-bar>
           <template v-slot:content> <slot name="titleContent"></slot></template
+          ><template v-slot:contentSmall
+            ><slot name="titleContentSmall"></slot></template
         ></top-title-bar>
         <row-component
           v-for="item in items"

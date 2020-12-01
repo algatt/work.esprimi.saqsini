@@ -25,25 +25,41 @@
       <template v-slot:titleContent>
         <p class="w-4/12">Name</p>
         <p class="w-4/12">Date</p>
-        <p class="w-2/12">Responses</p>
-        <p class="w-2/12">Questions</p>
+        <p class="w-2/12 text-center">Responses</p>
+        <p class="w-2/12 text-center">Questions</p>
       </template>
+      <template v-slot:titleContentSmall>Surveys</template>
+
       <template v-slot:content="slotProps">
         <p
-          class="w-full md:w-4/12 md:pl-1 flex items-center justify-between md:justify-start"
+          class="w-8/12 md:w-4/12 flex items-center justify-between md:justify-start mb-1 md:mb-0"
         >
           {{ slotProps.item.name }}
         </p>
 
-        <p class="w-full md:w-4/12 md:pl-1 pl-1 my-1 md:mt-0">
+        <p
+          class="w-4/12 md:w-4/12 flex justify-end md:justify-start mb-1 md:mb-0"
+        >
           {{ slotProps.item.referenceDate }}
         </p>
 
-        <p class="w-11/12 md:w-2/12 md:pl-5 my-1 md:my-0">
-          {{ slotProps.item.responses }}
+        <p class="w-6/12 md:w-2/12 md:justify-center flex mb-1 md:mb-0">
+          <button
+            class="bg-primary rounded px-1 text-white hover:bg-primary-darker transition duration-300 flex"
+          >
+            {{ slotProps.item.responses
+            }}<span class="flex md:hidden">&nbsp; Responses</span>
+          </button>
         </p>
-        <p class="w-11/12 md:w-2/12 md:pl-5 my-1 md:my-0">
-          {{ slotProps.item.questions }}
+        <p
+          class="w-6/12 md:w-2/12 md:justify-center flex justify-end md:justify-start mb-1 md:mb-0"
+        >
+          <button
+            class="bg-primary rounded px-1 text-white hover:bg-primary-darker transition duration-300 flex"
+          >
+            {{ slotProps.item.questions }}
+            <span class="flex md:hidden">&nbsp; Questions</span>
+          </button>
         </p>
       </template>
       <template v-slot:popup-menu="slotProps">

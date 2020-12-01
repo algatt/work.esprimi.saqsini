@@ -1,132 +1,154 @@
 <template>
-  <div class="flex flex-col px-1">
-    <div class="h-16 flex items-center font-bold">
-      <slot name="title"></slot>
-    </div>
-    <button
-      class="w-full flex items-center justify-between mb-1 p-1 font-medium hover:text-primary transition duration-300 focus:outline-none"
-      :class="selectedParent === -1 ? 'text-primary' : 'text-gray-600'"
-      @click="selectParent({ code: -1 })"
-    >
-      <span
-        ><i
-          class="fas fa-fw mr-1"
-          :class="
-            selectedParent === -1
-              ? 'fa-folder-open text-primary'
-              : 'fa-folder text-gray-400'
-          "
-        ></i
-        >All</span
-      >
-    </button>
+  <div class="flex flex-col relative mb-2 md:mb-0">
     <div
-      v-for="parentItem in parents"
-      :key="parentItem.code"
-      class="mb-1 p-1 flex flex-col"
+      class="flex items-center font-bold justify-between py-2 mb-2 px-2 bg-gray-100"
+      :class="isCollapsed ? null : 'border-b border-gray-200'"
     >
+      <slot name="title"></slot>
+      <button class="btn-link" @click="isCollapsed = !isCollapsed">
+        <i
+          class="fas"
+          :class="isCollapsed ? 'fa-caret-down' : 'fa-caret-up'"
+        ></i>
+      </button>
+    </div>
+    <div v-if="!isCollapsed">
       <button
-        class="w-full flex items-center justify-between font-medium mb-1 hover:text-primary transition duration-300 focus:outline-none"
+        class="tree-view-parent-button"
         :class="
-          selectedParent === parentItem.code ? 'text-primary' : 'text-gray-600'
+          selectedParent === -1
+            ? 'text-primary border-l-2 border-primary'
+            : 'text-gray-600'
         "
-        @click="selectParent(parentItem)"
+        @click="selectParent({ code: -1 })"
       >
         <span
           ><i
             class="fas fa-fw mr-1"
             :class="
-              selectedParent === parentItem.code
+              selectedParent === -1
                 ? 'fa-folder-open text-primary'
-                : 'fa-folder text-gray-400'
+                : 'fa-folder text-gray-300'
             "
           ></i
-          >{{ truncateString(parentItem.name) }}</span
+          >All</span
         >
-        <div class="flex items-center justify-end">
-          <button
-            v-if="selectedParent === parentItem.code"
-            class="text-gray-400 hover:text-primary transition duration-300"
-            @click="$emit('newParent', parentItem)"
-          >
-            <i class="fas fa-pencil-alt fa-fw"></i>
-          </button>
-          <span
-            v-if="countName"
-            class="bg-gray-200 ml-1 w-6 rounded text-gray-600 text-sm"
-            >{{ parentItem[countName] }}</span
-          >
-        </div>
       </button>
-      <template v-if="selectedParent === parentItem.code">
-        <div
-          v-for="childItem in filteredChildren(parentItem.code)"
-          :key="childItem.code"
-          class="flex flex-col pl-2 mb-1"
+      <div
+        v-for="parentItem in parents"
+        :key="parentItem.code"
+        class="flex flex-col"
+        :class="
+          selectedParent === parentItem.code
+            ? 'border-l-2 border-primary'
+            : null
+        "
+      >
+        <button
+          class="tree-view-parent-button"
+          :class="
+            selectedParent === parentItem.code
+              ? 'text-primary'
+              : 'text-gray-600'
+          "
+          @mouseenter="hoverParent = parentItem.code"
+          @mouseleave="hoverParent = null"
+          @click="selectParent(parentItem)"
         >
-          <button
-            class="w-full flex items-center justify-between font-medium hover:text-primary transition duration-300 focus:outline-none"
-            :class="
-              selectedChild === childItem.code
-                ? 'text-primary'
-                : 'text-gray-600'
-            "
-            @click="selectChild(childItem)"
+          <span
+            ><i
+              class="fas fa-fw mr-1"
+              :class="
+                selectedParent === parentItem.code
+                  ? 'fa-folder-open text-primary'
+                  : 'fa-folder text-gray-300'
+              "
+            ></i
+            >{{ truncateString(parentItem.name) }}</span
           >
-            <span
-              ><i
-                class="fas fa-fw mr-1"
-                :class="
-                  selectedChild === childItem.code
-                    ? 'fa-folder-open text-primary'
-                    : 'fa-folder text-gray-400'
-                "
-              ></i
-              >{{ truncateString(childItem.name) }}</span
+          <div class="flex items-center justify-end">
+            <button
+              :class="hoverParent === parentItem.code ? 'flex' : 'md:hidden'"
+              class="btn-link"
+              @click="$emit('newParent', parentItem)"
             >
-            <div class="flex items-center justify-end">
-              <button
-                v-if="selectedChild === childItem.code"
-                class="text-gray-400 hover:text-primary transition duration-300"
-                @click="$emit('newChild', childItem)"
-              >
-                <i class="fas fa-pencil-alt fa-fw"></i>
-              </button>
+              <i class="fas fa-pencil-alt fa-fw fa-sm"></i>
+            </button>
+            <span v-if="countName" class="badge-gray-small">{{
+              parentItem[countName]
+            }}</span>
+          </div>
+        </button>
+        <template v-if="selectedParent === parentItem.code">
+          <div
+            v-for="childItem in filteredChildren(parentItem.code)"
+            :key="childItem.code"
+            class="flex flex-col pl-2"
+          >
+            <button
+              class="tree-view-parent-button"
+              :class="
+                selectedChild === childItem.code
+                  ? 'text-primary'
+                  : 'text-gray-600'
+              "
+              @mouseleave="hoverChild = null"
+              @click="selectChild(childItem)"
+              @mouseover="hoverChild = childItem.code"
+            >
               <span
-                v-if="countName"
-                class="bg-gray-200 ml-1 w-6 rounded text-gray-600 text-sm"
-                >{{ childItem[countName] }}</span
+                ><i
+                  class="fas fa-fw mr-1"
+                  :class="
+                    selectedChild === childItem.code
+                      ? 'fa-folder-open text-primary'
+                      : 'fa-folder text-gray-300'
+                  "
+                ></i
+                >{{ truncateString(childItem.name) }}</span
               >
-            </div>
-          </button>
-        </div>
-        <div class="flex flex-col pl-2 mb-1">
-          <button
-            class="w-full flex items-center justify-between font-medium text-gray-600 hover:text-primary transition duration-300 focus:outline-none"
-            @click="
-              $emit('newChild', {
-                code: -1,
-                [parentCodeName]: parentItem.code,
-              })
-            "
-          >
-            <span
-              ><i class="fas fa-fw fa-folder-plus mr-1 text-gray-400"></i
-              >New</span
+              <div class="flex items-center justify-end">
+                <button
+                  :class="hoverChild === childItem.code ? 'flex' : 'md:hidden'"
+                  class="btn-link"
+                  @click="$emit('newChild', childItem)"
+                >
+                  <i class="fas fa-pencil-alt fa-fw fa-sm"></i>
+                </button>
+                <span v-if="countName" class="badge-gray-small">{{
+                  childItem[countName]
+                }}</span>
+              </div>
+            </button>
+          </div>
+          <div class="flex flex-col pl-2">
+            <button
+              class="tree-view-parent-button text-gray-600"
+              @click="
+                $emit('newChild', {
+                  code: -1,
+                  [parentCodeName]: parentItem.code,
+                })
+              "
             >
-          </button>
-        </div>
-      </template>
+              <span
+                ><i class="fas fa-fw fa-folder-plus mr-1 text-gray-300"></i
+                >New</span
+              >
+            </button>
+          </div>
+        </template>
+      </div>
+      <button
+        class="tree-view-parent-button text-gray-600"
+        @click="$emit('newParent', { code: -1 })"
+      >
+        <span
+          ><i class="fas fa-fw fa-folder-plus mr-1 text-gray-300"></i
+          ><slot name="newText"></slot
+        ></span>
+      </button>
     </div>
-    <button
-      class="w-full flex items-center justify-between mb-1 p-1 font-medium hover:text-primary transition duration-300 text-gray-600 focus:outline-none"
-      @click="$emit('newParent', { code: -1 })"
-    >
-      <span
-        ><i class="fas fa-fw fa-folder-plus mr-1 text-gray-400"></i
-        ><slot name="newText"></slot
-      ></span>
-    </button>
   </div>
 </template>
 
@@ -156,6 +178,9 @@ export default {
     return {
       selectedParent: -1,
       selectedChild: null,
+      hoverParent: null,
+      hoverChild: null,
+      isCollapsed: false,
     }
   },
 
@@ -183,4 +208,12 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.tree-view-parent-button {
+  @apply w-full flex items-center justify-between font-medium hover:text-primary transition duration-300 focus:outline-none mb-1 px-2;
+}
+
+.badge-gray-small {
+  @apply mx-1 bg-gray-200 rounded text-xs font-semibold px-1 py-0.5 text-gray-500;
+}
+</style>
