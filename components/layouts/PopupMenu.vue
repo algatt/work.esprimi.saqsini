@@ -1,16 +1,25 @@
 <template>
-  <div class="bg-white flex flex-col absolute" :style="styleForMenu">
-    <div
-      id="popupMenuContainer"
-      class="z-20 bg-white flex flex-col rounded shadow-lg border border-gray-200"
-      @click="$emit('closeMenu')"
+  <div class="relative">
+    <button class="btn-link-rounded relative" @click.stop="showMenu = true">
+      <i class="fas fa-ellipsis-v fa-fw"></i>
+    </button>
+    <button
+      v-if="showMenu"
+      class="flex flex-col absolute"
+      :style="styleForMenu"
     >
-      <slot name="menuItems"></slot>
-    </div>
-    <div
-      class="fixed top-0 left-0 w-full h-full z-10 cursor-default"
-      @click.stop="$emit('closeMenu')"
-    ></div>
+      <div
+        id="popupMenuContainer"
+        class="z-20 bg-white flex flex-col rounded shadow-lg border border-gray-200"
+        @click.stop="$emit('closeMenu')"
+      >
+        <slot name="menuItems"></slot>
+      </div>
+      <div
+        class="fixed top-0 left-0 w-full h-full z-10 cursor-default"
+        @click.stop="$emit('closeMenu')"
+      ></div>
+    </button>
   </div>
 </template>
 
@@ -18,6 +27,11 @@
 export default {
   name: 'PopupMenuVue',
   props: {
+    objectCode: {
+      type: Number,
+      required: false,
+      default: null,
+    },
     direction: {
       type: String,
       required: false,
@@ -28,6 +42,11 @@ export default {
       required: false,
       default: 200,
     },
+  },
+  data() {
+    return {
+      showMenu: false,
+    }
   },
   computed: {
     styleForMenu() {
@@ -40,6 +59,11 @@ export default {
   },
   beforeDestroy() {
     this.$emit('closeMenu')
+  },
+  methods: {
+    test() {
+      console.log('a')
+    },
   },
 }
 </script>

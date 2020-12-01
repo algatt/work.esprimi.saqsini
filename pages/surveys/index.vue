@@ -52,34 +52,20 @@
             v-if="hovered === slotProps.item.code"
             class="flex items-center"
           >
-            <!--            <button-->
-            <!--              class="btn-link-rounded"-->
-            <!--              @click.stop="setCurrentItem(slotProps.item)"-->
-            <!--            >-->
-            <!--              <i class="fas fa-pencil-alt fa-fw"></i>-->
-            <!--            </button>-->
-            <button
-              class="btn-link-rounded relative"
-              @click.stop="showSubMenu = slotProps.item.code"
-              @mouseenter="showSubMenu = slotProps.item.code"
+            <popup-menu-vue
+              :object-code="slotProps.item.code"
+              direction="left"
+              @closeMenu="hovered = null"
             >
-              <i class="fas fa-ellipsis-v fa-fw"></i>
-
-              <popup-menu-vue
-                v-if="showSubMenu === slotProps.item.code"
-                direction="left"
-                @closeMenu="
-                  showSubMenu = null
-                  hovered = null
-                "
+              <template v-slot:menuItems>
+                <button @click.stop="setCurrentItem(slotProps.item)">
+                  <i class="fas fa-pencil-alt fa-fw"></i>Edit
+                </button>
+                <button @click.stop="setCurrentItem(slotProps.item)">
+                  <i class="fas fa-pencil-alt fa-fw"></i>Edit
+                </button></template
               >
-                <template v-slot:menuItems>
-                  <button @click.stop="setCurrentItem(slotProps.item)">
-                    <i class="fas fa-pencil-alt fa-fw"></i>Edit
-                  </button></template
-                >
-              </popup-menu-vue>
-            </button>
+            </popup-menu-vue>
           </span>
           <span> &nbsp; </span>
         </p>
