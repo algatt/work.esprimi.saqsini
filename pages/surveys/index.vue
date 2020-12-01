@@ -49,8 +49,8 @@
         </p>
         <p class="w-1/12 flex justify-end">
           <span
-            v-if="hovered === slotProps.item.code"
-            class="flex items-center"
+            :class="hovered === slotProps.item.code ? 'flex' : 'flex md:hidden'"
+            class="items-center"
           >
             <popup-menu-vue
               :object-code="slotProps.item.code"
@@ -58,10 +58,10 @@
               @closeMenu="hovered = null"
             >
               <template v-slot:menuItems>
-                <button @click.stop="setCurrentItem(slotProps.item)">
+                <button @click="setCurrentItem(slotProps.item)">
                   <i class="fas fa-pencil-alt fa-fw"></i>Edit
                 </button>
-                <button @click.stop="setCurrentItem(slotProps.item)">
+                <button @click="setCurrentItem(slotProps.item)">
                   <i class="fas fa-pencil-alt fa-fw"></i>Edit
                 </button></template
               >

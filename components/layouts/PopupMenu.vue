@@ -11,13 +11,13 @@
       <div
         id="popupMenuContainer"
         class="z-20 bg-white flex flex-col rounded shadow-lg border border-gray-200"
-        @click.stop="$emit('closeMenu')"
+        @click.stop="closeMenu"
       >
         <slot name="menuItems"></slot>
       </div>
       <div
         class="fixed top-0 left-0 w-full h-full z-10 cursor-default"
-        @click.stop="$emit('closeMenu')"
+        @click.stop="closeMenu"
       ></div>
     </button>
   </div>
@@ -61,8 +61,9 @@ export default {
     this.$emit('closeMenu')
   },
   methods: {
-    test() {
-      console.log('a')
+    closeMenu() {
+      this.showMenu = false
+      this.$emit('closeMenu')
     },
   },
 }
