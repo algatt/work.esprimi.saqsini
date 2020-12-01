@@ -1,29 +1,27 @@
 <template>
   <div class="flex flex-wrap">
-    <div class="w-full md:w-2/12">
-      <side-tree-nav
-        :parents="categories"
-        :children="subcategories"
-        parent-code-name="categoryCode"
-        count-name="surveyCount"
-        @parentChanged="parentChanged"
-        @childChanged="childChanged"
-        @newParent="newParent"
-        @newChild="newChild"
-      >
-        <template v-slot:title>Categories </template>
-        <template v-slot:newText>New Category</template>
-      </side-tree-nav>
-    </div>
-
     <display-table-component
-      class="w-full md:w-10/12"
       :items="surveys"
       which="surveys"
       :disable-new-button="disableNewButton"
       @hovered="hovered = $event"
     >
       <template v-slot:title>Surveys</template>
+      <template v-slot:sideNav>
+        <side-tree-nav
+          :parents="categories"
+          :children="subcategories"
+          parent-code-name="categoryCode"
+          count-name="surveyCount"
+          @parentChanged="parentChanged"
+          @childChanged="childChanged"
+          @newParent="newParent"
+          @newChild="newChild"
+        >
+          <template v-slot:title>Categories </template>
+          <template v-slot:newText>New Category</template>
+        </side-tree-nav>
+      </template>
       <template v-slot:titleContent>
         <p class="w-4/12">Name</p>
         <p class="w-4/12">Date</p>

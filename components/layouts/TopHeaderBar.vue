@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-11/12 mx-auto flex flex-wrap justify-between px-1 h-16 items-center mb-3 md:mb-0"
+    class="w-11/12 mx-auto flex flex-wrap justify-between px-3 h-16 items-center mb-3 md:mb-0"
   >
     <h6 class="text-lg w-full md:w-8/12 mb-1 md:mb-0">
       <slot name="title"> </slot>

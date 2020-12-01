@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col pl-4">
+  <div class="flex flex-col px-1">
     <div class="h-16 flex items-center font-bold">
       <slot name="title"></slot>
     </div>

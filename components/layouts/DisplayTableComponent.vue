@@ -1,6 +1,5 @@
 <template>
-  <div v-if="!loading">
-    <!--    <top-info-bar v-if="selectedItemsLength > 0" :which="which"></top-info-bar>-->
+  <div class="w-full flex-col">
     <top-header-bar :which="which"
       ><template v-slot:title><slot name="title"></slot></template>
       <template v-slot:button>
@@ -14,43 +13,52 @@
         </button></template
       ></top-header-bar
     >
-    <top-title-bar>
-      <template v-slot:content> <slot name="titleContent"></slot></template
-    ></top-title-bar>
 
-    <div class="flex flex-col w-11/12 mx-auto">
-      <row-component
-        v-for="item in items"
-        :key="item.code"
-        :item="item"
-        :height-of-row="heightOfRow"
-        @hovered="$emit('hovered', $event)"
+    <div class="flex w-full flex-wrap">
+      <div :class="$slots.sideNav ? 'w-11/12 mx-auto md:w-2/12' : 'hidden'">
+        <slot name="sideNav"></slot>
+      </div>
+
+      <div
+        class="flex flex-col px-3"
+        :class="
+          $slots.sideNav ? 'w-11/12 md:w-10/12 mx-auto' : 'w-11/12 mx-auto'
+        "
       >
-        <template v-slot:content>
-          <slot name="content" :item="item"></slot>
-        </template>
-        <template v-slot:popup-menu>
-          <slot name="popup-menu" :item="item"></slot>
-        </template>
-      </row-component>
+        <top-title-bar>
+          <template v-slot:content> <slot name="titleContent"></slot></template
+        ></top-title-bar>
+        <row-component
+          v-for="item in items"
+          :key="item.code"
+          :item="item"
+          :height-of-row="heightOfRow"
+          @hovered="$emit('hovered', $event)"
+        >
+          <template v-slot:content>
+            <slot name="content" :item="item"></slot>
+          </template>
+          <template v-slot:popup-menu>
+            <slot name="popup-menu" :item="item"></slot>
+          </template>
+        </row-component>
+      </div>
     </div>
 
     <div class="flex flex-col w-11/12 mx-auto">
       <slot name="extra"></slot>
     </div>
   </div>
-  <spinner v-else></spinner>
 </template>
 
 <script>
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 import TopTitleBar from '~/components/layouts/TopTitleBar'
 import RowComponent from '~/components/layouts/RowComponent'
-import Spinner from '~/components/layouts/Spinner'
 
 export default {
   name: 'DisplayTableComponent',
-  components: { Spinner, TopTitleBar, TopHeaderBar, RowComponent },
+  components: { TopTitleBar, TopHeaderBar, RowComponent },
   props: {
     items: {
       type: Array,
