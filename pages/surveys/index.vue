@@ -16,81 +16,82 @@
       </side-tree-nav>
     </div>
 
-    <!--    <display-table-component-->
-    <!--        class="w-full md:w-10/12"-->
-    <!--        :items="companies"-->
-    <!--        which="companies"-->
-    <!--        :disable-new-button="disableNewButton"-->
-    <!--        @hovered="hovered = $event"-->
-    <!--    >-->
-    <!--      <template v-slot:title>Companies</template>-->
-    <!--      <template v-slot:titleContent>-->
-    <!--        <p class="w-7/12">Name</p>-->
-    <!--        <p class="w-2/12">Size</p>-->
-    <!--        <p class="w-full md:w-2/12">Departments</p>-->
-    <!--      </template>-->
-    <!--      <template v-slot:content="slotProps">-->
-    <!--        <p-->
-    <!--            class="w-full md:w-7/12 md:pl-1 flex items-center justify-between md:justify-start"-->
-    <!--        >-->
-    <!--          <span class="hidden md:flex">-->
-    <!--            <img-->
-    <!--                v-if="slotProps.item.logo"-->
-    <!--                :src="slotProps.item.logo"-->
-    <!--                class="w-8 h-8 rounded-full bg-cover mr-2"-->
-    <!--            />-->
-    <!--            <span v-else class="w-8 h-8 mr-2">&nbsp;</span>-->
-    <!--          </span>-->
-    <!--          <span> {{ slotProps.item.name }}</span>-->
-    <!--          <span class="visible md:hidden">-->
-    <!--            <img-->
-    <!--                v-if="slotProps.item.logo"-->
-    <!--                :src="slotProps.item.logo"-->
-    <!--                class="w-8 h-8 rounded-full bg-cover mr-2"-->
-    <!--            />-->
-    <!--          </span>-->
-    <!--        </p>-->
+    <display-table-component
+      class="w-full md:w-10/12"
+      :items="surveys"
+      which="surveys"
+      :disable-new-button="disableNewButton"
+      @hovered="hovered = $event"
+    >
+      <template v-slot:title>Companies</template>
+      <template v-slot:titleContent>
+        <p class="w-4/12">Name</p>
+        <p class="w-3/12">Date</p>
+        <p class="w-2/12">Responses</p>
+        <p class="w-2/12">Questions</p>
+      </template>
+      <template v-slot:content="slotProps">
+        <p
+          class="w-full md:w-4/12 md:pl-1 flex items-center justify-between md:justify-start"
+        >
+          {{ slotProps.item.name }}
+        </p>
 
-    <!--        <p class="w-full md:w-2/12 md:pl-1 pl-1 my-1 md:mt-0">-->
-    <!--          <template v-if="slotProps.item.size !== 0">-->
-    <!--            <span class="block md:hidden">Company Size </span-->
-    <!--            ><span>{{ slotProps.item.size }}</span>-->
-    <!--          </template>-->
-    <!--        </p>-->
+        <p class="w-full md:w-3/12 md:pl-1 pl-1 my-1 md:mt-0">
+          {{ slotProps.item.referenceDate }}
+        </p>
 
-    <!--        <p class="w-11/12 md:w-2/12 md:pl-5 my-1 md:my-0">-->
-    <!--          <nuxt-link-->
-    <!--              class="btn-round-primary px-3"-->
-    <!--              :to="{-->
-    <!--              name: 'companies-departments-id',-->
-    <!--              params: { id: slotProps.item.code },-->
-    <!--            }"-->
-    <!--              @click.stop.native-->
-    <!--          >{{ slotProps.item.departmentCount-->
-    <!--            }}<span class="visible md:hidden"-->
-    <!--            >&nbsp; departments-->
-    <!--            </span></nuxt-link-->
-    <!--          >-->
-    <!--        </p>-->
-    <!--        <p class="w-1/12 flex justify-end">-->
-    <!--          <span v-if="hovered === slotProps.item.code" class="flex items-center"-->
-    <!--          ><button-->
-    <!--              class="btn-link"-->
-    <!--              @click.stop="setCurrentItem(slotProps.item)"-->
-    <!--          >-->
-    <!--              <i class="fas fa-pencil-alt fa-fw"></i></button-->
-    <!--          ></span>-->
-    <!--          <span v-else>&nbsp;</span>-->
-    <!--        </p>-->
-    <!--      </template>-->
+        <p class="w-11/12 md:w-2/12 md:pl-5 my-1 md:my-0">
+          {{ slotProps.item.responses }}
+        </p>
+        <p class="w-11/12 md:w-2/12 md:pl-5 my-1 md:my-0">
+          {{ slotProps.item.questions }}
+        </p>
+        <p class="w-1/12 flex justify-end">
+          <span
+            v-if="hovered === slotProps.item.code"
+            class="flex items-center"
+          >
+            <!--            <button-->
+            <!--              class="btn-link-rounded"-->
+            <!--              @click.stop="setCurrentItem(slotProps.item)"-->
+            <!--            >-->
+            <!--              <i class="fas fa-pencil-alt fa-fw"></i>-->
+            <!--            </button>-->
+            <button
+              class="btn-link-rounded relative"
+              @click.stop="showSubMenu = slotProps.item.code"
+              @mouseenter="showSubMenu = slotProps.item.code"
+            >
+              <i class="fas fa-ellipsis-v fa-fw"></i>
 
-    <!--      <template v-if="disableNewButton" v-slot:extra>-->
-    <!--        <p class="flex w-full items-center justify-center p-4">-->
-    <!--          You cannot create a company right now. Make sure to have sectors and-->
-    <!--          at least one industry.-->
-    <!--        </p>-->
-    <!--      </template>-->
-    <!--    </display-table-component>-->
+              <popup-menu-vue
+                v-if="showSubMenu === slotProps.item.code"
+                direction="left"
+                @closeMenu="
+                  showSubMenu = null
+                  hovered = null
+                "
+              >
+                <template v-slot:menuItems>
+                  <button @click.stop="setCurrentItem(slotProps.item)">
+                    <i class="fas fa-pencil-alt fa-fw"></i>Edit
+                  </button></template
+                >
+              </popup-menu-vue>
+            </button>
+          </span>
+          <span> &nbsp; </span>
+        </p>
+      </template>
+
+      <template v-if="disableNewButton" v-slot:extra>
+        <p class="flex w-full items-center justify-center p-4">
+          You cannot create a company right now. Make sure to have sectors and
+          at least one industry.
+        </p>
+      </template>
+    </display-table-component>
 
     <transition name="fade">
       <edit-object-modal
@@ -98,11 +99,11 @@
         @modalClosed="modalClosed"
       >
         <template v-slot:content>
-          <new-company
+          <new-category
             v-if="!objectToCreate"
             :selected-sector-code="selectedParentCode"
             :selected-industry-code="selectedChildCode"
-          ></new-company>
+          ></new-category>
           <new-category
             v-else-if="objectToCreate === 'category'"
           ></new-category>
@@ -117,19 +118,20 @@
 
 <script>
 // import EditObjectModal from '~/components/layouts/EditObjectModal'
-// import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
+import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
 import SideTreeNav from '~/components/layouts/SideTreeNav'
 import NewCategory from '~/components/surveys/NewCategory'
 import NewSubcategory from '~/components/surveys/NewSubcategory'
+import PopupMenuVue from '~/components/layouts/PopupMenu'
 
 export default {
   name: 'CompaniesList',
   components: {
+    PopupMenuVue,
     NewSubcategory,
     NewCategory,
     SideTreeNav,
-
-    //  DisplayTableComponent,
+    DisplayTableComponent,
     //  EditObjectModal,
   },
   data() {
@@ -139,6 +141,7 @@ export default {
       selectedParentCode: -1,
       selectedChildCode: null,
       objectToCreate: null,
+      showSubMenu: null,
     }
   },
   computed: {
@@ -161,29 +164,28 @@ export default {
       return this.$store.state.currentItemToBeEdited
     },
     surveys() {
-      // let tempResults = this.$store.getters.getItems('companies')
-      //
-      // if (this.selectedParentCode === -1) return tempResults
-      //
-      // if (this.selectedChildCode) {
-      //   tempResults = tempResults.filter((el) => {
-      //     return el.industryCode === this.selectedChildCode
-      //   })
-      // } else {
-      //   tempResults = tempResults.filter((el) => {
-      //     return el.sectorCode === this.selectedParentCode
-      //   })
-      // }
-      //
-      // return tempResults
-      return null
+      let tempResults = this.$store.getters.getItems('surveys')
+
+      if (this.selectedParentCode === -1) return tempResults
+
+      if (this.selectedChildCode) {
+        tempResults = tempResults.filter((el) => {
+          return el.subCategoryCode === this.selectedChildCode
+        })
+      } else {
+        tempResults = tempResults.filter((el) => {
+          return el.categoryCode === this.selectedParentCode
+        })
+      }
+
+      return tempResults
     },
   },
   created() {
     this.$store.dispatch('setLoading', true)
     Promise.all([
       this.$store.dispatch('categories/getCategories'),
-      // this.$store.dispatch('companies/getCompanies', { limit: 100, offset: 0 }),
+      this.$store.dispatch('surveys/getSurveysAll', { limit: 100, offset: 0 }),
     ]).then(() => {
       this.$store.dispatch('setLoading', false)
     })
