@@ -1,7 +1,7 @@
 <template>
   <div v-if="!loading">
-    <top-info-bar v-if="selectedItemsLength > 0" :which="which"></top-info-bar>
-    <top-header-bar v-else
+    <!--    <top-info-bar v-if="selectedItemsLength > 0" :which="which"></top-info-bar>-->
+    <top-header-bar :which="which"
       ><template v-slot:title><slot name="title"></slot></template>
       <template v-slot:button>
         <slot name="button"></slot>
@@ -29,6 +29,9 @@
         <template v-slot:content>
           <slot name="content" :item="item"></slot>
         </template>
+        <template v-slot:popup-menu>
+          <slot name="popup-menu" :item="item"></slot>
+        </template>
       </row-component>
     </div>
 
@@ -40,7 +43,6 @@
 </template>
 
 <script>
-import TopInfoBar from '~/components/layouts/TopInfoBar'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 import TopTitleBar from '~/components/layouts/TopTitleBar'
 import RowComponent from '~/components/layouts/RowComponent'
@@ -48,7 +50,7 @@ import Spinner from '~/components/layouts/Spinner'
 
 export default {
   name: 'DisplayTableComponent',
-  components: { Spinner, TopInfoBar, TopTitleBar, TopHeaderBar, RowComponent },
+  components: { Spinner, TopTitleBar, TopHeaderBar, RowComponent },
   props: {
     items: {
       type: Array,

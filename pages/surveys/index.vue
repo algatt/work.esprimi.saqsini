@@ -23,10 +23,10 @@
       :disable-new-button="disableNewButton"
       @hovered="hovered = $event"
     >
-      <template v-slot:title>Companies</template>
+      <template v-slot:title>Surveys</template>
       <template v-slot:titleContent>
         <p class="w-4/12">Name</p>
-        <p class="w-3/12">Date</p>
+        <p class="w-4/12">Date</p>
         <p class="w-2/12">Responses</p>
         <p class="w-2/12">Questions</p>
       </template>
@@ -37,7 +37,7 @@
           {{ slotProps.item.name }}
         </p>
 
-        <p class="w-full md:w-3/12 md:pl-1 pl-1 my-1 md:mt-0">
+        <p class="w-full md:w-4/12 md:pl-1 pl-1 my-1 md:mt-0">
           {{ slotProps.item.referenceDate }}
         </p>
 
@@ -47,28 +47,27 @@
         <p class="w-11/12 md:w-2/12 md:pl-5 my-1 md:my-0">
           {{ slotProps.item.questions }}
         </p>
-        <p class="w-1/12 flex justify-end">
-          <span
-            :class="hovered === slotProps.item.code ? 'flex' : 'flex md:hidden'"
-            class="items-center"
+      </template>
+      <template v-slot:popup-menu="slotProps">
+        <span
+          :class="hovered === slotProps.item.code ? 'flex' : 'flex md:hidden'"
+          class="items-center"
+        >
+          <popup-menu-vue
+            :object-code="slotProps.item.code"
+            direction="left"
+            @closeMenu="hovered = null"
           >
-            <popup-menu-vue
-              :object-code="slotProps.item.code"
-              direction="left"
-              @closeMenu="hovered = null"
+            <template v-slot:menuItems>
+              <button @click="setCurrentItem(slotProps.item)">
+                <i class="fas fa-pencil-alt fa-fw"></i>Edit
+              </button>
+              <button @click="setCurrentItem(slotProps.item)">
+                <i class="fas fa-pencil-alt fa-fw"></i>Edit
+              </button></template
             >
-              <template v-slot:menuItems>
-                <button @click="setCurrentItem(slotProps.item)">
-                  <i class="fas fa-pencil-alt fa-fw"></i>Edit
-                </button>
-                <button @click="setCurrentItem(slotProps.item)">
-                  <i class="fas fa-pencil-alt fa-fw"></i>Edit
-                </button></template
-              >
-            </popup-menu-vue>
-          </span>
-          <span> &nbsp; </span>
-        </p>
+          </popup-menu-vue>
+        </span>
       </template>
 
       <template v-if="disableNewButton" v-slot:extra>

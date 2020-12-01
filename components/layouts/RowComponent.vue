@@ -6,17 +6,18 @@
     @mouseover="$emit('hovered', item.code)"
     @mouseleave="$emit('hovered', null)"
   >
-    <p
-      class="hidden md:flex w-full md:w-8 justify-end md:justify-center text-primary items-center"
-    >
+    <span class="flex w-8 justify-center text-primary items-center">
       <i
         class="fas fa-check-circle"
         :class="existsInSelectedItems ? 'visible' : 'invisible'"
       ></i>
-    </p>
-    <span class="flex flex-wrap md:flex-grow w-full md:w-auto items-center">
+    </span>
+    <span class="flex flex-wrap flex-grow items-center">
       <slot name="content"></slot
     ></span>
+    <span class="flex w-8 justify-center items-center">
+      <slot name="popup-menu"></slot>
+    </span>
   </div>
 </template>
 
