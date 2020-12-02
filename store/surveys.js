@@ -232,27 +232,19 @@ export const actions = {
   //   })
   // },
   //
-  // deleteSurvey({ commit, dispatch }, survey) {
-  //   return new Promise((resolve, reject) => {
-  //     this.$axios
-  //       .delete('/api3/instance/' + survey.code)
-  //       .then(() => {
-  //         commit(
-  //           'deleteItem',
-  //           { which: 'surveys', code: survey.code },
-  //           { root: true }
-  //         )
-  //         dispatch('categories/getCategories', false, { root: true }).then(
-  //           () => {
-  //             resolve()
-  //           }
-  //         )
-  //       })
-  //       .catch((error) => {
-  //         reject(error)
-  //       })
-  //   })
-  // },
+  deleteSurvey({ commit, dispatch }, code) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .delete('/builder/instance/' + code)
+        .then(async () => {
+          await dispatch('categories/getCategories', false, { root: true })
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
   //
   // generateLanguagePack({ dispatch }, survey) {
   //   return new Promise((resolve, reject) => {

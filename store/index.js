@@ -10,6 +10,7 @@ const deleteCalls = {
   jobs: 'jobs/deleteJob',
   categories: 'categories/deleteCategory',
   subcategories: 'subcategories/deleteSubcategory',
+  surveys: 'surveys/deleteSurvey',
 }
 
 const newCalls = {
@@ -158,7 +159,7 @@ export const mutations = {
 
   deleteItem(rootState, { which, code }) {
     rootState[which].items = rootState[which].items.filter((x) => {
-      return x.code !== code
+      return Number(x.code) !== Number(code)
     })
   },
 

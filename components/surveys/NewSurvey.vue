@@ -164,12 +164,20 @@ import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBotto
 import { createMomentFromDateAndTime } from '~/helpers/helpers'
 
 const checkDates = (value, vm) => {
+  if (
+    vm.validToDate === '' ||
+    vm.validToDate === undefined ||
+    vm.validToTime === '' ||
+    vm.validToTime === undefined
+  )
+    return true
+
   const dateStart = createMomentFromDateAndTime(
     vm.validFromDate,
     vm.validFromTime
   )
   const dateEnd = createMomentFromDateAndTime(vm.validToDate, vm.validToTime)
-  if (dateEnd === '' || dateEnd === undefined) return true
+
   return moment(dateEnd).isAfter(moment(dateStart))
 }
 
@@ -210,7 +218,7 @@ export default {
       },
       validToDate: {
         timeRequiredIfDate(value) {
-          if (value === '') return true
+          if (value === '' || value === undefined) return true
           return (
             this.form.validToTime !== '' && this.form.validToTime !== undefined
           )
@@ -219,7 +227,7 @@ export default {
       },
       validToTime: {
         dateRequiredIfTime(value) {
-          if (value === '') return true
+          if (value === '' || value === undefined) return true
           return (
             this.form.validToDate !== '' && this.form.validToDate !== undefined
           )

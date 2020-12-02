@@ -80,7 +80,9 @@ export default {
     },
 
     deleteSelectedItems() {
-      this.$store.dispatch('deleteSelectedItems', this.which)
+      this.$store.dispatch('deleteSelectedItems', this.which).then(() => {
+        this.showModal = false
+      })
     },
   },
 }
