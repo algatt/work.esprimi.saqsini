@@ -36,6 +36,7 @@ const updateCalls = {
   jobs: 'jobs/updateJob',
   categories: 'categories/updateCategory',
   subcategories: 'subcategories/updateSubcategory',
+  surveys: 'surveys/updateSurvey',
 }
 
 export const state = () => ({

@@ -63,11 +63,12 @@ export default {
       this.$store.dispatch('setCurrentItemToBeEdited', null)
     },
     saveItem() {
+      let obj = this.form
+      if (this.which === 'surveys') {
+        obj = parseSurveyToAPI(obj)
+      }
+
       if (this.form.code === -1) {
-        let obj = this.form
-        if (this.which === 'surveys') {
-          obj = parseSurveyToAPI(obj)
-        }
         this.$store
           .dispatch('newItem', { which: this.which, item: obj })
           .then(() => {
@@ -77,7 +78,7 @@ export default {
         this.$store
           .dispatch('updateItem', {
             which: this.which,
-            item: this.form,
+            item: obj,
           })
           .then(() => {
             this.cancelCurrentItem()

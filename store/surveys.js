@@ -1,4 +1,4 @@
-// import qs from 'qs'
+import qs from 'qs'
 
 export const state = () => ({
   items: [],
@@ -124,41 +124,55 @@ export const actions = {
         })
     })
   },
-  //
-  // updateSurveyDetails({ commit, dispatch }, survey) {
-  //   return new Promise((resolve, reject) => {
-  //     this.$axios
-  //       .put(
-  //         '/builder/instance/' + survey.code,
-  //
-  //         survey,
-  //         {
-  //           headers: {
-  //             'Content-Type': 'application/json',
-  //           },
-  //         }
-  //       )
-  //       .then((response) => {
-  //         resolve(response.data)
-  //       })
-  //       .catch((error) => {
-  //         reject(error)
-  //       })
-  //   })
-  // },
-  //
-  // async changeCategory({ commit, dispatch }, { surveyCode, oldCode, newCode }) {
-  //   if (oldCode !== undefined)
-  //     await this.$axios.patch(
-  //       '/builder/instance/' + surveyCode + '/deallocateFromCategory',
-  //       qs.stringify({ subCategoryCode: oldCode })
-  //     )
-  //   await this.$axios.patch(
-  //     '/builder/instance/' + surveyCode + '/allocateToCategory',
-  //     qs.stringify({ subCategoryCode: newCode })
-  //   )
-  //   await this.dispatch('categories/getCategories', false, { root: true })
-  // },
+
+  updateSurvey({ commit, dispatch, state }, survey) {
+    const newCategoryCode = survey.categoryCode
+    const newSubcategoryCode = survey.subCategoryCode
+    const oldSubcategoryCode = state.items.find((el) => {
+      return el.code === survey.code
+    }).subCategoryCode
+
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .put(
+          '/builder/instance/' + survey.code,
+
+          survey,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+        .then(async (response) => {
+          if (oldSubcategoryCode !== newSubcategoryCode)
+            await dispatch('changeCategory', {
+              surveyCode: survey.code,
+              oldCode: oldSubcategoryCode,
+              newCode: newSubcategoryCode,
+            })
+          response.data.categoryCode = newCategoryCode
+          response.data.subCategoryCode = newSubcategoryCode
+          resolve(response.data)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  async changeCategory({ commit, dispatch }, { surveyCode, oldCode, newCode }) {
+    if (oldCode !== undefined)
+      await this.$axios.patch(
+        '/builder/instance/' + surveyCode + '/deallocateFromCategory',
+        qs.stringify({ subCategoryCode: oldCode })
+      )
+    await this.$axios.patch(
+      '/builder/instance/' + surveyCode + '/allocateToCategory',
+      qs.stringify({ subCategoryCode: newCode })
+    )
+    await this.dispatch('categories/getCategories', false, { root: true })
+  },
   //
   // flagForRemoval({ commit, dispatch }, survey) {
   //   return new Promise((resolve, reject) => {
