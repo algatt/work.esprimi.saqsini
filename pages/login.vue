@@ -24,7 +24,7 @@
       @keyup="$v.password.$touch"
     />
     <button
-      class="btn-primary my-3"
+      class="bg-primary text-white py-2 my-3 rounded-sm hover:bg-primary-darker transition duration-300 disabled:opacity-50 disabled:bg-primary focus:ring-2 ring-primary-darker ring-offset-2 focus:outline-none;"
       :disabled="$v.$invalid || inProgress"
       @click="attemptLogin"
     >

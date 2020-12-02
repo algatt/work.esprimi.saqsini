@@ -10,7 +10,7 @@
     >
       <div
         id="popupMenuContainer"
-        class="z-20 bg-white flex flex-col rounded shadow-lg border border-gray-200"
+        class="z-20 bg-white flex flex-col rounded shadow-lg border border-gray-200 w-full"
         @click.stop="closeMenu"
       >
         <slot name="menuItems"></slot>

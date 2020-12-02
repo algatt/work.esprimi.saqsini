@@ -60,7 +60,7 @@
       </button>
       <div
         v-if="showSubMenu"
-        class="fixed top-0 left-0 w-full h-full bg-primary flex-col p-4 text-2xl flex"
+        class="fixed top-0 left-0 w-full h-full bg-primary flex-col p-4 text-2xl flex z-30"
         style="font-family: 'Poppins'"
       >
         <div class="flex justify-end">

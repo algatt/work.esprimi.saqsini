@@ -70,7 +70,7 @@
             <button
               :class="hoverParent === parentItem.code ? 'flex' : 'md:hidden'"
               class="btn-link"
-              @click="$emit('newParent', parentItem)"
+              @click.stop="$emit('newParent', parentItem)"
             >
               <i class="fas fa-pencil-alt fa-fw fa-sm"></i>
             </button>
@@ -111,7 +111,7 @@
                 <button
                   :class="hoverChild === childItem.code ? 'flex' : 'md:hidden'"
                   class="btn-link"
-                  @click="$emit('newChild', childItem)"
+                  @click.stop="$emit('newChild', childItem)"
                 >
                   <i class="fas fa-pencil-alt fa-fw fa-sm"></i>
                 </button>

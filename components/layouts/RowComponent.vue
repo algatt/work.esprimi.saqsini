@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-wrap pl-1 pr-2 md:px-4 py-3 md:py-2 transition duration-300 border-b border-gray-200 hover:bg-gray-100 items-center"
+    class="flex pl-1 pr-2 md:px-4 py-3 md:py-2 transition duration-300 border-b border-gray-200 hover:bg-gray-100 items-center focus:bg-white"
     :class="existsInSelectedItems ? 'bg-gray-100 ' + heightOfRow : heightOfRow"
     @click="selectItem(item)"
     @mouseover="$emit('hovered', item.code)"
@@ -15,7 +15,7 @@
     <span class="flex flex-wrap flex-grow items-center">
       <slot name="content"></slot
     ></span>
-    <span class="flex w-8 justify-center items-center">
+    <span class="flex w-10 md:w-8 justify-end md:justify-center items-center">
       <slot name="popup-menu"></slot>
     </span>
   </div>

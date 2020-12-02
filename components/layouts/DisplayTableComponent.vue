@@ -21,7 +21,7 @@
 
       <div
         class="flex flex-col pl-0 md:pl-3"
-        :class="$slots.sideNav ? 'w-full md:w-10/12 mx-auto' : 'w-full mx-auto'"
+        :class="$slots.sideNav ? 'w-full md:w-10/12' : 'w-full'"
       >
         <top-title-bar>
           <template v-slot:content> <slot name="titleContent"></slot></template
