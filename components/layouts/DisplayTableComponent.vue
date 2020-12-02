@@ -1,6 +1,6 @@
 <template>
   <div class="w-full flex-col">
-    <top-header-bar :which="which"
+    <top-header-bar :which="which" :has-side-nav="$slots.sideNav"
       ><template v-slot:title><slot name="title"></slot></template>
       <template v-slot:button>
         <slot name="button"></slot>

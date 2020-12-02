@@ -1,66 +1,62 @@
 <template>
   <div class="flex flex-wrap">
-    <div class="w-full md:w-2/12">
-      <side-tree-nav
-        v-if="!loading"
-        :parents="sectors"
-        :children="industries"
-        parent-code-name="sectorCode"
-        count-name="companyCount"
-        @parentChanged="parentChanged"
-        @childChanged="childChanged"
-        @newParent="newParent"
-        @newChild="newChild"
-      >
-        <template v-slot:title>Sectors and Industries</template>
-        <template v-slot:newText>New Sector</template>
-      </side-tree-nav>
-    </div>
     <display-table-component
-      class="w-full md:w-10/12"
       :items="companies"
       which="companies"
       :disable-new-button="disableNewButton"
       @hovered="hovered = $event"
     >
       <template v-slot:title>Companies</template>
+      <template v-slot:sideNav>
+        <side-tree-nav
+          v-if="!loading"
+          :parents="sectors"
+          :children="industries"
+          parent-code-name="sectorCode"
+          count-name="companyCount"
+          @parentChanged="parentChanged"
+          @childChanged="childChanged"
+          @newParent="newParent"
+          @newChild="newChild"
+        >
+          <template v-slot:title>Sectors and Industries</template>
+          <template v-slot:newText>New Sector</template>
+        </side-tree-nav></template
+      >
       <template v-slot:titleContent>
         <p class="w-7/12">Name</p>
-        <p class="w-2/12">Size</p>
-        <p class="w-full md:w-2/12">Departments</p>
+        <p class="w-3/12">Size</p>
+        <p class="w-2/12">Departments</p>
       </template>
+      <template v-slot:titleContentSmall>Companies</template>
       <template v-slot:content="slotProps">
         <p
-          class="w-full md:w-7/12 md:pl-1 flex items-center justify-between md:justify-start"
+          class="w-full md:w-7/12 flex items-center justify-start mb-1 md:mb-0"
         >
-          <span class="hidden md:flex">
+          <span class="flex">
             <img
               v-if="slotProps.item.logo"
               :src="slotProps.item.logo"
-              class="w-8 h-8 rounded-full bg-cover mr-2"
+              class="w-8 h-8 rounded md:rounded-full bg-cover mr-2"
             />
-            <span v-else class="w-8 h-8 mr-2">&nbsp;</span>
+            <span v-else class="w-8 h-8 mr-2 hidden md:flex">&nbsp;</span>
           </span>
           <span> {{ slotProps.item.name }}</span>
-          <span class="visible md:hidden">
-            <img
-              v-if="slotProps.item.logo"
-              :src="slotProps.item.logo"
-              class="w-8 h-8 rounded-full bg-cover mr-2"
-            />
-          </span>
+          <span class="badge-gray">{{ slotProps.item.abbr }}</span>
         </p>
 
-        <p class="w-full md:w-2/12 md:pl-1 pl-1 my-1 md:mt-0">
+        <p class="w-6/12 md:w-3/12 mb-1 md:mb-0 flex items-center">
           <template v-if="slotProps.item.size !== 0">
-            <span class="block md:hidden">Company Size </span
-            ><span>{{ slotProps.item.size }}</span>
+            <span>{{ slotProps.item.size }}</span
+            ><span class="block md:hidden">&nbsp;employees </span>
           </template>
         </p>
 
-        <p class="w-11/12 md:w-2/12 md:pl-5 my-1 md:my-0">
+        <p
+          class="w-6/12 md:w-1/12 mb-1 md:mb-0 flex justify-end md:justify-center"
+        >
           <nuxt-link
-            class="btn-round-primary px-3"
+            class="btn-table px-3"
             :to="{
               name: 'companies-departments-id',
               params: { id: slotProps.item.code },
@@ -72,16 +68,24 @@
             </span></nuxt-link
           >
         </p>
-        <p class="w-1/12 flex justify-end">
-          <span v-if="hovered === slotProps.item.code" class="flex items-center"
-            ><button
-              class="btn-link"
-              @click.stop="setCurrentItem(slotProps.item)"
-            >
-              <i class="fas fa-pencil-alt fa-fw"></i></button
-          ></span>
-          <span v-else>&nbsp;</span>
-        </p>
+      </template>
+      <template v-slot:popup-menu="slotProps">
+        <span
+          :class="hovered === slotProps.item.code ? 'flex' : 'flex md:hidden'"
+          class="items-center"
+        >
+          <popup-menu-vue
+            :object-code="slotProps.item.code"
+            direction="left"
+            @closeMenu="hovered = null"
+          >
+            <template v-slot:menuItems>
+              <button @click="setCurrentItem(slotProps.item)">
+                <i class="fas fa-pencil-alt fa-fw"></i>Edit
+              </button>
+            </template>
+          </popup-menu-vue>
+        </span>
       </template>
 
       <template v-if="disableNewButton" v-slot:extra>
@@ -120,6 +124,8 @@ import NewCompany from '~/components/contacts/NewCompany'
 import SideTreeNav from '~/components/layouts/SideTreeNav'
 import NewIndustry from '~/components/contacts/NewIndustry'
 import NewSector from '~/components/contacts/NewSector'
+import PopupMenuVue from '~/components/layouts/PopupMenu'
+
 export default {
   name: 'CompaniesList',
   components: {
@@ -129,6 +135,7 @@ export default {
     NewCompany,
     DisplayTableComponent,
     EditObjectModal,
+    PopupMenuVue,
   },
   data() {
     return {

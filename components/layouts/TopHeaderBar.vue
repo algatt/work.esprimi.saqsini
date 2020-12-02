@@ -2,7 +2,10 @@
   <div
     class="w-full flex flex-wrap justify-between items-center h-auto md:h-10 mb-3"
   >
-    <h6 class="w-full md:w-auto text-lg">
+    <h6
+      class="w-full md:w-auto text-lg"
+      :class="hasSideNav ? 'pl-0' : 'pl-0 md:pl-3'"
+    >
       <slot name="title"> </slot>
     </h6>
     <div
@@ -54,6 +57,11 @@ export default {
     which: {
       type: String,
       required: true,
+    },
+    hasSideNav: {
+      type: Object,
+      required: false,
+      default: null,
     },
   },
   data() {

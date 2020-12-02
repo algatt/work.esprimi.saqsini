@@ -9,22 +9,30 @@
       <template v-slot:titleContent>
         <p class="w-full">Role</p>
       </template>
+      <template v-slot:titleContentSmall>Roles</template>
       <template v-slot:content="slotProps"
-        ><p class="w-11/12 md:pl-1">
+        ><p class="w-full">
           {{ slotProps.item.name }}
           <span class="badge-gray">{{ slotProps.item.abbr }}</span>
         </p>
-
-        <p class="w-1/12 flex justify-end">
-          <span v-if="hovered === slotProps.item.code" class="flex items-center"
-            ><button
-              class="btn-link"
-              @click.stop="setCurrentItem(slotProps.item)"
-            >
-              <i class="fas fa-pencil-alt fa-fw"></i></button
-          ></span>
-          <span v-else>&nbsp;</span>
-        </p>
+      </template>
+      <template v-slot:popup-menu="slotProps">
+        <span
+          :class="hovered === slotProps.item.code ? 'flex' : 'flex md:hidden'"
+          class="items-center"
+        >
+          <popup-menu-vue
+            :object-code="slotProps.item.code"
+            direction="left"
+            @closeMenu="hovered = null"
+          >
+            <template v-slot:menuItems>
+              <button @click="setCurrentItem(slotProps.item)">
+                <i class="fas fa-pencil-alt fa-fw"></i>Edit
+              </button>
+            </template>
+          </popup-menu-vue>
+        </span>
       </template>
     </display-table-component>
 
@@ -42,12 +50,15 @@
 import EditObjectModal from '~/components/layouts/EditObjectModal'
 import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
 import NewRole from '~/components/contacts/NewRole'
+import PopupMenuVue from '~/components/layouts/PopupMenu'
+
 export default {
   name: 'RolesList',
   components: {
     NewRole,
     DisplayTableComponent,
     EditObjectModal,
+    PopupMenuVue,
   },
   data() {
     return {

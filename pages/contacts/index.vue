@@ -3,63 +3,74 @@
     <display-table-component
       :items="contacts"
       which="contacts"
-      height-of-row="md:h-20"
       @hovered="hovered = $event"
     >
       <template v-slot:title>Contacts</template>
       <template v-slot:button
         ><nuxt-link :to="{ name: 'contacts-roles' }">
-          <button class="btn-primary w-16 mr-3">Roles</button></nuxt-link
+          <button class="btn-primary px-5 mr-3">Roles</button></nuxt-link
         ></template
       >
       <template v-slot:titleContent>
-        <p class="w-3/12">Name</p>
-        <p class="w-2/12">Gender</p>
-        <p class="w-2/12">Birth Date</p>
-        <p class="w-3/12">Contact</p>
-        <p class="w-1/12">Job History</p>
+        <p class="w-4/12">Name</p>
+        <p class="w-2/12">Demographics</p>
+        <p class="w-2/12">Email</p>
+        <p class="w-2/12">Phone</p>
+        <p class="w-1/12 text-center">Job History</p>
       </template>
+      <template v-slot:titleContentSmall>Contacts</template>
       <template v-slot:content="slotProps"
-        ><p class="w-full md:w-3/12 md:pl-1">
+        ><p class="w-full md:w-4/12 mb-1 md:mb-0">
           {{ slotProps.item.displayName }}
         </p>
-        <p class="w-full md:w-2/12 md:pl-1">
+        <p class="w-full md:w-2/12 mb-1 md:mb-0">
           <span v-if="slotProps.item.gender === 'M'">Male</span>
           <span v-else-if="slotProps.item.gender === 'F'">Female</span>
-          <span v-else>Unspecified</span>
+          <span v-if="calculateAge(slotProps.item.dob) !== 0"
+            >{{ calculateAge(slotProps.item.dob) }}
+          </span>
         </p>
-        <p class="w-full md:w-2/12 md:pl-1">{{ slotProps.item.dob }}</p>
-        <p class="w-full md:w-3/12 md:pl-1 flex flex-col">
-          <span v-if="slotProps.item.email">{{ slotProps.item.email }}</span>
 
+        <p class="w-full md:w-2/12 mb-1 md:mb-0">
+          <span v-if="slotProps.item.email">{{ slotProps.item.email }}</span>
+        </p>
+        <p class="w-full md:w-2/12 mb-1 md:mb-0">
           <span v-if="slotProps.item.contactNumber !== 0"
             >{{ slotProps.item.countryExtension }}
             {{ slotProps.item.contactNumber }}</span
           >
         </p>
 
-        <p class="w-11/12 md:w-1/12 md:pl-5">
+        <p class="w-full md:w-1/12 md:justify-center flex mb-1 md:mb-0">
           <nuxt-link
-            class="btn-round-primary px-3"
+            class="btn-table"
             :to="{
               name: 'contacts-jobs-id',
               params: { id: slotProps.item.code },
             }"
             @click.stop.native
-            ><span>{{ slotProps.item.jobCount }}</span
-            ><span class="inline-block md:hidden">&nbsp;Jobs</span>
+            >{{ slotProps.item.jobCount }}
+            <span class="flex md:hidden">&nbsp; Jobs</span>
           </nuxt-link>
         </p>
-        <p class="w-1/12 flex justify-end">
-          <span v-if="hovered === slotProps.item.code" class="flex items-center"
-            ><button
-              class="btn-link"
-              @click.stop="setCurrentItem(slotProps.item)"
-            >
-              <i class="fas fa-pencil-alt fa-fw"></i></button
-          ></span>
-          <span v-else>&nbsp;</span>
-        </p>
+      </template>
+      <template v-slot:popup-menu="slotProps">
+        <span
+          :class="hovered === slotProps.item.code ? 'flex' : 'flex md:hidden'"
+          class="items-center"
+        >
+          <popup-menu-vue
+            :object-code="slotProps.item.code"
+            direction="left"
+            @closeMenu="hovered = null"
+          >
+            <template v-slot:menuItems>
+              <button @click="setCurrentItem(slotProps.item)">
+                <i class="fas fa-pencil-alt fa-fw"></i>Edit
+              </button>
+            </template>
+          </popup-menu-vue>
+        </span>
       </template>
     </display-table-component>
 
@@ -74,15 +85,19 @@
 </template>
 
 <script>
+import moment from 'moment'
 import EditObjectModal from '~/components/layouts/EditObjectModal'
 import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
 import NewContact from '~/components/contacts/NewContact'
+import PopupMenuVue from '~/components/layouts/PopupMenu'
+
 export default {
   name: 'ContactsList',
   components: {
     NewContact,
     DisplayTableComponent,
     EditObjectModal,
+    PopupMenuVue,
   },
   data() {
     return {
@@ -113,6 +128,9 @@ export default {
   methods: {
     setCurrentItem(item) {
       this.$store.dispatch('setCurrentItemToBeEdited', item)
+    },
+    calculateAge(dob) {
+      return moment().diff(moment(dob), 'y')
     },
   },
 }

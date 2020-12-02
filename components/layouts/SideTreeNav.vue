@@ -1,17 +1,18 @@
 <template>
   <div class="flex flex-col relative mb-2 md:mb-0">
-    <div
-      class="flex items-center font-bold justify-between py-2 mb-2 px-2 bg-gray-100"
-      :class="isCollapsed ? null : 'border-b border-gray-200'"
+    <button
+      class="flex items-center font-bold justify-between py-2 mb-2 px-2 bg-gray-100 focus:outline-none border-b border-gray-200"
+      :class="isCollapsed ? 'shadow' : null"
+      @click="isCollapsed = !isCollapsed"
     >
       <slot name="title"></slot>
-      <button class="btn-link" @click="isCollapsed = !isCollapsed">
+      <button class="btn-link">
         <i
           class="fas"
           :class="isCollapsed ? 'fa-caret-down' : 'fa-caret-up'"
         ></i>
       </button>
-    </div>
+    </button>
     <div v-if="!isCollapsed">
       <button
         class="tree-view-parent-button"

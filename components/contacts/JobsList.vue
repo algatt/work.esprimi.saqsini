@@ -18,36 +18,44 @@
         ></template
       >
       <template v-slot:titleContent>
-        <p class="w-3/12">Company</p>
+        <p class="w-4/12">Company</p>
         <p class="w-3/12">Department</p>
         <p class="w-3/12">Role</p>
         <p class="w-2/12">Active</p>
       </template>
+      <template v-slot:titleContentSmall>Job Details</template>
       <template v-slot:content="slotProps"
-        ><p class="w-full md:w-3/12 md:pl-1">
+        ><p class="w-full md:w-4/12 md:mb-0 mb-1">
           {{ slotProps.item.companyName }}
         </p>
-        <p class="w-full md:w-3/12 md:pl-1">
+        <p class="w-full md:w-3/12 md:mb-0 mb-1">
           {{ slotProps.item.departmentName }}
         </p>
-        <p class="w-full md:w-3/12 md:pl-1">
+        <p class="w-full md:w-3/12 md:mb-0 mb-1">
           {{ slotProps.item.roleName }}
         </p>
-        <p class="w-11/12 md:w-2/12 md:pl-1">
+        <p class="w-full md:w-2/12 md:mb-0 mb-1">
           <span v-if="slotProps.item.flags.includes('ONGOING')">Active</span>
           <span v-else>Stopped</span>
         </p>
-
-        <p class="w-1/12 flex justify-end">
-          <span v-if="hovered === slotProps.item.code" class="flex items-center"
-            ><button
-              class="btn-link"
-              @click.stop="setCurrentItem(slotProps.item)"
-            >
-              <i class="fas fa-pencil-alt fa-fw"></i></button
-          ></span>
-          <span v-else>&nbsp;</span>
-        </p>
+      </template>
+      <template v-slot:popup-menu="slotProps">
+        <span
+          :class="hovered === slotProps.item.code ? 'flex' : 'flex md:hidden'"
+          class="items-center"
+        >
+          <popup-menu-vue
+            :object-code="slotProps.item.code"
+            direction="left"
+            @closeMenu="hovered = null"
+          >
+            <template v-slot:menuItems>
+              <button @click="setCurrentItem(slotProps.item)">
+                <i class="fas fa-pencil-alt fa-fw"></i>Edit
+              </button>
+            </template>
+          </popup-menu-vue>
+        </span>
       </template>
 
       <template v-if="disableNewButton" v-slot:extra>
@@ -86,9 +94,11 @@
 import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
 import EditObjectModal from '~/components/layouts/EditObjectModal'
 import NewJob from '~/components/contacts/NewJob'
+import PopupMenuVue from '~/components/layouts/PopupMenu'
+
 export default {
   name: 'JobsList',
-  components: { DisplayTableComponent, EditObjectModal, NewJob },
+  components: { DisplayTableComponent, EditObjectModal, NewJob, PopupMenuVue },
   props: {
     contacts: {
       type: Array,

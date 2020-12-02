@@ -44,9 +44,7 @@
         </p>
 
         <p class="w-6/12 md:w-2/12 md:justify-center flex mb-1 md:mb-0">
-          <button
-            class="bg-primary rounded px-1 text-white hover:bg-primary-darker transition duration-300 flex"
-          >
+          <button class="btn-table">
             {{ slotProps.item.responses
             }}<span class="flex md:hidden">&nbsp; Responses</span>
           </button>
@@ -76,10 +74,7 @@
               <button @click="setCurrentItem(slotProps.item)">
                 <i class="fas fa-pencil-alt fa-fw"></i>Edit
               </button>
-              <button @click="setCurrentItem(slotProps.item)">
-                <i class="fas fa-pencil-alt fa-fw"></i>Edit
-              </button></template
-            >
+            </template>
           </popup-menu-vue>
         </span>
       </template>
