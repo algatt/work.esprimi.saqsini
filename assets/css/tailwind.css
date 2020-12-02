@@ -136,3 +136,12 @@ body {
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
 }
+
+
+.popup-menu-button {
+  @apply flex justify-start items-center w-9/12 mx-auto;
+}
+
+.popup-menu-button i {
+  @apply text-gray-400 mr-2;
+}

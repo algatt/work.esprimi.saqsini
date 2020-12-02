@@ -28,7 +28,9 @@
           >
             <template v-slot:menuItems>
               <button @click="setCurrentItem(slotProps.item)">
-                <i class="fas fa-pencil-alt fa-fw"></i>Edit
+                <span class="popup-menu-button">
+                  <i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit</span
+                >
               </button>
             </template>
           </popup-menu-vue>
