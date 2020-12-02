@@ -93,11 +93,11 @@
         @modalClosed="modalClosed"
       >
         <template v-slot:content>
-          <new-category
+          <new-survey
             v-if="!objectToCreate"
-            :selected-sector-code="selectedParentCode"
-            :selected-industry-code="selectedChildCode"
-          ></new-category>
+            :selected-category-code="selectedParentCode"
+            :selected-subcategory-code="selectedChildCode"
+          ></new-survey>
           <new-category
             v-else-if="objectToCreate === 'category'"
           ></new-category>
@@ -112,7 +112,7 @@
 </template>
 
 <script>
-// import EditObjectModal from '~/components/layouts/EditObjectModal'
+import EditObjectModal from '~/components/layouts/EditObjectModal'
 import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
 import SideTreeNav from '~/components/layouts/SideTreeNav'
 import NewCategory from '~/components/surveys/NewCategory'
@@ -129,7 +129,7 @@ export default {
     SideTreeNav,
     DisplayTableComponent,
     Spinner,
-    //  EditObjectModal,
+    EditObjectModal,
   },
   data() {
     return {

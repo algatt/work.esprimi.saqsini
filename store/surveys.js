@@ -93,37 +93,37 @@ export const actions = {
   //   })
   // },
   //
-  // newSurvey({ commit, dispatch }, survey) {
-  //   return new Promise((resolve, reject) => {
-  //     this.$axios
-  //       .post(
-  //         '/builder/instance/',
-  //
-  //         survey,
-  //         {
-  //           headers: {
-  //             'Content-Type': 'application/json',
-  //           },
-  //         }
-  //       )
-  //       .then((response) => {
-  //         // const question = {
-  //         //   surveyCode: response.data.code,
-  //         //   ordinalPosition: 1,
-  //         //   name: 'Page 1',
-  //         //   text: [{ language: response.data.defaultLanguage, text: 'Page 1' }],
-  //         //   flags: ['SECTION'],
-  //         // }
-  //         //
-  //         // dispatch('questions/newQuestion', question, { root: true })
-  //         // dispatch('categories/getCategories', false, { root: true })
-  //         resolve()
-  //       })
-  //       .catch((error) => {
-  //         reject(error)
-  //       })
-  //   })
-  // },
+  newSurvey({ commit, dispatch }, survey) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post(
+          '/builder/instance/',
+
+          survey,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+        .then(async (response) => {
+          // const question = {
+          //   surveyCode: response.data.code,
+          //   ordinalPosition: 1,
+          //   name: 'Page 1',
+          //   text: [{ language: response.data.defaultLanguage, text: 'Page 1' }],
+          //   flags: ['SECTION'],
+          // }
+          //
+          // dispatch('questions/newQuestion', question, { root: true })
+          await dispatch('categories/getCategories', false, { root: true })
+          resolve(response.data)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
   //
   // updateSurveyDetails({ commit, dispatch }, survey) {
   //   return new Promise((resolve, reject) => {

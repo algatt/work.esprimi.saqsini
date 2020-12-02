@@ -29,6 +29,8 @@
 </template>
 
 <script>
+import { parseSurveyToAPI } from '~/helpers/parseSurveyObjects'
+
 export default {
   name: 'EditObjectModalBottomPart',
   props: {
@@ -62,8 +64,12 @@ export default {
     },
     saveItem() {
       if (this.form.code === -1) {
+        let obj = this.form
+        if (this.which === 'surveys') {
+          obj = parseSurveyToAPI(obj)
+        }
         this.$store
-          .dispatch('newItem', { which: this.which, item: this.form })
+          .dispatch('newItem', { which: this.which, item: obj })
           .then(() => {
             this.cancelCurrentItem()
           })
