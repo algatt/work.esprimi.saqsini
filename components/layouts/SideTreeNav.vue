@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col relative mb-2 md:mb-0">
     <button
-      class="flex items-center font-bold justify-between py-2 mb-2 px-2 bg-gray-100 focus:outline-none border-b border-gray-200"
+      class="flex items-center font-bold justify-between py-2 mb-2 px-2 bg-gray-50 focus:outline-none border-b border-gray-200"
       :class="isCollapsed ? 'shadow' : null"
       @click="isCollapsed = !isCollapsed"
     >
