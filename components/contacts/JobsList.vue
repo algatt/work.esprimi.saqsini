@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!loading">
     <display-table-component
       :items="jobs"
       :disable-new-button="disableNewButton"
@@ -88,6 +88,7 @@
       </edit-object-modal>
     </transition>
   </div>
+  <spinner v-else></spinner>
 </template>
 
 <script>
@@ -95,10 +96,17 @@ import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
 import EditObjectModal from '~/components/layouts/EditObjectModal'
 import NewJob from '~/components/contacts/NewJob'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
+import Spinner from '~/components/layouts/Spinner'
 
 export default {
   name: 'JobsList',
-  components: { DisplayTableComponent, EditObjectModal, NewJob, PopupMenuVue },
+  components: {
+    Spinner,
+    DisplayTableComponent,
+    EditObjectModal,
+    NewJob,
+    PopupMenuVue,
+  },
   props: {
     contacts: {
       type: Array,

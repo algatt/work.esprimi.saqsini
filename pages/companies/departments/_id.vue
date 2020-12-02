@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!loading">
     <display-table-component
       :items="departments"
       which="departments"
@@ -44,6 +44,7 @@
       </edit-object-modal>
     </transition>
   </div>
+  <spinner v-else></spinner>
 </template>
 
 <script>
@@ -51,10 +52,12 @@ import EditObjectModal from '~/components/layouts/EditObjectModal'
 import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
 import NewDepartment from '~/components/contacts/NewDepartment'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
+import Spinner from '~/components/layouts/Spinner'
 
 export default {
   name: 'ContactsList',
   components: {
+    Spinner,
     NewDepartment,
     DisplayTableComponent,
     EditObjectModal,

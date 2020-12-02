@@ -86,7 +86,6 @@ export const actions = {
     commit('emptySelectedItems')
   },
   deleteSelectedItems({ dispatch, state, commit }, which) {
-    commit('setLoading', true)
     return new Promise((resolve, reject) => {
       const codesToDelete = state.selectedItems.map((item) => {
         return item.code
@@ -99,9 +98,6 @@ export const actions = {
         })
         .catch((error) => {
           reject(error)
-        })
-        .finally(() => {
-          commit('setLoading', false)
         })
 
       async function deleteMultipleByCode() {

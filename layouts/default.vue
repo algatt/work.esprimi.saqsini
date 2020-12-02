@@ -30,10 +30,5 @@ export default {
       menuShow: true,
     }
   },
-  computed: {
-    loading() {
-      return this.$store.state.loading
-    },
-  },
 }
 </script>

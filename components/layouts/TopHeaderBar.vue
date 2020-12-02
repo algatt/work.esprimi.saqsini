@@ -59,7 +59,7 @@ export default {
       required: true,
     },
     hasSideNav: {
-      type: Object,
+      type: Array,
       required: false,
       default: null,
     },

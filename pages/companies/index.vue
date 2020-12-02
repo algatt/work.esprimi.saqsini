@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-wrap">
+  <div v-if="!loading" class="flex flex-wrap">
     <display-table-component
       :items="companies"
       which="companies"
@@ -115,6 +115,7 @@
       </edit-object-modal>
     </transition>
   </div>
+  <spinner v-else></spinner>
 </template>
 
 <script>
@@ -125,10 +126,12 @@ import SideTreeNav from '~/components/layouts/SideTreeNav'
 import NewIndustry from '~/components/contacts/NewIndustry'
 import NewSector from '~/components/contacts/NewSector'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
+import Spinner from '~/components/layouts/Spinner'
 
 export default {
   name: 'CompaniesList',
   components: {
+    Spinner,
     NewSector,
     NewIndustry,
     SideTreeNav,

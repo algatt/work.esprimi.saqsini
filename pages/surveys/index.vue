@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-wrap">
+  <div v-if="!loading" class="flex flex-wrap">
     <display-table-component
       :items="surveys"
       which="surveys"
@@ -108,6 +108,7 @@
       </edit-object-modal>
     </transition>
   </div>
+  <spinner v-else></spinner>
 </template>
 
 <script>
@@ -117,6 +118,7 @@ import SideTreeNav from '~/components/layouts/SideTreeNav'
 import NewCategory from '~/components/surveys/NewCategory'
 import NewSubcategory from '~/components/surveys/NewSubcategory'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
+import Spinner from '~/components/layouts/Spinner'
 
 export default {
   name: 'CompaniesList',
@@ -126,6 +128,7 @@ export default {
     NewCategory,
     SideTreeNav,
     DisplayTableComponent,
+    Spinner,
     //  EditObjectModal,
   },
   data() {

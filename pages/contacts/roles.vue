@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!loading">
     <display-table-component
       :items="roles"
       which="roles"
@@ -44,6 +44,7 @@
       </edit-object-modal>
     </transition>
   </div>
+  <spinner v-else></spinner>
 </template>
 
 <script>
@@ -51,10 +52,12 @@ import EditObjectModal from '~/components/layouts/EditObjectModal'
 import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
 import NewRole from '~/components/contacts/NewRole'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
+import Spinner from '~/components/layouts/Spinner'
 
 export default {
   name: 'RolesList',
   components: {
+    Spinner,
     NewRole,
     DisplayTableComponent,
     EditObjectModal,
