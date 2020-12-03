@@ -52,12 +52,16 @@
         <p
           class="w-6/12 md:w-2/12 md:justify-center flex justify-end md:justify-start mb-1 md:mb-0"
         >
-          <button
-            class="bg-primary rounded px-1 text-white hover:bg-primary-darker transition duration-300 flex"
+          <nuxt-link
+            :to="{ name: 'questions-id', params: { id: slotProps.item.code } }"
           >
-            {{ slotProps.item.questions }}
-            <span class="flex md:hidden">&nbsp; Questions</span>
-          </button>
+            <button
+              class="bg-primary rounded px-1 text-white hover:bg-primary-darker transition duration-300 flex"
+            >
+              {{ slotProps.item.questions }}
+              <span class="flex md:hidden">&nbsp; Questions</span>
+            </button>
+          </nuxt-link>
         </p>
       </template>
       <template v-slot:popup-menu="slotProps">
@@ -92,7 +96,7 @@
               </button>
               <button v-else @click="flagForDeletion(slotProps.item)">
                 <span class="popup-menu-button">
-                  <i class="far fa-flag fa-fw fa-sm"></i>Mark for Deletion</span
+                  <i class="fas fa-flag fa-fw fa-sm"></i>Mark for Deletion</span
                 >
               </button>
             </template>

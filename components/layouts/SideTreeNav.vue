@@ -16,11 +16,7 @@
     <div v-if="!isCollapsed">
       <button
         class="tree-view-parent-button"
-        :class="
-          selectedParent === -1
-            ? 'text-primary border-l-2 border-primary'
-            : 'text-gray-600'
-        "
+        :class="selectedParent === -1 ? 'text-primary' : 'text-gray-600'"
         @click="selectParent({ code: -1 })"
       >
         <span
@@ -39,11 +35,6 @@
         v-for="parentItem in parents"
         :key="parentItem.code"
         class="flex flex-col"
-        :class="
-          selectedParent === parentItem.code
-            ? 'border-l-2 border-primary'
-            : null
-        "
       >
         <button
           class="tree-view-parent-button"
