@@ -1,5 +1,5 @@
 import qs from 'qs'
-
+import moment from 'moment'
 export const state = () => ({
   items: [],
 })
@@ -48,51 +48,51 @@ export const actions = {
   //   })
   // },
   //
-  // getSurveysCategory({ state, commit }, { limit, offset, code }) {
-  //   return new Promise((resolve, reject) => {
-  //     this.$axios
-  //       .get(
-  //         `/builder/instance/all?limit=${limit}&offset=${offset}&categoryCode=${code}`
-  //       )
-  //       .then((response) => {
-  //         commit(
-  //           'setItems',
-  //           {
-  //             which: 'surveys',
-  //             items: response.data,
-  //           },
-  //           { root: true }
-  //         )
-  //         resolve()
-  //       })
-  //       .catch((error) => {
-  //         reject(error)
-  //       })
-  //   })
-  // },
-  //
-  // getSurveysSubcategory({ state, commit }, { limit, offset, code }) {
-  //   return new Promise((resolve, reject) => {
-  //     this.$axios
-  //       .get(
-  //         `/builder/instance/all?limit=${limit}&offset=${offset}&subCategoryCode=${code}`
-  //       )
-  //       .then((response) => {
-  //         commit(
-  //           'setItems',
-  //           {
-  //             which: 'surveys',
-  //             items: response.data,
-  //           },
-  //           { root: true }
-  //         )
-  //       })
-  //       .catch((error) => {
-  //         reject(error)
-  //       })
-  //   })
-  // },
-  //
+  getSurveysCategory({ state, commit }, { limit, offset, code }) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .get(
+          `/builder/instance/all?limit=${limit}&offset=${offset}&categoryCode=${code}`
+        )
+        .then((response) => {
+          commit(
+            'setItems',
+            {
+              which: 'surveys',
+              items: response.data,
+            },
+            { root: true }
+          )
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  getSurveysSubcategory({ state, commit }, { limit, offset, code }) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .get(
+          `/builder/instance/all?limit=${limit}&offset=${offset}&subCategoryCode=${code}`
+        )
+        .then((response) => {
+          commit(
+            'setItems',
+            {
+              which: 'surveys',
+              items: response.data,
+            },
+            { root: true }
+          )
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
   newSurvey({ commit, dispatch }, survey) {
     return new Promise((resolve, reject) => {
       this.$axios
@@ -173,79 +173,86 @@ export const actions = {
     )
     await this.dispatch('categories/getCategories', false, { root: true })
   },
-  //
-  // flagForRemoval({ commit, dispatch }, survey) {
-  //   return new Promise((resolve, reject) => {
-  //     this.$axios
-  //       .patch(`/builder/instance/${survey.code}/flagForRemoval`)
-  //       .then(() => {
-  //         survey.flags = ['FLAGGED_FOR_REMOVAL'] // TODO:  check if ffr only
-  //         // commit(
-  //         //   'updateItem',
-  //         //   {
-  //         //     which: 'surveys',
-  //         //     item: survey,
-  //         //   },
-  //         //   { root: true }
-  //         // )
-  //         resolve()
-  //       })
-  //       .catch((error) => {
-  //         reject(error)
-  //       })
-  //   })
-  // },
-  //
-  // unFlagForRemoval({ commit, dispatch }, survey) {
-  //   return new Promise((resolve, reject) => {
-  //     this.$axios
-  //       .patch(`/builder/instance/${survey.code}/unflagForRemoval`)
-  //       .then(() => {
-  //         survey.flags = ['ACTIVE'] // TODO: check if active only
-  //         commit(
-  //           'updateItem',
-  //           {
-  //             which: 'surveys',
-  //             item: survey,
-  //           },
-  //           { root: true }
-  //         )
-  //         resolve()
-  //       })
-  //       .catch((error) => {
-  //         reject(error)
-  //       })
-  //   })
-  // },
-  //
-  // duplicateSurvey({ commit }, survey) {
-  //   survey.name = survey.name + '_Copy_' + this.$moment().format('YYYY_MM_DD')
-  //   return new Promise((resolve, reject) => {
-  //     this.$axios
-  //       .post(
-  //         '/api3/instance/' + survey.code,
-  //
-  //         survey,
-  //         {
-  //           headers: {
-  //             'Content-Type': 'application/json',
-  //           },
-  //         }
-  //       )
-  //       .then((response) => {
-  //         commit(
-  //           'newItem',
-  //           { which: 'surveys', item: response.data },
-  //           { root: true }
-  //         )
-  //         resolve()
-  //       })
-  //       .catch((error) => {
-  //         reject(error)
-  //       })
-  //   })
-  // },
-  //
+
+  flagForRemoval({ commit, dispatch }, survey) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .patch(`/builder/instance/${survey.code}/flagForRemoval`)
+        .then(() => {
+          survey.flags = survey.flags.filter((item) => {
+            return item !== 'ACTIVE'
+          })
+          survey.flags.push('FLAGGED_FOR_REMOVAL')
+          commit(
+            'updateItem',
+            {
+              which: 'surveys',
+              item: survey,
+            },
+            { root: true }
+          )
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  unFlagForRemoval({ commit, dispatch }, survey) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .patch(`/builder/instance/${survey.code}/unflagForRemoval`)
+        .then(() => {
+          survey.flags = survey.flags.filter((item) => {
+            return item !== 'FLAGGED_FOR_REMOVAL'
+          })
+
+          commit(
+            'updateItem',
+            {
+              which: 'surveys',
+              item: survey,
+            },
+            { root: true }
+          )
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  duplicateSurvey({ commit }, survey) {
+    survey = JSON.parse(JSON.stringify(survey))
+    survey.name = survey.name + '_Copy_' + moment().format('YYYY_MM_DD')
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post(
+          '/builder/instance/' + survey.code,
+
+          survey,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+        .then((response) => {
+          commit(
+            'newItem',
+            { which: 'surveys', item: response.data },
+            { root: true }
+          )
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
   deleteSurvey({ commit, dispatch }, code) {
     return new Promise((resolve, reject) => {
       this.$axios

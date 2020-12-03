@@ -39,6 +39,52 @@ export const actions = {
     })
   },
 
+  getCompaniesByIndustry({ commit }, { limit, offset, code }) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .get(
+          `/contact/company/byIndustry?code=${code}&limit=${limit}&offset=${offset}`
+        )
+        .then((response) => {
+          commit(
+            'setItems',
+            {
+              which: 'companies',
+              items: response.data,
+            },
+            { root: true }
+          )
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  getCompaniesBySector({ commit }, { limit, offset, code }) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .get(
+          `/contact/company/bySector?code=${code}&limit=${limit}&offset=${offset}`
+        )
+        .then((response) => {
+          commit(
+            'setItems',
+            {
+              which: 'companies',
+              items: response.data,
+            },
+            { root: true }
+          )
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
   deleteCompany({ dispatch, commit }, code) {
     return new Promise((resolve, reject) => {
       this.$axios

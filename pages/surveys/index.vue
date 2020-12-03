@@ -76,6 +76,25 @@
                   <i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit</span
                 >
               </button>
+              <button @click="duplicateSurvey(slotProps.item)">
+                <span class="popup-menu-button">
+                  <i class="fas fa-copy fa-fw fa-sm"></i>Duplicate</span
+                >
+              </button>
+              <button
+                v-if="slotProps.item.flags.includes('FLAGGED_FOR_REMOVAL')"
+                @click="unflagFromDeletion(slotProps.item)"
+              >
+                <span class="popup-menu-button">
+                  <i class="fas fa-trash-restore-alt fa-fw fa-sm"></i
+                  >Restore</span
+                >
+              </button>
+              <button v-else @click="flagForDeletion(slotProps.item)">
+                <span class="popup-menu-button">
+                  <i class="far fa-flag fa-fw fa-sm"></i>Mark for Deletion</span
+                >
+              </button>
             </template>
           </popup-menu-vue>
         </span>
@@ -163,21 +182,7 @@ export default {
       return this.$store.state.currentItemToBeEdited
     },
     surveys() {
-      let tempResults = this.$store.getters.getItems('surveys')
-
-      if (this.selectedParentCode === -1) return tempResults
-
-      if (this.selectedChildCode) {
-        tempResults = tempResults.filter((el) => {
-          return el.subCategoryCode === this.selectedChildCode
-        })
-      } else {
-        tempResults = tempResults.filter((el) => {
-          return el.categoryCode === this.selectedParentCode
-        })
-      }
-
-      return tempResults
+      return this.$store.getters.getItems('surveys')
     },
   },
   created() {
@@ -196,9 +201,21 @@ export default {
     parentChanged(ev) {
       this.selectedParentCode = ev
       this.selectedChildCode = null
+      if (this.selectedParentCode !== null && this.selectedParentCode !== -1)
+        this.$store.dispatch('surveys/getSurveysCategory', {
+          limit: 1000,
+          offset: 0,
+          code: this.selectedParentCode,
+        })
     },
     childChanged(ev) {
       this.selectedChildCode = ev
+      if (this.selectedChildCode !== null && this.selectedChildCode !== -1)
+        this.$store.dispatch('surveys/getSurveysSubcategory', {
+          limit: 1000,
+          offset: 0,
+          code: this.selectedChildCode,
+        })
     },
     newParent(ev) {
       this.objectToCreate = 'category'
@@ -210,6 +227,15 @@ export default {
     },
     modalClosed() {
       this.objectToCreate = null
+    },
+    flagForDeletion(survey) {
+      this.$store.dispatch('surveys/flagForRemoval', survey)
+    },
+    unflagFromDeletion(survey) {
+      this.$store.dispatch('surveys/unFlagForRemoval', survey)
+    },
+    duplicateSurvey(survey) {
+      this.$store.dispatch('surveys/duplicateSurvey', survey)
     },
   },
 }

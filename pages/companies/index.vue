@@ -203,9 +203,21 @@ export default {
     parentChanged(ev) {
       this.selectedParentCode = ev
       this.selectedChildCode = null
+      if (this.selectedParentCode !== null && this.selectedParentCode !== -1)
+        this.$store.dispatch('companies/getCompaniesBySector', {
+          limit: 1000,
+          offset: 0,
+          code: this.selectedParentCode,
+        })
     },
     childChanged(ev) {
       this.selectedChildCode = ev
+      if (this.selectedChildCode !== null && this.selectedChildCode !== -1)
+        this.$store.dispatch('companies/getCompaniesByIndustry', {
+          limit: 1000,
+          offset: 0,
+          code: this.selectedChildCode,
+        })
     },
     newParent(ev) {
       this.objectToCreate = 'sector'
