@@ -97,21 +97,25 @@ export function parseQuestionToApi(question) {
 
   temp.text = [{ language: PREFERRED_LANGUAGE, text: temp.text }]
 
-  const formOptions = temp.options
-  temp.options = []
-  formOptions.forEach((el) => {
-    temp.options.push({
-      ordinalPosition: el.ordinalPosition,
-      text: [{ language: PREFERRED_LANGUAGE, text: el.text }],
-      value: el.text,
-      surveyOptions: null,
+  if (temp.options) {
+    const formOptions = temp.options
+    temp.options = []
+    formOptions.forEach((el) => {
+      temp.options.push({
+        ordinalPosition: el.ordinalPosition,
+        text: [{ language: PREFERRED_LANGUAGE, text: el.text }],
+        value: el.text,
+        surveyOptions: null,
+      })
     })
-  })
+  }
 
-  temp.surveyOptions = JSON.stringify({
-    allowOther: temp.allowOther,
-    allowMultiple: temp.allowMultiple,
-  })
+  if (temp.surveyOptions) {
+    temp.surveyOptions = JSON.stringify({
+      allowOther: temp.allowOther,
+      allowMultiple: temp.allowMultiple,
+    })
+  }
 
   return temp
 }

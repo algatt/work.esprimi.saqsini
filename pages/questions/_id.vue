@@ -78,7 +78,9 @@ export default {
       return this.$store.state.loading
     },
     questions() {
-      return this.$store.getters.getItems('questions')
+      return this.$store.getters.getSortedItems('questions').sort((a, b) => {
+        return a.ordinalPosition > b.ordinalPosition ? 1 : -1
+      })
     },
     survey() {
       return parseSurveyToForm(this.$store.getters.getItems('surveys'))
@@ -115,5 +117,3 @@ export default {
   },
 }
 </script>
-
-<style scoped></style>
