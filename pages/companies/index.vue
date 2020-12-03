@@ -209,6 +209,11 @@ export default {
           offset: 0,
           code: this.selectedParentCode,
         })
+      else if (this.selectedParentCode === -1)
+        this.$store.dispatch('companies/getCompanies', {
+          limit: 1000,
+          offset: 0,
+        })
     },
     childChanged(ev) {
       this.selectedChildCode = ev
