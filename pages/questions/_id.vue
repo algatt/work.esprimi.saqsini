@@ -20,12 +20,20 @@
     <div class="mt-3 w-full flex flex-col">
       <div v-for="question in questions" :key="question.code">
         <display-question :question="question"></display-question>
-        <new-question-toolbar></new-question-toolbar>
+        <new-question-toolbar @newQuestion="newQuestion"></new-question-toolbar>
       </div>
       <div v-if="questions.length === 0">
         <new-question-toolbar @newQuestion="newQuestion"></new-question-toolbar>
       </div>
     </div>
+
+    <transition name="fade">
+      <edit-object-modal v-if="currentItemToBeEdited">
+        <template v-slot:content>
+          <new-question-generic></new-question-generic>
+        </template>
+      </edit-object-modal>
+    </transition>
   </div>
   <spinner v-else></spinner>
 </template>
@@ -35,10 +43,18 @@ import Spinner from '~/components/layouts/Spinner'
 import DisplayQuestion from '~/components/surveys/DisplayQuestion'
 import NewQuestionToolbar from '~/components/surveys/NewQuestionToolBar'
 import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
+import NewQuestionGeneric from '~/components/surveys/NewQuestionGeneric'
+import EditObjectModal from '~/components/layouts/EditObjectModal'
 
 export default {
   name: 'QuestionList',
-  components: { Spinner, DisplayQuestion, NewQuestionToolbar },
+  components: {
+    NewQuestionGeneric,
+    Spinner,
+    DisplayQuestion,
+    NewQuestionToolbar,
+    EditObjectModal,
+  },
   data() {
     return {
       menu: [
@@ -60,6 +76,9 @@ export default {
     survey() {
       return parseSurveyToForm(this.$store.getters.getItems('surveys'))
     },
+    currentItemToBeEdited() {
+      return this.$store.state.currentItemToBeEdited
+    },
   },
   created() {
     this.$store.dispatch('setLoading', true)
@@ -76,7 +95,10 @@ export default {
   },
   methods: {
     newQuestion(type) {
-      alert(type)
+      this.$store.dispatch('setCurrentItemToBeEdited', {
+        code: -1,
+        flags: [type],
+      })
     },
   },
 }
