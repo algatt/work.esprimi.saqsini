@@ -1,7 +1,12 @@
 <template>
-  <div class="relative">
-    <button class="btn-link-rounded relative" @click.stop="showMenu = true">
-      <i class="fas fa-ellipsis-v fa-fw"></i>
+  <div id="popupMenuRoot" class="relative">
+    <button
+      class="relative flex items-center justify-center"
+      :class="$slots.menuButton ? null : 'btn-link-rounded'"
+      @click.stop="showMenu = true"
+    >
+      <slot name="menuButton"></slot>
+      <i v-if="!$slots.menuButton" class="fas fa-ellipsis-v fa-fw"></i>
     </button>
     <button
       v-if="showMenu"
@@ -50,10 +55,17 @@ export default {
   },
   computed: {
     styleForMenu() {
+      const popupMenuRootWidth = document.getElementById('popupMenuRoot')
+        .clientWidth
+
       const width = `width: ${this.width}px`
-      const position =
-        this.direction === 'left' ? `right: ${5}px` : `left: ${5}px`
-      const top = `top: ${25}px`
+      let position = `left: ${-Math.abs(popupMenuRootWidth - this.width) / 2}px`
+      if (this.direction === 'left') position = `right: ${5}px`
+      else if (this.direction === 'right') position = `left: ${5}px`
+
+      // const position =
+      //   this.direction === 'left' ? `right: ${5}px` : `left: ${5}px`
+      const top = `top: ${30}px`
       return `${width}; ${position}; ${top}`
     },
   },

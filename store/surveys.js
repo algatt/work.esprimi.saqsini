@@ -27,27 +27,27 @@ export const actions = {
     })
   },
 
-  // getSurveyByCode({ state, dispatch, commit }, code) {
-  //   return new Promise((resolve, reject) => {
-  //     this.$axios
-  //       .get('/builder/instance?code=' + code)
-  //       .then((response) => {
-  //         commit(
-  //           'setItems',
-  //           {
-  //             which: 'surveys',
-  //             items: response,
-  //           },
-  //           { root: true }
-  //         )
-  //         resolve()
-  //       })
-  //       .catch((error) => {
-  //         reject(error)
-  //       })
-  //   })
-  // },
-  //
+  getSurveyByCode({ state, dispatch, commit }, code) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .get(`/builder/instance?code=${code}`)
+        .then((response) => {
+          commit(
+            'setItems',
+            {
+              which: 'surveys',
+              items: response.data,
+            },
+            { root: true }
+          )
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
   getSurveysCategory({ state, commit }, { limit, offset, code }) {
     return new Promise((resolve, reject) => {
       this.$axios
