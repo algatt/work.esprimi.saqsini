@@ -28,6 +28,7 @@ export const actions = {
   },
 
   newQuestion({ commit }, question) {
+    delete question.code
     return new Promise((resolve, reject) => {
       this.$axios
         .post(

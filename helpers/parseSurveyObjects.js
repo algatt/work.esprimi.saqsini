@@ -57,3 +57,24 @@ export function parseSurveyToAPI(survey) {
 
   return temp
 }
+
+export function parseQuestionToForm(question) {
+  const temp = JSON.parse(JSON.stringify(question))
+
+  if (!temp.defaultLanguage) temp.defaultLanguage = PREFERRED_LANGUAGE
+
+  if (temp.text) {
+    const text = temp.text.find((el) => {
+      return el.language === PREFERRED_LANGUAGE
+    })
+    temp.text = text.text
+  }
+
+  return temp
+}
+
+export function parseQuestionToApi(question) {
+  const temp = JSON.parse(JSON.stringify(question))
+  temp.text = [{ language: PREFERRED_LANGUAGE, text: temp.text }]
+  return temp
+}

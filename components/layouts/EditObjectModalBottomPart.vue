@@ -29,7 +29,10 @@
 </template>
 
 <script>
-import { parseSurveyToAPI } from '~/helpers/parseSurveyObjects'
+import {
+  parseSurveyToAPI,
+  parseQuestionToApi,
+} from '~/helpers/parseSurveyObjects'
 
 export default {
   name: 'EditObjectModalBottomPart',
@@ -64,9 +67,9 @@ export default {
     },
     saveItem() {
       let obj = this.form
-      if (this.which === 'surveys') {
-        obj = parseSurveyToAPI(obj)
-      }
+      if (this.which === 'surveys') obj = parseSurveyToAPI(obj)
+
+      if (this.which === 'questions') obj = parseQuestionToApi(obj)
 
       if (this.form.code === -1) {
         this.$store

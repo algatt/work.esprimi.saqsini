@@ -1,5 +1,22 @@
 <template>
   <div class="flex flex-col w-full md:w-10/12 pb-32">
+    <template v-if="!question.flags.includes('SECTION')">
+      <label for="inputNumber" class="label-required">Number</label>
+      <input
+        id="inputNumber"
+        v-model="form.number"
+        placeholder="Enter question number"
+        class="input"
+        @change="$v.form.number.$touch()"
+      />
+      <span v-if="!$v.form.number.$error">&nbsp;</span>
+      <span v-else>
+        <span v-if="!$v.form.number.requiredIf" class="error"
+          >The question number is required.</span
+        >
+      </span>
+    </template>
+
     <label for="inputName" class="label-required">Name</label>
     <input
       id="inputName"
@@ -29,22 +46,41 @@
         >The question text is required.</span
       >
     </span>
+
+    <edit-object-modal-bottom-part
+      :form="form"
+      which="questions"
+      :is-valid="isValid"
+    ></edit-object-modal-bottom-part>
   </div>
 </template>
 
 <script>
 import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
+import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
+import { parseQuestionToForm } from '~/helpers/parseSurveyObjects'
+
 export default {
-  name: 'NewQuestionGeneric',
+  name: 'NewQuestionMultipleChoice',
+  components: { EditObjectModalBottomPart },
   mixins: [validationMixin],
   data() {
     return {
       form: null,
     }
   },
+
   validations: {
     form: {
+      number: {
+        requiredIf(value) {
+          if (this.form.flags.includes('SECTION')) return true
+          if (!this.form.flags.includes('SECTION') && value && value !== '')
+            return true
+          return false
+        },
+      },
       name: {
         required,
       },
@@ -57,11 +93,12 @@ export default {
     question() {
       return this.$store.state.currentItemToBeEdited
     },
+    isValid() {
+      return !this.$v.$invalid
+    },
   },
   created() {
-    this.form = JSON.parse(JSON.stringify(this.question))
+    this.form = parseQuestionToForm(this.question)
   },
 }
 </script>
-
-<style scoped></style>

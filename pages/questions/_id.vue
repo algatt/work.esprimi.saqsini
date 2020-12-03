@@ -19,18 +19,25 @@
     </div>
     <div class="mt-3 w-full flex flex-col">
       <div v-for="question in questions" :key="question.code">
-        <display-question :question="question"></display-question>
-        <new-question-toolbar @newQuestion="newQuestion"></new-question-toolbar>
+        <display-question
+          :question="question"
+          @selectQuestion="chooseQuestion"
+        ></display-question>
+        <new-question-toolbar
+          @newQuestion="newQuestion($event, question.ordinalPosition + 1)"
+        ></new-question-toolbar>
       </div>
       <div v-if="questions.length === 0">
-        <new-question-toolbar @newQuestion="newQuestion"></new-question-toolbar>
+        <new-question-toolbar
+          @newQuestion="newQuestion($event, questions.length + 1)"
+        ></new-question-toolbar>
       </div>
     </div>
 
     <transition name="fade">
       <edit-object-modal v-if="currentItemToBeEdited">
         <template v-slot:content>
-          <new-question-generic></new-question-generic>
+          <new-question></new-question>
         </template>
       </edit-object-modal>
     </transition>
@@ -43,13 +50,13 @@ import Spinner from '~/components/layouts/Spinner'
 import DisplayQuestion from '~/components/surveys/DisplayQuestion'
 import NewQuestionToolbar from '~/components/surveys/NewQuestionToolBar'
 import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
-import NewQuestionGeneric from '~/components/surveys/NewQuestionGeneric'
+import NewQuestion from '~/components/surveys/NewQuestion'
 import EditObjectModal from '~/components/layouts/EditObjectModal'
 
 export default {
   name: 'QuestionList',
   components: {
-    NewQuestionGeneric,
+    NewQuestion,
     Spinner,
     DisplayQuestion,
     NewQuestionToolbar,
@@ -94,11 +101,16 @@ export default {
     })
   },
   methods: {
-    newQuestion(type) {
+    newQuestion(flag, ordinalPosition) {
       this.$store.dispatch('setCurrentItemToBeEdited', {
         code: -1,
-        flags: [type],
+        surveyCode: Number(this.$route.params.id),
+        flags: [flag],
+        ordinalPosition,
       })
+    },
+    chooseQuestion(question) {
+      this.$store.dispatch('setCurrentItemToBeEdited', question)
     },
   },
 }

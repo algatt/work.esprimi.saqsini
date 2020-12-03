@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @click="$emit('selectQuestion', question)">
     {{ question }}
   </div>
 </template>
