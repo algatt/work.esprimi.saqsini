@@ -107,15 +107,15 @@ export const actions = {
           }
         )
         .then(async (response) => {
-          // const question = {
-          //   surveyCode: response.data.code,
-          //   ordinalPosition: 1,
-          //   name: 'Page 1',
-          //   text: [{ language: response.data.defaultLanguage, text: 'Page 1' }],
-          //   flags: ['SECTION'],
-          // }
-          //
-          // dispatch('questions/newQuestion', question, { root: true })
+          const question = {
+            surveyCode: response.data.code,
+            ordinalPosition: 1,
+            name: 'Page 1',
+            text: [{ language: response.data.defaultLanguage, text: 'Page 1' }],
+            flags: ['SECTION'],
+          }
+
+          await dispatch('questions/newQuestion', question, { root: true })
           await dispatch('categories/getCategories', false, { root: true })
           resolve(response.data)
         })

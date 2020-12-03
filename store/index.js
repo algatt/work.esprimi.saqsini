@@ -24,6 +24,7 @@ const newCalls = {
   categories: 'categories/newCategory',
   subcategories: 'subcategories/newSubcategory',
   surveys: 'surveys/newSurvey',
+  questions: 'questions/newQuestion',
 }
 
 const updateCalls = {
