@@ -49,4 +49,45 @@ export const actions = {
         })
     })
   },
+
+  updateQuestion({ commit }, question) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .put(
+          '/builder/question/' + question.code,
+
+          question,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+        .then((response) => {
+          commit(
+            'updateItem',
+            { which: 'questions', item: response.data },
+            { root: true }
+          )
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  deleteQuestion({ commit }, code) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .delete('/builder/question/' + code)
+        .then((response) => {
+          commit('deleteItem', { which: 'questions', code }, { root: true })
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
 }

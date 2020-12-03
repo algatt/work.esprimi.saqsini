@@ -11,6 +11,7 @@ const deleteCalls = {
   categories: 'categories/deleteCategory',
   subcategories: 'subcategories/deleteSubcategory',
   surveys: 'surveys/deleteSurvey',
+  questions: 'questions/deleteQuestion',
 }
 
 const newCalls = {
@@ -38,6 +39,7 @@ const updateCalls = {
   categories: 'categories/updateCategory',
   subcategories: 'subcategories/updateSubcategory',
   surveys: 'surveys/updateSurvey',
+  questions: 'questions/updateQuestion',
 }
 
 export const state = () => ({

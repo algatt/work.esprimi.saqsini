@@ -70,11 +70,48 @@ export function parseQuestionToForm(question) {
     temp.text = text.text
   }
 
+  if (temp.options) {
+    const options = temp.options
+    temp.options = []
+    options.forEach((el) => {
+      const text = el.text.find((el2) => {
+        return el2.language === PREFERRED_LANGUAGE
+      }).text
+      temp.options.push({ ordinalPosition: el.ordinalPosition, text })
+    })
+  }
+
+  if (temp.surveyOptions) {
+    const surveyOptions = JSON.parse(temp.surveyOptions)
+    console.log(surveyOptions)
+    temp.allowMultiple = surveyOptions.allowMultiple
+    temp.allowOther = surveyOptions.allowOther
+    delete temp.surveyOptions
+  }
+
   return temp
 }
 
 export function parseQuestionToApi(question) {
   const temp = JSON.parse(JSON.stringify(question))
+
   temp.text = [{ language: PREFERRED_LANGUAGE, text: temp.text }]
+
+  const formOptions = temp.options
+  temp.options = []
+  formOptions.forEach((el) => {
+    temp.options.push({
+      ordinalPosition: el.ordinalPosition,
+      text: [{ language: PREFERRED_LANGUAGE, text: el.text }],
+      value: el.text,
+      surveyOptions: null,
+    })
+  })
+
+  temp.surveyOptions = JSON.stringify({
+    allowOther: temp.allowOther,
+    allowMultiple: temp.allowMultiple,
+  })
+
   return temp
 }

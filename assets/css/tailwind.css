@@ -47,7 +47,11 @@ body {
 }
 
 .btn-link {
-  @apply text-gray-300 hover:text-gray-500 transition duration-300 focus:outline-none;
+  @apply text-primary hover:text-primary-dark transition duration-300 focus:outline-none;
+}
+
+.btn-link:disabled {
+  @apply text-gray-300 hover:text-gray-300;
 }
 
 .btn-link-rounded {
