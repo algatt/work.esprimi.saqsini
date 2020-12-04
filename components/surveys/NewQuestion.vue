@@ -14,6 +14,9 @@
   <new-question-type-in
     v-else-if="questionType === 'TYPE_IN'"
   ></new-question-type-in>
+  <new-question-ranking
+    v-else-if="questionType === 'RANKING'"
+  ></new-question-ranking>
 </template>
 
 <script>
@@ -23,10 +26,12 @@ import NewQuestionLikert from '~/components/surveys/NewQuestionLikert'
 import NewQuestionSection from '~/components/surveys/NewQuestionSection'
 import NewQuestionDropDown from '~/components/surveys/NewQuestionDropDown'
 import NewQuestionTypeIn from '~/components/surveys/NewQuestionTypeIn'
+import NewQuestionRanking from '~/components/surveys/NewQuestionRanking'
 
 export default {
   name: 'NewQuestion',
   components: {
+    NewQuestionRanking,
     NewQuestionTypeIn,
     NewQuestionDropDown,
     NewQuestionSection,

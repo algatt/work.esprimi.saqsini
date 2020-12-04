@@ -9,6 +9,13 @@ export const SURVEY_OPTIONS = {
 }
 
 export const QUESTION_TYPES = {
+  SECTION: {
+    code: 0,
+    text: 'Section',
+    flag: 'SECTION',
+    icon: '',
+    options: [],
+  },
   MULTIPLE_CHOICE: {
     code: 1,
     text: 'Multiple Choice',
@@ -35,8 +42,15 @@ export const QUESTION_TYPES = {
     text: 'Type In',
     flag: 'TYPE_IN',
     icon: 'fas fa-keyboard',
+    options: [],
   },
-  RANKING: { code: 5, text: 'Ranking', flag: 'RANKING', icon: 'fas fa-trophy' },
+  RANKING: {
+    code: 5,
+    text: 'Ranking',
+    flag: 'RANKING',
+    icon: 'fas fa-trophy',
+    options: [],
+  },
   RADIO_GRID: {
     code: 6,
     text: 'Radio Grid',

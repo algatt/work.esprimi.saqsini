@@ -48,50 +48,35 @@
       >
     </span>
 
-    <toggle-switch :checked="isList" @clicked="changeView">
-      <template v-slot:leftLabel>Individual</template>
-      <template v-slot:rightLabel>List</template>
-    </toggle-switch>
-    <span>&nbsp;</span>
-
     <label class="label-required">Options</label>
-    <template v-if="!isList">
-      <div
-        v-for="(option, index) in options"
-        :key="option.ordinalPosition"
-        class="flex items-center mb-2"
-      >
-        <input
-          :id="'inputOptions' + index"
-          v-model="option.text"
-          placeholder="Enter option text"
-          class="input w-7/12"
-          @keyup="updateValues"
-          @change="$v.options.$touch()"
-        />
-        <button
-          class="btn-link ml-2"
-          :disabled="form.options.length < 3"
-          @click="deleteOptionAtIndex(index)"
-        >
-          Delete
-        </button>
-      </div>
-      <span v-if="!$v.options.$error">&nbsp;</span>
-      <span v-else>
-        <span class="error">All options must be filled in.</span>
-      </span>
-      <div class="flex justify-start mt-2">
-        <button class="btn-primary px-3" @click="addNewOption">Add New</button>
-      </div></template
+    <div
+      v-for="(option, index) in options"
+      :key="option.ordinalPosition"
+      class="flex items-center mb-2"
     >
-    <template v-else>
-      <textarea
-        v-model="optionsString"
-        class="input"
-        @change="convertFullString"
-      ></textarea>
-    </template>
+      <input
+        :id="'inputOptions' + index"
+        v-model="option.text"
+        placeholder="Enter option text"
+        class="input w-7/12"
+        @keyup="updateValues"
+        @change="$v.options.$touch()"
+      />
+      <button
+        class="btn-link ml-2"
+        :disabled="form.options.length < 3"
+        @click="deleteOptionAtIndex(index)"
+      >
+        Delete
+      </button>
+    </div>
+    <span v-if="!$v.options.$error">&nbsp;</span>
+    <span v-else>
+      <span class="error">All options must be filled in.</span>
+    </span>
+    <div class="flex justify-start mt-2">
+      <button class="btn-primary px-3" @click="addNewOption">Add New</button>
+    </div>
     <span>&nbsp;</span>
 
     <edit-object-modal-bottom-part
@@ -109,16 +94,28 @@ import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBotto
 import { parseQuestionToForm } from '~/helpers/parseSurveyObjects'
 
 export default {
-  name: 'NewQuestionDropDown',
+  name: 'NewQuestionRanking',
   components: { EditObjectModalBottomPart },
   mixins: [validationMixin],
   data() {
     return {
       form: null,
       options: [],
-      optionsString: '',
-      isList: false,
     }
+  },
+  computed: {
+    question() {
+      return this.$store.state.currentItemToBeEdited
+    },
+    isValid() {
+      return !this.$v.$invalid
+    },
+  },
+  watch: {
+    options(data) {
+      this.form.options = data
+      this.updateValues()
+    },
   },
 
   validations: {
@@ -140,24 +137,6 @@ export default {
           required,
         },
       },
-    },
-  },
-  computed: {
-    question() {
-      return this.$store.state.currentItemToBeEdited
-    },
-    isValid() {
-      return !this.$v.$invalid
-    },
-  },
-  watch: {
-    options(data) {
-      this.form.options = data
-      this.optionsString = ''
-      data.forEach((item) => {
-        this.optionsString += item.text + '; '
-      })
-      this.updateValues()
     },
   },
   created() {
@@ -198,21 +177,6 @@ export default {
     updateValues() {
       this.form.options.forEach((item) => {
         item.value = item.text
-      })
-    },
-    changeView(state) {
-      this.isList = state
-    },
-    convertFullString() {
-      this.options = []
-      let position = 1
-      const splitData = this.optionsString.split('; ')
-      splitData.forEach((item) => {
-        this.options.push({
-          ordinalPosition: position++,
-          text: item,
-          value: item,
-        })
       })
     },
   },

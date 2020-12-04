@@ -39,8 +39,16 @@ export default {
   data() {
     return {
       showSubMenu: false,
-      questions: QUESTION_TYPES,
     }
+  },
+  computed: {
+    questions() {
+      const questions = []
+      for (const x in QUESTION_TYPES) {
+        if (x !== 'SECTION') questions.push(QUESTION_TYPES[x])
+      }
+      return questions
+    },
   },
 }
 </script>
