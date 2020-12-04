@@ -1,22 +1,5 @@
 <template>
   <div class="flex flex-col w-full md:w-10/12 pb-32">
-    <template v-if="!question.flags.includes('SECTION')">
-      <label for="inputNumber" class="label-required">Number</label>
-      <input
-        id="inputNumber"
-        v-model="form.number"
-        placeholder="Enter question number"
-        class="input"
-        @change="$v.form.number.$touch()"
-      />
-      <span v-if="!$v.form.number.$error">&nbsp;</span>
-      <span v-else>
-        <span v-if="!$v.form.number.requiredIf" class="error"
-          >The question number is required.</span
-        >
-      </span>
-    </template>
-
     <label for="inputName" class="label-required">Name</label>
     <input
       id="inputName"
@@ -75,14 +58,6 @@ export default {
 
   validations: {
     form: {
-      number: {
-        requiredIf(value) {
-          if (this.form.flags.includes('SECTION')) return true
-          if (!this.form.flags.includes('SECTION') && value && value !== '')
-            return true
-          return false
-        },
-      },
       name: {
         required,
       },

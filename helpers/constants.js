@@ -28,6 +28,7 @@ export const QUESTION_TYPES = {
     text: 'Dropdown',
     flag: 'DROPDOWN',
     icon: 'fas fa-chevron-circle-down',
+    options: ['allowOther', 'allowMultiple'],
   },
   TYPE_IN: {
     code: 4,

@@ -8,6 +8,9 @@
   <new-question-likert
     v-else-if="questionType === 'LIKERT'"
   ></new-question-likert>
+  <new-question-drop-down
+    v-else-if="questionType === 'DROPDOWN'"
+  ></new-question-drop-down>
 </template>
 
 <script>
@@ -15,10 +18,12 @@ import { QUESTION_TYPES } from '~/helpers/constants'
 import NewQuestionMultipleChoice from '~/components/surveys/NewQuestionMultipleChoice'
 import NewQuestionLikert from '~/components/surveys/NewQuestionLikert'
 import NewQuestionSection from '~/components/surveys/NewQuestionSection'
+import NewQuestionDropDown from '~/components/surveys/NewQuestionDropDown'
 
 export default {
   name: 'NewQuestion',
   components: {
+    NewQuestionDropDown,
     NewQuestionSection,
     NewQuestionLikert,
     NewQuestionMultipleChoice,
