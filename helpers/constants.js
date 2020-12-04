@@ -15,7 +15,6 @@ export const QUESTION_TYPES = {
     flag: 'MULTIPLE_CHOICE',
     icon: 'fas fa-ellipsis-v',
     options: ['allowOther', 'allowMultiple'],
-    value: 'text',
   },
   LIKERT: {
     code: 2,
@@ -23,7 +22,6 @@ export const QUESTION_TYPES = {
     flag: 'LIKERT',
     icon: 'fas fa-ellipsis-h',
     options: ['showWeights'],
-    value: 'value',
   },
   DROPDOWN: {
     code: 3,

@@ -58,6 +58,7 @@
         v-model="option.text"
         placeholder="Enter option text"
         class="input w-7/12"
+        @keyup="updateValues"
         @change="$v.options.$touch()"
       />
       <button
@@ -133,6 +134,7 @@ export default {
   watch: {
     options(data) {
       this.form.options = data
+      this.updateValues()
     },
   },
 
@@ -194,6 +196,11 @@ export default {
       let position = 1
       this.options.forEach((el) => {
         el.ordinalPosition = position++
+      })
+    },
+    updateValues() {
+      this.form.options.forEach((item) => {
+        item.value = item.text
       })
     },
   },

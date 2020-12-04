@@ -121,7 +121,7 @@ export function parseQuestionToApi(question) {
       temp.options.push({
         ordinalPosition: el.ordinalPosition,
         text: [{ language: PREFERRED_LANGUAGE, text: el.text }],
-        value: el[QUESTION_TYPES[whichQuestion].value],
+        value: el.value,
         surveyOptions: null,
       })
     })
