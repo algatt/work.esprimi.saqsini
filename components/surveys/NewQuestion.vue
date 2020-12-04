@@ -11,6 +11,9 @@
   <new-question-drop-down
     v-else-if="questionType === 'DROPDOWN'"
   ></new-question-drop-down>
+  <new-question-type-in
+    v-else-if="questionType === 'TYPE_IN'"
+  ></new-question-type-in>
 </template>
 
 <script>
@@ -19,10 +22,12 @@ import NewQuestionMultipleChoice from '~/components/surveys/NewQuestionMultipleC
 import NewQuestionLikert from '~/components/surveys/NewQuestionLikert'
 import NewQuestionSection from '~/components/surveys/NewQuestionSection'
 import NewQuestionDropDown from '~/components/surveys/NewQuestionDropDown'
+import NewQuestionTypeIn from '~/components/surveys/NewQuestionTypeIn'
 
 export default {
   name: 'NewQuestion',
   components: {
+    NewQuestionTypeIn,
     NewQuestionDropDown,
     NewQuestionSection,
     NewQuestionLikert,

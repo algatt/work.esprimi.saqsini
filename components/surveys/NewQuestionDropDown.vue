@@ -1,21 +1,22 @@
 <template>
   <div class="flex flex-col w-full md:w-10/12 pb-32">
-    <template v-if="!question.flags.includes('SECTION')">
-      <label for="inputNumber" class="label-required">Number</label>
-      <input
-        id="inputNumber"
-        v-model="form.questionNumber"
-        placeholder="Enter question number"
-        class="input"
-        @change="$v.form.questionNumber.$touch()"
-      />
-      <span v-if="!$v.form.questionNumber.$error">&nbsp;</span>
-      <span v-else>
-        <span v-if="!$v.form.questionNumber.requiredIf" class="error"
-          >The question number is required.</span
-        >
-      </span>
-    </template>
+    <label for="inputNumber" class="label-required">Number</label>
+    <input
+      id="inputNumber"
+      v-model="form.questionNumber"
+      placeholder="Enter question number"
+      class="input"
+      @change="$v.form.questionNumber.$touch()"
+    />
+    <span v-if="!$v.form.questionNumber.$error">&nbsp;</span>
+    <span v-else>
+      <span v-if="!$v.form.questionNumber.required" class="error"
+        >The question number is required.</span
+      >
+      <span v-else-if="!$v.form.questionNumber.numeric" class="error"
+        >The question number must be a number.</span
+      >
+    </span>
 
     <label for="inputName" class="label-required">Name</label>
     <input
@@ -123,7 +124,7 @@
 
 <script>
 import { validationMixin } from 'vuelidate'
-import { required } from 'vuelidate/lib/validators'
+import { required, numeric } from 'vuelidate/lib/validators'
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
 import { parseQuestionToForm } from '~/helpers/parseSurveyObjects'
 
@@ -143,12 +144,8 @@ export default {
   validations: {
     form: {
       questionNumber: {
-        requiredIf(value) {
-          if (this.form.flags.includes('SECTION')) return true
-          if (!this.form.flags.includes('SECTION') && value && value !== '')
-            return true
-          return false
-        },
+        required,
+        numeric,
       },
       name: {
         required,
