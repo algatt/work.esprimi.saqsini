@@ -49,8 +49,8 @@
 
     <label class="label-required">Options</label>
     <div
-      v-for="(option, index) in form.options"
-      :key="index"
+      v-for="(option, index) in options"
+      :key="option.ordinalPosition"
       class="flex items-center mb-2"
     >
       <input
@@ -58,6 +58,7 @@
         v-model="option.text"
         placeholder="Enter option text"
         class="input w-7/12"
+        @change="$v.options.$touch()"
       />
       <button
         class="btn-link ml-2"
@@ -67,7 +68,11 @@
         Delete
       </button>
     </div>
-    <div class="flex justify-start">
+    <span v-if="!$v.options.$error">&nbsp;</span>
+    <span v-else>
+      <span class="error">All options must be filled in.</span>
+    </span>
+    <div class="flex justify-start mt-2">
       <button class="btn-primary px-3" @click="addNewOption">Add New</button>
     </div>
     <span>&nbsp;</span>
@@ -114,7 +119,21 @@ export default {
   data() {
     return {
       form: null,
+      options: [],
     }
+  },
+  computed: {
+    question() {
+      return this.$store.state.currentItemToBeEdited
+    },
+    isValid() {
+      return !this.$v.$invalid
+    },
+  },
+  watch: {
+    options(data) {
+      this.form.options = data
+    },
   },
 
   validations: {
@@ -134,50 +153,48 @@ export default {
         required,
       },
     },
-  },
-  computed: {
-    question() {
-      return this.$store.state.currentItemToBeEdited
-    },
-    isValid() {
-      return !this.$v.$invalid
+    options: {
+      $each: {
+        text: {
+          required,
+        },
+      },
     },
   },
   created() {
     this.form = parseQuestionToForm(this.question)
 
     if (!this.form.options) {
-      this.form.options = [
+      this.options = [
         { ordinalPosition: 1, text: 'Option 1' },
         { ordinalPosition: 2, text: 'Option 2' },
       ]
+      this.form.options = this.options
+    } else {
+      this.options = this.form.options
     }
   },
   methods: {
     addNewOption() {
-      this.form.options.push({
-        ordinalPosition: this.form.options.length + 1,
+      this.options.push({
+        ordinalPosition: this.options.length + 1,
         text: 'New Option',
       })
-      this.$forceUpdate()
+
       this.$nextTick(() => {
         const el = document.getElementById(
-          'inputOptions' + (this.form.options.length - 1)
+          'inputOptions' + (this.options.length - 1)
         )
         el.focus()
         el.select()
       })
     },
     deleteOptionAtIndex(index) {
-      this.form.options.splice(index, 1)
+      this.options.splice(index, 1)
       let position = 1
-      this.form.options.forEach((el) => {
+      this.options.forEach((el) => {
         el.ordinalPosition = position++
       })
-      this.$forceUpdate()
-    },
-    test(ev) {
-      console.log(ev)
     },
   },
 }

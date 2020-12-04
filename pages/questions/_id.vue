@@ -1,7 +1,15 @@
 <template>
-  <div v-if="!loading" class="flex flex-wrap">
-    <div class="w-full flex items-end justify-between border-b border-gray-200">
-      <div class="flex items-center space-x-3">
+  <div v-if="!loading" class="flex flex-col flex-wrap">
+    <div class="flex md:hidden items-center justify-between mb-3">
+      <h5 class="text-lg font-bold text-right">{{ survey.name }}</h5>
+      <h6>{{ survey.referenceDate }}</h6>
+    </div>
+    <div
+      class="w-full flex flex-wrap items-end justify-between border-b border-gray-200"
+    >
+      <div
+        class="flex items-center md:space-x-3 justify-around md:justify-start w-full md:w-auto"
+      >
         <button
           v-for="menuOption in menu"
           :key="menuOption.code"
@@ -12,7 +20,7 @@
           {{ menuOption.text }}
         </button>
       </div>
-      <div>
+      <div class="hidden md:flex md:flex-col items-center">
         <h5 class="text-lg font-bold text-right">{{ survey.name }}</h5>
         <h6>{{ survey.referenceDate }}</h6>
       </div>

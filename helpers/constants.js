@@ -8,26 +8,40 @@ export const SURVEY_OPTIONS = {
   footerImage: '',
 }
 
-export const QUESTION_TYPES = [
-  {
+export const QUESTION_TYPES = {
+  MULTIPLE_CHOICE: {
     code: 1,
     text: 'Multiple Choice',
     flag: 'MULTIPLE_CHOICE',
     icon: 'fas fa-ellipsis-v',
+    options: ['allowOther', 'allowMultiple'],
+    value: 'text',
   },
-  { code: 2, text: 'Likert', flag: 'LIKERT', icon: 'fas fa-ellipsis-h' },
-  {
+  LIKERT: {
+    code: 2,
+    text: 'Likert',
+    flag: 'LIKERT',
+    icon: 'fas fa-ellipsis-h',
+    options: ['showWeights'],
+    value: 'value',
+  },
+  DROPDOWN: {
     code: 3,
     text: 'Dropdown',
     flag: 'DROPDOWN',
     icon: 'fas fa-chevron-circle-down',
   },
-  { code: 4, text: 'Type In', flag: 'TYPE_IN', icon: 'fas fa-keyboard' },
-  { code: 5, text: 'Ranking', flag: 'RANKING', icon: 'fas fa-trophy' },
-  {
+  TYPE_IN: {
+    code: 4,
+    text: 'Type In',
+    flag: 'TYPE_IN',
+    icon: 'fas fa-keyboard',
+  },
+  RANKING: { code: 5, text: 'Ranking', flag: 'RANKING', icon: 'fas fa-trophy' },
+  RADIO_GRID: {
     code: 6,
     text: 'Radio Grid',
     flag: 'RADIO_GRID',
     icon: 'fas fa-grip-horizontal',
   },
-]
+}

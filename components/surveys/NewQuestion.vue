@@ -28,8 +28,8 @@ export default {
       const x = this.$store.state.currentItemToBeEdited.flags
       if (x.includes('SECTION')) return 'SECTION'
       let questionType = null
-      QUESTION_TYPES.forEach((el) => {
-        if (x.includes(el.flag)) questionType = el.flag
+      Object.keys(QUESTION_TYPES).forEach((el) => {
+        if (x.includes(el)) questionType = el
       })
       return questionType
     },

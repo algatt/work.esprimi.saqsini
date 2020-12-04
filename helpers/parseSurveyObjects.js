@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { PREFERRED_LANGUAGE } from '~/helpers/constants'
+import { PREFERRED_LANGUAGE, QUESTION_TYPES } from '~/helpers/constants'
 
 export function parseSurveyToForm(survey) {
   const temp = JSON.parse(JSON.stringify(survey))
@@ -58,8 +58,18 @@ export function parseSurveyToAPI(survey) {
   return temp
 }
 
+function getQuestionType(item) {
+  const questionTypes = Object.keys(QUESTION_TYPES)
+  let whichQuestion = ''
+  questionTypes.forEach((type) => {
+    if (item.flags.includes(type)) whichQuestion = type
+  })
+  return whichQuestion
+}
+
 export function parseQuestionToForm(question) {
   const temp = JSON.parse(JSON.stringify(question))
+  const whichQuestion = getQuestionType(temp)
 
   if (!temp.defaultLanguage) temp.defaultLanguage = PREFERRED_LANGUAGE
 
@@ -77,15 +87,21 @@ export function parseQuestionToForm(question) {
       const text = el.text.find((el2) => {
         return el2.language === PREFERRED_LANGUAGE
       }).text
-      temp.options.push({ ordinalPosition: el.ordinalPosition, text })
+      temp.options.push({
+        ordinalPosition: el.ordinalPosition,
+        text,
+        value: el.value,
+      })
     })
   }
 
   if (temp.surveyOptions) {
     const surveyOptions = JSON.parse(temp.surveyOptions)
-    console.log(surveyOptions)
-    temp.allowMultiple = surveyOptions.allowMultiple
-    temp.allowOther = surveyOptions.allowOther
+
+    QUESTION_TYPES[whichQuestion].options.forEach((item) => {
+      temp[item] = surveyOptions[item]
+    })
+
     delete temp.surveyOptions
   }
 
@@ -94,6 +110,7 @@ export function parseQuestionToForm(question) {
 
 export function parseQuestionToApi(question) {
   const temp = JSON.parse(JSON.stringify(question))
+  const whichQuestion = getQuestionType(temp)
 
   temp.text = [{ language: PREFERRED_LANGUAGE, text: temp.text }]
 
@@ -104,18 +121,19 @@ export function parseQuestionToApi(question) {
       temp.options.push({
         ordinalPosition: el.ordinalPosition,
         text: [{ language: PREFERRED_LANGUAGE, text: el.text }],
-        value: el.text,
+        value: el[QUESTION_TYPES[whichQuestion].value],
         surveyOptions: null,
       })
     })
   }
 
-  if (temp.surveyOptions) {
-    temp.surveyOptions = JSON.stringify({
-      allowOther: temp.allowOther,
-      allowMultiple: temp.allowMultiple,
-    })
-  }
+  temp.surveyOptions = {}
+
+  QUESTION_TYPES[whichQuestion].options.forEach((item) => {
+    temp.surveyOptions[item] = temp[item]
+  })
+
+  temp.surveyOptions = JSON.stringify(temp.surveyOptions)
 
   return temp
 }
