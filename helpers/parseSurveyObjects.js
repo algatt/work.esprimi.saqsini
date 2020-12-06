@@ -74,7 +74,7 @@ export function parseSurveyToAPI(survey) {
   return temp
 }
 
-function getQuestionType(item) {
+export function getQuestionType(item) {
   const questionTypes = Object.keys(QUESTION_TYPES)
   let whichQuestion = ''
   questionTypes.forEach((type) => {
@@ -83,15 +83,15 @@ function getQuestionType(item) {
   return whichQuestion
 }
 
-export function parseQuestionToForm(question) {
+export function parseQuestionToForm(question, language = PREFERRED_LANGUAGE) {
   const temp = JSON.parse(JSON.stringify(question))
   const whichQuestion = getQuestionType(temp)
 
-  if (!temp.defaultLanguage) temp.defaultLanguage = PREFERRED_LANGUAGE
+  if (!temp.defaultLanguage) temp.defaultLanguage = language
 
   if (temp.text) {
     const text = temp.text.find((el) => {
-      return el.language === PREFERRED_LANGUAGE
+      return el.language === language
     })
     temp.text = text.text
   }
@@ -101,7 +101,7 @@ export function parseQuestionToForm(question) {
     temp.options = []
     options.forEach((el) => {
       const text = el.text.find((el2) => {
-        return el2.language === PREFERRED_LANGUAGE
+        return el2.language === language
       }).text
       temp.options.push({
         ordinalPosition: el.ordinalPosition,

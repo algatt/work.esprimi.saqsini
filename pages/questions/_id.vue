@@ -27,10 +27,11 @@
     </div>
     <div class="mt-3 w-full flex flex-col">
       <div v-for="question in questions" :key="question.code">
-        <display-question
-          :question="question"
-          @selectQuestion="chooseQuestion"
-        ></display-question>
+        <!--        <display-question-->
+        <!--          :question="question"-->
+        <!--          @selectQuestion="chooseQuestion"-->
+        <!--        ></display-question>-->
+        <display-question :question="question"></display-question>
         <new-question-toolbar
           @newQuestion="newQuestion($event, question.ordinalPosition + 1)"
         ></new-question-toolbar>
