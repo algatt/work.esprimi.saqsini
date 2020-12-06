@@ -33,6 +33,7 @@
         <!--        ></display-question>-->
         <display-question :question="question"></display-question>
         <new-question-toolbar
+          class="mt-3"
           :show-actions="index !== questions.length - 1"
           @newQuestion="newQuestion($event, question.ordinalPosition + 1)"
           @editQuestion="editQuestion(question)"

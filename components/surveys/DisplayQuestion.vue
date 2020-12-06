@@ -7,6 +7,10 @@
       v-if="questionType === 'MULTIPLE_CHOICE'"
       :question="question"
     ></show-multiple-choice>
+    <show-likert
+      v-else-if="questionType === 'LIKERT'"
+      :question="question"
+    ></show-likert>
     <div v-else>
       {{ question }}
     </div>
