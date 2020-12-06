@@ -6,24 +6,42 @@
     >
       {{ parsedQuestion.text }}
     </div>
-    <div id="divButtons" class="flex flex-col flex-wrap md:flex-row">
-      <button
-        v-for="(option, index) in parsedQuestion.options"
-        :key="index"
-        class="card-likert"
-        :style="
-          answers.includes(option.value)
-            ? {
-                borderColor: survey.options.accentColour,
-                color: survey.options.backgroundColour,
-                backgroundColor: survey.options.accentColour,
-              }
-            : { borderColor: survey.options.accentColour }
-        "
-        @click="answers = [option.value]"
+    <div
+      id="divButtons"
+      class="flex flex-col md:flex-row md:flex-wrap items-center w-full justify-between"
+    >
+      <span v-if="parsedQuestion.showWeights" class="flex pr-3">{{
+        parsedQuestion.options[0].text
+      }}</span>
+      <span
+        class="flex w-full md:flex-1 flex-col flex-wrap md:flex-row md:flex-grow"
       >
-        <span class="flex flex-grow">{{ option.text }}</span>
-      </button>
+        <button
+          v-for="(option, index) in parsedQuestion.options"
+          :key="index"
+          class="card-likert"
+          :style="
+            answers.includes(option.value)
+              ? {
+                  borderColor: survey.options.accentColour,
+                  color: survey.options.backgroundColour,
+                  backgroundColor: survey.options.accentColour,
+                }
+              : { borderColor: survey.options.accentColour }
+          "
+          @click="answers = [option.value]"
+        >
+          <span
+            v-if="!parsedQuestion.showWeights"
+            class="flex justify-center"
+            >{{ option.text }}</span
+          >
+          <span v-else class="flex justify-center">{{ option.value }}</span>
+        </button>
+      </span>
+      <span v-if="parsedQuestion.showWeights" class="flex pl-3">{{
+        parsedQuestion.options[parsedQuestion.options.length - 1].text
+      }}</span>
     </div>
   </div>
 </template>
@@ -64,7 +82,7 @@ export default {
 
 <style scoped>
 .card-likert {
-  @apply flex-1 justify-center px-3 py-2 flex-wrap shadow-sm transition duration-300 font-semibold focus:outline-none;
+  @apply w-full md:flex-1 justify-center px-3 py-2 flex-wrap shadow-sm transition duration-300 font-semibold focus:outline-none;
 }
 
 .card-likert:first-child {

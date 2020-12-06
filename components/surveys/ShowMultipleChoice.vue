@@ -150,6 +150,6 @@ export default {
 
 <style scoped>
 .card-multiple-choice {
-  @apply border-2 mb-2 w-80 flex justify-start px-3 py-2 flex-wrap shadow-sm rounded transition duration-300 font-semibold;
+  @apply border-2 mb-2 w-full md:w-80 flex justify-start px-3 py-2 flex-wrap shadow-sm rounded transition duration-300 font-semibold;
 }
 </style>

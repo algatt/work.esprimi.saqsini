@@ -15,6 +15,10 @@
       v-else-if="questionType === 'LIKERT'"
       :question="question"
     ></show-likert>
+    <show-dropdown
+      v-else-if="questionType === 'DROPDOWN'"
+      :question="question"
+    ></show-dropdown>
     <div v-else>
       {{ question }}
     </div>
@@ -25,10 +29,11 @@
 import ShowMultipleChoice from '~/components/surveys/ShowMultipleChoice'
 import { getQuestionType } from '~/helpers/parseSurveyObjects'
 import ShowSection from '~/components/surveys/ShowSection'
+import ShowDropdown from '~/components/surveys/ShowDropdown'
 
 export default {
   name: 'DisplayQuestion',
-  components: { ShowSection, ShowMultipleChoice },
+  components: { ShowDropdown, ShowSection, ShowMultipleChoice },
   props: {
     question: {
       type: Object,
