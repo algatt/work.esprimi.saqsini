@@ -1,5 +1,9 @@
 import moment from 'moment'
-import { PREFERRED_LANGUAGE, QUESTION_TYPES } from '~/helpers/constants'
+import {
+  PREFERRED_LANGUAGE,
+  QUESTION_TYPES,
+  SURVEY_OPTIONS,
+} from '~/helpers/constants'
 
 export function parseSurveyToForm(survey) {
   const temp = JSON.parse(JSON.stringify(survey))
@@ -33,6 +37,12 @@ export function parseSurveyToForm(survey) {
     temp.text = text.text
   }
 
+  if (temp.options) {
+    temp.options = JSON.parse(temp.options)
+  } else {
+    temp.options = SURVEY_OPTIONS
+  }
+
   return temp
 }
 
@@ -54,6 +64,12 @@ export function parseSurveyToAPI(survey) {
   }
 
   temp.text = [{ language: PREFERRED_LANGUAGE, text: temp.text }]
+
+  if (!temp.options) {
+    temp.options = JSON.stringify(SURVEY_OPTIONS)
+  } else {
+    temp.options = JSON.stringify(temp.options)
+  }
 
   return temp
 }

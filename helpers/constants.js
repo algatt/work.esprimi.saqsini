@@ -2,10 +2,34 @@ export const PREFERRED_LANGUAGE = 'en'
 
 export const SURVEY_OPTIONS = {
   accentColour: '#2563EB',
-  backgroundColour: '#ffffff',
-  textColour: '#374151',
+  backgroundColour: '#FFFFFF',
+  textColour: '#000000',
   headerImage: '',
   footerImage: '',
+}
+
+export const SURVEY_COLOURS = {
+  accentColours: [
+    '#2563EB',
+    '#DC2626',
+    '#FBBF24',
+    '#059669',
+    '#4F46E5',
+    '#7C3AED',
+    '#DB2777',
+  ],
+  backgroundColours: ['#FFFFFF', '#000000'],
+  textColours: [
+    '#2563EB',
+    '#DC2626',
+    '#FBBF24',
+    '#059669',
+    '#4F46E5',
+    '#7C3AED',
+    '#DB2777',
+    '#FFFFFF',
+    '#000000',
+  ],
 }
 
 export const QUESTION_TYPES = {
@@ -51,10 +75,10 @@ export const QUESTION_TYPES = {
     icon: 'fas fa-trophy',
     options: [],
   },
-  RADIO_GRID: {
-    code: 6,
-    text: 'Radio Grid',
-    flag: 'RADIO_GRID',
-    icon: 'fas fa-grip-horizontal',
-  },
+  // RADIO_GRID: {
+  //   code: 6,
+  //   text: 'Radio Grid',
+  //   flag: 'RADIO_GRID',
+  //   icon: 'fas fa-grip-horizontal',
+  // },
 }

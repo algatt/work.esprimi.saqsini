@@ -15,7 +15,7 @@
           :key="menuOption.code"
           class="w-20 font-semibold hover:text-primary pb-2 border-b-2 border-transparent hover:border-primary transition duration-300 focus:outline-none"
           :class="selectedMenu === menuOption.code ? 'border-primary' : null"
-          @click="selectedMenu = menuOption.code"
+          @click="selectMenu(menuOption.code)"
         >
           {{ menuOption.text }}
         </button>
@@ -43,11 +43,23 @@
     </div>
 
     <transition name="fade">
-      <edit-object-modal v-if="currentItemToBeEdited">
-        <template v-slot:content>
-          <new-question></new-question>
-        </template>
-      </edit-object-modal>
+      <template v-if="selectedMenu === 1">
+        <edit-object-modal v-if="currentItemToBeEdited">
+          <template v-slot:content>
+            <new-question></new-question>
+          </template>
+        </edit-object-modal>
+      </template>
+      <template v-else-if="selectedMenu === 2">
+        <edit-object-modal
+          v-if="currentItemToBeEdited"
+          @modalClosed="selectedMenu = 1"
+        >
+          <template v-slot:content>
+            <survey-settings></survey-settings>
+          </template>
+        </edit-object-modal>
+      </template>
     </transition>
   </div>
   <spinner v-else></spinner>
@@ -60,6 +72,7 @@ import NewQuestionToolbar from '~/components/surveys/NewQuestionToolBar'
 import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
 import NewQuestion from '~/components/surveys/NewQuestion'
 import EditObjectModal from '~/components/layouts/EditObjectModal'
+import SurveySettings from '~/components/surveys/SurveySettings'
 
 export default {
   name: 'QuestionList',
@@ -69,6 +82,7 @@ export default {
     DisplayQuestion,
     NewQuestionToolbar,
     EditObjectModal,
+    SurveySettings,
   },
   data() {
     return {
@@ -91,7 +105,7 @@ export default {
       })
     },
     survey() {
-      return parseSurveyToForm(this.$store.getters.getItems('surveys'))
+      return parseSurveyToForm(this.$store.getters.getItems('surveys')[0])
     },
     currentItemToBeEdited() {
       return this.$store.state.currentItemToBeEdited
@@ -121,6 +135,11 @@ export default {
     },
     chooseQuestion(question) {
       this.$store.dispatch('setCurrentItemToBeEdited', question)
+    },
+    selectMenu(code) {
+      if (code === 2)
+        this.$store.dispatch('setCurrentItemToBeEdited', this.survey)
+      this.selectedMenu = code
     },
   },
 }

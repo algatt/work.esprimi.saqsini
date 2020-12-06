@@ -36,7 +36,7 @@ export const actions = {
             'setItems',
             {
               which: 'surveys',
-              items: response.data,
+              items: [response.data],
             },
             { root: true }
           )

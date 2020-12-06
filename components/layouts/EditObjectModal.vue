@@ -1,6 +1,9 @@
 <template>
   <div class="bg-gray-200 fixed top-0 left-0 w-full h-full bg-opacity-75 flex">
-    <button class="hidden md:flex w-6/12" @click="cancelCurrentItem"></button>
+    <button
+      class="hidden md:flex w-6/12"
+      @click.stop="cancelCurrentItem"
+    ></button>
     <div class="w-full md:w-6/12 flex flex-col bg-white relative">
       <div class="bg-primary p-3 text-white text-lg">
         <h6>

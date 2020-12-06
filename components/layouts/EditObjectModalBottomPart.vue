@@ -7,7 +7,7 @@
         <i class="fas fa-times fa-fw"></i>
       </button>
       <button
-        v-if="form.code !== -1"
+        v-if="showDelete && form.code !== -1"
         class="btn-round-danger mr-2"
         :disabled="form.code === -1"
         @click="deleteItem"
@@ -48,6 +48,11 @@ export default {
     isValid: {
       required: true,
       type: Boolean,
+    },
+    showDelete: {
+      required: false,
+      type: Boolean,
+      default: true,
     },
   },
   mounted() {
