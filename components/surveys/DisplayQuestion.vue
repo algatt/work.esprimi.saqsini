@@ -19,6 +19,10 @@
       v-else-if="questionType === 'DROPDOWN'"
       :question="question"
     ></show-dropdown>
+    <show-type-in
+      v-else-if="questionType === 'TYPE_IN'"
+      :question="question"
+    ></show-type-in>
     <div v-else>
       {{ question }}
     </div>
@@ -30,10 +34,11 @@ import ShowMultipleChoice from '~/components/surveys/ShowMultipleChoice'
 import { getQuestionType } from '~/helpers/parseSurveyObjects'
 import ShowSection from '~/components/surveys/ShowSection'
 import ShowDropdown from '~/components/surveys/ShowDropdown'
+import ShowTypeIn from '~/components/surveys/ShowTypeIn'
 
 export default {
   name: 'DisplayQuestion',
-  components: { ShowDropdown, ShowSection, ShowMultipleChoice },
+  components: { ShowTypeIn, ShowDropdown, ShowSection, ShowMultipleChoice },
   props: {
     question: {
       type: Object,
