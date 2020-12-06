@@ -19,6 +19,7 @@
     "nuxt": "^2.14.6",
     "vue-tel-input": "^4.4.2",
     "vue-toasted": "^1.1.28",
+    "vuedraggable": "^2.24.3",
     "vuelidate": "^0.7.6"
   },
   "devDependencies": {

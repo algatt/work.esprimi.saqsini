@@ -23,9 +23,10 @@
       v-else-if="questionType === 'TYPE_IN'"
       :question="question"
     ></show-type-in>
-    <div v-else>
-      {{ question }}
-    </div>
+    <show-ranking
+      v-else-if="questionType === 'RANKING'"
+      :question="question"
+    ></show-ranking>
   </div>
 </template>
 
@@ -35,10 +36,17 @@ import { getQuestionType } from '~/helpers/parseSurveyObjects'
 import ShowSection from '~/components/surveys/ShowSection'
 import ShowDropdown from '~/components/surveys/ShowDropdown'
 import ShowTypeIn from '~/components/surveys/ShowTypeIn'
+import ShowRanking from '~/components/surveys/ShowRanking'
 
 export default {
   name: 'DisplayQuestion',
-  components: { ShowTypeIn, ShowDropdown, ShowSection, ShowMultipleChoice },
+  components: {
+    ShowRanking,
+    ShowTypeIn,
+    ShowDropdown,
+    ShowSection,
+    ShowMultipleChoice,
+  },
   props: {
     question: {
       type: Object,
