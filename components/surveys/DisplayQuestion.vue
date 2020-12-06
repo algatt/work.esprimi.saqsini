@@ -3,8 +3,12 @@
     class="w-full md:w-8/12 mx-auto"
     @click="$emit('selectQuestion', question)"
   >
+    <show-section
+      v-if="questionType === 'SECTION'"
+      :question="question"
+    ></show-section>
     <show-multiple-choice
-      v-if="questionType === 'MULTIPLE_CHOICE'"
+      v-else-if="questionType === 'MULTIPLE_CHOICE'"
       :question="question"
     ></show-multiple-choice>
     <show-likert
@@ -20,10 +24,11 @@
 <script>
 import ShowMultipleChoice from '~/components/surveys/ShowMultipleChoice'
 import { getQuestionType } from '~/helpers/parseSurveyObjects'
+import ShowSection from '~/components/surveys/ShowSection'
 
 export default {
   name: 'DisplayQuestion',
-  components: { ShowMultipleChoice },
+  components: { ShowSection, ShowMultipleChoice },
   props: {
     question: {
       type: Object,

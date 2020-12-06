@@ -31,9 +31,12 @@
         <!--          :question="question"-->
         <!--          @selectQuestion="chooseQuestion"-->
         <!--        ></display-question>-->
-        <display-question :question="question"></display-question>
+        <display-question
+          :question="question"
+          class="border-1 border-gray-100 shadow p-4 rounded"
+        ></display-question>
         <new-question-toolbar
-          class="mt-3"
+          class="mt-2 mb-3"
           :show-actions="index !== questions.length - 1"
           @newQuestion="newQuestion($event, question.ordinalPosition + 1)"
           @editQuestion="editQuestion(question)"
