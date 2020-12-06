@@ -25,7 +25,7 @@
         <h6>{{ survey.referenceDate }}</h6>
       </div>
     </div>
-    <div class="mt-3 w-full flex flex-col">
+    <div class="mt-5 w-full flex flex-col">
       <div v-for="(question, index) in questions" :key="question.code">
         <!--        <display-question-->
         <!--          :question="question"-->
@@ -33,7 +33,7 @@
         <!--        ></display-question>-->
         <display-question
           :question="question"
-          class="border-1 border-gray-100 shadow p-4 rounded"
+          class="border-1 border-gray-50 shadow p-5 rounded"
         ></display-question>
         <new-question-toolbar
           class="mt-2 mb-3"
