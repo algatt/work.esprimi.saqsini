@@ -35,9 +35,9 @@ export const SURVEY_COLOURS = {
 export const QUESTION_TYPES = {
   SECTION: {
     code: 0,
-    text: 'Section',
+    text: 'Page',
     flag: 'SECTION',
-    icon: '',
+    icon: 'fas fa-file',
     options: [],
   },
   MULTIPLE_CHOICE: {

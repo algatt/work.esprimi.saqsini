@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!loading" class="flex flex-col flex-wrap">
+  <div v-if="!loading" class="flex flex-col flex-wrap mb-64">
     <div class="flex md:hidden items-center justify-between mb-3">
       <h5 class="text-lg font-bold text-right">{{ survey.name }}</h5>
       <h6>{{ survey.referenceDate }}</h6>
@@ -26,14 +26,18 @@
       </div>
     </div>
     <div class="mt-3 w-full flex flex-col">
-      <div v-for="question in questions" :key="question.code">
+      <div v-for="(question, index) in questions" :key="question.code">
         <!--        <display-question-->
         <!--          :question="question"-->
         <!--          @selectQuestion="chooseQuestion"-->
         <!--        ></display-question>-->
         <display-question :question="question"></display-question>
         <new-question-toolbar
+          :show-actions="index !== questions.length - 1"
           @newQuestion="newQuestion($event, question.ordinalPosition + 1)"
+          @editQuestion="editQuestion(question)"
+          @moveQuestion="moveQuestion(question)"
+          @deleteQuestion="deleteQuestion(question)"
         ></new-question-toolbar>
       </div>
       <div v-if="questions.length === 0">
@@ -133,6 +137,14 @@ export default {
         flags: [flag],
         ordinalPosition,
       })
+    },
+    editQuestion(question) {
+      this.$store.dispatch('setCurrentItemToBeEdited', question)
+    },
+    moveQuestion(question) {},
+    deleteQuestion(question) {
+      console.log('here')
+      this.$store.dispatch('questions/deleteQuestion', question.code)
     },
     chooseQuestion(question) {
       this.$store.dispatch('setCurrentItemToBeEdited', question)
