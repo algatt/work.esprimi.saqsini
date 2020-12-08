@@ -143,7 +143,7 @@ body {
 
 
 .popup-menu-button {
-  @apply flex justify-start items-center w-9/12 mx-auto;
+  @apply flex justify-start items-center mx-auto px-5;
 }
 
 .popup-menu-button i {
