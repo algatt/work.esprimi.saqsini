@@ -7,7 +7,10 @@
       {{ parsedQuestion.text }}
     </div>
     <div class="flex flex-col flex-wrap md:flex-row">
-      <select class="input select w-full md:w-44">
+      <select
+        class="dropdown-input dropdown-select md:w-6/12 w-full"
+        :style="{ borderColor: survey.options.accentColour }"
+      >
         <option
           v-for="(option, index) in options"
           :key="index"
@@ -63,4 +66,16 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.dropdown-input {
+  @apply border-2 rounded-sm px-3 py-2 transition duration-500 ring-offset-2 focus:outline-none;
+}
+
+.dropdown-select {
+  @apply appearance-none;
+  background-image: url('/dropdown.svg');
+  background-repeat: no-repeat;
+  background-position: right 0.5em top 50%;
+  background-size: 1em auto;
+}
+</style>

@@ -7,16 +7,11 @@
       {{ parsedQuestion.text }}
     </div>
     <div class="flex w-full">
-      <draggable
-        class="w-6/12 flex flex-col"
-        :list="options"
-        group="people"
-        @change="log"
-      >
+      <draggable class="w-6/12 flex flex-col" :list="options" group="people">
         <div
           v-for="(option, index) in options"
           :key="index"
-          class="w-7/12 p-3 my-2 rounded shadow-sm cursor-move mx-auto"
+          class="md:w-7/12 w-11/12 p-3 my-2 rounded shadow-sm cursor-move mx-auto"
           :style="{
             backgroundColor: survey.options.accentColour,
             color: survey.options.backgroundColour,
@@ -26,24 +21,19 @@
         </div>
       </draggable>
 
-      <draggable
-        class="w-6/12 flex flex-col"
-        :list="answers"
-        group="people"
-        @change="log"
-      >
+      <draggable :list="answers" group="people" class="w-6/12 flex flex-col">
         <div
           v-for="(option, index) in answers"
           :key="index"
-          class="w-7/12 p-3 my-2 rounded shadow-sm cursor-move mx-auto"
+          class="w-11/12 md:w-7/12 p-3 my-2 rounded shadow-sm cursor-move mx-auto"
           :style="{
             backgroundColor: survey.options.accentColour,
             color: survey.options.backgroundColour,
           }"
         >
           <span class="flex flex-grow">{{ option.text }}</span>
-        </div></draggable
-      >
+        </div>
+      </draggable>
     </div>
   </div>
 </template>
@@ -86,22 +76,6 @@ export default {
           return el.code === this.parsedQuestion.surveyCode
         })
       )
-    },
-  },
-  methods: {
-    add() {
-      this.list.push({ name: 'Juan' })
-    },
-    replace() {
-      this.list = [{ name: 'Edgard' }]
-    },
-    clone(el) {
-      return {
-        name: el.name + ' cloned',
-      }
-    },
-    log(evt) {
-      window.console.log(evt)
     },
   },
 }
