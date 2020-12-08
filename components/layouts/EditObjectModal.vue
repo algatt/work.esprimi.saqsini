@@ -1,5 +1,7 @@
 <template>
-  <div class="bg-gray-200 fixed top-0 left-0 w-full h-full bg-opacity-75 flex">
+  <div
+    class="bg-gray-200 fixed top-0 left-0 w-full h-full bg-opacity-75 flex z-30"
+  >
     <button
       class="hidden md:flex w-6/12"
       @click.stop="cancelCurrentItem"

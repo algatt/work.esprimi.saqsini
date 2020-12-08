@@ -26,28 +26,36 @@
       </div>
     </div>
     <div class="mt-5 w-full flex flex-col">
-      <div v-for="(question, index) in questions" :key="question.code">
-        <!--        <display-question-->
-        <!--          :question="question"-->
-        <!--          @selectQuestion="chooseQuestion"-->
-        <!--        ></display-question>-->
+      <div
+        v-for="question in questions"
+        :key="question.code"
+        class="relative py-3"
+        @mouseenter="changeSubMenu(question.code)"
+      >
+        <div
+          v-if="!showPreview"
+          class="border border-gray-100 shadow p-5 rounded w-full md:w-8/12 mx-auto"
+        >
+          {{ question.questionNumber }} - {{ question.name }}
+        </div>
         <display-question
+          v-else
           :question="question"
-          class="border-1 border-gray-50 shadow p-5 rounded"
+          class="border border-gray-100 shadow p-8 rounded"
+          @showSubMenu="changeSubMenu(question.code)"
         ></display-question>
-        <new-question-toolbar
-          class="mt-2 mb-3"
-          :show-actions="index !== questions.length - 1"
-          @newQuestion="newQuestion($event, question.ordinalPosition + 1)"
-          @editQuestion="editQuestion(question)"
-          @moveQuestion="moveQuestion(question)"
-          @deleteQuestion="deleteQuestion(question)"
-        ></new-question-toolbar>
-      </div>
-      <div v-if="questions.length === 0">
-        <new-question-toolbar
-          @newQuestion="newQuestion($event, questions.length + 1)"
-        ></new-question-toolbar>
+        <transition name="fade">
+          <new-question-toolbar
+            class="absolute w-full bottom-0 mb-1"
+            :class="
+              whichSubMenu === question.code ? 'visible' : 'visible md:hidden'
+            "
+            @newQuestion="newQuestion($event, question.ordinalPosition + 1)"
+            @editQuestion="editQuestion(question)"
+            @moveQuestion="moveQuestion(question)"
+            @deleteQuestion="deleteQuestion(question)"
+          ></new-question-toolbar>
+        </transition>
       </div>
     </div>
 
@@ -70,6 +78,13 @@
         </edit-object-modal>
       </template>
     </transition>
+
+    <div class="fixed bottom-0 right-0 mr-5 mb-5 z-10">
+      <button class="btn-round-primary" @click="showPreview = !showPreview">
+        <i v-if="!showPreview" class="fas fa-eye fa-fw"></i>
+        <i v-else class="fas fa-eye-slash fa-fw"></i>
+      </button>
+    </div>
   </div>
   <spinner v-else></spinner>
 </template>
@@ -102,6 +117,8 @@ export default {
         { code: 4, text: 'Preview' },
       ],
       selectedMenu: 1,
+      showPreview: true,
+      whichSubMenu: null,
     }
   },
   computed: {
@@ -157,6 +174,9 @@ export default {
       if (code === 2)
         this.$store.dispatch('setCurrentItemToBeEdited', this.survey)
       this.selectedMenu = code
+    },
+    changeSubMenu(code) {
+      this.whichSubMenu = code
     },
   },
 }

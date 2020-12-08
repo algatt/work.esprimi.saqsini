@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="w-full md:w-8/12 mx-auto"
-    @click="$emit('selectQuestion', question)"
-  >
+  <div class="w-full md:w-8/12 mx-auto">
     <show-section
       v-if="questionType === 'SECTION'"
       :question="question"

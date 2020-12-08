@@ -1,5 +1,5 @@
 <template>
-  <div id="popupMenuRoot" class="relative">
+  <div id="popupMenuRoot" class="relative shadow-lg">
     <button
       class="relative flex items-center justify-center"
       :class="$slots.menuButton ? null : 'btn-link-rounded'"
