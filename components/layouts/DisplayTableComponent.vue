@@ -15,13 +15,13 @@
     >
 
     <div class="flex w-full flex-wrap">
-      <div :class="$slots.sideNav ? 'w-full md:mx-auto md:w-2/12' : 'hidden'">
+      <div :class="$slots.sideNav ? 'w-full md:mx-auto lg:w-3/12' : 'hidden'">
         <slot name="sideNav"></slot>
       </div>
 
       <div
         class="flex flex-col pl-0 md:pl-3"
-        :class="$slots.sideNav ? 'w-full md:w-10/12' : 'w-full'"
+        :class="$slots.sideNav ? 'w-full lg:w-9/12' : 'w-full'"
       >
         <top-title-bar>
           <template v-slot:content> <slot name="titleContent"></slot></template

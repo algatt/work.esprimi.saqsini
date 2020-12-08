@@ -15,6 +15,7 @@
           class="text-white h-10 font-medium tracking-wider py-2 w-full hover:bg-primary-darker active:bg-white active:text-primary transition duration-300 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-primary-darker"
           style="font-family: Poppins"
           :class="currentRoute === item.link ? 'bg-primary-darker' : null"
+          :title="item.text"
           @click="gotoPage(item.link)"
         >
           <span
