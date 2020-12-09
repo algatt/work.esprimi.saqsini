@@ -9,8 +9,13 @@
     <div class="w-full md:w-6/12 flex flex-col bg-white relative">
       <div class="bg-primary p-3 text-white text-lg">
         <h6>
-          <span v-if="currentItemToBeEdited.code === -1">New</span>
-          <span v-else>Edit</span>
+          <slot name="title"></slot>
+          <span v-if="!$slots.title && currentItemToBeEdited.code === -1"
+            >New</span
+          >
+          <span v-if="!$slots.title && currentItemToBeEdited.code !== -1"
+            >Edit</span
+          >
         </h6>
       </div>
       <div class="flex flex-col p-5 bg-red overflow-y-auto mb-10">
@@ -23,7 +28,6 @@
 <script>
 export default {
   name: 'EditObjectModal',
-
   computed: {
     currentItemToBeEdited() {
       return this.$store.state.currentItemToBeEdited

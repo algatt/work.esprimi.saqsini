@@ -5,6 +5,7 @@
       <template v-slot:button>
         <slot name="button"></slot>
         <button
+          v-if="!hideNewButton"
           class="btn-primary px-5"
           :disabled="!!disableNewButton"
           @click="setCurrentItem({ code: -1 })"
@@ -69,6 +70,11 @@ export default {
       required: true,
     },
     disableNewButton: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    hideNewButton: {
       type: Boolean,
       required: false,
       default: false,

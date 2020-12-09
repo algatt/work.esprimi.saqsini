@@ -12,6 +12,7 @@ const deleteCalls = {
   subcategories: 'subcategories/deleteSubcategory',
   surveys: 'surveys/deleteSurvey',
   questions: 'questions/deleteQuestion',
+  notifications: 'notifications/deleteNotification',
 }
 
 const newCalls = {
@@ -40,6 +41,7 @@ const updateCalls = {
   subcategories: 'subcategories/updateSubcategory',
   surveys: 'surveys/updateSurvey',
   questions: 'questions/updateQuestion',
+  notifications: 'notifications/readNotification',
 }
 
 export const state = () => ({
@@ -163,7 +165,7 @@ export const mutations = {
 
   deleteItem(rootState, { which, code }) {
     rootState[which].items = rootState[which].items.filter((x) => {
-      return Number(x.code) !== Number(code)
+      return String(x.code) !== String(code)
     })
   },
 
