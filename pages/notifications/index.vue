@@ -98,7 +98,18 @@ export default {
       return this.$store.state.currentItemToBeEdited
     },
     notifications() {
-      return this.$store.getters.getItems('notifications')
+      const tempNotifications = JSON.parse(
+        JSON.stringify(this.$store.getters.getItems('notifications'))
+      )
+
+      const x = tempNotifications.sort((a, b) => {
+        return moment(a.createdTimestamp.replace(' +', '+')).valueOf() <
+          moment(b.createdTimestamp.replace(' +', '+')).valueOf()
+          ? 1
+          : -1
+      })
+      console.log(x)
+      return tempNotifications
     },
   },
   created() {
@@ -120,7 +131,7 @@ export default {
     },
     formatDate(date) {
       date = date.replace(' +', '+')
-      return moment(date).format('Mo MMM YYYY LT')
+      return moment(date).format('Do MMM YYYY LT')
     },
   },
 }
