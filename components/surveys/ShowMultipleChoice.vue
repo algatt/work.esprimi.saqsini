@@ -16,11 +16,11 @@
             ? {
                 borderColor: survey.options.accentColour,
                 backgroundColor: survey.options.accentColour,
-                color: 'white',
+                color: survey.options.textColour,
               }
             : {
                 borderColor: survey.options.accentColour,
-                color: survey.options.accentColour,
+                color: survey.options.textColour,
               }
         "
         @click="addToAnswer(option.value)"
@@ -30,7 +30,7 @@
             <i
               v-if="answers.includes(option.value)"
               class="fas fa-check-circle"
-              :style="{ color: survey.options.backgroundColour }"
+              :style="{ color: survey.options.textColour }"
             ></i></transition
         ></span>
         <span class="flex flex-grow">{{ option.text }}</span>
@@ -44,11 +44,12 @@
             ? {
                 borderColor: survey.options.accentColour,
                 backgroundColor: survey.options.accentColour,
-                color: 'white',
+                color: survey.options.textColour,
               }
             : {
                 borderColor: survey.options.accentColour,
-                color: survey.options.accentColour,
+                color: survey.options.textColour,
+                backgroundColor: survey.options.backgroundColour,
               }
         "
       >
@@ -57,7 +58,7 @@
             <i
               v-if="otherAnswer !== ''"
               class="fas fa-check-circle"
-              :style="{ color: survey.options.backgroundColour }"
+              :style="{ color: survey.options.textColour }"
             ></i></transition
         ></span>
         <input
@@ -68,7 +69,7 @@
               ? {
                   backgroundColor: survey.options.accentColour,
                 }
-              : null
+              : { backgroundColor: survey.options.backgroundColour }
           "
           placeholder="Other answer..."
           @blur="checkOtherAnswer"

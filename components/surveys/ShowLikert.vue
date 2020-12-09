@@ -24,7 +24,7 @@
             answers.includes(option.value)
               ? {
                   borderColor: survey.options.accentColour,
-                  color: survey.options.backgroundColour,
+                  color: survey.options.textColour,
                   backgroundColor: survey.options.accentColour,
                 }
               : { borderColor: survey.options.accentColour }

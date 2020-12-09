@@ -14,7 +14,7 @@
           class="md:w-7/12 w-11/12 p-3 my-2 rounded shadow-sm cursor-pointer mx-auto border-2 border-transparent"
           :style="{
             backgroundColor: survey.options.accentColour,
-            color: survey.options.backgroundColour,
+            color: survey.options.textColour,
           }"
           @click="moveOptionToAnswers(option, index)"
         >
@@ -29,7 +29,7 @@
           class="w-11/12 md:w-7/12 p-3 my-2 rounded shadow-sm cursor-pointer mx-auto border-2 border-transparent"
           :style="{
             backgroundColor: survey.options.accentColour,
-            color: survey.options.backgroundColour,
+            color: survey.options.textColour,
           }"
           @click="moveAnswerToOptions(option, index)"
         >
@@ -38,7 +38,13 @@
         <div
           v-for="(option, index) in dummies"
           :key="index"
-          class="w-11/12 md:w-7/12 p-3 my-2 rounded shadow-sm cursor-pointer mx-auto bg-gray-100 border-2 border-gray-200 border-dashed"
+          class="w-11/12 md:w-7/12 p-3 my-2 rounded shadow-sm cursor-pointer mx-auto border-2 border-dashed"
+          :class="
+            survey.options.backgroundColour === '#000000'
+              ? 'bg-gray-700 border-gray-800'
+              : 'bg-gray-100 border-gray-200'
+          "
+          :style="{ color: survey.options.textColour }"
         >
           <span class="flex flex-grow">{{ option.text }}</span>
         </div>

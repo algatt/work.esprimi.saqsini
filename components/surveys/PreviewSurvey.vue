@@ -1,5 +1,8 @@
 <template>
-  <div ref="surveyModal">
+  <div
+    ref="surveyModal"
+    :style="{ backgroundColor: survey.options.backgroundColour }"
+  >
     <div
       class="relative"
       :style="`backgroundColor: ${survey.options.accentColour}`"

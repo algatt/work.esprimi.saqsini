@@ -9,7 +9,11 @@
     <div class="flex flex-col flex-wrap md:flex-row">
       <select
         class="dropdown-input dropdown-select md:w-6/12 w-full"
-        :style="{ borderColor: survey.options.accentColour }"
+        :style="{
+          borderColor: survey.options.accentColour,
+          backgroundColor: survey.options.backgroundColour,
+          color: survey.options.textColour,
+        }"
       >
         <option
           v-for="(option, index) in options"

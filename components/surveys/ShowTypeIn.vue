@@ -7,7 +7,15 @@
       {{ parsedQuestion.text }}
     </div>
     <div class="flex flex-col flex-wrap md:flex-row">
-      <textarea v-model="answers[0]" class="input w-full"></textarea>
+      <textarea
+        v-model="answers[0]"
+        class="input w-full"
+        :style="{
+          backgroundColor: survey.options.backgroundColour,
+          color: survey.options.textColour,
+          borderColor: survey.options.accentColour,
+        }"
+      ></textarea>
     </div>
   </div>
 </template>
