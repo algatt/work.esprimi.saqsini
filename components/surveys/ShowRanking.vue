@@ -7,33 +7,42 @@
       {{ parsedQuestion.text }}
     </div>
     <div class="flex w-full">
-      <draggable class="w-6/12 flex flex-col" :list="options" group="people">
+      <div class="w-6/12 flex flex-col">
         <div
           v-for="(option, index) in options"
-          :key="index"
-          class="md:w-7/12 w-11/12 p-3 my-2 rounded shadow-sm cursor-move mx-auto"
+          :key="'options' + index"
+          class="md:w-7/12 w-11/12 p-3 my-2 rounded shadow-sm cursor-pointer mx-auto border-2 border-transparent"
           :style="{
             backgroundColor: survey.options.accentColour,
             color: survey.options.backgroundColour,
           }"
+          @click="moveOptionToAnswers(option, index)"
         >
           <span class="flex flex-grow">{{ option.text }}</span>
         </div>
-      </draggable>
+      </div>
 
-      <draggable :list="answers" group="people" class="w-6/12 flex flex-col">
+      <div class="w-6/12 flex flex-col">
         <div
           v-for="(option, index) in answers"
-          :key="index"
-          class="w-11/12 md:w-7/12 p-3 my-2 rounded shadow-sm cursor-move mx-auto"
+          :key="'answers' + index"
+          class="w-11/12 md:w-7/12 p-3 my-2 rounded shadow-sm cursor-pointer mx-auto border-2 border-transparent"
           :style="{
             backgroundColor: survey.options.accentColour,
             color: survey.options.backgroundColour,
           }"
+          @click="moveAnswerToOptions(option, index)"
         >
           <span class="flex flex-grow">{{ option.text }}</span>
         </div>
-      </draggable>
+        <div
+          v-for="(option, index) in dummies"
+          :key="index"
+          class="w-11/12 md:w-7/12 p-3 my-2 rounded shadow-sm cursor-pointer mx-auto bg-gray-100 border-2 border-gray-200 border-dashed"
+        >
+          <span class="flex flex-grow">{{ option.text }}</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -55,14 +64,13 @@ export default {
   data() {
     return {
       answers: [],
+      dummies: [],
+      options: [],
     }
   },
   computed: {
     parsedQuestion() {
       return parseQuestionToForm(this.question)
-    },
-    options() {
-      return JSON.parse(JSON.stringify(this.parsedQuestion.options))
     },
     survey() {
       return parseSurveyToForm(
@@ -75,6 +83,34 @@ export default {
   watch: {
     answers() {
       this.$emit('answers', this.answers)
+    },
+  },
+  created() {
+    this.options = JSON.parse(JSON.stringify(this.parsedQuestion.options))
+
+    let rank = 1
+    this.options.forEach(() => {
+      this.dummies.push({ code: Math.random(), text: 'Position ' + rank++ })
+    })
+  },
+  methods: {
+    moveOptionToAnswers(option, index) {
+      this.options.splice(index, 1)
+      this.answers.push(option)
+      this.dummies = []
+      let rank = this.answers.length + 1
+      this.options.forEach(() => {
+        this.dummies.push({ code: Math.random(), text: 'Position ' + rank++ })
+      })
+    },
+    moveAnswerToOptions(option, index) {
+      this.answers.splice(index, 1)
+      this.options.push(option)
+      this.dummies = []
+      let rank = this.answers.length + 1
+      this.options.forEach(() => {
+        this.dummies.push({ code: Math.random(), text: 'Position ' + rank++ })
+      })
     },
   },
 }
