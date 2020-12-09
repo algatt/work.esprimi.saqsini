@@ -33,7 +33,7 @@
               : answers.includes(option.value)
               ? {
                   borderColor: survey.options.accentColour,
-                  color: survey.options.textColour,
+                  color: survey.options.backgroundColour,
                   backgroundColor: survey.options.accentColour,
                 }
               : {

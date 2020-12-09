@@ -25,7 +25,7 @@
             ? {
                 borderColor: survey.options.accentColour,
                 backgroundColor: survey.options.accentColour,
-                color: survey.options.textColour,
+                color: survey.options.backgroundColour,
               }
             : {
                 borderColor: survey.options.accentColour,
@@ -40,7 +40,7 @@
               v-if="answers.includes(option.value)"
               class="fas fa-check-circle"
               :style="
-                defaultStyle ? null : { color: survey.options.textColour }
+                defaultStyle ? null : { color: survey.options.backgroundColour }
               "
             ></i></transition
         ></span>
@@ -79,7 +79,7 @@
               v-if="otherAnswer !== ''"
               class="fas fa-check-circle"
               :style="
-                defaultStyle ? null : { color: survey.options.textColour }
+                defaultStyle ? null : { color: survey.options.backgroundColour }
               "
             ></i></transition
         ></span>
@@ -98,6 +98,7 @@
               ? null
               : otherAnswer !== ''
               ? {
+                  color: survey.options.backgroundColour,
                   backgroundColor: survey.options.accentColour,
                 }
               : { backgroundColor: survey.options.backgroundColour }

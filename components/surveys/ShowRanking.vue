@@ -21,13 +21,13 @@
           v-for="(option, index) in options"
           :key="'options' + index"
           class="md:w-7/12 w-11/12 p-3 my-2 rounded shadow-sm cursor-pointer mx-auto border-2 border-transparent"
-          :class="defaultStyle ? 'bg-primary text-white' : null"
+          :class="defaultStyle ? 'bg-primary' : null"
           :style="
             defaultStyle
-              ? null
+              ? { color: '#FFFFFF' }
               : {
                   backgroundColor: survey.options.accentColour,
-                  color: survey.options.textColour,
+                  color: survey.options.backgroundColour,
                 }
           "
           @click="moveOptionToAnswers(option, index)"
@@ -47,7 +47,7 @@
               ? null
               : {
                   backgroundColor: survey.options.accentColour,
-                  color: survey.options.textColour,
+                  color: survey.options.backgroundColour,
                 }
           "
           @click="moveAnswerToOptions(option, index)"

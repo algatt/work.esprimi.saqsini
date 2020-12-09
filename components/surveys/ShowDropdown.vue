@@ -9,6 +9,7 @@
     <div class="flex flex-col flex-wrap md:flex-row">
       <select
         class="dropdown-input dropdown-select md:w-6/12 w-full"
+        :class="defaultStyle ? 'focus:border-primary' : null"
         :style="
           defaultStyle
             ? null

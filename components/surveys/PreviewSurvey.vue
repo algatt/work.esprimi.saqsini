@@ -33,39 +33,68 @@
       </div>
       <div class="flex items-center justify-center space-x-3 mb-5">
         <button
-          class="w-20 focus:outline-none py-1 px-3 rounded font-bold transform hover:scale-110 disabled:scale-100 transition duration-300 disabled:opacity-75"
+          v-if="enablePrevious"
+          class="w-28 focus:outline-none py-1 px-3 rounded font-bold flex flex-wrap items-center justify-center"
           :style="{
             backgroundColor: survey.options.accentColour,
-            color: survey.options.textColour,
+            color: survey.options.backgroundColour,
           }"
-          :disabled="!enablePrevious"
           @click="showPreviousPage"
         >
-          Previous
+          <i class="fas fa-chevron-circle-left fa-fw fa-sm mr-2"> </i>Previous
         </button>
         <button
-          v-if="!isFinalPage"
-          class="w-20 focus:outline-none py-1 px-3 rounded font-bold transform hover:scale-110 disabled:scale-100 transition duration-300 disabled:opacity-75"
+          v-else
+          class="w-28 focus:outline-none py-1 px-3 rounded font-bold flex flex-wrap items-center justify-center"
           :style="{
             backgroundColor: survey.options.accentColour,
-            color: survey.options.textColour,
+            color: survey.options.backgroundColour,
           }"
-          :disabled="!enableNext"
+        >
+          <i class="fas fa-ban fa-fw fa-sm mr-2"></i>Previous
+        </button>
+        <button
+          v-if="!isFinalPage && enableNext"
+          class="w-28 focus:outline-none py-1 px-3 rounded font-bold flex flex-wrap items-center justify-center"
+          :style="{
+            backgroundColor: survey.options.accentColour,
+            color: survey.options.backgroundColour,
+          }"
           @click="showNextPage"
         >
-          Next
+          Next <i class="fas fa-chevron-circle-right fa-fw fa-sm ml-2"></i>
         </button>
         <button
-          v-if="isFinalPage"
-          class="w-20 focus:outline-none py-1 px-3 rounded font-bold transform hover:scale-110 disabled:scale-100 transition duration-300 disabled:opacity-75"
+          v-if="!isFinalPage && !enableNext"
+          class="w-28 focus:outline-none py-1 px-3 rounded font-bold flex flex-wrap items-center justify-center"
           :style="{
             backgroundColor: survey.options.accentColour,
-            color: survey.options.textColour,
+            color: survey.options.backgroundColour,
+          }"
+        >
+          Next <i class="fas fa-ban fa-fw fa-sm ml-2"></i>
+        </button>
+        <button
+          v-if="isFinalPage && enableNext"
+          class="w-28 focus:outline-none py-1 px-3 rounded font-bold flex flex-wrap items-center justify-center"
+          :style="{
+            backgroundColor: survey.options.accentColour,
+            color: survey.options.backgroundColour,
           }"
           :disabled="!enableNext"
           @click="finishSurvey"
         >
-          Finish
+          Finish <i class="fas fa-flag-checkered fa-sm fa-fw ml-2"></i>
+        </button>
+        <button
+          v-if="isFinalPage && !enableNext"
+          class="w-28 focus:outline-none py-1 px-3 rounded font-bold flex flex-wrap items-center justify-center"
+          :style="{
+            backgroundColor: survey.options.accentColour,
+            color: survey.options.backgroundColour,
+          }"
+        >
+          Finish <i class="fas fa-ban fa-fw fa-sm ml-2"></i>
         </button>
       </div>
     </div>
