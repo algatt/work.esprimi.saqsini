@@ -63,6 +63,11 @@ export default {
       )
     },
   },
+  watch: {
+    answers() {
+      this.$emit('answers', this.answers)
+    },
+  },
 }
 </script>
 

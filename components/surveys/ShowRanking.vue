@@ -62,13 +62,7 @@ export default {
       return parseQuestionToForm(this.question)
     },
     options() {
-      const x = JSON.parse(JSON.stringify(this.parsedQuestion.options))
-      x.unshift({
-        ordinalPosition: 0,
-        text: 'Not Selected',
-        value: null,
-      })
-      return x
+      return JSON.parse(JSON.stringify(this.parsedQuestion.options))
     },
     survey() {
       return parseSurveyToForm(
@@ -76,6 +70,11 @@ export default {
           return el.code === this.parsedQuestion.surveyCode
         })
       )
+    },
+  },
+  watch: {
+    answers() {
+      this.$emit('answers', this.answers)
     },
   },
 }

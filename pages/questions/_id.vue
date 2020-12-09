@@ -44,18 +44,17 @@
           class="border border-gray-100 shadow p-8 rounded"
           @showSubMenu="changeSubMenu(question.code)"
         ></display-question>
-        <transition name="fade">
-          <new-question-toolbar
-            class="absolute w-full bottom-0 mb-1"
-            :class="
-              whichSubMenu === question.code ? 'visible' : 'visible md:hidden'
-            "
-            @newQuestion="newQuestion($event, question.ordinalPosition + 1)"
-            @editQuestion="editQuestion(question)"
-            @moveQuestion="moveQuestion(question)"
-            @deleteQuestion="deleteQuestion(question)"
-          ></new-question-toolbar>
-        </transition>
+
+        <new-question-toolbar
+          class="absolute w-full bottom-0 mb-1"
+          :class="
+            whichSubMenu === question.code ? 'visible' : 'visible md:hidden'
+          "
+          @newQuestion="newQuestion($event, question.ordinalPosition + 1)"
+          @editQuestion="editQuestion(question)"
+          @moveQuestion="moveQuestion(question)"
+          @deleteQuestion="deleteQuestion(question)"
+        ></new-question-toolbar>
       </div>
     </div>
 
@@ -77,6 +76,13 @@
           </template>
         </edit-object-modal>
       </template>
+      <template v-else-if="selectedMenu === 4">
+        <preview-survey-modal
+          :survey="survey"
+          :questions="questions"
+          @modalClosed="selectedMenu = 1"
+        ></preview-survey-modal>
+      </template>
     </transition>
 
     <div class="fixed bottom-0 right-0 mr-5 mb-5 z-10">
@@ -97,10 +103,12 @@ import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
 import NewQuestion from '~/components/surveys/NewQuestion'
 import EditObjectModal from '~/components/layouts/EditObjectModal'
 import SurveySettings from '~/components/surveys/SurveySettings'
+import PreviewSurveyModal from '~/components/surveys/PreviewSurveyModal'
 
 export default {
   name: 'QuestionList',
   components: {
+    PreviewSurveyModal,
     NewQuestion,
     Spinner,
     DisplayQuestion,

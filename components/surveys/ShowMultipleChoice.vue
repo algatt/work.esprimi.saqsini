@@ -115,6 +115,11 @@ export default {
       })
     },
   },
+  watch: {
+    answers() {
+      this.$emit('answers', this.answers)
+    },
+  },
   methods: {
     addToAnswer(value) {
       if (this.parsedQuestion.allowMultiple === true) {
