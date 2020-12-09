@@ -6,6 +6,15 @@
     >
       {{ parsedQuestion.text }}
     </div>
+    <div
+      class="flex w-full"
+      :style="defaultStyle ? null : { color: survey.options.textColour }"
+    >
+      <i
+        >Click on the following elements. First element to be clicked will be
+        placed first.</i
+      >
+    </div>
     <div class="flex w-full">
       <div class="w-6/12 flex flex-col">
         <div

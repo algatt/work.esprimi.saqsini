@@ -33,7 +33,11 @@
       </div>
       <div class="flex items-center justify-center space-x-3 mb-5">
         <button
-          class="btn-primary w-20"
+          class="w-20 focus:outline-none py-1 px-3 rounded font-bold transform hover:scale-110 disabled:scale-100 transition duration-300 disabled:opacity-75"
+          :style="{
+            backgroundColor: survey.options.accentColour,
+            color: survey.options.textColour,
+          }"
           :disabled="!enablePrevious"
           @click="showPreviousPage"
         >
@@ -41,7 +45,11 @@
         </button>
         <button
           v-if="!isFinalPage"
-          class="btn-primary w-20"
+          class="w-20 focus:outline-none py-1 px-3 rounded font-bold transform hover:scale-110 disabled:scale-100 transition duration-300 disabled:opacity-75"
+          :style="{
+            backgroundColor: survey.options.accentColour,
+            color: survey.options.textColour,
+          }"
           :disabled="!enableNext"
           @click="showNextPage"
         >
@@ -49,7 +57,11 @@
         </button>
         <button
           v-if="isFinalPage"
-          class="btn-primary w-20"
+          class="w-20 focus:outline-none py-1 px-3 rounded font-bold transform hover:scale-110 disabled:scale-100 transition duration-300 disabled:opacity-75"
+          :style="{
+            backgroundColor: survey.options.accentColour,
+            color: survey.options.textColour,
+          }"
           :disabled="!enableNext"
           @click="finishSurvey"
         >

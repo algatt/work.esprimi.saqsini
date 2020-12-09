@@ -59,7 +59,7 @@ body {
 }
 
 .btn-table {
-  @apply bg-primary rounded px-1 text-white hover:bg-primary-darker transition duration-300 flex;
+  @apply bg-primary rounded px-2 text-white hover:bg-primary-darker transition duration-300 flex;
 }
 
 

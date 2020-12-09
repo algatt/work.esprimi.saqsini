@@ -55,9 +55,7 @@
           <nuxt-link
             :to="{ name: 'questions-id', params: { id: slotProps.item.code } }"
           >
-            <button
-              class="bg-primary rounded px-1 text-white hover:bg-primary-darker transition duration-300 flex"
-            >
+            <button class="btn-table">
               {{ slotProps.item.questions }}
               <span class="flex md:hidden">&nbsp; Questions</span>
             </button>

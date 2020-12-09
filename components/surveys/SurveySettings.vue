@@ -7,7 +7,7 @@
       hidden
       @change="updateLogo('inputHeaderImage', 'headerImage')"
     />
-    <div class="flex justify-start items-center">
+    <div class="flex flex-col justify-start items-start">
       <button
         class="text-primary focus:outline-none hover:text-primary-darker h-24 w-36"
         @click="activateInput('inputHeaderImage')"
@@ -19,6 +19,16 @@
         />
         <i v-else class="far fa-image fa-fw fa-3x"></i>
       </button>
+      <button
+        v-if="form.options.headerImage !== ''"
+        class="btn-link my-1"
+        @click="
+          form.options.headerImage = ''
+          headerImage = ''
+        "
+      >
+        Clear
+      </button>
     </div>
     <span>&nbsp;</span>
 
@@ -29,7 +39,7 @@
       hidden
       @change="updateLogo('inputFooterImage', 'footerImage')"
     />
-    <div class="flex justify-start items-center">
+    <div class="flex flex-col justify-start items-start">
       <button
         class="text-primary focus:outline-none hover:text-primary-darker h-24 w-36"
         @click="activateInput('inputFooterImage')"
@@ -40,6 +50,16 @@
           class="rounded bg-cover"
         />
         <i v-else class="far fa-image fa-fw fa-3x"></i>
+      </button>
+      <button
+        v-if="form.options.footerImage !== ''"
+        class="btn-link my-1"
+        @click="
+          form.options.footerImage = ''
+          headerImage = ''
+        "
+      >
+        Clear
       </button>
     </div>
     <span>&nbsp;</span>

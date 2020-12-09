@@ -117,6 +117,7 @@ export const actions = {
 
           await dispatch('questions/newQuestion', question, { root: true })
           await dispatch('categories/getCategories', false, { root: true })
+          response.data.questions = 1
           resolve(response.data)
         })
         .catch((error) => {

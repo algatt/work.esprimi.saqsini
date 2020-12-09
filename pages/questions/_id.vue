@@ -34,9 +34,23 @@
       >
         <div
           v-if="!showPreview"
-          class="border border-gray-100 shadow p-5 rounded w-full md:w-8/12 mx-auto"
+          class="border shadow p-5 rounded w-full md:w-8/12 mx-auto flex items-center"
+          :class="
+            question.flags.includes('SECTION')
+              ? 'border-primary'
+              : 'border-gray-100'
+          "
         >
-          {{ question.questionNumber }} - {{ question.name }}
+          <span v-if="question.questionNumber !== 0"
+            >{{ question.questionNumber }} - </span
+          ><span
+            :class="
+              question.flags.includes('SECTION')
+                ? 'text-primary font-bold'
+                : null
+            "
+            >{{ question.name }}</span
+          >
         </div>
         <display-question
           v-else
