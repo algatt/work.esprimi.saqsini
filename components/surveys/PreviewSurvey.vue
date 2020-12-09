@@ -4,10 +4,21 @@
     :style="{ backgroundColor: survey.options.backgroundColour }"
   >
     <div
-      class="relative"
-      :style="`backgroundColor: ${survey.options.accentColour}`"
+      class="h-48 bg-cover flex items-center"
+      :style="{
+        backgroundColor: survey.options.accentColour,
+        backgroundImage: 'url(' + survey.options.headerImage + ')',
+      }"
     >
-      <img :src="survey.options.headerImage" class="h-48 w-full object-cover" />
+      <p
+        class="px-5 text-5xl font-bold tracking-wider py-3 shadow"
+        :style="{
+          color: survey.options.accentColour,
+          backgroundColor: survey.options.backgroundColour,
+        }"
+      >
+        {{ survey.name }}
+      </p>
     </div>
     <div ref="questionsSection" class="h-full">
       <div
@@ -15,7 +26,6 @@
         :key="question.code"
         class="mb-16 p-6"
       >
-        {{ question.page }}
         <display-question
           :question="question"
           @answers="processAnswers($event, question)"
@@ -48,11 +58,12 @@
       </div>
     </div>
     <div
-      class="relative"
-      :style="`backgroundColor: ${survey.options.accentColour}`"
-    >
-      <img :src="survey.options.footerImage" class="h-48 w-full object-cover" />
-    </div>
+      class="h-48 bg-cover"
+      :style="{
+        backgroundColor: survey.options.accentColour,
+        backgroundImage: 'url(' + survey.options.footerImage + ')',
+      }"
+    ></div>
   </div>
 </template>
 

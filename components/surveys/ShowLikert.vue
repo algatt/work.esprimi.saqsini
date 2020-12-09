@@ -36,7 +36,10 @@
                   color: survey.options.textColour,
                   backgroundColor: survey.options.accentColour,
                 }
-              : { borderColor: survey.options.accentColour }
+              : {
+                  borderColor: survey.options.accentColour,
+                  color: survey.options.textColour,
+                }
           "
           @click="answers = [option.value]"
         >
