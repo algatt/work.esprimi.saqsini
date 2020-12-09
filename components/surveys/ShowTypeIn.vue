@@ -2,7 +2,7 @@
   <div class="flex flex-col">
     <div
       class="flex font-semibold mb-2"
-      :style="{ color: survey.options.textColour }"
+      :style="defaultStyle ? null : { color: survey.options.textColour }"
     >
       {{ parsedQuestion.text }}
     </div>
@@ -10,11 +10,15 @@
       <textarea
         v-model="answers[0]"
         class="input w-full"
-        :style="{
-          backgroundColor: survey.options.backgroundColour,
-          color: survey.options.textColour,
-          borderColor: survey.options.accentColour,
-        }"
+        :style="
+          defaultStyle
+            ? null
+            : {
+                backgroundColor: survey.options.backgroundColour,
+                color: survey.options.textColour,
+                borderColor: survey.options.accentColour,
+              }
+        "
       ></textarea>
     </div>
   </div>
@@ -32,6 +36,11 @@ export default {
     question: {
       required: true,
       type: Object,
+    },
+    defaultStyle: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {

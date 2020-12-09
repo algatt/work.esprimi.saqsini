@@ -2,18 +2,22 @@
   <div class="flex flex-col">
     <div
       class="flex font-semibold mb-2"
-      :style="{ color: survey.options.textColour }"
+      :style="defaultStyle ? null : { color: survey.options.textColour }"
     >
       {{ parsedQuestion.text }}
     </div>
     <div class="flex flex-col flex-wrap md:flex-row">
       <select
         class="dropdown-input dropdown-select md:w-6/12 w-full"
-        :style="{
-          borderColor: survey.options.accentColour,
-          backgroundColor: survey.options.backgroundColour,
-          color: survey.options.textColour,
-        }"
+        :style="
+          defaultStyle
+            ? null
+            : {
+                borderColor: survey.options.accentColour,
+                backgroundColor: survey.options.backgroundColour,
+                color: survey.options.textColour,
+              }
+        "
       >
         <option
           v-for="(option, index) in options"
@@ -39,6 +43,11 @@ export default {
     question: {
       required: true,
       type: Object,
+    },
+    defaultStyle: {
+      required: true,
+      type: Boolean,
+      default: false,
     },
   },
   data() {

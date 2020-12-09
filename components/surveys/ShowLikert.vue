@@ -2,7 +2,7 @@
   <div class="flex flex-col">
     <div
       class="flex font-semibold mb-2"
-      :style="{ color: survey.options.textColour }"
+      :style="defaultStyle ? null : { color: survey.options.textColour }"
     >
       {{ parsedQuestion.text }}
     </div>
@@ -20,8 +20,17 @@
           v-for="(option, index) in parsedQuestion.options"
           :key="index"
           class="card-likert"
+          :class="
+            defaultStyle
+              ? answers.includes(option.value)
+                ? 'border-primary bg-primary text-white'
+                : 'border-primary'
+              : null
+          "
           :style="
-            answers.includes(option.value)
+            defaultStyle
+              ? null
+              : answers.includes(option.value)
               ? {
                   borderColor: survey.options.accentColour,
                   color: survey.options.textColour,
@@ -58,6 +67,11 @@ export default {
     question: {
       required: true,
       type: Object,
+    },
+    defaultStyle: {
+      required: false,
+      type: Boolean,
+      default: false,
     },
   },
   data() {

@@ -42,6 +42,7 @@
           v-else
           :question="question"
           class="border border-gray-100 shadow p-8 rounded"
+          :default-style="true"
           @showSubMenu="changeSubMenu(question.code)"
         ></display-question>
 

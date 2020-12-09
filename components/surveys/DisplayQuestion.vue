@@ -3,30 +3,36 @@
     <show-section
       v-if="questionType === 'SECTION'"
       :question="question"
+      :default-style="defaultStyle"
     ></show-section>
     <show-multiple-choice
       v-else-if="questionType === 'MULTIPLE_CHOICE'"
       :question="question"
+      :default-style="defaultStyle"
       @answers="$emit('answers', $event)"
     ></show-multiple-choice>
     <show-likert
       v-else-if="questionType === 'LIKERT'"
       :question="question"
+      :default-style="defaultStyle"
       @answers="$emit('answers', $event)"
     ></show-likert>
     <show-dropdown
       v-else-if="questionType === 'DROPDOWN'"
       :question="question"
+      :default-style="defaultStyle"
       @answers="$emit('answers', $event)"
     ></show-dropdown>
     <show-type-in
       v-else-if="questionType === 'TYPE_IN'"
       :question="question"
+      :default-style="defaultStyle"
       @answers="$emit('answers', $event)"
     ></show-type-in>
     <show-ranking
       v-else-if="questionType === 'RANKING'"
       :question="question"
+      :default-style="defaultStyle"
       @answers="$emit('answers', $event)"
     ></show-ranking>
   </div>
@@ -53,6 +59,11 @@ export default {
     question: {
       type: Object,
       required: true,
+    },
+    defaultStyle: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {

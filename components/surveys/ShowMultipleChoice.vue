@@ -2,7 +2,7 @@
   <div class="flex flex-col">
     <div
       class="flex font-semibold mb-2"
-      :style="{ color: survey.options.textColour }"
+      :style="defaultStyle ? null : { color: survey.options.textColour }"
     >
       {{ parsedQuestion.text }}
     </div>
@@ -11,8 +11,17 @@
         v-for="(option, index) in parsedQuestion.options"
         :key="index"
         class="card-multiple-choice"
+        :class="
+          defaultStyle
+            ? answers.includes(option.value)
+              ? 'border-primary bg-primary text-white'
+              : 'border-primary'
+            : null
+        "
         :style="
-          answers.includes(option.value)
+          defaultStyle
+            ? null
+            : answers.includes(option.value)
             ? {
                 borderColor: survey.options.accentColour,
                 backgroundColor: survey.options.accentColour,
@@ -30,7 +39,9 @@
             <i
               v-if="answers.includes(option.value)"
               class="fas fa-check-circle"
-              :style="{ color: survey.options.textColour }"
+              :style="
+                defaultStyle ? null : { color: survey.options.textColour }
+              "
             ></i></transition
         ></span>
         <span class="flex flex-grow">{{ option.text }}</span>
@@ -39,8 +50,17 @@
       <div
         v-if="parsedQuestion.allowOther"
         class="card-multiple-choice"
+        :class="
+          defaultStyle
+            ? otherAnswer !== ''
+              ? 'border-primary bg-primary text-white'
+              : 'border-primary'
+            : null
+        "
         :style="
-          otherAnswer !== ''
+          defaultStyle
+            ? null
+            : otherAnswer !== ''
             ? {
                 borderColor: survey.options.accentColour,
                 backgroundColor: survey.options.accentColour,
@@ -58,14 +78,25 @@
             <i
               v-if="otherAnswer !== ''"
               class="fas fa-check-circle"
-              :style="{ color: survey.options.textColour }"
+              :style="
+                defaultStyle ? null : { color: survey.options.textColour }
+              "
             ></i></transition
         ></span>
         <input
           v-model="otherAnswer"
           class="flex flex-grow font-semibold transition duration-300"
+          :class="
+            defaultStyle
+              ? otherAnswer !== ''
+                ? 'bg-primary text-white'
+                : null
+              : null
+          "
           :style="
-            otherAnswer !== ''
+            defaultStyle
+              ? null
+              : otherAnswer !== ''
               ? {
                   backgroundColor: survey.options.accentColour,
                 }
@@ -91,6 +122,11 @@ export default {
     question: {
       required: true,
       type: Object,
+    },
+    defaultStyle: {
+      required: false,
+      type: Boolean,
+      default: false,
     },
   },
   data() {

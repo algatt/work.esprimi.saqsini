@@ -2,7 +2,7 @@
   <div class="flex flex-col">
     <div
       class="flex font-semibold mb-2"
-      :style="{ color: survey.options.textColour }"
+      :style="defaultStyle ? null : { color: survey.options.textColour }"
     >
       {{ parsedQuestion.text }}
     </div>
@@ -12,10 +12,15 @@
           v-for="(option, index) in options"
           :key="'options' + index"
           class="md:w-7/12 w-11/12 p-3 my-2 rounded shadow-sm cursor-pointer mx-auto border-2 border-transparent"
-          :style="{
-            backgroundColor: survey.options.accentColour,
-            color: survey.options.textColour,
-          }"
+          :class="defaultStyle ? 'bg-primary text-white' : null"
+          :style="
+            defaultStyle
+              ? null
+              : {
+                  backgroundColor: survey.options.accentColour,
+                  color: survey.options.textColour,
+                }
+          "
           @click="moveOptionToAnswers(option, index)"
         >
           <span class="flex flex-grow">{{ option.text }}</span>
@@ -27,10 +32,15 @@
           v-for="(option, index) in answers"
           :key="'answers' + index"
           class="w-11/12 md:w-7/12 p-3 my-2 rounded shadow-sm cursor-pointer mx-auto border-2 border-transparent"
-          :style="{
-            backgroundColor: survey.options.accentColour,
-            color: survey.options.textColour,
-          }"
+          :class="defaultStyle ? 'bg-primary text-white' : null"
+          :style="
+            defaultStyle
+              ? null
+              : {
+                  backgroundColor: survey.options.accentColour,
+                  color: survey.options.textColour,
+                }
+          "
           @click="moveAnswerToOptions(option, index)"
         >
           <span class="flex flex-grow">{{ option.text }}</span>
@@ -40,11 +50,13 @@
           :key="index"
           class="w-11/12 md:w-7/12 p-3 my-2 rounded shadow-sm cursor-pointer mx-auto border-2 border-dashed"
           :class="
-            survey.options.backgroundColour === '#000000'
+            defaultStyle
+              ? 'bg-gray-100 border-gray-200'
+              : survey.options.backgroundColour === '#000000'
               ? 'bg-gray-700 border-gray-800'
               : 'bg-gray-100 border-gray-200'
           "
-          :style="{ color: survey.options.textColour }"
+          :style="defaultStyle ? null : { color: survey.options.textColour }"
         >
           <span class="flex flex-grow">{{ option.text }}</span>
         </div>
@@ -65,6 +77,11 @@ export default {
     question: {
       required: true,
       type: Object,
+    },
+    defaultStyle: {
+      required: false,
+      default: false,
+      type: Boolean,
     },
   },
   data() {
