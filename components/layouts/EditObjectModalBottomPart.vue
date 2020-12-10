@@ -6,14 +6,14 @@
       <button class="btn-round-primary mr-2" @click="cancelCurrentItem">
         <i class="fas fa-times fa-fw"></i>
       </button>
-      <!--      <button-->
-      <!--        v-if="showDelete && form.code !== -1"-->
-      <!--        class="btn-round-danger mr-2"-->
-      <!--        :disabled="form.code === -1"-->
-      <!--        @click="deleteItem"-->
-      <!--      >-->
-      <!--        <i class="far fa-trash-alt fa-fw"></i>-->
-      <!--      </button>-->
+      <button
+        v-if="showDelete && form.code !== -1"
+        class="btn-round-danger mr-2"
+        :disabled="form.code === -1"
+        @click="deleteItem"
+      >
+        <i class="far fa-trash-alt fa-fw"></i>
+      </button>
       <button
         v-if="false"
         class="btn-round-danger mr-2"

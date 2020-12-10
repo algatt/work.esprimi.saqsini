@@ -65,9 +65,44 @@ export const actions = {
           reader.onloadend = function () {
             avatar = reader.result
             commit('setAuthAvatar', avatar)
+            resolve(avatar)
           }
+        })
+        .catch((error) => reject(error))
+    })
+  },
 
-          resolve(avatar)
+  updateUserDetails({ dispatch }, { displayName, email }) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .put(
+          'auth/user/',
+          qs.stringify({
+            name: displayName,
+            email,
+          })
+        )
+        .then(() => {
+          dispatch('getUserDetails')
+          resolve()
+        })
+        .catch((error) => reject(error))
+    })
+  },
+
+  updateUserAvatar({ dispatch }, avatar) {
+    return new Promise((resolve, reject) => {
+      const formData = new FormData()
+      formData.append('avatar', avatar)
+      this.$axios
+        .patch('auth/user/setAvatar', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then(() => {
+          dispatch('getUserAvatar')
+          resolve()
         })
         .catch((error) => reject(error))
     })
@@ -76,7 +111,7 @@ export const actions = {
   logout({ commit }) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .$get('auth/auth/logout')
+        .get('auth/auth/logout')
         .then(() => {
           commit('setAuthToken', null)
           commit('setAuthAvatar', null)

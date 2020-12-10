@@ -62,10 +62,17 @@ export const actions = {
           })
 
           const user = await context.app.$axios.get(
-            process.env.api_path + process.env.api_auth + 'user'
+            process.env.api_path + process.env.api_auth + 'user',
+            {
+              headers: {
+                token: cookies['x-access-token'],
+                Authorization: 'b0ded4a6-f1a8-45c4-aac5-7110ed437333',
+              },
+            }
           )
           commit('auth/setAuthUser', user.data)
         } catch (e) {
+          console.log(e)
           await context.store.commit('auth/setAuthToken', null, { root: true })
         }
       }

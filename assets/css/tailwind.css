@@ -47,7 +47,7 @@ body {
 }
 
 .btn-link {
-  @apply text-primary hover:text-primary-dark transition duration-300 focus:outline-none;
+  @apply text-primary hover:text-primary-dark transition duration-300 focus:outline-none focus:ring-2 focus:ring-opacity-75 ring-primary ring-offset-1 rounded;
 }
 
 .btn-link:disabled {
