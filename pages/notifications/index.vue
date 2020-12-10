@@ -102,13 +102,13 @@ export default {
         JSON.stringify(this.$store.getters.getItems('notifications'))
       )
 
-      const x = tempNotifications.sort((a, b) => {
+      tempNotifications.sort((a, b) => {
         return moment(a.createdTimestamp.replace(' +', '+')).valueOf() <
           moment(b.createdTimestamp.replace(' +', '+')).valueOf()
           ? 1
           : -1
       })
-      console.log(x)
+
       return tempNotifications
     },
   },

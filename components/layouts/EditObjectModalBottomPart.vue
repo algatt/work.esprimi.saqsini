@@ -26,6 +26,7 @@
 
     <div class="flex flex-wrap items-center w-6/12 justify-end">
       <button
+        v-if="showSave"
         class="btn-round-primary mr-2"
         :disabled="!isValid"
         @click="saveItem"
@@ -58,6 +59,11 @@ export default {
       type: Boolean,
     },
     showDelete: {
+      required: false,
+      type: Boolean,
+      default: true,
+    },
+    showSave: {
       required: false,
       type: Boolean,
       default: true,
