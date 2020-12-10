@@ -33,68 +33,53 @@
       </div>
       <div class="flex items-center justify-center space-x-3 mb-5">
         <button
-          v-if="enablePrevious"
-          class="w-28 focus:outline-none py-1 px-3 rounded font-bold flex flex-wrap items-center justify-center"
-          :style="{
-            backgroundColor: survey.options.accentColour,
-            color: survey.options.backgroundColour,
-          }"
+          :disabled="!enablePrevious"
+          class="w-28 focus:outline-none py-1 px-3 rounded font-bold flex flex-wrap items-center justify-center disabled:bg-gray-300"
+          :style="
+            !enablePrevious
+              ? null
+              : {
+                  backgroundColor: survey.options.accentColour,
+                  color: survey.options.backgroundColour,
+                }
+          "
           @click="showPreviousPage"
         >
-          <i class="fas fa-chevron-circle-left fa-fw fa-sm mr-2"> </i>Previous
+          Previous
         </button>
+
         <button
-          v-else
-          class="w-28 focus:outline-none py-1 px-3 rounded font-bold flex flex-wrap items-center justify-center"
-          :style="{
-            backgroundColor: survey.options.accentColour,
-            color: survey.options.backgroundColour,
-          }"
-        >
-          <i class="fas fa-ban fa-fw fa-sm mr-2"></i>Previous
-        </button>
-        <button
-          v-if="!isFinalPage && enableNext"
-          class="w-28 focus:outline-none py-1 px-3 rounded font-bold flex flex-wrap items-center justify-center"
-          :style="{
-            backgroundColor: survey.options.accentColour,
-            color: survey.options.backgroundColour,
-          }"
+          v-if="!isFinalPage"
+          :disabled="!enableNext"
+          class="w-28 focus:outline-none py-1 px-3 rounded font-bold flex flex-wrap items-center justify-center disabled:bg-gray-300"
+          :style="
+            !enableNext
+              ? null
+              : {
+                  backgroundColor: survey.options.accentColour,
+                  color: survey.options.backgroundColour,
+                }
+          "
           @click="showNextPage"
         >
-          Next <i class="fas fa-chevron-circle-right fa-fw fa-sm ml-2"></i>
+          Next
         </button>
+
         <button
-          v-if="!isFinalPage && !enableNext"
-          class="w-28 focus:outline-none py-1 px-3 rounded font-bold flex flex-wrap items-center justify-center"
-          :style="{
-            backgroundColor: survey.options.accentColour,
-            color: survey.options.backgroundColour,
-          }"
-        >
-          Next <i class="fas fa-ban fa-fw fa-sm ml-2"></i>
-        </button>
-        <button
-          v-if="isFinalPage && enableNext"
-          class="w-28 focus:outline-none py-1 px-3 rounded font-bold flex flex-wrap items-center justify-center"
-          :style="{
-            backgroundColor: survey.options.accentColour,
-            color: survey.options.backgroundColour,
-          }"
+          v-else
           :disabled="!enableNext"
+          class="w-28 focus:outline-none py-1 px-3 rounded font-bold flex flex-wrap items-center justify-center disabled:bg-gray-300"
+          :style="
+            !enableNext
+              ? null
+              : {
+                  backgroundColor: survey.options.accentColour,
+                  color: survey.options.backgroundColour,
+                }
+          "
           @click="finishSurvey"
         >
-          Finish <i class="fas fa-flag-checkered fa-sm fa-fw ml-2"></i>
-        </button>
-        <button
-          v-if="isFinalPage && !enableNext"
-          class="w-28 focus:outline-none py-1 px-3 rounded font-bold flex flex-wrap items-center justify-center"
-          :style="{
-            backgroundColor: survey.options.accentColour,
-            color: survey.options.backgroundColour,
-          }"
-        >
-          Finish <i class="fas fa-ban fa-fw fa-sm ml-2"></i>
+          Finish
         </button>
       </div>
     </div>
