@@ -2,6 +2,7 @@ import qs from 'qs'
 
 export const state = () => ({
   items: [],
+  notificationStats: {},
 })
 
 export const actions = {
@@ -56,7 +57,7 @@ export const actions = {
     })
   },
 
-  getInboxStats({ rootState }) {
+  getInboxStats({ rootState, commit }) {
     return new Promise((resolve, reject) => {
       this.$axios
         .get(
@@ -64,11 +65,18 @@ export const actions = {
           qs.stringify({ token: rootState.auth.authUser.authToken })
         )
         .then((response) => {
-          resolve(response.data)
+          commit('setInboxStats', response.data)
+          resolve()
         })
         .catch((error) => {
           reject(error)
         })
     })
+  },
+}
+
+export const mutations = {
+  setInboxStats(state, data) {
+    state.notificationStats = data
   },
 }

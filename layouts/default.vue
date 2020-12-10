@@ -30,5 +30,19 @@ export default {
       menuShow: true,
     }
   },
+  created() {
+    this.getNotifications()
+    setInterval(() => {
+      this.getNotifications()
+    }, 15000)
+  },
+  beforeDestroy() {
+    clearInterval(this.getNotifications)
+  },
+  methods: {
+    getNotifications() {
+      this.$store.dispatch('notifications/getInboxStats')
+    },
+  },
 }
 </script>

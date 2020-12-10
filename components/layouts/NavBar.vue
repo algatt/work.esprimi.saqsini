@@ -103,6 +103,7 @@
 <script>
 export default {
   name: 'NavBar',
+
   props: {
     isVisible: {
       type: Boolean,
@@ -124,18 +125,15 @@ export default {
         },
         { text: 'Logout', link: 'account-logout', icon: 'fas fa-sign-out-alt' },
       ],
-      unreadNotifications: 0,
     }
   },
   computed: {
     currentRoute() {
       return this.$route.name
     },
-  },
-  created() {
-    this.$store.dispatch('notifications/getInboxStats').then((response) => {
-      this.unreadNotifications = response
-    })
+    unreadNotifications() {
+      return this.$store.state.notifications.notificationStats
+    },
   },
   methods: {
     gotoPage(page) {
