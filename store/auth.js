@@ -55,6 +55,10 @@ export const actions = {
           responseType: 'arraybuffer',
         })
         .then((response) => {
+          if (response.data.byteLength === 0) {
+            commit('setAuthAvatar', null)
+            resolve()
+          }
           const blob = new Blob([response.data], {
             type: response.headers['content-type'],
           })
@@ -100,6 +104,18 @@ export const actions = {
             'Content-Type': 'multipart/form-data',
           },
         })
+        .then(() => {
+          dispatch('getUserAvatar')
+          resolve()
+        })
+        .catch((error) => reject(error))
+    })
+  },
+
+  clearAvatar({ dispatch }) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .patch('auth/user/clearAvatar')
         .then(() => {
           dispatch('getUserAvatar')
           resolve()

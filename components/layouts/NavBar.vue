@@ -12,14 +12,14 @@
         <button
           v-for="(item, index) in menu"
           :key="'menu' + index"
-          class="text-white h-10 font-medium tracking-wider py-2 w-full hover:bg-primary-darker active:bg-white active:text-primary transition duration-300 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-primary-darker"
+          class="relative text-white h-10 font-medium tracking-wider py-2 w-full hover:bg-primary-darker active:bg-white active:text-primary transition duration-300 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-primary-darker"
           style="font-family: Poppins"
           :class="currentRoute === item.link ? 'bg-primary-darker' : null"
           :title="item.text"
           @click="gotoPage(item.link)"
         >
           <span
-            class="w-40 flex items-center justify-between mx-auto"
+            class="w-40 flex items-center justify-between mx-auto relative"
             :class="isVisible ? 'moveRight' : 'moveLeft'"
           >
             <p>
@@ -27,6 +27,12 @@
             </p>
 
             <i :class="item.icon" class="fa-fw"></i>
+            <span
+              v-if="item.link === 'notifications'"
+              class="absolute text-xs bg-white rounded text-primary px-0.5 font-semibold"
+              style="top: -5px; right: -5px"
+              >{{ unreadNotifications.unreadCount }}</span
+            >
           </span>
         </button>
       </div>
@@ -36,7 +42,7 @@
           :class="isVisible ? 'justify-end' : 'justify-center'"
         >
           <button
-            class="bg-primary h-7 w-7 rounded-full text-white hover:bg-primary-darker focus:ring-2 ring-primary-darker transition duration-300 ring-offset-2 focus:outline-none"
+            class="relative bg-primary h-7 w-7 rounded-full text-white hover:bg-primary-darker focus:ring-2 ring-primary-darker transition duration-300 ring-offset-2 focus:outline-none"
             @click="$emit('clickToggle')"
           >
             <i
@@ -75,11 +81,19 @@
         <button
           v-for="(item, index) in menu"
           :key="'menu' + index"
-          class="w-full flex items-center text-white justify-center my-3 hover:bg-white hover:text-primary py-1 transition duration-300"
+          class="w-full flex items-center text-white justify-center my-3 hover:bg-white hover:text-primary py-1 transition duration-300 relative"
           @click="gotoPage(item.link)"
         >
           <p>{{ item.text }}</p>
-          <i :class="item.icon" class="fa-fw ml-3"></i>
+          <span class="relative">
+            <i :class="item.icon" class="fa-fw ml-3 relative"> </i>
+            <span
+              v-if="item.link === 'notifications'"
+              class="absolute text-xs bg-white rounded text-primary px-1 font-semibold"
+              style="top: -3px; right: -3px"
+              >{{ unreadNotifications.unreadCount }}</span
+            ></span
+          >
         </button>
       </div>
     </div>
@@ -110,12 +124,18 @@ export default {
         },
         { text: 'Logout', link: 'account-logout', icon: 'fas fa-sign-out-alt' },
       ],
+      unreadNotifications: 0,
     }
   },
   computed: {
     currentRoute() {
       return this.$route.name
     },
+  },
+  created() {
+    this.$store.dispatch('notifications/getInboxStats').then((response) => {
+      this.unreadNotifications = response
+    })
   },
   methods: {
     gotoPage(page) {

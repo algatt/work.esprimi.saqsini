@@ -13,7 +13,7 @@
           @change="updateAvatar"
         />
         <img
-          v-if="avatarImage !== '' && avatarImage !== 'data:image/png;base64,'"
+          v-if="avatarImage !== ''"
           :src="avatarImage"
           class="h-48 w-48 object-cover rounded-lg cursor-pointer shadow"
           @click="activateInput"
@@ -134,10 +134,9 @@ export default {
           displayName: this.displayName,
           email: this.email,
         }),
-        this.$store.dispatch(
-          'auth/updateUserAvatar',
-          this.imageFile === '' ? new File([''], null) : this.imageFile
-        ),
+        this.imageFile === ''
+          ? this.$store.dispatch('auth/clearAvatar')
+          : this.$store.dispatch('auth/updateUserAvatar', this.imageFile),
       ])
         .then(() => {
           this.$toasted.show('Profile updated')

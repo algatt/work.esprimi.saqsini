@@ -55,4 +55,20 @@ export const actions = {
         .catch((error) => reject(error))
     })
   },
+
+  getInboxStats({ rootState }) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .get(
+          '/auth/notifications/inboxStats',
+          qs.stringify({ token: rootState.auth.authUser.authToken })
+        )
+        .then((response) => {
+          resolve(response.data)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
 }
