@@ -31,7 +31,7 @@
               v-if="item.link === 'notifications'"
               class="absolute text-xs bg-white rounded text-primary px-0.5 font-semibold"
               style="top: -5px; right: -5px"
-              >{{ unreadNotifications.unreadCount }}</span
+              >{{ unreadNotifications }}</span
             >
           </span>
         </button>
@@ -91,7 +91,7 @@
               v-if="item.link === 'notifications'"
               class="absolute text-xs bg-white rounded text-primary px-1 font-semibold"
               style="top: -3px; right: -3px"
-              >{{ unreadNotifications.unreadCount }}</span
+              >{{ unreadNotifications }}</span
             ></span
           >
         </button>
@@ -132,7 +132,8 @@ export default {
       return this.$route.name
     },
     unreadNotifications() {
-      return this.$store.state.notifications.notificationStats
+      const x = this.$store.state.notifications.notificationStats.unreadCount
+      return x === 0 ? null : x
     },
   },
   methods: {
