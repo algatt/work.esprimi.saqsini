@@ -73,6 +73,22 @@ export const actions = {
         })
     })
   },
+
+  markAllAsRead({ rootState }) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .patch(
+          '/auth/notifications/readAll',
+          qs.stringify({ email: rootState.auth.authUser.email })
+        )
+        .then((response) => {
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
 }
 
 export const mutations = {

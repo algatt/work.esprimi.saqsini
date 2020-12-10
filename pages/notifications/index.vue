@@ -7,6 +7,12 @@
       @hovered="hovered = $event"
     >
       <template v-slot:title>Notifications</template>
+      <template v-slot:button
+        ><button class="btn-primary px-3" @click="selectAll">Select All</button>
+        <button class="btn-primary px-3 ml-2" @click="markAllAsRead">
+          Mark All As Read
+        </button></template
+      >
       <template v-slot:titleContent>
         <p class="w-3/12">From</p>
         <p class="w-6/12">Subject</p>
@@ -132,6 +138,24 @@ export default {
     formatDate(date) {
       date = date.replace(' +', '+')
       return moment(date).format('Do MMM YYYY LT')
+    },
+    selectAll() {
+      this.notifications.forEach((el) => {
+        this.$store.dispatch('selectedItemsManage', el)
+      })
+    },
+    markAllAsRead() {
+      this.$store.dispatch('notifications/markAllAsRead').then(() => {
+        this.$store.dispatch('setLoading', true)
+        this.$store
+          .dispatch('notifications/getNotifications', {
+            limit: 100,
+            offset: 0,
+          })
+          .finally(() => {
+            this.$store.dispatch('setLoading', false)
+          })
+      })
     },
   },
 }
