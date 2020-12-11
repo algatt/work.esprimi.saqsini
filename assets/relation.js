@@ -5,6 +5,7 @@ export default {
   bn: 'bd',
   be: 'be',
   ca: 'es-ca',
+  cn: 'cn',
   cs: 'cz',
   de: 'de',
   en: 'gb',
