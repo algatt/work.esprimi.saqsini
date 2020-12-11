@@ -124,19 +124,23 @@ export const actions = {
     })
   },
 
-  logout({ commit }) {
+  logout({ dispatch }) {
     return new Promise((resolve, reject) => {
       this.$axios
         .get('auth/auth/logout')
         .then(() => {
-          commit('setAuthToken', null)
-          commit('setAuthAvatar', null)
-          commit('setAuthUser', null)
-          cookies.remove('x-access-token')
+          dispatch('cleanAfterLogout')
           resolve()
         })
         .catch((error) => reject(error))
     })
+  },
+
+  cleanAfterLogout({ commit }) {
+    commit('setAuthToken', null)
+    commit('setAuthAvatar', null)
+    commit('setAuthUser', null)
+    cookies.remove('x-access-token')
   },
 }
 

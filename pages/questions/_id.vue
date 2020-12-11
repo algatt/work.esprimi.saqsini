@@ -111,6 +111,13 @@
       </template>
     </transition>
 
+    <question-move-menu
+      v-if="showMoveMenu"
+      :question="showMoveMenu"
+      :questions="questions"
+      @close="showMoveMenu = false"
+    ></question-move-menu>
+
     <div class="fixed bottom-0 right-0 mr-5 mb-5 z-10">
       <button class="btn-round-primary" @click="showPreview = !showPreview">
         <i v-if="!showPreview" class="fas fa-eye fa-fw"></i>
@@ -131,10 +138,12 @@ import EditObjectModal from '~/components/layouts/EditObjectModal'
 import SurveySettings from '~/components/surveys/SurveySettings'
 import PreviewSurveyModal from '~/components/surveys/PreviewSurveyModal'
 import SurveyLanguageSettings from '~/components/surveys/SurveyLanguageSettings'
+import QuestionMoveMenu from '~/components/surveys/QuestionMoveMenu'
 
 export default {
   name: 'QuestionList',
   components: {
+    QuestionMoveMenu,
     PreviewSurveyModal,
     NewQuestion,
     Spinner,
@@ -155,6 +164,7 @@ export default {
       selectedMenu: 1,
       showPreview: true,
       whichSubMenu: null,
+      showMoveMenu: null,
     }
   },
   computed: {
@@ -198,7 +208,9 @@ export default {
     editQuestion(question) {
       this.$store.dispatch('setCurrentItemToBeEdited', question)
     },
-    moveQuestion(question) {},
+    moveQuestion(question) {
+      this.showMoveMenu = question
+    },
     deleteQuestion(question) {
       this.$store.dispatch('questions/deleteQuestion', question.code)
     },

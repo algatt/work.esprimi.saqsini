@@ -28,7 +28,6 @@
           backgroundColor: survey.options.backgroundColour,
         }"
       >
-        <p class="mr-2">Language</p>
         <popup-menu-vue
           ><template v-slot:menuButton
             ><span class="px-1"
@@ -71,7 +70,7 @@
           class="w-28 focus:outline-none py-1 px-3 rounded font-bold flex flex-wrap items-center justify-center disabled:bg-gray-300"
           :style="
             !enablePrevious
-              ? null
+              ? { color: survey.options.backgroundColour }
               : {
                   backgroundColor: survey.options.accentColour,
                   color: survey.options.backgroundColour,
@@ -79,7 +78,7 @@
           "
           @click="showPreviousPage"
         >
-          Previous
+          <i class="fas fa-backward fa-fw py-1"></i>
         </button>
 
         <button
@@ -88,7 +87,7 @@
           class="w-28 focus:outline-none py-1 px-3 rounded font-bold flex flex-wrap items-center justify-center disabled:bg-gray-300"
           :style="
             !enableNext
-              ? null
+              ? { color: survey.options.backgroundColour }
               : {
                   backgroundColor: survey.options.accentColour,
                   color: survey.options.backgroundColour,
@@ -96,7 +95,7 @@
           "
           @click="showNextPage"
         >
-          Next
+          <i class="fas fa-forward fa-fw py-1"></i>
         </button>
 
         <button
@@ -105,7 +104,7 @@
           class="w-28 focus:outline-none py-1 px-3 rounded font-bold flex flex-wrap items-center justify-center disabled:bg-gray-300"
           :style="
             !enableNext
-              ? null
+              ? { color: survey.options.backgroundColour }
               : {
                   backgroundColor: survey.options.accentColour,
                   color: survey.options.backgroundColour,
@@ -113,7 +112,7 @@
           "
           @click="finishSurvey"
         >
-          Finish
+          <i class="fas fa-check-circle fa-fw py-1"></i>
         </button>
       </div>
     </div>

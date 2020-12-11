@@ -1,13 +1,6 @@
 <template>
   <div class="flex flex-col">
     <div
-      class="flex font-semibold mb-2"
-      :class="defaultStyle ? 'text-primary' : null"
-      :style="defaultStyle ? null : { color: survey.options.accentColour }"
-    >
-      <h5>{{ question.name }}</h5>
-    </div>
-    <div
       class="flex"
       :style="defaultStyle ? null : { color: survey.options.textColour }"
     >
