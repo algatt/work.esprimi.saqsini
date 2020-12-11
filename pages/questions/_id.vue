@@ -65,6 +65,7 @@
           :class="
             whichSubMenu === question.code ? 'visible' : 'visible md:hidden'
           "
+          :first-element="question.ordinalPosition === 1"
           @newQuestion="newQuestion($event, question.ordinalPosition + 1)"
           @editQuestion="editQuestion(question)"
           @moveQuestion="moveQuestion(question)"

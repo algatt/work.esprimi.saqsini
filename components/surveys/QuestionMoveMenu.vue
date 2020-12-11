@@ -11,6 +11,7 @@
         <button
           v-for="item in questions"
           :key="item.code"
+          :disabled="item.code === question.code"
           class="flex my-2 p-2 transition duration-300 rounded hover:bg-gray-100"
           :class="[
             item.code === question.code
@@ -18,6 +19,7 @@
               : 'cursor-pointer',
             item.flags.includes('SECTION') ? null : 'ml-4',
           ]"
+          @click="moveCurrentQuestionAfter(item.ordinalPosition)"
         >
           <p :class="item.code === question.code ? 'italic' : null">
             {{ item.name }}
@@ -41,7 +43,42 @@ export default {
       required: true,
     },
   },
-  computed: {},
+  methods: {
+    moveCurrentQuestionAfter(position) {
+      let tempQuestions = JSON.parse(JSON.stringify(this.questions))
+      let indexToInsert = 0
+      for (const el in tempQuestions) {
+        if (tempQuestions[el].ordinalPosition === position) {
+          indexToInsert = Number(el) + 1
+          break
+        }
+      }
+      const tempQuestion = JSON.parse(JSON.stringify(this.question))
+      tempQuestion.new = true
+      tempQuestions.splice(indexToInsert, 0, tempQuestion)
+
+      tempQuestions = tempQuestions.filter((el) => {
+        return el.new === true || el.code !== this.question.code
+      })
+      let ordinalPosition = 1
+      tempQuestions.forEach((el) => {
+        el.ordinalPosition = ordinalPosition++
+      })
+
+      tempQuestions = tempQuestions.map((el) => {
+        return { question: el.code, position: el.ordinalPosition }
+      })
+
+      this.$store
+        .dispatch('questions/updateQuestionList', tempQuestions)
+        .then(() => {
+          this.$toasted.show('Updated Successfully')
+        })
+        .catch(() => {
+          this.$toasted.error('There was a problem updating the list...')
+        })
+    },
+  },
 }
 </script>
 

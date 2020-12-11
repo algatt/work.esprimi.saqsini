@@ -12,12 +12,20 @@
               <i class="fa-fw fas fa-pencil-alt fa-sm"></i>Edit</span
             >
           </button>
-          <button class="w-full" @click="$emit('moveQuestion')">
+          <button
+            v-if="!firstElement"
+            class="w-full"
+            @click="$emit('moveQuestion')"
+          >
             <span class="popup-menu-button">
               <i class="fa-fw fas fa-arrows-alt-v fa-sm"></i>Move</span
             >
           </button>
-          <button class="w-full" @click="$emit('deleteQuestion')">
+          <button
+            v-if="!firstElement"
+            class="w-full"
+            @click="$emit('deleteQuestion')"
+          >
             <span class="popup-menu-button">
               <i class="fa-fw fas fa-trash-alt fa-sm"></i>Delete</span
             >
@@ -59,6 +67,11 @@ export default {
       type: Boolean,
       default: true,
     },
+    firstElement: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -67,11 +80,6 @@ export default {
   },
   computed: {
     questions() {
-      // const questions = []
-      // for (const x in QUESTION_TYPES) {
-      //   if (x !== 'SECTION') questions.push(QUESTION_TYPES[x])
-      // }
-      // return questions
       return QUESTION_TYPES
     },
   },

@@ -60,10 +60,7 @@ export const actions = {
   getInboxStats({ rootState, commit }) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .get(
-          '/auth/notifications/inboxStats',
-          qs.stringify({ token: rootState.auth.authUser.authToken })
-        )
+        .get('/auth/notifications/inboxStats')
         .then((response) => {
           commit('setInboxStats', response.data)
           resolve()
