@@ -91,6 +91,17 @@
           </template>
         </edit-object-modal>
       </template>
+      <template v-else-if="selectedMenu === 3">
+        <edit-object-modal
+          v-if="currentItemToBeEdited"
+          @modalClosed="selectedMenu = 1"
+        >
+          <template v-slot:title>Language Settings</template>
+          <template v-slot:content>
+            <survey-language-settings></survey-language-settings>
+          </template>
+        </edit-object-modal>
+      </template>
       <template v-else-if="selectedMenu === 4">
         <preview-survey-modal
           :survey="survey"
@@ -119,6 +130,7 @@ import NewQuestion from '~/components/surveys/NewQuestion'
 import EditObjectModal from '~/components/layouts/EditObjectModal'
 import SurveySettings from '~/components/surveys/SurveySettings'
 import PreviewSurveyModal from '~/components/surveys/PreviewSurveyModal'
+import SurveyLanguageSettings from '~/components/surveys/SurveyLanguageSettings'
 
 export default {
   name: 'QuestionList',
@@ -130,6 +142,7 @@ export default {
     NewQuestionToolbar,
     EditObjectModal,
     SurveySettings,
+    SurveyLanguageSettings,
   },
   data() {
     return {
@@ -187,14 +200,13 @@ export default {
     },
     moveQuestion(question) {},
     deleteQuestion(question) {
-      console.log('here')
       this.$store.dispatch('questions/deleteQuestion', question.code)
     },
     chooseQuestion(question) {
       this.$store.dispatch('setCurrentItemToBeEdited', question)
     },
     selectMenu(code) {
-      if (code === 2)
+      if (code === 2 || code === 3)
         this.$store.dispatch('setCurrentItemToBeEdited', this.survey)
       this.selectedMenu = code
     },

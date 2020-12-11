@@ -267,49 +267,53 @@ export const actions = {
         })
     })
   },
-  //
-  // generateLanguagePack({ dispatch }, survey) {
-  //   return new Promise((resolve, reject) => {
-  //     this.$axios
-  //       .patch('/api3/instance/' + survey.code + '/generateLanguagePack')
-  //       .then(() => {
-  //         resolve()
-  //       })
-  //       .catch((error) => reject(error))
-  //   })
-  // },
-  //
-  // downloadLanguagePack({ dispatch }, survey) {
-  //   return new Promise((resolve, reject) => {
-  //     this.$axios
-  //       .get('/api3/instance/languagePack?code=' + survey.code, {
-  //         responseType: 'arraybuffer',
-  //       })
-  //       .then((response) => {
-  //         resolve(response.data)
-  //       })
-  //       .catch((error) => reject(error))
-  //   })
-  // },
-  //
-  // uploadLanguagePack({ dispatch }, { survey, file }) {
-  //   return new Promise((resolve, reject) => {
-  //     const data = new FormData()
-  //     data.append('languagePackFile', file)
-  //     this.$axios
-  //       .patch('/api3/instance/' + survey.code + '/updateLanguagePack', data, {
-  //         headers: {
-  //           'Content-Type': 'multipart/form-data',
-  //         },
-  //       })
-  //       .then(() => {
-  //         resolve()
-  //       })
-  //       .catch((error) => {
-  //         reject(error)
-  //       })
-  //   })
-  // },
+
+  generateLanguagePack({ dispatch }, survey) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .patch('/builder/instance/' + survey.code + '/generateLanguagePack')
+        .then(() => {
+          resolve()
+        })
+        .catch((error) => reject(error))
+    })
+  },
+
+  downloadLanguagePack({ dispatch }, survey) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .get('/builder/instance/languagePack?code=' + survey.code, {
+          responseType: 'arraybuffer',
+        })
+        .then((response) => {
+          resolve(response.data)
+        })
+        .catch((error) => reject(error))
+    })
+  },
+
+  uploadLanguagePack({ dispatch }, { survey, file }) {
+    return new Promise((resolve, reject) => {
+      const data = new FormData()
+      data.append('languagePackFile', file)
+      this.$axios
+        .patch(
+          '/builder/instance/' + survey.code + '/updateLanguagePack',
+          data,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        )
+        .then(() => {
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
 }
 
 // export const getters = {
