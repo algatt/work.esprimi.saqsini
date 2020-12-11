@@ -19,7 +19,7 @@
           :key="item"
           class="bg-gray-200 px-2 mr-2 rounded"
         >
-          <!--          <span v class="flag-icon" :class="'flag-icon-' + item.flag"></span>-->
+          <language-flag :iso="item" :squared="false"></language-flag>
           <span>{{ item }}</span>
         </span>
       </div>
@@ -50,15 +50,17 @@
 
 <script>
 import moment from 'moment'
+import LanguageFlag from '~/components/layouts/LanguageFlag'
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
 export default {
   name: 'SurveyLanguageSettings',
-  components: { EditObjectModalBottomPart },
+  components: { EditObjectModalBottomPart, LanguageFlag },
   computed: {
     survey() {
       return this.$store.state.currentItemToBeEdited
     },
   },
+
   methods: {
     generateLanguagePack() {
       this.generate = false
