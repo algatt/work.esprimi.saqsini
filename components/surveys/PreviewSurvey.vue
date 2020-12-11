@@ -4,21 +4,54 @@
     :style="{ backgroundColor: survey.options.backgroundColour }"
   >
     <div
-      class="h-48 bg-cover flex items-center"
+      class="h-48 bg-cover flex flex-wrap items-center"
       :style="{
         backgroundColor: survey.options.accentColour,
         backgroundImage: 'url(' + survey.options.headerImage + ')',
       }"
     >
-      <p
-        class="px-5 text-5xl font-bold tracking-wider py-3 shadow"
+      <div class="w-full flex">
+        <p
+          class="px-5 text-5xl font-bold tracking-wider py-3 shadow"
+          :style="{
+            color: survey.options.accentColour,
+            backgroundColor: survey.options.backgroundColour,
+          }"
+        >
+          {{ survey.name }}
+        </p>
+      </div>
+      <div
+        class="flex items-center px-5 font-semibold"
         :style="{
           color: survey.options.accentColour,
           backgroundColor: survey.options.backgroundColour,
         }"
       >
-        {{ survey.name }}
-      </p>
+        <p class="mr-2">Language</p>
+        <popup-menu-vue
+          ><template v-slot:menuButton
+            ><span class="px-1"
+              ><language-flag
+                :iso="currentLanguage"
+                :squared="false"
+              ></language-flag></span
+          ></template>
+
+          <template v-slot:menuItems
+            ><div
+              v-for="(language, index) in survey.languages"
+              :key="language + index"
+            >
+              <button
+                v-if="language !== currentLanguage"
+                :style="{ backgroundColor: survey.options.backgroundColour }"
+                @click="currentLanguage = language"
+              >
+                <language-flag :iso="language" :squared="false"></language-flag>
+              </button></div></template
+        ></popup-menu-vue>
+      </div>
     </div>
     <div ref="questionsSection" class="h-full">
       <div
@@ -27,6 +60,7 @@
         class="mb-16 p-6"
       >
         <display-question
+          :language="currentLanguage"
           :question="question"
           @answers="processAnswers($event, question)"
         ></display-question>
@@ -95,9 +129,11 @@
 
 <script>
 import DisplayQuestion from '~/components/surveys/DisplayQuestion'
+import LanguageFlag from '~/components/layouts/LanguageFlag'
+import PopupMenuVue from '~/components/layouts/PopupMenu'
 export default {
   name: 'PreviewSurvey',
-  components: { DisplayQuestion },
+  components: { PopupMenuVue, DisplayQuestion, LanguageFlag },
   props: {
     survey: {
       type: Object,
@@ -113,6 +149,7 @@ export default {
     return {
       answers: [],
       currentPage: 1,
+      currentLanguage: 'en',
     }
   },
   computed: {

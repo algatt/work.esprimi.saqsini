@@ -4,7 +4,7 @@
       class="flex font-semibold mb-2"
       :style="defaultStyle ? null : { color: survey.options.textColour }"
     >
-      {{ parsedQuestion.text }}
+      {{ question.text }}
     </div>
     <div class="flex flex-col flex-wrap md:flex-row">
       <select
@@ -33,10 +33,7 @@
 </template>
 
 <script>
-import {
-  parseQuestionToForm,
-  parseSurveyToForm,
-} from '~/helpers/parseSurveyObjects'
+import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
 
 export default {
   name: 'ShowDropdown',
@@ -57,11 +54,8 @@ export default {
     }
   },
   computed: {
-    parsedQuestion() {
-      return parseQuestionToForm(this.question)
-    },
     options() {
-      const x = JSON.parse(JSON.stringify(this.parsedQuestion.options))
+      const x = JSON.parse(JSON.stringify(this.question.options))
       x.unshift({
         ordinalPosition: 0,
         text: 'Not Selected',
@@ -72,7 +66,7 @@ export default {
     survey() {
       return parseSurveyToForm(
         this.$store.getters.getItems('surveys').find((el) => {
-          return el.code === this.parsedQuestion.surveyCode
+          return el.code === this.question.surveyCode
         })
       )
     },

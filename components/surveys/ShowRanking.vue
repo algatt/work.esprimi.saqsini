@@ -4,7 +4,7 @@
       class="flex font-semibold mb-2"
       :style="defaultStyle ? null : { color: survey.options.textColour }"
     >
-      {{ parsedQuestion.text }}
+      {{ question.text }}
     </div>
     <div
       class="flex w-full"
@@ -75,10 +75,7 @@
 </template>
 
 <script>
-import {
-  parseQuestionToForm,
-  parseSurveyToForm,
-} from '~/helpers/parseSurveyObjects'
+import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
 
 export default {
   name: 'ShowRanking',
@@ -101,13 +98,10 @@ export default {
     }
   },
   computed: {
-    parsedQuestion() {
-      return parseQuestionToForm(this.question)
-    },
     survey() {
       return parseSurveyToForm(
         this.$store.getters.getItems('surveys').find((el) => {
-          return el.code === this.parsedQuestion.surveyCode
+          return el.code === this.question.surveyCode
         })
       )
     },
@@ -118,7 +112,7 @@ export default {
     },
   },
   created() {
-    this.options = JSON.parse(JSON.stringify(this.parsedQuestion.options))
+    this.options = JSON.parse(JSON.stringify(this.question.options))
 
     let rank = 1
     this.options.forEach(() => {

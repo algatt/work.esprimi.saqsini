@@ -5,22 +5,19 @@
       :class="defaultStyle ? 'text-primary' : null"
       :style="defaultStyle ? null : { color: survey.options.accentColour }"
     >
-      <h5>{{ parsedQuestion.name }}</h5>
+      <h5>{{ question.name }}</h5>
     </div>
     <div
       class="flex"
       :style="defaultStyle ? null : { color: survey.options.textColour }"
     >
-      <p>{{ parsedQuestion.text }}</p>
+      <p>{{ question.text }}</p>
     </div>
   </div>
 </template>
 
 <script>
-import {
-  parseQuestionToForm,
-  parseSurveyToForm,
-} from '~/helpers/parseSurveyObjects'
+import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
 
 export default {
   name: 'ShowSection',
@@ -37,13 +34,10 @@ export default {
   },
 
   computed: {
-    parsedQuestion() {
-      return parseQuestionToForm(this.question)
-    },
     survey() {
       return parseSurveyToForm(
         this.$store.getters.getItems('surveys').find((el) => {
-          return el.code === this.parsedQuestion.surveyCode
+          return el.code === this.question.surveyCode
         })
       )
     },

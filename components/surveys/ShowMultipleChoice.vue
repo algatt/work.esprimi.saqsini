@@ -4,11 +4,11 @@
       class="flex font-semibold mb-2"
       :style="defaultStyle ? null : { color: survey.options.textColour }"
     >
-      {{ parsedQuestion.text }}
+      {{ question.text }}
     </div>
     <div class="flex flex-col">
       <button
-        v-for="(option, index) in parsedQuestion.options"
+        v-for="(option, index) in question.options"
         :key="index"
         class="card-multiple-choice"
         :class="
@@ -48,7 +48,7 @@
       </button>
 
       <div
-        v-if="parsedQuestion.allowOther"
+        v-if="question.allowOther"
         class="card-multiple-choice"
         :class="
           defaultStyle
@@ -112,10 +112,7 @@
 </template>
 
 <script>
-import {
-  parseQuestionToForm,
-  parseSurveyToForm,
-} from '~/helpers/parseSurveyObjects'
+import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
 
 export default {
   name: 'ShowMultipleChoiceVue',
@@ -137,18 +134,15 @@ export default {
     }
   },
   computed: {
-    parsedQuestion() {
-      return parseQuestionToForm(this.question)
-    },
     survey() {
       return parseSurveyToForm(
         this.$store.getters.getItems('surveys').find((el) => {
-          return el.code === this.parsedQuestion.surveyCode
+          return el.code === this.question.surveyCode
         })
       )
     },
     availableAnswers() {
-      return this.parsedQuestion.options.map((el) => {
+      return this.question.options.map((el) => {
         return el.text.toLowerCase()
       })
     },
@@ -160,7 +154,7 @@ export default {
   },
   methods: {
     addToAnswer(value) {
-      if (this.parsedQuestion.allowMultiple === true) {
+      if (this.question.allowMultiple === true) {
         if (!this.answers.includes(value)) this.answers.push(value)
         else
           this.answers = this.answers.filter((el) => {
@@ -175,7 +169,7 @@ export default {
         this.availableAnswers.includes(this.otherAnswer.toLowerCase().trim())
       ) {
         this.otherAnswer = ''
-      } else if (this.parsedQuestion.allowMultiple === true) {
+      } else if (this.question.allowMultiple === true) {
         const previousAnswers = []
         this.answers.forEach((el) => {
           if (this.availableAnswers.includes(el.toLowerCase().trim())) {

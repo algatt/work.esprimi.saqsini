@@ -69,7 +69,6 @@
         >
           <popup-menu-vue
             :object-code="slotProps.item.code"
-            direction="left"
             @closeMenu="hovered = null"
           >
             <template v-slot:menuItems>
