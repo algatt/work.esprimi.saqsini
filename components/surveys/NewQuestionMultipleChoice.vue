@@ -80,6 +80,16 @@
     <span>&nbsp;</span>
 
     <toggle-switch
+      :checked="form.isMandatory"
+      @clicked="form.isMandatory = $event"
+    >
+      <template v-slot:label> Required</template>
+      <template v-slot:leftLabel>No</template>
+      <template v-slot:rightLabel>Yes</template>
+    </toggle-switch>
+    <span>&nbsp;</span>
+
+    <toggle-switch
       :checked="form.allowMultiple"
       @clicked="form.allowMultiple = $event"
     >

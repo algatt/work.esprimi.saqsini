@@ -9,30 +9,35 @@
       v-else-if="questionType === 'MULTIPLE_CHOICE'"
       :question="parsedQuestion"
       :default-style="defaultStyle"
+      :existing-answer="existingAnswer"
       @answers="$emit('answers', $event)"
     ></show-multiple-choice>
     <show-likert
       v-else-if="questionType === 'LIKERT'"
       :question="parsedQuestion"
       :default-style="defaultStyle"
+      :existing-answer="existingAnswer"
       @answers="$emit('answers', $event)"
     ></show-likert>
     <show-dropdown
       v-else-if="questionType === 'DROPDOWN'"
       :question="parsedQuestion"
       :default-style="defaultStyle"
+      :existing-answer="existingAnswer"
       @answers="$emit('answers', $event)"
     ></show-dropdown>
     <show-type-in
       v-else-if="questionType === 'TYPE_IN'"
       :question="parsedQuestion"
       :default-style="defaultStyle"
+      :existing-answer="existingAnswer"
       @answers="$emit('answers', $event)"
     ></show-type-in>
     <show-ranking
       v-else-if="questionType === 'RANKING'"
       :question="parsedQuestion"
       :default-style="defaultStyle"
+      :existing-answer="existingAnswer"
       @answers="$emit('answers', $event)"
     ></show-ranking>
   </div>
@@ -72,6 +77,11 @@ export default {
       type: String,
       required: false,
       default: 'en',
+    },
+    existingAnswer: {
+      type: Array,
+      required: false,
+      default: null,
     },
   },
   computed: {

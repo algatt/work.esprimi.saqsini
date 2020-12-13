@@ -1,10 +1,13 @@
 <template>
   <div class="flex flex-col">
     <div
-      class="flex font-semibold mb-2"
+      class="flex font-semibold mb-2 items-center"
       :style="defaultStyle ? null : { color: survey.options.textColour }"
     >
       {{ question.text }}
+      <span v-if="question.isMandatory" class="ml-1 text-xs font-medium italic"
+        >required</span
+      >
     </div>
     <div class="flex flex-col">
       <button
@@ -126,6 +129,11 @@ export default {
       type: Boolean,
       default: false,
     },
+    existingAnswer: {
+      required: false,
+      type: Array,
+      default: null,
+    },
   },
   data() {
     return {
@@ -152,6 +160,20 @@ export default {
       this.$emit('answers', this.answers)
     },
   },
+  created() {
+    if (this.existingAnswer) {
+      this.answers = JSON.parse(JSON.stringify(this.existingAnswer))
+      let checkOtherAnswer = ''
+      const availableAnswers = this.question.options.map((el) => {
+        return el.value
+      })
+      this.answers.forEach((el) => {
+        if (!availableAnswers.includes(el)) checkOtherAnswer = el
+      })
+
+      this.otherAnswer = checkOtherAnswer || ''
+    }
+  },
   methods: {
     addToAnswer(value) {
       if (this.question.allowMultiple === true) {
@@ -162,6 +184,7 @@ export default {
           })
       } else {
         this.answers = [value]
+        this.otherAnswer = ''
       }
     },
     checkOtherAnswer() {
@@ -179,7 +202,7 @@ export default {
 
         this.answers = previousAnswers
         if (this.otherAnswer !== '') this.answers.push(this.otherAnswer)
-      } else if (this.otherAnswer !== '') this.answers = this.otherAnswer
+      } else if (this.otherAnswer !== '') this.answers = [this.otherAnswer]
     },
   },
 }

@@ -1,10 +1,15 @@
 <template>
   <div class="flex flex-col">
     <div
-      class="flex font-semibold mb-2"
+      class="flex font-semibold mb-2 items-center"
       :style="defaultStyle ? null : { color: survey.options.textColour }"
     >
-      {{ question.text }}
+      {{ question.text
+      }}<span
+        v-if="question.isMandatory"
+        class="ml-1 text-xs font-medium italic"
+        >required</span
+      >
     </div>
     <div class="flex flex-col flex-wrap md:flex-row">
       <select
@@ -23,6 +28,7 @@
         <option
           v-for="(option, index) in options"
           :key="index"
+          :selected="answers ? answers[0] : null"
           @click="answers = option.value ? [option.value] : []"
         >
           <span class="flex flex-grow">{{ option.text }}</span>
@@ -46,6 +52,11 @@ export default {
       required: true,
       type: Boolean,
       default: false,
+    },
+    existingAnswer: {
+      required: false,
+      type: Array,
+      default: null,
     },
   },
   data() {
@@ -75,6 +86,11 @@ export default {
     answers() {
       this.$emit('answers', this.answers)
     },
+  },
+  created() {
+    if (this.existingAnswer) {
+      this.answers = JSON.parse(JSON.stringify(this.existingAnswer))
+    }
   },
 }
 </script>

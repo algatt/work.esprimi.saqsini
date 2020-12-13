@@ -61,6 +61,7 @@
         <display-question
           :language="currentLanguage"
           :question="question"
+          :existing-answer="getAnswer(question.code)"
           @answers="processAnswers($event, question)"
         ></display-question>
       </div>
@@ -153,17 +154,11 @@ export default {
   },
   computed: {
     enableNext() {
-      const currentAnswersInThisPage = this.answers.filter((el) => {
-        return el.page === this.currentPage
-      }).length
-
-      const currentQuestionsInThisPage = this.questionsWithSectionsFiltered.filter(
-        (el) => {
-          return !el.flags.includes('SECTION')
-        }
-      ).length
-
-      return currentAnswersInThisPage === currentQuestionsInThisPage
+      for (const cnt of this.questionsWithSectionsFiltered) {
+        if (cnt.flags.includes('IS_MANDATORY') && !this.getAnswer(cnt.code))
+          return false
+      }
+      return true
     },
     enablePrevious() {
       return this.currentPage > 1
@@ -228,6 +223,12 @@ export default {
     },
     finishSurvey() {
       this.$emit('finishSurvey')
+    },
+    getAnswer(code) {
+      const x = this.answers.find((el) => {
+        return el.code === code
+      })
+      return x && x.answers ? x.answers : null
     },
   },
 }

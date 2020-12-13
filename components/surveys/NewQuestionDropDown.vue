@@ -94,6 +94,16 @@
     </template>
     <span>&nbsp;</span>
 
+    <toggle-switch
+      :checked="form.isMandatory"
+      @clicked="form.isMandatory = $event"
+    >
+      <template v-slot:label> Required</template>
+      <template v-slot:leftLabel>No</template>
+      <template v-slot:rightLabel>Yes</template>
+    </toggle-switch>
+    <span>&nbsp;</span>
+
     <edit-object-modal-bottom-part
       :form="form"
       which="questions"

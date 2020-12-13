@@ -121,6 +121,8 @@ export function parseQuestionToForm(question, language = PREFERRED_LANGUAGE) {
     delete temp.surveyOptions
   }
 
+  temp.isMandatory = temp.flags.includes('IS_MANDATORY')
+
   return temp
 }
 
@@ -150,6 +152,12 @@ export function parseQuestionToApi(question) {
   })
 
   temp.surveyOptions = JSON.stringify(temp.surveyOptions)
+
+  temp.flags = temp.flags.filter((el) => {
+    return el !== 'IS_MANDATORY'
+  })
+
+  if (temp.isMandatory) temp.flags.push('IS_MANDATORY')
 
   return temp
 }

@@ -1,10 +1,15 @@
 <template>
   <div class="flex flex-col">
     <div
-      class="flex font-semibold mb-2"
+      class="flex font-semibold mb-2 items-center"
       :style="defaultStyle ? null : { color: survey.options.textColour }"
     >
-      {{ question.text }}
+      {{ question.text
+      }}<span
+        v-if="question.isMandatory"
+        class="ml-1 text-xs font-medium italic"
+        >required</span
+      >
     </div>
     <div class="flex flex-col flex-wrap md:flex-row">
       <textarea
@@ -39,6 +44,11 @@ export default {
       required: false,
       default: false,
     },
+    existingAnswer: {
+      required: false,
+      type: Array,
+      default: null,
+    },
   },
   data() {
     return {
@@ -58,6 +68,11 @@ export default {
     answers() {
       this.$emit('answers', this.answers)
     },
+  },
+  created() {
+    if (this.existingAnswer) {
+      this.answers = JSON.parse(JSON.stringify(this.existingAnswer))
+    }
   },
 }
 </script>

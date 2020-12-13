@@ -1,10 +1,15 @@
 <template>
   <div class="flex flex-col">
     <div
-      class="flex font-semibold mb-2"
+      class="flex font-semibold mb-2 items-center"
       :style="defaultStyle ? null : { color: survey.options.textColour }"
     >
-      {{ question.text }}
+      {{ question.text
+      }}<span
+        v-if="question.isMandatory"
+        class="ml-1 text-xs font-medium italic"
+        >required</span
+      >
     </div>
     <div
       class="flex w-full"
@@ -57,7 +62,7 @@
         <div
           v-for="(option, index) in dummies"
           :key="index"
-          class="w-11/12 md:w-7/12 p-3 my-2 rounded shadow-sm cursor-pointer mx-auto border-2 border-dashed"
+          class="w-11/12 md:w-7/12 p-3 my-2 rounded shadow-sm mx-auto border-2 border-dashed cursor-default"
           :class="
             defaultStyle
               ? 'bg-gray-100 border-gray-200'
@@ -89,6 +94,11 @@ export default {
       default: false,
       type: Boolean,
     },
+    existingAnswer: {
+      required: false,
+      type: Array,
+      default: null,
+    },
   },
   data() {
     return {
@@ -114,10 +124,23 @@ export default {
   created() {
     this.options = JSON.parse(JSON.stringify(this.question.options))
 
-    let rank = 1
-    this.options.forEach(() => {
-      this.dummies.push({ code: Math.random(), text: 'Position ' + rank++ })
+    if (this.existingAnswer) {
+      this.answers = JSON.parse(JSON.stringify(this.existingAnswer))
+    }
+
+    if (!this.answers) this.answers = []
+
+    this.answers.forEach((elAnswer) => {
+      this.options = this.options.filter((elOption) => {
+        return elAnswer.value !== elOption.value
+      })
     })
+
+    for (let i = 1; i <= this.options.length; i++)
+      this.dummies.push({
+        code: Math.random(),
+        text: 'Position ' + i,
+      })
   },
   methods: {
     moveOptionToAnswers(option, index) {
@@ -141,5 +164,3 @@ export default {
   },
 }
 </script>
-
-<style scoped></style>
