@@ -131,12 +131,12 @@
 </template>
 
 <script>
-// import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
+import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
 import { SURVEY_COLOURS, SURVEY_OPTIONS } from '~/helpers/constants'
 
 export default {
-  name: 'SurveySettingsVue',
-  components: {},
+  name: 'SurveySettings',
+  components: { EditObjectModalBottomPart },
   data() {
     return {
       form: null,

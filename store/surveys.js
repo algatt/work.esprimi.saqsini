@@ -314,6 +314,22 @@ export const actions = {
         })
     })
   },
+
+  addCollaborator({ dispatch }, { code, email }) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .patch(
+          `/builder/instance/${code}/addCollaborator`,
+          qs.stringify({ email })
+        )
+        .then(() => {
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
 }
 
 // export const getters = {

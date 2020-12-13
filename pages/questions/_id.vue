@@ -1,11 +1,11 @@
 <template>
-  <div v-if="!loading" class="flex flex-col flex-wrap mb-64">
-    <div class="flex md:hidden items-center justify-between mb-3">
+  <div v-if="!loading" class="flex flex-col flex-wrap">
+    <div class="flex md:hidden items-center justify-between mb-3 px-1">
       <h5 class="text-lg font-bold text-right">{{ survey.name }}</h5>
       <h6>{{ survey.referenceDate }}</h6>
     </div>
     <div
-      class="w-full flex flex-wrap items-end justify-between border-b border-gray-200"
+      class="w-full flex flex-wrap items-center justify-between bg-gray-100 py-4 md:py-2 rounded px-3"
     >
       <div
         class="flex items-center md:space-x-3 justify-around md:justify-start w-full md:w-auto"
@@ -13,16 +13,21 @@
         <button
           v-for="menuOption in menu"
           :key="menuOption.code"
-          class="w-20 font-semibold hover:text-primary pb-2 border-b-2 border-transparent hover:border-primary transition duration-300 focus:outline-none"
-          :class="selectedMenu === menuOption.code ? 'border-primary' : null"
+          class="flex-grow md:flex md:justify-center md:w-24 font-semibold hover:text-primary transition duration-300 focus:outline-none"
+          :class="selectedMenu === menuOption.code ? 'text-primary' : null"
           @click="selectMenu(menuOption.code)"
         >
-          {{ menuOption.text }}
+          <span class="hidden md:block">{{ menuOption.text }}</span>
+          <i
+            class="block md:hidden"
+            :class="menuOption.icon"
+            :title="menuOption.text"
+          ></i>
         </button>
       </div>
-      <div class="hidden md:flex md:flex-col items-center">
-        <h5 class="text-lg font-bold text-right">{{ survey.name }}</h5>
-        <h6>{{ survey.referenceDate }}</h6>
+      <div class="hidden md:flex items-center">
+        <h5 class="text-lg font-bold">{{ survey.name }}</h5>
+        <h5 class="ml-3">{{ survey.referenceDate }}</h5>
       </div>
     </div>
     <div class="mt-5 w-full flex flex-col">
@@ -87,6 +92,7 @@
           v-if="currentItemToBeEdited"
           @modalClosed="selectedMenu = 1"
         >
+          <template v-slot:title>Survey Settings</template>
           <template v-slot:content>
             <survey-settings></survey-settings>
           </template>
@@ -109,6 +115,17 @@
           :questions="questions"
           @modalClosed="selectedMenu = 1"
         ></preview-survey-modal>
+      </template>
+      <template v-else-if="selectedMenu === 5">
+        <edit-object-modal
+          v-if="currentItemToBeEdited"
+          @modalClosed="selectedMenu = 1"
+        >
+          <template v-slot:title>Collaborators</template>
+          <template v-slot:content
+            ><survey-collaborators></survey-collaborators>
+          </template>
+        </edit-object-modal>
       </template>
     </transition>
 
@@ -140,10 +157,12 @@ import SurveySettings from '~/components/surveys/SurveySettings'
 import PreviewSurveyModal from '~/components/surveys/PreviewSurveyModal'
 import SurveyLanguageSettings from '~/components/surveys/SurveyLanguageSettings'
 import QuestionMoveMenu from '~/components/surveys/QuestionMoveMenu'
+import SurveyCollaborators from '~/components/surveys/SurveyCollaborators'
 
 export default {
   name: 'QuestionList',
   components: {
+    SurveyCollaborators,
     QuestionMoveMenu,
     PreviewSurveyModal,
     NewQuestion,
@@ -157,10 +176,11 @@ export default {
   data() {
     return {
       menu: [
-        { code: 1, text: 'Questions' },
-        { code: 2, text: 'Settings' },
-        { code: 3, text: 'Language' },
-        { code: 4, text: 'Preview' },
+        { code: 1, text: 'Questions', icon: 'fas fa-question' },
+        { code: 2, text: 'Settings', icon: 'fas fa-sliders-h' },
+        { code: 3, text: 'Language', icon: 'fas fa-language' },
+        { code: 4, text: 'Preview', icon: 'far fa-eye' },
+        { code: 5, text: 'Collaborators', icon: 'fas fa-users' },
       ],
       selectedMenu: 1,
       showPreview: true,
@@ -219,7 +239,7 @@ export default {
       this.$store.dispatch('setCurrentItemToBeEdited', question)
     },
     selectMenu(code) {
-      if (code === 2 || code === 3)
+      if (code === 2 || code === 3 || code === 5)
         this.$store.dispatch('setCurrentItemToBeEdited', this.survey)
       this.selectedMenu = code
     },
