@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col">
-    <label class="label"><slot name="label"></slot></label>
+    <label v-if="$slots.label" class="label"><slot name="label"></slot></label>
     <div class="flex items-center space-x-2">
       <p><slot name="leftLabel"></slot></p>
       <div
