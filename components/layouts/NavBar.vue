@@ -22,7 +22,7 @@
             class="w-40 flex items-center justify-between mx-auto relative"
             :class="isVisible ? 'moveRight' : 'moveLeft'"
           >
-            <p>
+            <p style="font-family: 'Nunito Sans'">
               {{ item.text }}
             </p>
 
@@ -30,7 +30,7 @@
             <span
               v-if="item.link === 'notifications'"
               class="absolute text-xs bg-white rounded text-primary px-1 font-semibold"
-              style="top: -5px; right: -5px"
+              style="top: -5px; right: -5px; font-family: 'Nunito Sans'"
               >{{ unreadNotifications }}</span
             >
           </span>
@@ -84,13 +84,13 @@
           class="w-full flex items-center text-white justify-center my-3 hover:bg-white hover:text-primary py-1 transition duration-300 relative"
           @click="gotoPage(item.link)"
         >
-          <p>{{ item.text }}</p>
+          <p style="font-family: 'Nunito Sans'">{{ item.text }}</p>
           <span class="relative">
             <i :class="item.icon" class="fa-fw ml-3 relative"> </i>
             <span
               v-if="item.link === 'notifications'"
               class="absolute text-xs bg-white rounded text-primary px-1 font-semibold"
-              style="top: -3px; right: -3px"
+              style="top: -3px; right: -3px; font-family: 'Nunito Sans'"
               >{{ unreadNotifications }}</span
             ></span
           >

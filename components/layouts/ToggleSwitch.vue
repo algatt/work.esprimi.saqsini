@@ -4,8 +4,14 @@
     <div class="flex items-center space-x-2">
       <p><slot name="leftLabel"></slot></p>
       <div
-        class="w-10 h-5 flex items-center bg-gray-300 rounded-full p-1 duration-300 ease-in-out"
-        :class="{ 'bg-primary': toggleActive }"
+        class="w-10 h-5 flex items-center rounded-full p-1 duration-300 ease-in-out"
+        :class="
+          toggleActive
+            ? 'bg-primary'
+            : changeColour
+            ? 'bg-gray-300'
+            : 'bg-primary'
+        "
         @click="
           toggleActive = !toggleActive
           $emit('clicked', toggleActive)
@@ -29,6 +35,11 @@ export default {
       required: false,
       type: Boolean,
       default: false,
+    },
+    changeColour: {
+      required: false,
+      type: Boolean,
+      default: true,
     },
   },
   data() {

@@ -10,21 +10,21 @@
   --primary-dark: rgb(30, 64, 175);
 }
 
+body {
+  font-family: 'Nunito Sans', sans-serif;
+  @apply text-gray-800;
+}
+
+
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Montserrat', sans-serif;
 }
 
-body {
-  font-family: 'Quicksand', sans-serif;
-  font-weight: 500;
-  font-size: 0.9em;
-  @apply text-gray-800;
-}
 
 .btn-primary {
   @apply bg-primary text-white py-1 rounded-sm hover:bg-primary-darker transition duration-300 disabled:opacity-50 disabled:bg-primary focus:ring-2 ring-primary-darker  ring-offset-2 focus:outline-none;
@@ -35,16 +35,16 @@ body {
 }
 
 .btn-round-primary {
-  @apply bg-primary h-7 w-7 rounded-full text-white hover:bg-primary-darker focus:ring-2 ring-primary-darker transition duration-300 shadow ring-offset-2 focus:outline-none;
+  @apply flex items-center justify-center bg-primary h-8 w-8 rounded-full text-white hover:bg-primary-darker focus:outline-none focus:ring-2 ring-primary-darker ring-offset-2 transition duration-300 shadow-md;
 }
 
 .btn-round-danger {
-  @apply bg-red-600 h-7 w-7 rounded-full text-white hover:bg-red-700 focus:ring-2 transition duration-300 shadow ring-red-700 ring-offset-2 focus:outline-none;
+  @apply flex items-center justify-center bg-red-600 h-8 w-8 rounded-full text-white hover:bg-red-700 focus:outline-none focus:ring-2 ring-red-700 ring-offset-2 transition duration-300 shadow-md;
 }
 
 .btn-round-primary:disabled,
 .btn-round-danger:disabled {
-  @apply bg-gray-200 h-7 w-7 rounded-full text-white;
+  @apply bg-gray-200;
 }
 
 .btn-link {

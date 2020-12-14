@@ -16,7 +16,7 @@
         :disabled="$v.$invalid"
         @click="addCollaborator"
       >
-        <i class="fas fa-check fa-fw"></i>
+        <i class="fas fa-check fa-sm fa-fw"></i>
       </button>
     </div>
 

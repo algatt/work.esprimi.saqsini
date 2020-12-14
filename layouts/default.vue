@@ -3,6 +3,7 @@
     <aside
       class="h-screen sticky top-0 bg-primary transition-all duration-300 hidden md:block"
       :class="!menuShow ? 'w-12' : 'w-60'"
+      style="font-family: 'Roboto', sans-serif"
     >
       <nav-bar
         :is-visible="menuShow"
@@ -12,6 +13,7 @@
     <nav-bar
       class="flex w-full flex-wrap md:hidden"
       :is-visible="menuShow"
+      style="font-family: 'Roboto', sans-serif"
     ></nav-bar>
 
     <div class="px-3 pt-3 pb-1 w-full flex flex-col">

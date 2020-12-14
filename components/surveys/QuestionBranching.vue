@@ -23,6 +23,7 @@
     <toggle-switch
       class="mb-3"
       :checked="isDemographicBranching"
+      :change-colour="false"
       @clicked="isDemographicBranching = $event"
     >
       <template v-slot:leftLabel>Question</template>
