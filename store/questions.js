@@ -74,12 +74,7 @@ export const actions = {
           }
         )
         .then((response) => {
-          commit(
-            'updateItem',
-            { which: 'questions', item: response.data },
-            { root: true }
-          )
-          resolve()
+          resolve(response.data)
         })
         .catch((error) => {
           reject(error)

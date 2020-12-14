@@ -118,6 +118,13 @@ export function parseQuestionToForm(question, language = PREFERRED_LANGUAGE) {
       temp[item] = surveyOptions[item]
     })
 
+    if (surveyOptions.branching) {
+      console.log(surveyOptions.branching)
+      temp.branching = surveyOptions.branching
+    } else {
+      temp.branching = []
+    }
+
     delete temp.surveyOptions
   }
 
@@ -151,6 +158,7 @@ export function parseQuestionToApi(question) {
     temp.surveyOptions[item] = temp[item]
   })
 
+  temp.surveyOptions.branching = question.branching
   temp.surveyOptions = JSON.stringify(temp.surveyOptions)
 
   temp.flags = temp.flags.filter((el) => {

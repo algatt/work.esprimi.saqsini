@@ -32,6 +32,8 @@
 
     <question-branching
       v-if="question.ordinalPosition !== 1"
+      :existing-conditions="form.branching"
+      @conditions="receiveConditions"
     ></question-branching>
 
     <edit-object-modal-bottom-part
@@ -79,6 +81,12 @@ export default {
   },
   created() {
     this.form = parseQuestionToForm(this.question)
+  },
+  methods: {
+    receiveConditions(ev) {
+      console.log(ev)
+      this.form.branching = ev
+    },
   },
 }
 </script>
