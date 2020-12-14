@@ -25,15 +25,7 @@
         >
           <i class="far fa-user-circle fa-fw fa-5x text-gray-300"></i>
         </span>
-        <button
-          class="btn-link my-2"
-          @click="
-            avatarImage = ''
-            imageFile = ''
-          "
-        >
-          Clear
-        </button>
+        <button class="btn-link my-2" @click="resetImage">Clear</button>
       </div>
       <div class="flex flex-col pl-5">
         <label for="inputName" class="label">Display Name</label>
@@ -110,6 +102,7 @@ export default {
     },
     updateAvatar() {
       const t = this
+      console.log(document.getElementById('inputAvatar').files[0])
       this.imageFile = document.getElementById('inputAvatar').files[0]
       const reader = new FileReader()
 
@@ -144,6 +137,10 @@ export default {
         .catch(() => {
           this.$toasted.error('There was a problem updating your profile...')
         })
+    },
+    resetImage() {
+      this.avatarImage = ''
+      this.imageFile = ''
     },
   },
 }

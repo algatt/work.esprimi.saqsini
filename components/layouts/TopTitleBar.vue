@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-wrap px-1 md:px-4 py-2 transition duration-300 border-b border-gray-200 bg-gray-50 items-center"
+    class="flex flex-wrap px-1 md:px-4 py-2 transition duration-300 border-b border-gray-200 bg-gray-100 items-center"
   >
     <span class="hidden md:flex w-8 justify-center text-primary items-center">
       &nbsp;

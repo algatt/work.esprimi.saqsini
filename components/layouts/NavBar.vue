@@ -13,7 +13,6 @@
           v-for="(item, index) in menu"
           :key="'menu' + index"
           class="relative text-white h-10 font-medium tracking-wider py-2 w-full hover:bg-primary-darker active:bg-white active:text-primary transition duration-300 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-primary-darker"
-          style="font-family: Poppins"
           :class="currentRoute === item.link ? 'bg-primary-darker' : null"
           :title="item.text"
           @click="gotoPage(item.link)"
@@ -22,7 +21,7 @@
             class="w-40 flex items-center justify-between mx-auto relative"
             :class="isVisible ? 'moveRight' : 'moveLeft'"
           >
-            <p style="font-family: 'Nunito Sans'">
+            <p>
               {{ item.text }}
             </p>
 
@@ -30,7 +29,7 @@
             <span
               v-if="item.link === 'notifications'"
               class="absolute text-xs bg-white rounded text-primary px-1 font-semibold"
-              style="top: -5px; right: -5px; font-family: 'Nunito Sans'"
+              style="top: -5px; right: -5px"
               >{{ unreadNotifications }}</span
             >
           </span>
@@ -68,7 +67,6 @@
       <div
         v-if="showSubMenu"
         class="fixed top-0 left-0 w-full h-full bg-primary flex-col p-4 text-2xl flex z-30"
-        style="font-family: 'Poppins'"
       >
         <div class="flex justify-end">
           <button
@@ -84,13 +82,13 @@
           class="w-full flex items-center text-white justify-center my-3 hover:bg-white hover:text-primary py-1 transition duration-300 relative"
           @click="gotoPage(item.link)"
         >
-          <p style="font-family: 'Nunito Sans'">{{ item.text }}</p>
+          <p>{{ item.text }}</p>
           <span class="relative">
             <i :class="item.icon" class="fa-fw ml-3 relative"> </i>
             <span
               v-if="item.link === 'notifications'"
               class="absolute text-xs bg-white rounded text-primary px-1 font-semibold"
-              style="top: -3px; right: -3px; font-family: 'Nunito Sans'"
+              style="top: -3px; right: -3px"
               >{{ unreadNotifications }}</span
             ></span
           >

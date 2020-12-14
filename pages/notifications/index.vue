@@ -32,12 +32,13 @@
           <i> {{ slotProps.item.author.email }}</i>
         </p>
         <p
-          class="w-full md:w-6/12 mb-1 md:mb-0"
+          class="w-full md:w-6/12 mb-1 md:mb-0 hover:text-primary cursor-pointer"
           :class="
             slotProps.item.flags.includes('READ')
               ? 'text-gray-500'
               : 'text-gray-800'
           "
+          @click.stop="setCurrentItem(slotProps.item)"
         >
           {{ slotProps.item.subject }}
         </p>

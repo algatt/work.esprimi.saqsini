@@ -35,16 +35,6 @@ export default {
       required: false,
       default: null,
     },
-    direction: {
-      type: String,
-      required: false,
-      default: 'left',
-    },
-    width: {
-      type: Number,
-      required: false,
-      default: 200,
-    },
   },
   data() {
     return {
@@ -52,37 +42,7 @@ export default {
       styleForMenu: null,
     }
   },
-  computed: {
-    // styleForMenu() {
-    // const popupMenuRootWidth = document.getElementById('popupMenuRoot')
-    //   .clientWidth
-    //
-    // const width = `width: ${this.width}px`
-    // let position = `left: ${-Math.abs(popupMenuRootWidth - this.width) / 2}px`
-    // if (this.direction === 'left') position = `right: ${5}px`
-    // else if (this.direction === 'right') position = `left: ${5}px`
-    //
-    // // const position =
-    // //   this.direction === 'left' ? `right: ${5}px` : `left: ${5}px`
-    // const top = `top: ${30}px`
-    // return `${width}; ${position}; ${top}`
-    // if (!this.showMenu) return null
-    //
-    // const rect = document
-    //   .getElementById('popupMenuContainer')
-    //   .getBoundingClientRect()
-    // console.log(rect)
-    //   const right = rect.right
-    //   const width = rect.width
-    //   const windowWidth = window.innerWidth
-    //   if (width + right > windowWidth) {
-    //     position = `right : 0px`
-    //   } else {
-    //     position = `left: 0px`
-    //   }
-    //   return position
-    // },
-  },
+
   beforeDestroy() {
     this.$emit('closeMenu')
   },
@@ -103,7 +63,7 @@ export default {
           const bottom = rect.bottom
           const windowWidth = window.innerWidth
           const windowHeight = window.innerHeight
-          console.log(bottom)
+
           if (right > windowWidth) {
             this.styleForMenu = `left : -${right - windowWidth + 25}px`
           } else {

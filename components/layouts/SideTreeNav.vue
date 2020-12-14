@@ -1,8 +1,7 @@
 <template>
-  <div class="flex flex-col relative mb-2 md:mb-0">
+  <div class="flex flex-col relative mb-2 md:mb-0 text-sm">
     <button
-      class="flex items-center font-bold justify-between py-2 mb-2 px-2 bg-gray-50 focus:outline-none border-b border-gray-200"
-      :class="isCollapsed ? 'shadow' : null"
+      class="flex items-center font-bold justify-between py-2 mb-2 px-2 bg-gray-100 focus:outline-none text-base"
       @click="isCollapsed = !isCollapsed"
     >
       <slot name="title"></slot>
@@ -16,7 +15,6 @@
     <div v-if="!isCollapsed">
       <button
         class="tree-view-parent-button"
-        :class="selectedParent === -1 ? 'text-primary' : 'text-gray-600'"
         @click="selectParent({ code: -1 })"
       >
         <span
@@ -38,11 +36,6 @@
       >
         <button
           class="tree-view-parent-button"
-          :class="
-            selectedParent === parentItem.code
-              ? 'text-primary'
-              : 'text-gray-600'
-          "
           @mouseenter="hoverParent = parentItem.code"
           @mouseleave="hoverParent = null"
           @click="selectParent(parentItem)"
@@ -59,13 +52,14 @@
             >{{ truncateString(parentItem.name) }}</span
           >
           <div class="flex items-center justify-end">
-            <button
-              :class="hoverParent === parentItem.code ? 'flex' : 'md:hidden'"
-              class="btn-link"
-              @click.stop="$emit('newParent', parentItem)"
-            >
-              <i class="fas fa-pencil-alt fa-fw fa-sm"></i>
-            </button>
+            <div :class="hoverParent === parentItem.code ? null : 'md:hidden'">
+              <button
+                class="pencil-rounded-small"
+                @click.stop="$emit('newParent', parentItem)"
+              >
+                <span> <i class="fas fa-pencil-alt fa-fw fa-sm"></i></span>
+              </button>
+            </div>
             <span v-if="countName" class="badge-gray-small">{{
               parentItem[countName]
             }}</span>
@@ -79,11 +73,6 @@
           >
             <button
               class="tree-view-parent-button"
-              :class="
-                selectedChild === childItem.code
-                  ? 'text-primary'
-                  : 'text-gray-600'
-              "
               @mouseleave="hoverChild = null"
               @click="selectChild(childItem)"
               @mouseover="hoverChild = childItem.code"
@@ -100,13 +89,17 @@
                 >{{ truncateString(childItem.name) }}</span
               >
               <div class="flex items-center justify-end">
-                <button
-                  :class="hoverChild === childItem.code ? 'flex' : 'md:hidden'"
-                  class="btn-link"
-                  @click.stop="$emit('newChild', childItem)"
+                <div
+                  :class="hoverChild === childItem.code ? null : 'md:hidden'"
                 >
-                  <i class="fas fa-pencil-alt fa-fw fa-sm"></i>
-                </button>
+                  <button
+                    class="pencil-rounded-small"
+                    @click.stop="$emit('newChild', childItem)"
+                  >
+                    <span> <i class="fas fa-pencil-alt fa-fw fa-sm"></i></span>
+                  </button>
+                </div>
+
                 <span v-if="countName" class="badge-gray-small">{{
                   childItem[countName]
                 }}</span>
@@ -115,7 +108,7 @@
           </div>
           <div class="flex flex-col pl-2">
             <button
-              class="tree-view-parent-button text-gray-600"
+              class="tree-view-parent-button"
               @click="
                 $emit('newChild', {
                   code: -1,
@@ -132,7 +125,7 @@
         </template>
       </div>
       <button
-        class="tree-view-parent-button text-gray-600"
+        class="tree-view-parent-button"
         @click="$emit('newParent', { code: -1 })"
       >
         <span
@@ -202,10 +195,14 @@ export default {
 
 <style scoped>
 .tree-view-parent-button {
-  @apply w-full flex items-center justify-between font-medium hover:text-primary transition duration-300 focus:outline-none mb-1 px-2;
+  @apply w-full flex items-center justify-between font-medium hover:text-primary transition duration-300 focus:outline-none mb-1 px-2 text-gray-600;
 }
 
 .badge-gray-small {
-  @apply mx-1 bg-gray-200 rounded text-xs font-semibold px-1 py-0.5 text-gray-500;
+  @apply mx-1 bg-gray-100 rounded text-xs font-semibold px-1.5 py-0.5 text-gray-500;
+}
+
+.pencil-rounded-small {
+  @apply h-5 w-5 focus:bg-gray-200 flex justify-center items-center rounded-full focus:outline-none text-gray-600 transition duration-300;
 }
 </style>

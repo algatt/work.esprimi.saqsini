@@ -6,7 +6,6 @@
       :disable-new-button="disableNewButton"
       @hovered="hovered = $event"
     >
-      <template v-slot:title>Surveys</template>
       <template v-slot:sideNav>
         <side-tree-nav
           :parents="categories"
@@ -32,7 +31,8 @@
 
       <template v-slot:content="slotProps">
         <p
-          class="w-8/12 md:w-4/12 flex items-center justify-between md:justify-start mb-1 md:mb-0"
+          class="w-8/12 md:w-4/12 flex items-center justify-between md:justify-start mb-1 md:mb-0 cursor-pointer hover:text-primary"
+          @click.stop="setCurrentItem(slotProps.item)"
         >
           {{ slotProps.item.name }}
         </p>

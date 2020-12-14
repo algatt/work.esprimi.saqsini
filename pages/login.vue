@@ -1,12 +1,12 @@
 <template>
   <div
-    class="bg-white w-11/12 md:w-auto rounded-sm border border-primary shadow-xl py-4 px-10 mb-20 flex flex-col"
+    class="bg-white w-11/12 md:w-auto rounded border border-primary shadow-xl py-4 px-10 mb-20 flex flex-col"
   >
     <h5 class="text-2xl text-primary font-bold text-center mb-4">
       saqsini<i class="far fa-comments fa-fw ml-1"></i>
     </h5>
 
-    <label class="mb-1" for="email">Email</label>
+    <label class="mb-1 font-semibold" for="email">Email</label>
 
     <input
       id="email"
@@ -15,7 +15,7 @@
       @keyup="$v.email.$touch"
     />
 
-    <label for="password" class="mb-1">Password</label>
+    <label for="password" class="mb-1 font-semibold">Password</label>
     <input
       id="password"
       v-model="password"
@@ -24,7 +24,7 @@
       @keyup="$v.password.$touch"
     />
     <button
-      class="bg-primary text-white py-2 my-3 rounded-sm hover:bg-primary-darker transition duration-300 disabled:opacity-50 disabled:bg-primary focus:ring-2 ring-primary-darker ring-offset-2 focus:outline-none;"
+      class="btn-primary my-3"
       :disabled="$v.$invalid || inProgress"
       @click="attemptLogin"
     >
@@ -93,3 +93,9 @@ export default {
   },
 }
 </script>
+
+<style>
+.input {
+  @apply border-2 border-gray-200 rounded-sm px-3 py-1 focus:bg-gray-100 focus:border-primary transition duration-300 ring-offset-2 focus:outline-none;
+}
+</style>

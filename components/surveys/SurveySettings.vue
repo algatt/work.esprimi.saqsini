@@ -81,7 +81,7 @@
       </button>
     </div>
 
-    <label class="label">Background Colour</label>
+    <label class="label mt-3">Background Colour</label>
     <div class="flex space-x-2">
       <button
         v-for="(colour, index) in backgroundColours"
@@ -98,12 +98,6 @@
           class="fas fa-check fa-fw fa-sm"
           :class="colour === '#FFFFFF' ? 'text-black' : 'text-white'"
         ></i>
-      </button>
-    </div>
-
-    <div class="mt-10 flex justify-start">
-      <button class="btn-danger px-3" @click="resetSettings">
-        Reset Settings
       </button>
     </div>
 

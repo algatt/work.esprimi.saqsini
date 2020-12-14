@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex pl-1 pr-2 md:px-4 py-3 md:py-2 transition duration-300 border-b border-gray-200 hover:bg-gray-100 items-center focus:bg-white h-auto md:h-14"
+    class="flex pl-1 pr-2 md:px-4 py-3 md:py-2 transition duration-500 border-b border-gray-200 hover:bg-gray-50 items-center focus:bg-white h-auto md:h-14 cursor-default"
     :class="existsInSelectedItems ? 'bg-gray-100 ' : null"
     @click="selectItem(item)"
     @mouseover="$emit('hovered', item.code)"

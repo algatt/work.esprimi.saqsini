@@ -94,7 +94,11 @@ export default {
         this.$store
           .dispatch('newItem', { which: this.which, item: obj })
           .then(() => {
+            this.$toasted.show('Added successfully.')
             this.cancelCurrentItem()
+          })
+          .catch(() => {
+            this.$toasted.error('There was a problem saving this item.')
           })
       } else {
         this.$store
@@ -103,7 +107,11 @@ export default {
             item: obj,
           })
           .then(() => {
+            this.$toasted.show('Updated successfully.')
             this.cancelCurrentItem()
+          })
+          .catch(() => {
+            this.$toasted.error('There was a problem saving this item.')
           })
       }
     },
@@ -111,7 +119,11 @@ export default {
       this.$store
         .dispatch('deleteItem', { which: this.which, code: this.form.code })
         .then(() => {
+          this.$toasted.show('Deleted successfully.')
           this.cancelCurrentItem()
+        })
+        .catch(() => {
+          this.$toasted.error('There was a problem deleting this item.')
         })
     },
   },

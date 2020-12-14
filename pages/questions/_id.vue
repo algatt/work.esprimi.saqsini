@@ -1,8 +1,8 @@
 <template>
   <div v-if="!loading" class="flex flex-col flex-wrap">
     <div class="flex md:hidden items-center justify-between mb-3 px-1">
-      <h5 class="text-lg font-bold text-right">{{ survey.name }}</h5>
-      <h6>{{ survey.referenceDate }}</h6>
+      <h6>{{ survey.name }}</h6>
+      <p>{{ survey.referenceDate }}</p>
     </div>
     <div
       class="w-full flex flex-wrap items-center justify-between bg-gray-100 py-4 md:py-2 rounded px-3"
@@ -25,9 +25,9 @@
           ></i>
         </button>
       </div>
-      <div class="hidden md:flex items-center">
-        <h5 class="text-lg font-bold">{{ survey.name }}</h5>
-        <h5 class="ml-3">{{ survey.referenceDate }}</h5>
+      <div class="hidden md:flex items-center space-x-2">
+        <h6>{{ survey.name }}</h6>
+        <p>{{ survey.referenceDate }}</p>
       </div>
     </div>
     <div class="mt-5 w-full md:w-8/12 mx-auto flex flex-col">

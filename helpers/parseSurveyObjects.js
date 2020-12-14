@@ -119,10 +119,7 @@ export function parseQuestionToForm(question, language = PREFERRED_LANGUAGE) {
     })
 
     if (surveyOptions.branching) {
-      console.log(surveyOptions.branching)
       temp.branching = surveyOptions.branching
-    } else {
-      temp.branching = []
     }
 
     delete temp.surveyOptions

@@ -20,7 +20,10 @@
       </template>
       <template v-slot:titleContentSmall>Contacts</template>
       <template v-slot:content="slotProps"
-        ><p class="w-full md:w-4/12 mb-1 md:mb-0">
+        ><p
+          class="w-full md:w-4/12 mb-1 md:mb-0 cursor-pointer hover:text-primary"
+          @click.stop="setCurrentItem(slotProps.item)"
+        >
           {{ slotProps.item.displayName }}
         </p>
         <p class="w-full md:w-2/12 mb-1 md:mb-0">

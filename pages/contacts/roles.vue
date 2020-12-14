@@ -11,10 +11,15 @@
       </template>
       <template v-slot:titleContentSmall>Roles</template>
       <template v-slot:content="slotProps"
-        ><p class="w-full">
-          {{ slotProps.item.name }}
+        ><div class="w-full flex items-center">
+          <p
+            class="cursor-pointer hover:text-primary"
+            @click.stop="setCurrentItem(slotProps.item)"
+          >
+            {{ slotProps.item.name }}
+          </p>
           <span class="badge-gray">{{ slotProps.item.abbr }}</span>
-        </p>
+        </div>
       </template>
       <template v-slot:popup-menu="slotProps">
         <span

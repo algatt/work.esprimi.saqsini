@@ -1,25 +1,30 @@
 <template>
   <div class="flex flex-col w-full md:w-10/12 pb-32">
-    <label class="label" for="inputEmail">New Collaborator</label>
+    <label class="label">New Collaborator</label>
     <div
-      class="flex items-center space-x-3 w-full md:w-10/12 justify-between mb-5"
+      class="flex justify-between items-center rounded py-3 border border-gray-100 shadow w-full md:w-10/12 my-1"
     >
-      <input
-        id="inputEmail"
-        v-model="email"
-        type="email"
-        class="input flex flex-grow"
-        @blur="$v.email.$touch()"
-      />
-      <button
-        class="btn-round-primary"
-        :disabled="$v.$invalid"
-        @click="addCollaborator"
-      >
-        <i class="fas fa-check fa-sm fa-fw"></i>
-      </button>
+      <div class="flex flex-col flex-grow px-3">
+        <input
+          id="inputEmail"
+          v-model="email"
+          type="email"
+          class="input"
+          @blur="$v.email.$touch()"
+        />
+      </div>
+      <div class="flex items-center pr-3">
+        <button
+          class="btn-link-primary"
+          :disabled="$v.$invalid"
+          @click="addCollaborator"
+        >
+          <i class="fas fa-check fa-sm fa-fw"></i>
+        </button>
+      </div>
     </div>
 
+    <label class="label mt-3">Existing Collaborators</label>
     <div
       v-for="item in filteredCollaborators"
       :key="item.account.code"
@@ -31,10 +36,10 @@
       </div>
       <div class="flex items-center pr-3">
         <button
-          class="btn-link-rounded"
+          class="btn-link-danger"
           @click="removeCollaborator(item.account.email)"
         >
-          <i class="far fa-trash-alt"></i>
+          <i class="far fa-trash-alt fa-fw fa-sm"></i>
         </button>
       </div>
     </div>

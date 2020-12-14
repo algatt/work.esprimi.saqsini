@@ -41,7 +41,12 @@
             />
             <span v-else class="w-8 h-8 mr-2 hidden md:flex">&nbsp;</span>
           </span>
-          <span> {{ slotProps.item.name }}</span>
+          <span
+            class="hover:text-primary cursor-pointer"
+            @click.stop="setCurrentItem(slotProps.item)"
+          >
+            {{ slotProps.item.name }}</span
+          >
           <span class="badge-gray">{{ slotProps.item.abbr }}</span>
         </p>
 

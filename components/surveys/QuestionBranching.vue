@@ -136,6 +136,7 @@ export default {
       const question = this.questions.find((el) => {
         return el.code === this.selectedQuestion
       })
+      if (!question) return null
       return question.options.map((el) => {
         return { value: el.value }
       })
@@ -153,8 +154,10 @@ export default {
     },
   },
   created() {
-    this.selectedQuestion = this.previousQuestionsText[0].code
-    this.selectedAnswer = this.previousQuestionAnswers[0].value
+    if (this.previousQuestionsText && this.previousQuestionsText.length > 0) {
+      this.selectedQuestion = this.previousQuestionsText[0].code
+      this.selectedAnswer = this.previousQuestionAnswers[0].value
+    }
     this.conditions = this.existingConditions.rules
     this.allMustBeMet = this.existingConditions.allMustBeMet
   },

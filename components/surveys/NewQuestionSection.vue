@@ -81,6 +81,11 @@ export default {
   },
   created() {
     this.form = parseQuestionToForm(this.question)
+    if (!this.form.branching)
+      this.form.branching = {
+        rules: [],
+        allMustBeMet: false,
+      }
   },
   methods: {
     receiveConditions(ev) {
