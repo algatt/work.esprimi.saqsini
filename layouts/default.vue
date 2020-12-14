@@ -36,13 +36,14 @@ export default {
     this.getNotifications()
     setInterval(() => {
       this.getNotifications()
-    }, 15000)
+    }, 30000)
   },
   beforeDestroy() {
     clearInterval(this.getNotifications)
   },
   methods: {
     getNotifications() {
+      if (!this.$store.state.auth.authUser) return
       this.$store.dispatch('notifications/getInboxStats')
     },
   },
