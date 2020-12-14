@@ -12,6 +12,7 @@
 
 body {
   font-family: 'Nunito Sans', sans-serif;
+  font-size: 0.90rem;
   @apply text-gray-800;
 }
 
@@ -80,12 +81,9 @@ h6 {
   background-size: 1em auto;
 }
 
-.label {
-  @apply py-3;
-}
-
-.label-required {
-  @apply py-3;
+.label, .label-required {
+  @apply py-3 ;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .label-required::after {
