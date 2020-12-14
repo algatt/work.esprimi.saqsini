@@ -1,20 +1,20 @@
 <template>
   <div class="flex flex-col w-full md:w-10/12 pb-32">
     <label class="label" for="inputEmail">New Collaborator</label>
-    <div class="flex items-center w-full space-x-3">
+    <div class="flex items-center space-x-3 w-full md:w-10/12 justify-between">
       <input
         id="inputEmail"
         v-model="email"
-        class="input w-8/12"
         type="email"
+        class="input flex flex-grow"
         @blur="$v.email.$touch()"
       />
       <button
-        class="btn-link w-24"
+        class="btn-round-primary"
         :disabled="$v.$invalid"
         @click="addCollaborator"
       >
-        Add
+        <i class="fas fa-check fa-fw"></i>
       </button>
     </div>
     <template v-if="$v.$error">
@@ -22,7 +22,25 @@
       <span v-else-if="$v.email.email" class="error"> Not a valid email. </span>
     </template>
     <span v-else class="error">&nbsp;</span>
-    {{ survey }}
+
+    <div
+      v-for="item in filteredCollaborators"
+      :key="item.account.code"
+      class="flex justify-between items-center rounded py-3 border border-gray-100 shadow w-full md:w-10/12 my-1"
+    >
+      <div class="flex flex-col px-3">
+        <p>{{ item.account.displayName }}</p>
+        <p>{{ item.account.email }}</p>
+      </div>
+      <div class="flex items-center pr-3">
+        <button
+          class="btn-link-rounded"
+          @click="removeCollaborator(item.account.email)"
+        >
+          <i class="far fa-trash-alt"></i>
+        </button>
+      </div>
+    </div>
 
     <edit-object-modal-bottom-part
       :form="form"
@@ -47,6 +65,7 @@ export default {
     return {
       form: null,
       email: null,
+      collaborators: [],
     }
   },
   validations: {
@@ -59,9 +78,19 @@ export default {
     survey() {
       return this.$store.state.currentItemToBeEdited
     },
+    filteredCollaborators() {
+      return this.collaborators.filter((el) => {
+        return el.account.email !== this.$store.state.auth.authUser.email
+      })
+    },
   },
   created() {
     this.form = JSON.parse(JSON.stringify(this.survey))
+    this.$store
+      .dispatch('surveys/getCollaborators', this.survey.code)
+      .then((response) => {
+        this.collaborators = response
+      })
   },
   methods: {
     addCollaborator() {
@@ -71,10 +100,33 @@ export default {
           email: this.email,
         })
         .then(() => {
+          this.$store
+            .dispatch('surveys/getCollaborators', this.survey.code)
+            .then((response) => {
+              this.collaborators = response
+            })
           this.$toasted.show('Collaborator invited.')
         })
         .catch(() => {
           this.$toasted.error('There was a problem with this email invite.')
+        })
+    },
+    removeCollaborator(email) {
+      this.$store
+        .dispatch('surveys/removeCollaborator', {
+          code: this.survey.code,
+          email,
+        })
+        .then(() => {
+          this.$toasted.show(`${email} removed from collaborator.`)
+          this.collaborators = this.collaborators.filter((el) => {
+            return el.account.email !== email
+          })
+        })
+        .catch(() => {
+          this.$toasted.error(
+            'There was a problem with removing this collaborator.'
+          )
         })
     },
   },
