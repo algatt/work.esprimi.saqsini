@@ -1,7 +1,9 @@
 <template>
   <div class="flex flex-col w-full md:w-10/12 pb-32">
     <label class="label" for="inputEmail">New Collaborator</label>
-    <div class="flex items-center space-x-3 w-full md:w-10/12 justify-between">
+    <div
+      class="flex items-center space-x-3 w-full md:w-10/12 justify-between mb-5"
+    >
       <input
         id="inputEmail"
         v-model="email"
@@ -17,11 +19,6 @@
         <i class="fas fa-check fa-fw"></i>
       </button>
     </div>
-    <template v-if="$v.$error">
-      <span v-if="$v.email.required" class="error"> Email is required. </span>
-      <span v-else-if="$v.email.email" class="error"> Not a valid email. </span>
-    </template>
-    <span v-else class="error">&nbsp;</span>
 
     <div
       v-for="item in filteredCollaborators"
@@ -105,6 +102,7 @@ export default {
             .then((response) => {
               this.collaborators = response
             })
+          this.email = ''
           this.$toasted.show('Collaborator invited.')
         })
         .catch(() => {

@@ -29,7 +29,7 @@
             <i :class="item.icon" class="fa-fw"></i>
             <span
               v-if="item.link === 'notifications'"
-              class="absolute text-xs bg-white rounded text-primary px-0.5 font-semibold"
+              class="absolute text-xs bg-white rounded text-primary px-1 font-semibold"
               style="top: -5px; right: -5px"
               >{{ unreadNotifications }}</span
             >

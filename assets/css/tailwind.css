@@ -44,7 +44,7 @@ body {
 
 .btn-round-primary:disabled,
 .btn-round-danger:disabled {
-  @apply bg-gray-400 h-7 w-7 rounded-full text-white;
+  @apply bg-gray-200 h-7 w-7 rounded-full text-white;
 }
 
 .btn-link {
