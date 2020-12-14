@@ -11,7 +11,7 @@
         >required</span
       >
     </div>
-    <div class="flex flex-col flex-wrap md:flex-row">
+    <div class="flex flex-col flex-wrap md:flex-row mt-2">
       <textarea
         v-model="answers[0]"
         class="input w-full"

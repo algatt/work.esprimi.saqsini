@@ -1,22 +1,24 @@
 <template>
-  <new-question-section
-    v-if="questionType === 'SECTION'"
-  ></new-question-section>
-  <new-question-multiple-choice
-    v-else-if="questionType === 'MULTIPLE_CHOICE'"
-  ></new-question-multiple-choice>
-  <new-question-likert
-    v-else-if="questionType === 'LIKERT'"
-  ></new-question-likert>
-  <new-question-drop-down
-    v-else-if="questionType === 'DROPDOWN'"
-  ></new-question-drop-down>
-  <new-question-type-in
-    v-else-if="questionType === 'TYPE_IN'"
-  ></new-question-type-in>
-  <new-question-ranking
-    v-else-if="questionType === 'RANKING'"
-  ></new-question-ranking>
+  <div class="flex flex-col">
+    <new-question-section
+      v-if="questionType === 'SECTION'"
+    ></new-question-section>
+    <new-question-multiple-choice
+      v-else-if="questionType === 'MULTIPLE_CHOICE'"
+    ></new-question-multiple-choice>
+    <new-question-likert
+      v-else-if="questionType === 'LIKERT'"
+    ></new-question-likert>
+    <new-question-drop-down
+      v-else-if="questionType === 'DROPDOWN'"
+    ></new-question-drop-down>
+    <new-question-type-in
+      v-else-if="questionType === 'TYPE_IN'"
+    ></new-question-type-in>
+    <new-question-ranking
+      v-else-if="questionType === 'RANKING'"
+    ></new-question-ranking>
+  </div>
 </template>
 
 <script>
@@ -38,6 +40,7 @@ export default {
     NewQuestionLikert,
     NewQuestionMultipleChoice,
   },
+
   computed: {
     questionType() {
       const x = this.$store.state.currentItemToBeEdited.flags

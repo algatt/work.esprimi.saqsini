@@ -1,34 +1,33 @@
 <template>
   <div
     ref="surveyModal"
-    :style="{ backgroundColor: survey.options.backgroundColour }"
+    :style="{ backgroundColor: survey.options.accentColour }"
+    class="flex flex-col p-5 items-center"
   >
     <div
-      class="h-48 bg-cover flex flex-wrap items-center"
+      class="w-full md:w-8/12 h-40 bg-cover flex flex-wrap items-center rounded"
       :style="{
-        backgroundColor: survey.options.accentColour,
+        backgroundColor: survey.options.backgroundColour,
         backgroundImage: 'url(' + survey.options.headerImage + ')',
       }"
     >
-      <div class="w-full flex">
+      <div class="w-full flex justify-between items-center">
         <p
-          class="px-5 text-5xl font-bold tracking-wider py-3 shadow"
+          class="px-5 text-3xl font-bold tracking-wider py-3"
           :style="{
-            color: survey.options.accentColour,
+            color: survey.options.textColour,
             backgroundColor: survey.options.backgroundColour,
           }"
         >
           {{ survey.name }}
         </p>
-      </div>
-      <div
-        class="flex items-center px-5 font-semibold"
-        :style="{
-          color: survey.options.accentColour,
-          backgroundColor: survey.options.backgroundColour,
-        }"
-      >
+
         <popup-menu-vue
+          class="px-5 py-3"
+          :style="{
+            color: survey.options.textColour,
+            backgroundColor: survey.options.backgroundColour,
+          }"
           ><template v-slot:menuButton
             ><span class="px-1"
               ><language-flag
@@ -52,29 +51,34 @@
         ></popup-menu-vue>
       </div>
     </div>
-    <div ref="questionsSection" class="h-full">
+    <div ref="questionsSection" class="h-full w-full md:w-8/12">
       <div
         v-for="question in questionsWithSectionsFiltered"
         :key="question.code"
-        class="mb-16 p-6"
+        class="mt-5"
       >
         <display-question
+          class="rounded shadow-lg"
+          :style="{ backgroundColor: survey.options.backgroundColour }"
           :language="currentLanguage"
           :question="question"
           :existing-answer="getAnswer(question.code)"
           @answers="processAnswers($event, question)"
         ></display-question>
       </div>
-      <div class="flex items-center justify-center space-x-3 mb-5">
+      <div class="flex items-center justify-center space-x-3 my-5">
         <button
           :disabled="!enablePrevious"
-          class="w-28 focus:outline-none py-1 px-3 rounded font-bold flex flex-wrap items-center justify-center disabled:bg-gray-300"
+          class="w-28 focus:outline-none py-1.5 px-3 rounded font-bold flex flex-wrap items-center justify-center disabled:bg-gray-200 shadow"
           :style="
             !enablePrevious
-              ? { color: survey.options.backgroundColour }
-              : {
-                  backgroundColor: survey.options.accentColour,
+              ? {
                   color: survey.options.backgroundColour,
+                  cursor: 'not-allowed',
+                }
+              : {
+                  backgroundColor: survey.options.backgroundColour,
+                  color: survey.options.accentColour,
                 }
           "
           @click="showPreviousPage"
@@ -85,13 +89,16 @@
         <button
           v-if="!isFinalPage"
           :disabled="!enableNext"
-          class="w-28 focus:outline-none py-1 px-3 rounded font-bold flex flex-wrap items-center justify-center disabled:bg-gray-300"
+          class="w-28 focus:outline-none py-1.5 px-3 rounded font-bold flex flex-wrap items-center justify-center disabled:bg-gray-200 shadow"
           :style="
             !enableNext
-              ? { color: survey.options.backgroundColour }
-              : {
-                  backgroundColor: survey.options.accentColour,
+              ? {
                   color: survey.options.backgroundColour,
+                  cursor: 'not-allowed',
+                }
+              : {
+                  backgroundColor: survey.options.backgroundColour,
+                  color: survey.options.accentColour,
                 }
           "
           @click="showNextPage"
@@ -102,13 +109,16 @@
         <button
           v-else
           :disabled="!enableNext"
-          class="w-28 focus:outline-none py-1 px-3 rounded font-bold flex flex-wrap items-center justify-center disabled:bg-gray-300"
+          class="w-28 focus:outline-none py-1.5 px-3 rounded font-bold flex flex-wrap items-center justify-center disabled:bg-gray-200 shadow"
           :style="
             !enableNext
-              ? { color: survey.options.backgroundColour }
-              : {
-                  backgroundColor: survey.options.accentColour,
+              ? {
                   color: survey.options.backgroundColour,
+                  cursor: 'not-allowed',
+                }
+              : {
+                  backgroundColor: survey.options.backgroundColour,
+                  color: survey.options.accentColour,
                 }
           "
           @click="finishSurvey"
@@ -118,9 +128,10 @@
       </div>
     </div>
     <div
-      class="h-48 bg-cover"
+      v-if="survey.options.footerImage !== ''"
+      class="w-full md:w-8/12 h-48 bg-cover flex flex-wrap items-center rounded"
       :style="{
-        backgroundColor: survey.options.accentColour,
+        backgroundColor: survey.options.backgroundColour,
         backgroundImage: 'url(' + survey.options.footerImage + ')',
       }"
     ></div>

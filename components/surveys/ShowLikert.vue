@@ -13,7 +13,7 @@
     </div>
     <div
       id="divButtons"
-      class="flex flex-col md:flex-row md:flex-wrap items-center w-full justify-between"
+      class="flex flex-col md:flex-row md:flex-wrap items-center w-full justify-between mt-2"
     >
       <span v-if="question.showWeights" class="flex pr-3">{{
         question.options[0].text

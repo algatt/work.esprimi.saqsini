@@ -88,7 +88,10 @@
         :key="index"
         class="h-8 w-8 rounded-full border-2 border-gray-300 hover:border-gray-500 focus:outline-none"
         :style="{ backgroundColor: colour }"
-        @click="form.options.backgroundColour = colour"
+        @click="
+          form.options.backgroundColour = colour
+          form.options.textColour = colour === '#000000' ? '#FFFFFF' : '#000000'
+        "
       >
         <i
           v-if="colour === form.options.backgroundColour"
@@ -98,24 +101,7 @@
       </button>
     </div>
 
-    <label class="label">Text Colour</label>
-    <div class="flex space-x-2">
-      <button
-        v-for="(colour, index) in textColours"
-        :key="index"
-        class="h-8 w-8 rounded-full border-2 border-gray-300 hover:border-gray-500 focus:outline-none"
-        :style="{ backgroundColor: colour }"
-        @click="form.options.textColour = colour"
-      >
-        <i
-          v-if="colour === form.options.textColour"
-          class="fas fa-check fa-fw fa-sm"
-          :class="colour === '#FFFFFF' ? 'text-black' : 'text-white'"
-        ></i>
-      </button>
-    </div>
-
-    <div class="mt-5 flex justify-start">
+    <div class="mt-10 flex justify-start">
       <button class="btn-danger px-3" @click="resetSettings">
         Reset Settings
       </button>
@@ -144,7 +130,6 @@ export default {
       footerImage: '',
       accentColours: SURVEY_COLOURS.accentColours,
       backgroundColours: SURVEY_COLOURS.backgroundColours,
-      textColours: SURVEY_COLOURS.textColours,
     }
   },
   computed: {

@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full md:w-8/12 mx-auto">
+  <div class="mx-auto p-5">
     <show-section
       v-if="questionType === 'SECTION'"
       :question="parsedQuestion"

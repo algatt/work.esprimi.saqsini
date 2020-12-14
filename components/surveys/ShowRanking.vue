@@ -20,7 +20,7 @@
         placed first.</i
       >
     </div>
-    <div class="flex w-full">
+    <div class="flex w-full mt-2">
       <div class="w-6/12 flex flex-col">
         <div
           v-for="(option, index) in options"

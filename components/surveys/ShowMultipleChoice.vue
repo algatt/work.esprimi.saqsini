@@ -9,7 +9,7 @@
         >required</span
       >
     </div>
-    <div class="flex flex-col">
+    <div class="flex flex-col mt-2">
       <button
         v-for="(option, index) in question.options"
         :key="index"

@@ -30,7 +30,7 @@
         <h5 class="ml-3">{{ survey.referenceDate }}</h5>
       </div>
     </div>
-    <div class="mt-5 w-full flex flex-col">
+    <div class="mt-5 w-full md:w-8/12 mx-auto flex flex-col">
       <div
         v-for="question in questions"
         :key="question.code"
