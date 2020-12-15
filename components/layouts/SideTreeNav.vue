@@ -1,7 +1,7 @@
 <template>
-  <div class="flex flex-col relative mb-2 md:mb-0 text-sm">
+  <div class="flex flex-col relative mb-2 md:mb-0">
     <button
-      class="flex items-center font-bold justify-between py-2 mb-2 px-2 bg-gray-100 focus:outline-none text-base"
+      class="flex items-center font-bold justify-between py-2 mb-2 px-2 bg-gray-100 focus:outline-none"
       @click="isCollapsed = !isCollapsed"
     >
       <slot name="title"></slot>
@@ -199,7 +199,7 @@ export default {
 }
 
 .badge-gray-small {
-  @apply mx-1 bg-gray-100 rounded text-xs font-semibold px-1.5 py-0.5 text-gray-500;
+  @apply mx-1 bg-gray-100 rounded text-sm font-semibold px-1.5 py-0.5 text-gray-500;
 }
 
 .pencil-rounded-small {

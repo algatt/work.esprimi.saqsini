@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col w-full md:w-10/12">
+  <div class="flex flex-col w-full md:w-10/12 h-screen">
     <label for="inputName" class="label-required">Full Name</label>
     <input
       id="inputName"
@@ -61,7 +61,6 @@
     <vue-tel-input
       id="inputPhone"
       v-model="phoneNumber"
-      class="border-2 border-gray-300 rounded-sm py-1 focus:bg-gray-100 focus:border-primary transition duration-500 ring-offset-2 focus:outline-none"
       @validate="validatePhone"
     />
     <span v-if="isPhoneValid">&nbsp;</span>
@@ -155,3 +154,15 @@ export default {
   },
 }
 </script>
+
+<style>
+.vue-tel-input {
+  /*@apply border-2 border-gray-300 rounded-sm px-3 py-2 focus:bg-gray-100 focus:border-primary transition duration-500 ring-offset-2 focus:outline-none;*/
+  /*@apply border-b border-gray-200 px-1 py-2 focus:border-primary transition duration-500 ease-in focus:outline-none;*/
+  border: none !important;
+  box-shadow: none !important;
+  padding: 2px 1px !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  border-radius: 0px !important;
+}
+</style>

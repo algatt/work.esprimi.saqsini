@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col w-full md:w-10/12">
+  <div class="flex flex-col w-full h-screen md:w-10/12">
     <label for="inputCompany" class="label-required">Company</label>
     <select
       id="inputCompany"
@@ -76,19 +76,23 @@
     <span v-if="isPhoneValid">&nbsp;</span>
     <span v-else class="error">Invalid phone</span>
 
-    <label class="label" for="inputActive"
-      >Currently Active in this Position</label
-    >
-    <div class="flex space-x-2 items-center">
-      <p class="text-sm">No</p>
-      <input
-        id="inputActive"
-        v-model="form.isActive"
-        type="checkbox"
-        class="checkbox"
-      /><label for="inputActive" class="switch"></label>
-      <p class="text-sm">Yes</p>
-    </div>
+    <toggle-switch :checked="form.isActive" @clicked="form.isActive = $event">
+      <template v-slot:leftLabel>Not Active</template>
+      <template v-slot:rightLabel>Active</template>
+    </toggle-switch>
+    <!--    <label class="label" for="inputActive"-->
+    <!--      >Currently Active in this Position</label-->
+    <!--    >-->
+    <!--    <div class="flex space-x-2 items-center">-->
+    <!--      <p class="text-sm">No</p>-->
+    <!--      <input-->
+    <!--        id="inputActive"-->
+    <!--        v-model="form.isActive"-->
+    <!--        type="checkbox"-->
+    <!--        class="checkbox"-->
+    <!--      /><label for="inputActive" class="switch"></label>-->
+    <!--      <p class="text-sm">Yes</p>-->
+    <!--    </div>-->
 
     <span v-if="isPhoneValid">&nbsp;</span>
     <span v-else class="error">Invalid phone</span>
@@ -105,10 +109,11 @@
 import { validationMixin } from 'vuelidate'
 import { email, required } from 'vuelidate/lib/validators'
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
+import ToggleSwitch from '~/components/layouts/ToggleSwitch'
 
 export default {
   name: 'NewJob',
-  components: { EditObjectModalBottomPart },
+  components: { ToggleSwitch, EditObjectModalBottomPart },
   mixins: [validationMixin],
 
   data() {
@@ -205,3 +210,15 @@ export default {
   },
 }
 </script>
+
+<style>
+.vue-tel-input {
+  /*@apply border-2 border-gray-300 rounded-sm px-3 py-2 focus:bg-gray-100 focus:border-primary transition duration-500 ring-offset-2 focus:outline-none;*/
+  /*@apply border-b border-gray-200 px-1 py-2 focus:border-primary transition duration-500 ease-in focus:outline-none;*/
+  border: none !important;
+  box-shadow: none !important;
+  padding: 2px 1px !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  border-radius: 0px !important;
+}
+</style>

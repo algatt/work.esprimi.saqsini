@@ -126,7 +126,8 @@ h1{
 }
 
 .input {
-  @apply border-2 border-gray-300 rounded-sm px-3 py-2 focus:bg-gray-100 focus:border-primary transition duration-500 ring-offset-2 focus:outline-none;
+  /*@apply border-2 border-gray-300 rounded-sm px-3 py-2 focus:bg-gray-100 focus:border-primary transition duration-500 ring-offset-2 focus:outline-none;*/
+  @apply border-b border-gray-200 px-1 py-2 focus:border-primary transition duration-500 ease-in focus:outline-none;
 }
 
 .select {
@@ -143,8 +144,8 @@ h1{
 }
 
 .label-required::after {
-  content: '*';
-  @apply ml-1 text-red-500 font-semibold;
+  content: 'required';
+  @apply ml-1 text-red-500 text-xs;
 }
 
 /*.switch {*/
