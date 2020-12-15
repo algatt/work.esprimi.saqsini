@@ -1,9 +1,9 @@
 <template>
   <div class="flex flex-col mt-2">
     <div v-if="conditions.length !== 0" class="mb-3">
-      <h6 class="mb-1">Existing Branching</h6>
+      <label class="label">Existing Branching</label>
       <toggle-switch
-        class="mb-3"
+        class="my-3"
         :checked="allMustBeMet"
         :change-colour="false"
         @clicked="allMustBeMet = $event"
@@ -16,21 +16,26 @@
         :key="index"
         class="flex items-center justify-between px-3 py-2 border border-gray-100 my-1 rounded w-full md:w-10/12 shadow"
       >
-        <div class="flex flex-grow flex-col">
+        <div v-if="condition.questionCode" class="flex flex-grow flex-col">
           <p>{{ condition.questionText }}</p>
           <p>{{ condition.answer }}</p>
         </div>
+        <div v-else>
+          <p>{{ condition.filterType }}</p>
+          <p v-if="condition.filter.name">{{ condition.filter.name }}</p>
+          <p v-else>{{ condition.filter.displayName }}</p>
+        </div>
         <div class="flex items-center">
-          <button class="btn-link-rounded" @click="deleteCondition(index)">
+          <button class="btn-link-danger" @click="deleteCondition(index)">
             <i class="far fa-trash-alt fa-sm fa-fw"></i>
           </button>
         </div>
       </div>
     </div>
 
-    <h6 class="mt-2 mb-3">New Branching</h6>
+    <label class="label">New Branching</label>
     <toggle-switch
-      class="mb-3"
+      class="my-3"
       :checked="isDemographicBranching"
       :change-colour="false"
       @clicked="isDemographicBranching = $event"
@@ -40,47 +45,89 @@
     </toggle-switch>
     <div
       v-if="!isDemographicBranching"
-      class="flex flex-wrap items-center w-full"
+      class="flex flex-wrap items-center w-10/12"
     >
-      <div class="w-full md:w-6/12 flex items-center pr-2">
-        <select
-          v-model="selectedQuestion"
-          class="input select w-full"
-          @change="updateSelectAnswers"
-        >
-          <option
-            v-for="previous in previousQuestionsText"
-            :key="previous.code"
-            :value="previous.code"
+      <template v-if="previousQuestions.length !== 0">
+        <div class="w-full flex items-center">
+          <select
+            v-model="selectedQuestion"
+            class="input select w-full"
+            @change="updateSelectAnswers"
           >
-            {{ previous.text }}
-          </option>
-        </select>
-      </div>
-      <div class="flex items-center w-10/12 md:w-5/12 pr-2 mt-2 md:mt-0">
-        <select v-model="selectedAnswer" class="input select w-full">
-          <option
-            v-for="(answer, index) in previousQuestionAnswers"
-            :key="answer + index"
-            :value="answer.value"
+            <option
+              v-for="previous in previousQuestionsText"
+              :key="previous.code"
+              :value="previous.code"
+            >
+              {{ previous.text }}
+            </option>
+          </select>
+        </div>
+        <div class="flex items-center w-10/12 pr-2 mt-2">
+          <select v-model="selectedAnswer" class="input select w-full">
+            <option
+              v-for="(answer, index) in previousQuestionAnswers"
+              :key="answer + index"
+              :value="answer.value"
+            >
+              {{ answer.value }}
+            </option>
+          </select>
+        </div>
+        <div class="flex w-2/12 justify-center items-center mt-2">
+          <button
+            class="btn-primary flex-grow"
+            :disabled="checkIfDisabledQuestion()"
+            @click="addConditionQuestion"
           >
-            {{ answer.value }}
-          </option>
-        </select>
-      </div>
-      <div
-        class="flex w-2/12 md:w-1/12 justify-center items-center mt-2 md:mt-0"
-      >
-        <button
-          class="btn-link-rounded-primary"
-          :disabled="checkIfDisabled()"
-          @click="addCondition"
-        >
-          <i class="fas fa-check fa-sm fa-fw"></i>
-        </button>
+            Add
+          </button>
+        </div>
+      </template>
+      <div v-else class="w-full flex items-center">
+        Previous questions cannot be used for branching.
       </div>
     </div>
-    <template v-else>demogs..</template>
+    <template v-else
+      ><div class="flex flex-wrap items-center w-10/12">
+        <div class="flex w-full flex-wrap">
+          <select
+            v-model="selectedFilter"
+            class="input select w-full"
+            @change="selectedFilterItem = filterItems[0].code"
+          >
+            <option v-for="(item, index) in filterKeys" :key="index">
+              {{ item }}
+            </option>
+          </select>
+          <div class="flex items-center w-10/12 pr-2 mt-2">
+            <select v-model="selectedFilterItem" class="input select w-full">
+              <option
+                v-for="(item, index) in filterItems"
+                :key="index"
+                :value="item.code"
+              >
+                <template v-if="selectedFilter !== 'Contacts'">{{
+                  item.name
+                }}</template>
+                <template v-else-if="selectedFilter === 'Contacts'">{{
+                  item.displayName
+                }}</template>
+              </option>
+            </select>
+          </div>
+          <div class="flex w-2/12 justify-center items-center mt-2">
+            <button
+              class="btn-primary flex-grow"
+              :disabled="checkIfDisabledDemographic()"
+              @click="addConditionDemographic"
+            >
+              Add
+            </button>
+          </div>
+        </div>
+      </div></template
+    >
   </div>
 </template>
 
@@ -104,6 +151,9 @@ export default {
       isDemographicBranching: false,
       allMustBeMet: false,
       conditions: [],
+      filters: {},
+      selectedFilter: null,
+      selectedFilterItem: null,
     }
   },
   computed: {
@@ -141,6 +191,17 @@ export default {
         return { value: el.value }
       })
     },
+    filterKeys() {
+      const x = Object.keys(this.filters)
+      const result = []
+      x.forEach((el) => {
+        result.push(el.charAt(0).toUpperCase() + el.slice(1))
+      })
+      return result
+    },
+    filterItems() {
+      return this.filters[this.selectedFilter.toLowerCase()]
+    },
   },
   watch: {
     conditions(ev) {
@@ -160,6 +221,12 @@ export default {
     }
     this.conditions = this.existingConditions.rules
     this.allMustBeMet = this.existingConditions.allMustBeMet
+
+    this.$store.dispatch('invitations/getFilters').then((response) => {
+      this.filters = response
+      this.selectedFilter = this.filterKeys[0]
+      this.selectedFilterItem = this.filterItems[0].code
+    })
   },
   methods: {
     getQuestionText(question) {
@@ -168,7 +235,7 @@ export default {
     updateSelectAnswers() {
       this.selectedAnswer = this.previousQuestionAnswers[0].value
     },
-    checkIfDisabled() {
+    checkIfDisabledQuestion() {
       return (
         this.conditions.filter((el) => {
           return (
@@ -178,7 +245,17 @@ export default {
         }).length > 0
       )
     },
-    addCondition() {
+    checkIfDisabledDemographic() {
+      return (
+        this.conditions.filter((el) => {
+          return (
+            el.filterType === this.selectedFilter &&
+            el.filter.code === this.selectedFilterItem
+          )
+        }).length > 0
+      )
+    },
+    addConditionQuestion() {
       const questionText = this.getQuestionText(
         this.questions.find((el) => {
           return el.code === this.selectedQuestion
@@ -188,6 +265,14 @@ export default {
         questionCode: this.selectedQuestion,
         questionText,
         answer: this.selectedAnswer,
+      })
+    },
+    addConditionDemographic() {
+      this.conditions.push({
+        filterType: this.selectedFilter,
+        filter: this.filters[this.selectedFilter.toLowerCase()].find((el) => {
+          return el.code === this.selectedFilterItem
+        }),
       })
     },
     deleteCondition(index) {
