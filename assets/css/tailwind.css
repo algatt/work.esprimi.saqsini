@@ -10,9 +10,14 @@
   --primary-dark: rgb(30, 64, 175);
 }
 
+html {
+  font-size: 14px;
+}
+
 body {
   font-family: 'Quicksand', sans-serif;
   font-weight: 500;
+
   @apply text-gray-800;
 }
 
@@ -29,7 +34,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 h6 {
@@ -134,7 +139,7 @@ h1{
 
 .label, .label-required {
   @apply py-2 ;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 .label-required::after {
