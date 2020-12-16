@@ -1,16 +1,14 @@
 <template>
-  <div
-    class="fixed top-0 left-0 bg-gray-200 bg-opacity-75 w-full h-full z-20 flex py-10 px-32"
-    @click="$emit('modalClosed')"
-  >
-    <div class="w-full flex flex-col bg-white relative" @click.stop>
-      <div class="absolute top-0 left-0 w-full h-full overflow-auto">
-        <preview-survey
-          :survey="survey"
-          :questions="questions"
-          @finishSurvey="$emit('modalClosed')"
-        ></preview-survey>
-      </div>
+  <div class="frosted p-0 md:p-8 z-20" @click="$emit('modalClosed')">
+    <div
+      class="w-full h-screen md:h-auto md:w-6/12 mx-auto flex flex-col bg-red-200 relative rounded-none md:rounded-lg md:border md:border-gray-100 shadow-md"
+      @click.stop
+    >
+      <preview-survey
+        :survey="survey"
+        :questions="questions"
+        @finishSurvey="$emit('modalClosed')"
+      ></preview-survey>
     </div>
   </div>
 </template>
@@ -42,4 +40,24 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.frosted {
+  @apply flex fixed top-0 left-0 w-full h-screen;
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+@media only screen and (min-width: 768px) {
+  .check-height {
+    max-height: 90%;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .check-height {
+    max-height: 100%;
+  }
+}
+</style>

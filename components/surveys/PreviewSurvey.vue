@@ -2,31 +2,29 @@
   <div
     ref="surveyModal"
     :style="{ backgroundColor: survey.options.accentColour }"
-    class="flex flex-col p-5 items-center"
+    class="flex flex-col p-5 h-full w-full rounded overflow-y-auto"
   >
     <div
-      class="w-full md:w-8/12 h-40 bg-cover flex flex-wrap items-center rounded"
+      class="h-32 bg-cover flex flex-wrap items-center rounded w-full mb-5"
       :style="{
         backgroundColor: survey.options.backgroundColour,
         backgroundImage: 'url(' + survey.options.headerImage + ')',
       }"
     >
-      <div class="w-full flex justify-between items-center">
-        <p
-          class="px-5 text-3xl font-bold tracking-wider py-3"
+      <div class="w-full h-32 flex justify-between items-center">
+        <h3
+          class="px-5 py-3 frosted-area"
           :style="{
-            color: survey.options.textColour,
-            backgroundColor: survey.options.backgroundColour,
+            color: survey.options.backgroundColour,
           }"
         >
           {{ survey.name }}
-        </p>
+        </h3>
 
         <popup-menu-vue
-          class="px-5 py-3"
+          class="px-5 py-3 frosted-area"
           :style="{
             color: survey.options.textColour,
-            backgroundColor: survey.options.backgroundColour,
           }"
           ><template v-slot:menuButton
             ><span class="px-1"
@@ -51,11 +49,11 @@
         ></popup-menu-vue>
       </div>
     </div>
-    <div ref="questionsSection" class="h-full w-full md:w-8/12">
+    <div ref="questionsSection" class="w-full">
       <div
         v-for="question in questionsWithSectionsFiltered"
         :key="question.code"
-        class="mt-5"
+        class="mb-5"
       >
         <display-question
           class="rounded shadow-lg"
@@ -69,11 +67,17 @@
       <div class="flex items-center justify-center space-x-3 my-5">
         <button
           :disabled="!enablePrevious"
-          class="w-28 focus:outline-none py-1.5 px-3 rounded font-bold flex flex-wrap items-center justify-center disabled:bg-gray-200 shadow"
+          class="w-28 focus:outline-none py-1.5 px-3 rounded font-bold flex flex-wrap items-center justify-center shadow"
+          :class="
+            survey.options.backgroundColour === '#000000'
+              ? 'disabled:bg-gray-700'
+              : 'disabled:bg-gray-200'
+          "
           :style="
             !enablePrevious
               ? {
-                  color: survey.options.backgroundColour,
+                  // color: survey.options.backgroundColour,
+                  color: '#666666',
                   cursor: 'not-allowed',
                 }
               : {
@@ -89,11 +93,16 @@
         <button
           v-if="!isFinalPage"
           :disabled="!enableNext"
-          class="w-28 focus:outline-none py-1.5 px-3 rounded font-bold flex flex-wrap items-center justify-center disabled:bg-gray-200 shadow"
+          class="w-28 focus:outline-none py-1.5 px-3 rounded font-bold flex flex-wrap items-center justify-center shadow"
+          :class="
+            survey.options.backgroundColour === '#000000'
+              ? 'disabled:bg-gray-700'
+              : 'disabled:bg-gray-200'
+          "
           :style="
             !enableNext
               ? {
-                  color: survey.options.backgroundColour,
+                  color: '#666666',
                   cursor: 'not-allowed',
                 }
               : {
@@ -109,11 +118,16 @@
         <button
           v-else
           :disabled="!enableNext"
-          class="w-28 focus:outline-none py-1.5 px-3 rounded font-bold flex flex-wrap items-center justify-center disabled:bg-gray-200 shadow"
+          class="w-28 focus:outline-none py-1.5 px-3 rounded font-bold flex flex-wrap items-center justify-center shadow"
+          :class="
+            survey.options.backgroundColour === '#000000'
+              ? 'disabled:bg-gray-700'
+              : 'disabled:bg-gray-200'
+          "
           :style="
             !enableNext
               ? {
-                  color: survey.options.backgroundColour,
+                  color: '#666666',
                   cursor: 'not-allowed',
                 }
               : {
@@ -129,7 +143,7 @@
     </div>
     <div
       v-if="survey.options.footerImage !== ''"
-      class="w-full md:w-8/12 h-48 bg-cover flex flex-wrap items-center rounded"
+      class="w-full h-32 bg-cover flex flex-wrap items-center rounded"
       :style="{
         backgroundColor: survey.options.backgroundColour,
         backgroundImage: 'url(' + survey.options.footerImage + ')',
@@ -245,4 +259,11 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.frosted-area {
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+</style>

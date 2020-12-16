@@ -26,7 +26,7 @@
     </button>
     <button
       class="flex md:hidden w-12 justify-center items-center cursor-pointer focus:outline-none"
-      @click="selectItem(item)"
+      @click.stop="selectItem(item)"
     >
       <i
         class="fas fa-check-circle fa-fw transition duration-300"
