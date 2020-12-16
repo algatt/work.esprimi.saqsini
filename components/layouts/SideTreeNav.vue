@@ -1,11 +1,14 @@
 <template>
-  <div class="flex flex-col relative mb-2 md:mb-0">
+  <div class="flex flex-col relative md:mb-0">
     <button
-      class="flex items-center font-bold justify-between py-2 mb-2 px-2 bg-gray-100 focus:outline-none"
+      class="flex items-center font-bold justify-between py-2 px-2 bg-gray-100 focus:outline-none"
+      :class="isCollapsed ? ' mb-0' : 'mb-2'"
       @click="isCollapsed = !isCollapsed"
     >
       <slot name="title"></slot>
-      <button class="btn-link">
+      <button
+        class="focus:outline-none text-gray-600 focus:text-gray-700 transition duration-300"
+      >
         <i
           class="fas"
           :class="isCollapsed ? 'fa-caret-down' : 'fa-caret-up'"
@@ -203,6 +206,6 @@ export default {
 }
 
 .pencil-rounded-small {
-  @apply h-5 w-5 focus:bg-gray-200 flex justify-center items-center rounded-full focus:outline-none text-gray-600 transition duration-300;
+  @apply h-6 w-6 focus:bg-gray-200  focus:text-gray-500 flex justify-center items-center rounded-full focus:outline-none text-gray-400 transition duration-300;
 }
 </style>

@@ -7,7 +7,7 @@
     @click="$emit('clicked', item)"
   >
     <button
-      class="hidden md:flex w-12 justify-center items-center cursor-pointer focus:outline-none"
+      class="hidden md:flex w-12 justify-center items-center cursor-pointer focus:outline-none self-stretch"
       @click.stop="selectItem(item)"
     >
       <span>
@@ -25,7 +25,7 @@
       </span>
     </button>
     <button
-      class="flex md:hidden w-12 justify-center items-center cursor-pointer focus:outline-none"
+      class="flex md:hidden w-12 justify-center items-center cursor-pointer focus:outline-none self-stretch"
       @click.stop="selectItem(item)"
     >
       <i
@@ -37,7 +37,10 @@
     <span class="flex flex-wrap flex-grow items-center">
       <slot name="content"></slot
     ></span>
-    <span class="flex w-10 md:w-8 justify-end md:justify-center items-center">
+    <span
+      class="flex w-12 justify-end md:justify-center items-center self-stretch"
+      @click.stop
+    >
       <slot name="popup-menu"></slot>
     </span>
   </div>

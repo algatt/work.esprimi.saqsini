@@ -26,19 +26,19 @@
       >
       <template v-slot:titleContent>
         <p class="w-7/12">Name</p>
-        <p class="w-3/12">Size</p>
-        <p class="w-2/12">Departments</p>
+        <p class="w-3/12 text-center">Size</p>
+        <p class="w-2/12 text-center">Departments</p>
       </template>
       <template v-slot:titleContentSmall>Companies</template>
       <template v-slot:content="slotProps">
         <p
-          class="w-full md:w-7/12 flex items-center justify-start mb-1 md:mb-0 space-x-4"
+          class="w-full md:w-7/12 flex items-center justify-start mb-1 md:mb-0"
         >
-          <span class="flex">
+          <span class="hidden md:flex mr-2">
             <img
               v-if="slotProps.item.logo"
               :src="slotProps.item.logo"
-              class="w-8 h-8 rounded md:rounded-full bg-cover"
+              class="w-8 h-8 rounded bg-cover"
             />
             <span v-else class="w-8 h-8 hidden md:flex">&nbsp;</span>
           </span>
@@ -46,7 +46,7 @@
           <span class="badge-gray">{{ slotProps.item.abbr }}</span>
         </p>
 
-        <p class="w-6/12 md:w-3/12 mb-1 md:mb-0 flex items-center">
+        <p class="w-6/12 md:w-3/12 mb-1 md:mb-0 flex md:justify-center">
           <template v-if="slotProps.item.size !== 0">
             <span>{{ slotProps.item.size }}</span
             ><span class="block md:hidden">&nbsp;employees </span>
@@ -54,7 +54,7 @@
         </p>
 
         <p
-          class="w-6/12 md:w-1/12 mb-1 md:mb-0 flex justify-end md:justify-center"
+          class="w-6/12 md:w-2/12 mb-1 md:mb-0 flex justify-end md:justify-center"
         >
           <nuxt-link
             class="btn-table px-3"

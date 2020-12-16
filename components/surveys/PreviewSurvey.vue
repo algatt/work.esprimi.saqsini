@@ -4,6 +4,11 @@
     :style="{ backgroundColor: survey.options.accentColour }"
     class="flex flex-col p-5 h-full w-full rounded overflow-y-auto"
   >
+    <div class="absolute" style="top: 5px; right: 5px">
+      <button class="btn-link-rounded" @click="finishSurvey">
+        <i class="fas fa-times fa-fw fa-3xl text-gray-800"></i>
+      </button>
+    </div>
     <div
       class="h-32 bg-cover flex flex-wrap items-center rounded w-full mb-5"
       :style="{

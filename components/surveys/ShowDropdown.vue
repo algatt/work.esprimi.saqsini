@@ -13,6 +13,7 @@
     </div>
     <div class="flex flex-col flex-wrap md:flex-row mt-2">
       <select
+        v-model="answers[0]"
         class="dropdown-input dropdown-select md:w-6/12 w-full"
         :class="defaultStyle ? 'focus:border-primary' : null"
         :style="
@@ -28,8 +29,7 @@
         <option
           v-for="(option, index) in options"
           :key="index"
-          :selected="answers ? answers[0] : null"
-          @click="answers = option.value ? [option.value] : []"
+          :value="option.value"
         >
           <span class="flex flex-grow">{{ option.text }}</span>
         </option>
@@ -39,6 +39,7 @@
 </template>
 
 <script>
+// @click="answers = option.value ? [option.value] : []"
 import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
 
 export default {
@@ -90,7 +91,7 @@ export default {
   created() {
     if (this.existingAnswer) {
       this.answers = JSON.parse(JSON.stringify(this.existingAnswer))
-    }
+    } else this.answers = [null]
   },
 }
 </script>

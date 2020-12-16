@@ -1,5 +1,6 @@
 <template>
   <v-popover
+    class="z-30"
     placement="right"
     trigger="click"
     offset="8"

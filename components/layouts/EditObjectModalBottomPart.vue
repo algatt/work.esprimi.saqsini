@@ -1,9 +1,6 @@
 <template>
   <div class="flex flex-wrap w-full justify-between items-center py-8">
     <div class="flex flex-wrap items-center w-6/12">
-      <button class="btn-primary mr-2" @click="cancelCurrentItem">
-        Cancel
-      </button>
       <button
         v-if="showDelete && form.code !== -1"
         class="btn-danger mr-2"
@@ -23,6 +20,9 @@
     </div>
 
     <div class="flex flex-wrap items-center w-6/12 justify-end">
+      <button class="btn-primary mr-2" @click="cancelCurrentItem">
+        Cancel
+      </button>
       <button
         v-if="showSave"
         class="btn-primary"

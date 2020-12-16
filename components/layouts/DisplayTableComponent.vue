@@ -15,7 +15,7 @@
       ></top-header-bar
     >
 
-    <div class="flex w-full flex-wrap p-5">
+    <div class="flex w-full flex-wrap p-0 md:p-5">
       <div :class="$slots.sideNav ? 'w-full md:mx-auto lg:w-3/12' : 'hidden'">
         <slot name="sideNav"></slot>
       </div>

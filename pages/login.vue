@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-white w-11/12 md:w-auto rounded border border-primary shadow-xl py-4 px-10 mb-20 flex flex-col"
+    class="bg-white w-auto rounded border border-primary shadow-xl py-4 px-14 mb-20 flex flex-col"
   >
     <h5 class="text-2xl text-primary font-bold text-center mb-4">
       saqsini<i class="far fa-comments fa-fw ml-1"></i>
@@ -24,7 +24,7 @@
       @keyup="$v.password.$touch"
     />
     <button
-      class="btn-primary my-3"
+      class="btn-primary my-3 py-2"
       :disabled="$v.$invalid || inProgress"
       @click="attemptLogin"
     >

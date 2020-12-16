@@ -61,8 +61,8 @@ export default {
             .getBoundingClientRect()
           const right = rect.right
           const bottom = rect.bottom
-          const windowWidth = window.innerWidth
-          const windowHeight = window.innerHeight
+          const windowWidth = window.screen.width
+          const windowHeight = window.screen.height
 
           if (right > windowWidth) {
             this.styleForMenu = `left : -${right - windowWidth + 25}px`

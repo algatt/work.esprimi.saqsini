@@ -8,10 +8,12 @@
     <span class="hidden md:flex flex-wrap flex-grow items-center font-bold">
       <slot name="content"></slot>
     </span>
-    <span class="flex md:hidden flex-wrap flex-grow items-center font-bold">
+    <span
+      class="flex md:hidden flex-wrap flex-grow items-center font-bold pl-1"
+    >
       <slot name="contentSmall"></slot>
     </span>
-    <span class="flex w-8 justify-center items-center"> &nbsp; </span>
+    <span class="flex w-12 justify-center items-center"> &nbsp; </span>
   </div>
 </template>
 

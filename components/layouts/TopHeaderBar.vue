@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-full flex flex-wrap justify-between items-center h-auto bg-gray-100 py-3 px-2 mb-2 border-b border-gray-50"
+    class="w-full flex flex-wrap justify-between items-center h-auto bg-gray-100 py-3 px-2 md:mb-2"
   >
     <h6
       class="w-full md:w-auto text-lg font-semibold"
@@ -15,19 +15,15 @@
         <slot name="button"></slot
       ></template>
       <template v-else
-        ><button class="btn-round-primary mr-2" @click="emptySelectedItems">
-          <i class="fas fa-times fa-fw"></i>
+        ><button class="btn-primary mr-2" @click="emptySelectedItems">
+          Clear Selection
         </button>
-        <button class="btn-round-danger mr-2" @click="showModal = true">
-          <i class="far fa-trash-alt fa-fw"></i>
+        <button class="btn-danger mr-2" @click="showModal = true">
+          Delete
+          <span v-if="selectedItems === 1">{{ selectedItems }} item</span>
+          <span v-else-if="selectedItems > 1">{{ selectedItems }} items</span>
         </button>
-        <span v-if="selectedItems === 1"
-          >{{ selectedItems }} item selected</span
-        >
-        <span v-else-if="selectedItems > 1"
-          >{{ selectedItems }} items selected</span
-        ></template
-      >
+      </template>
     </div>
 
     <modal-confirm
