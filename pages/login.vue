@@ -11,7 +11,7 @@
     <input
       id="email"
       v-model="email"
-      class="input mb-3"
+      class="input-login mb-3"
       @keyup="$v.email.$touch"
     />
 
@@ -19,7 +19,7 @@
     <input
       id="password"
       v-model="password"
-      class="input mb-3"
+      class="input-login mb-3"
       type="password"
       @keyup="$v.password.$touch"
     />
@@ -94,8 +94,8 @@ export default {
 }
 </script>
 
-<style>
-.input {
+<style scoped>
+.input-login {
   @apply border-2 border-gray-200 rounded-sm px-3 py-1 focus:bg-gray-100 focus:border-primary transition duration-300 ring-offset-2 focus:outline-none;
 }
 </style>
