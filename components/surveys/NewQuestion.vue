@@ -22,13 +22,13 @@
 </template>
 
 <script>
-import { QUESTION_TYPES } from '~/helpers/constants'
 import NewQuestionMultipleChoice from '~/components/surveys/NewQuestionMultipleChoice'
 import NewQuestionLikert from '~/components/surveys/NewQuestionLikert'
 import NewQuestionSection from '~/components/surveys/NewQuestionSection'
 import NewQuestionDropDown from '~/components/surveys/NewQuestionDropDown'
 import NewQuestionTypeIn from '~/components/surveys/NewQuestionTypeIn'
 import NewQuestionRanking from '~/components/surveys/NewQuestionRanking'
+import { QUESTION_TYPES } from '~/helpers/constants'
 
 export default {
   name: 'NewQuestion',

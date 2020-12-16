@@ -1,93 +1,116 @@
 <template>
-  <div class="flex flex-col w-full md:w-10/12 pb-32">
-    <label for="inputNumber" class="label-optional">Number</label>
-    <input
-      id="inputNumber"
-      v-model="form.questionNumber"
-      placeholder="Enter question number"
-      class="input"
-      @change="$v.form.questionNumber.$touch()"
-    />
-    <span v-if="!$v.form.questionNumber.$error">&nbsp;</span>
-    <span v-else>
-      <span v-if="!$v.form.questionNumber.required" class="error"
-        >The question number is required.</span
-      >
-      <span v-else-if="!$v.form.questionNumber.numeric" class="error"
-        >The question number must be a number.</span
-      >
-    </span>
-
-    <label for="inputName" class="label-optional">Name</label>
-    <input
-      id="inputName"
-      v-model="form.name"
-      placeholder="Enter question name"
-      class="input"
-      @change="$v.form.name.$touch()"
-    />
-    <span v-if="!$v.form.name.$error">&nbsp;</span>
-    <span v-else>
-      <span v-if="!$v.form.name.required" class="error"
-        >The name is required.</span
-      >
-    </span>
-
-    <label for="inputText" class="label-optional">Text</label>
-    <input
-      id="inputText"
-      v-model="form.text"
-      placeholder="Enter question text"
-      class="input"
-      @change="$v.form.text.$touch()"
-    />
-    <span v-if="!$v.form.text.$error">&nbsp;</span>
-    <span v-else>
-      <span v-if="!$v.form.text.required" class="error"
-        >The question text is required.</span
-      >
-    </span>
-
-    <label class="label-optional">Options</label>
-    <div
-      v-for="(option, index) in options"
-      :key="option.ordinalPosition"
-      class="flex items-center mb-2"
-    >
+  <div class="flex flex-col w-full space-y-5">
+    <div class="flex flex-col">
+      <div class="flex items-center">
+        <label for="inputNumber" class="label">Number</label>
+        <span v-if="$v.form.questionNumber.$error">
+          <span v-if="!$v.form.questionNumber.required" class="error"
+            >required</span
+          >
+          <span v-else-if="!$v.form.questionNumber.numeric" class="error"
+            >must be a number</span
+          >
+        </span>
+        <popup-info
+          ><template v-slot:text>{{ infoNumber }}</template></popup-info
+        >
+      </div>
       <input
-        :id="'inputOptions' + index"
-        v-model="option.text"
-        placeholder="Enter option text"
-        class="input w-7/12"
-        @keyup="updateValues"
-        @change="$v.options.$touch()"
+        id="inputNumber"
+        v-model="form.questionNumber"
+        placeholder="Enter question number"
+        class="input"
+        @change="$v.form.questionNumber.$touch()"
       />
-      <button
-        class="btn-link ml-2"
-        :disabled="form.options.length < 3"
-        @click="deleteOptionAtIndex(index)"
+    </div>
+
+    <div class="flex flex-col">
+      <div class="flex items-center">
+        <label for="inputName" class="label">Name</label
+        ><span v-if="$v.form.name.$error">
+          <span v-if="!$v.form.name.required" class="error">required</span>
+        </span>
+        <popup-info
+          ><template v-slot:text>{{ infoName }}</template></popup-info
+        >
+      </div>
+      <input
+        id="inputName"
+        v-model="form.name"
+        placeholder="Enter question name"
+        class="input"
+        @change="$v.form.name.$touch()"
+      />
+    </div>
+
+    <div class="flex flex-col">
+      <div class="flex items-center">
+        <label for="inputText" class="label">Text</label>
+        <span v-if="$v.form.text.$error">
+          <span v-if="!$v.form.text.required" class="error"
+            >The question text is required.</span
+          >
+        </span>
+        <popup-info
+          ><template v-slot:text>{{ infoText }}</template></popup-info
+        >
+      </div>
+      <input
+        id="inputText"
+        v-model="form.text"
+        placeholder="Enter question text"
+        class="input"
+        @change="$v.form.text.$touch()"
+      />
+    </div>
+
+    <div class="flex flex-col">
+      <div class="flex items-center">
+        <label class="label">Options</label>
+        <span v-if="$v.options.$error">
+          <span class="error">all options must be filled in</span>
+        </span>
+      </div>
+      <div
+        v-for="(option, index) in options"
+        :key="option.ordinalPosition"
+        class="flex items-center mb-2"
       >
-        Delete
-      </button>
+        <input
+          :id="'inputOptions' + index"
+          v-model="option.text"
+          placeholder="Enter option text"
+          class="input w-7/12"
+          @keyup="updateValues"
+          @change="$v.options.$touch()"
+        />
+        <button
+          class="btn-link ml-2"
+          :disabled="form.options.length < 3"
+          @click="deleteOptionAtIndex(index)"
+        >
+          Delete
+        </button>
+      </div>
+
+      <div class="flex justify-start mt-2">
+        <button class="btn-primary px-3" @click="addNewOption">Add New</button>
+      </div>
     </div>
-    <span v-if="!$v.options.$error">&nbsp;</span>
-    <span v-else>
-      <span class="error">All options must be filled in.</span>
-    </span>
-    <div class="flex justify-start mt-2">
-      <button class="btn-primary px-3" @click="addNewOption">Add New</button>
-    </div>
-    <span>&nbsp;</span>
 
     <toggle-switch
       :checked="form.isMandatory"
       @clicked="form.isMandatory = $event"
     >
-      <template v-slot:label> Required</template>
+      <template v-slot:label>
+        Required
+        <popup-info
+          ><template v-slot:text>{{ infoRequired }}</template></popup-info
+        ></template
+      >
       <template v-slot:leftLabel>No</template>
       <template v-slot:rightLabel>Yes</template>
     </toggle-switch>
-    <span>&nbsp;</span>
 
     <edit-object-modal-bottom-part
       :form="form"
@@ -102,11 +125,12 @@ import { validationMixin } from 'vuelidate'
 import { required, numeric } from 'vuelidate/lib/validators'
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
 import { parseQuestionToForm } from '~/helpers/parseSurveyObjects'
+import questionMixin from '~/helpers/questionMixin'
 
 export default {
   name: 'NewQuestionRanking',
   components: { EditObjectModalBottomPart },
-  mixins: [validationMixin],
+  mixins: [validationMixin, questionMixin],
   data() {
     return {
       form: null,

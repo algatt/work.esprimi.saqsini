@@ -1,114 +1,143 @@
 <template>
-  <div class="flex flex-col w-full md:w-10/12 pb-32">
-    <label for="inputNumber" class="label-optional">Number</label>
-    <input
-      id="inputNumber"
-      v-model="form.questionNumber"
-      placeholder="Enter question number"
-      class="input"
-      @change="$v.form.questionNumber.$touch()"
-    />
-    <span v-if="!$v.form.questionNumber.$error">&nbsp;</span>
-    <span v-else>
-      <span v-if="!$v.form.questionNumber.required" class="error"
-        >The question number is required.</span
-      >
-      <span v-else-if="!$v.form.questionNumber.numeric" class="error"
-        >The question number must be a number.</span
-      >
-    </span>
-
-    <label for="inputName" class="label-optional">Name</label>
-    <input
-      id="inputName"
-      v-model="form.name"
-      placeholder="Enter question name"
-      class="input"
-      @change="$v.form.name.$touch()"
-    />
-    <span v-if="!$v.form.name.$error">&nbsp;</span>
-    <span v-else>
-      <span v-if="!$v.form.name.required" class="error"
-        >The name is required.</span
-      >
-    </span>
-
-    <label for="inputText" class="label-optional">Text</label>
-    <input
-      id="inputText"
-      v-model="form.text"
-      placeholder="Enter question text"
-      class="input"
-      @change="$v.form.text.$touch()"
-    />
-    <span v-if="!$v.form.text.$error">&nbsp;</span>
-    <span v-else>
-      <span v-if="!$v.form.text.required" class="error"
-        >The question text is required.</span
-      >
-    </span>
-
-    <label class="label-optional">Options and Weights</label>
-
-    <div
-      v-for="(item, index) in options"
-      :key="item.ordinalPosition"
-      class="flex w-full items-center space-x-2"
-    >
+  <div class="flex flex-col w-full space-y-5">
+    <div class="flex flex-col">
+      <div class="flex items-center">
+        <label for="inputNumber" class="label">Number</label>
+        <span v-if="$v.form.questionNumber.$error">
+          <span v-if="!$v.form.questionNumber.required" class="error"
+            >required</span
+          >
+          <span v-else-if="!$v.form.questionNumber.numeric" class="error"
+            >must be a number</span
+          >
+        </span>
+        <popup-info
+          ><template v-slot:text>{{ infoNumber }}</template></popup-info
+        >
+      </div>
       <input
-        :id="'inputOptions' + index"
-        v-model="item.text"
-        class="input mb-2 w-7/12"
-        @change="$v.options.$touch()"
+        id="inputNumber"
+        v-model="form.questionNumber"
+        placeholder="Enter question number"
+        class="input"
+        @change="$v.form.questionNumber.$touch()"
       />
-      <input
-        v-model="item.value"
-        class="input mb-2 w-3/12"
-        @change="
-          sortOptions()
-          $v.options.$touch()
-        "
-      />
-      <button
-        class="btn-link ml-2"
-        :disabled="options.length < 3"
-        @click="deleteOptionAtIndex(index)"
-      >
-        Delete
-      </button>
     </div>
 
-    <span v-if="!$v.options.$error">&nbsp;</span>
-    <span v-else>
-      <span class="error"
-        >All values and weights must be filled in. Values must be numeric.</span
-      >
-    </span>
-
-    <div key="addNewButton" class="flex justify-start mt-2">
-      <button class="btn-primary px-3" @click="addNewOption">Add New</button>
+    <div class="flex flex-col">
+      <div class="flex items-center">
+        <label for="inputName" class="label">Name</label>
+        <span v-if="$v.form.name.$error">
+          <span v-if="!$v.form.name.required" class="error">required</span>
+        </span>
+        <popup-info
+          ><template v-slot:text>{{ infoName }}</template></popup-info
+        >
+      </div>
+      <input
+        id="inputName"
+        v-model="form.name"
+        placeholder="Enter question name"
+        class="input"
+        @change="$v.form.name.$touch()"
+      />
     </div>
-    <span>&nbsp;</span>
+
+    <div class="flex flex-col">
+      <div class="flex items-center">
+        <label for="inputText" class="label">Text</label>
+        <span v-if="$v.form.text.$error">
+          <span v-if="!$v.form.text.required" class="error">required</span>
+        </span>
+        <popup-info
+          ><template v-slot:text>{{ infoText }}</template></popup-info
+        >
+      </div>
+      <input
+        id="inputText"
+        v-model="form.text"
+        placeholder="Enter question text"
+        class="input"
+        @change="$v.form.text.$touch()"
+      />
+    </div>
+
+    <div class="flex flex-col">
+      <div class="flex items-center">
+        <label class="label">Options and Weights</label>
+        <span v-if="$v.options.$error">
+          <span class="error"
+            >all options and weights (numeric) must be filled in</span
+          >
+        </span>
+        <popup-info
+          ><template v-slot:text
+            >Here you can set the text (option) for all options. <br />Every
+            option must be assigned a numeric weight.</template
+          ></popup-info
+        >
+      </div>
+      <div
+        v-for="(item, index) in options"
+        :key="item.ordinalPosition"
+        class="flex w-full items-center space-x-2 mb-1"
+      >
+        <input
+          :id="'inputOptions' + index"
+          v-model="item.text"
+          class="input mb-2 w-7/12"
+          @change="$v.options.$touch()"
+        />
+        <input
+          v-model="item.value"
+          class="input mb-2 w-2/12 text-center"
+          @change="
+            sortOptions()
+            $v.options.$touch()
+          "
+        />
+        <button
+          class="btn-link ml-2"
+          :disabled="options.length < 3"
+          @click="deleteOptionAtIndex(index)"
+        >
+          Delete
+        </button>
+      </div>
+
+      <div key="addNewButton" class="flex justify-start mt-2">
+        <button class="btn-primary px-3" @click="addNewOption">Add New</button>
+      </div>
+    </div>
 
     <toggle-switch
       :checked="form.isMandatory"
       @clicked="form.isMandatory = $event"
     >
-      <template v-slot:label> Required</template>
+      <template v-slot:label>
+        Required<popup-info
+          ><template v-slot:text>{{ infoRequired }}</template></popup-info
+        ></template
+      >
       <template v-slot:leftLabel>No</template>
       <template v-slot:rightLabel>Yes</template>
     </toggle-switch>
-    <span>&nbsp;</span>
 
     <toggle-switch
       :checked="form.showWeights"
       @clicked="form.showWeights = $event"
     >
-      <template v-slot:label> Display Mode</template>
+      <template v-slot:label
+        >Display Mode<popup-info
+          ><template v-slot:text
+            >You can choose to display the labels or values. <br />If values are
+            chosen only the labels at each end will be displayed.</template
+          ></popup-info
+        ></template
+      >
       <template v-slot:leftLabel>Labels</template>
       <template v-slot:rightLabel>Values</template>
     </toggle-switch>
-    <span>&nbsp;</span>
 
     <edit-object-modal-bottom-part
       :form="form"
@@ -123,10 +152,13 @@ import { validationMixin } from 'vuelidate'
 import { required, numeric } from 'vuelidate/lib/validators'
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
 import { parseQuestionToForm } from '~/helpers/parseSurveyObjects'
+import questionMixin from '~/helpers/questionMixin'
+import PopupInfo from '~/components/layouts/PopupInfo'
+
 export default {
   name: 'NewQuestionLikert',
-  components: { EditObjectModalBottomPart },
-  mixins: [validationMixin],
+  components: { PopupInfo, EditObjectModalBottomPart },
+  mixins: [validationMixin, questionMixin],
   data() {
     return {
       form: null,

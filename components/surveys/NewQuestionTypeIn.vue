@@ -1,62 +1,81 @@
 <template>
-  <div class="flex flex-col w-full md:w-10/12 pb-32">
-    <label for="inputNumber" class="label-optional">Number</label>
-    <input
-      id="inputNumber"
-      v-model="form.questionNumber"
-      placeholder="Enter question number"
-      class="input"
-      @change="$v.form.questionNumber.$touch()"
-    />
-    <span v-if="!$v.form.questionNumber.$error">&nbsp;</span>
-    <span v-else>
-      <span v-if="!$v.form.questionNumber.required" class="error"
-        >The question number is required.</span
-      >
-      <span v-else-if="!$v.form.questionNumber.numeric" class="error"
-        >The question number must be a number.</span
-      >
-    </span>
+  <div class="flex flex-col w-full space-y-5">
+    <div class="flex flex-col">
+      <div class="flex items-center">
+        <label for="inputNumber" class="label">Number</label>
+        <span v-if="$v.form.questionNumber.$error">
+          <span v-if="!$v.form.questionNumber.required" class="error"
+            >required</span
+          >
+          <span v-else-if="!$v.form.questionNumber.numeric" class="error"
+            >must be a number</span
+          >
+        </span>
+        <popup-info
+          ><template v-slot:text>{{ infoNumber }}</template></popup-info
+        >
+      </div>
+      <input
+        id="inputNumber"
+        v-model="form.questionNumber"
+        placeholder="Enter question number"
+        class="input"
+        @change="$v.form.questionNumber.$touch()"
+      />
+    </div>
 
-    <label for="inputName" class="label-optional">Name</label>
-    <input
-      id="inputName"
-      v-model="form.name"
-      placeholder="Enter question name"
-      class="input"
-      @change="$v.form.name.$touch()"
-    />
-    <span v-if="!$v.form.name.$error">&nbsp;</span>
-    <span v-else>
-      <span v-if="!$v.form.name.required" class="error"
-        >The name is required.</span
-      >
-    </span>
+    <div class="flex flex-col">
+      <div class="flex items-center">
+        <label for="inputName" class="label">Name</label
+        ><span v-if="$v.form.name.$error">
+          <span v-if="!$v.form.name.required" class="error">required</span>
+        </span>
+        <popup-info
+          ><template v-slot:text>{{ infoName }}</template></popup-info
+        >
+      </div>
+      <input
+        id="inputName"
+        v-model="form.name"
+        placeholder="Enter question name"
+        class="input"
+        @change="$v.form.name.$touch()"
+      />
+    </div>
 
-    <label for="inputText" class="label-optional">Text</label>
-    <input
-      id="inputText"
-      v-model="form.text"
-      placeholder="Enter question text"
-      class="input"
-      @change="$v.form.text.$touch()"
-    />
-    <span v-if="!$v.form.text.$error">&nbsp;</span>
-    <span v-else>
-      <span v-if="!$v.form.text.required" class="error"
-        >The question text is required.</span
-      >
-    </span>
+    <div class="flex flex-col">
+      <div class="flex items-center">
+        <label for="inputText" class="label">Text</label>
+        <span v-if="$v.form.text.$error">
+          <span v-if="!$v.form.text.required" class="error"
+            >The question text is required.</span
+          >
+        </span>
+        <popup-info
+          ><template v-slot:text>{{ infoText }}</template></popup-info
+        >
+      </div>
+      <input
+        id="inputText"
+        v-model="form.text"
+        placeholder="Enter question text"
+        class="input"
+        @change="$v.form.text.$touch()"
+      />
+    </div>
 
     <toggle-switch
       :checked="form.isMandatory"
       @clicked="form.isMandatory = $event"
     >
-      <template v-slot:label> Required</template>
+      <template v-slot:label
+        >Required<popup-info
+          ><template v-slot:text>{{ infoRequired }}</template></popup-info
+        ></template
+      >
       <template v-slot:leftLabel>No</template>
       <template v-slot:rightLabel>Yes</template>
     </toggle-switch>
-    <span>&nbsp;</span>
 
     <edit-object-modal-bottom-part
       :form="form"
@@ -71,11 +90,12 @@ import { validationMixin } from 'vuelidate'
 import { required, numeric } from 'vuelidate/lib/validators'
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
 import { parseQuestionToForm } from '~/helpers/parseSurveyObjects'
+import questionMixin from '~/helpers/questionMixin'
 
 export default {
   name: 'NewQuestionTypeIn',
   components: { EditObjectModalBottomPart },
-  mixins: [validationMixin],
+  mixins: [validationMixin, questionMixin],
   data() {
     return {
       form: null,
