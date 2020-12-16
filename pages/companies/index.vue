@@ -3,10 +3,11 @@
     <display-table-component
       :items="companies"
       which="companies"
+      new-text="Company"
       :disable-new-button="disableNewButton"
       @hovered="hovered = $event"
+      @clicked="setCurrentItem($event)"
     >
-      <template v-slot:title>Companies</template>
       <template v-slot:sideNav>
         <side-tree-nav
           v-if="!loading"
@@ -31,22 +32,17 @@
       <template v-slot:titleContentSmall>Companies</template>
       <template v-slot:content="slotProps">
         <p
-          class="w-full md:w-7/12 flex items-center justify-start mb-1 md:mb-0"
+          class="w-full md:w-7/12 flex items-center justify-start mb-1 md:mb-0 space-x-4"
         >
           <span class="flex">
             <img
               v-if="slotProps.item.logo"
               :src="slotProps.item.logo"
-              class="w-8 h-8 rounded md:rounded-full bg-cover mr-2"
+              class="w-8 h-8 rounded md:rounded-full bg-cover"
             />
-            <span v-else class="w-8 h-8 mr-2 hidden md:flex">&nbsp;</span>
+            <span v-else class="w-8 h-8 hidden md:flex">&nbsp;</span>
           </span>
-          <span
-            class="hover:text-primary cursor-pointer"
-            @click.stop="setCurrentItem(slotProps.item)"
-          >
-            {{ slotProps.item.name }}</span
-          >
+          <span> {{ slotProps.item.name }}</span>
           <span class="badge-gray">{{ slotProps.item.abbr }}</span>
         </p>
 

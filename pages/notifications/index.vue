@@ -5,6 +5,7 @@
       which="notifications"
       :hide-new-button="true"
       @hovered="hovered = $event"
+      @clicked="setCurrentItem($event)"
     >
       <template v-slot:title>Notifications</template>
       <template v-slot:button
@@ -32,13 +33,12 @@
           <i> {{ slotProps.item.author.email }}</i>
         </p>
         <p
-          class="w-full md:w-6/12 mb-1 md:mb-0 hover:text-primary cursor-pointer"
+          class="w-full md:w-6/12 mb-1 md:mb-0"
           :class="
             slotProps.item.flags.includes('READ')
               ? 'text-gray-500'
               : 'text-gray-800'
           "
-          @click.stop="setCurrentItem(slotProps.item)"
         >
           {{ slotProps.item.subject }}
         </p>
@@ -54,21 +54,11 @@
         </p>
       </template>
       <template v-slot:popup-menu="slotProps">
-        <span
-          :class="hovered === slotProps.item.code ? 'flex' : 'flex md:hidden'"
-          class="items-center"
-        >
-          <button
-            class="btn-link-rounded"
-            @click.stop="setCurrentItem(slotProps.item)"
-          >
-            <i
-              v-if="slotProps.item.flags.includes('READ')"
-              class="far fa-envelope-open fa-fw"
-            ></i
-            ><i v-else class="far fa-envelope fa-fw"></i>
-          </button>
-        </span>
+        <i
+          v-if="slotProps.item.flags.includes('READ')"
+          class="far fa-envelope-open fa-fw text-gray-400"
+        ></i
+        ><i v-else class="far fa-envelope fa-fw text-gray-600"></i>
       </template>
     </display-table-component>
     <transition name="fade">

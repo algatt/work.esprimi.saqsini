@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-full flex flex-wrap justify-between items-center h-auto bg-gray-100 py-3 px-2 mb-2 border-b border-gray-200 shadow-sm"
+    class="w-full flex flex-wrap justify-between items-center h-auto bg-gray-100 py-3 px-2 mb-2 border-b border-gray-50"
   >
     <h6
       class="w-full md:w-auto text-lg font-semibold"

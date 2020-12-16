@@ -10,7 +10,7 @@
           :disabled="!!disableNewButton"
           @click="setCurrentItem({ code: -1 })"
         >
-          New
+          New {{ newText }}
         </button></template
       ></top-header-bar
     >
@@ -34,6 +34,7 @@
           :key="item.code"
           :item="item"
           @hovered="$emit('hovered', $event)"
+          @clicked="$emit('clicked', $event)"
         >
           <template v-slot:content>
             <slot name="content" :item="item"></slot>
@@ -67,6 +68,10 @@ export default {
     which: {
       type: String,
       required: true,
+    },
+    newText: {
+      type: String,
+      required: false,
     },
     disableNewButton: {
       type: Boolean,

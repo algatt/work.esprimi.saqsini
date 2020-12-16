@@ -3,7 +3,9 @@
     <display-table-component
       :items="departments"
       which="departments"
+      new-text="Department"
       @hovered="hovered = $event"
+      @clicked="setCurrentItem($event)"
     >
       <template v-slot:title>Departments</template>
       <template v-slot:titleContent>
@@ -12,12 +14,9 @@
       <template v-slot:titleContentSmall>Departments</template>
       <template v-slot:content="slotProps"
         ><div class="w-full flex items-center">
-          <p
-            class="hover:text-primary cursor-pointer"
-            @click.stop="setCurrentItem(slotProps.item)"
-          >
+          <span>
             {{ slotProps.item.name }}
-          </p>
+          </span>
           <span class="badge-gray">{{ slotProps.item.abbr }}</span>
         </div>
       </template>

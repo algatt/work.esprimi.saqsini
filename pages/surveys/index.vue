@@ -3,8 +3,10 @@
     <display-table-component
       :items="surveys"
       which="surveys"
+      new-text="Survey"
       :disable-new-button="disableNewButton"
       @hovered="hovered = $event"
+      @clicked="setCurrentItem($event)"
     >
       <template v-slot:sideNav>
         <side-tree-nav
@@ -31,8 +33,7 @@
 
       <template v-slot:content="slotProps">
         <p
-          class="w-8/12 md:w-4/12 flex items-center justify-between md:justify-start mb-1 md:mb-0 cursor-pointer hover:text-primary"
-          @click.stop="setCurrentItem(slotProps.item)"
+          class="w-8/12 md:w-4/12 flex items-center justify-between md:justify-start mb-1 md:mb-0"
         >
           {{ slotProps.item.name }}
         </p>
@@ -54,6 +55,7 @@
         >
           <nuxt-link
             :to="{ name: 'questions-id', params: { id: slotProps.item.code } }"
+            @click.stop.native
           >
             <button class="btn-table">
               {{ slotProps.item.questions }}

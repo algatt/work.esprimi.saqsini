@@ -3,9 +3,10 @@
     <display-table-component
       :items="contacts"
       which="contacts"
+      new-text="Contact"
       @hovered="hovered = $event"
+      @clicked="setCurrentItem($event)"
     >
-      <template v-slot:title>Contacts</template>
       <template v-slot:button
         ><nuxt-link :to="{ name: 'contacts-roles' }">
           <button class="btn-primary px-5 mr-3">Roles</button></nuxt-link
@@ -20,10 +21,7 @@
       </template>
       <template v-slot:titleContentSmall>Contacts</template>
       <template v-slot:content="slotProps"
-        ><p
-          class="w-full md:w-4/12 mb-1 md:mb-0 cursor-pointer hover:text-primary"
-          @click.stop="setCurrentItem(slotProps.item)"
-        >
+        ><p class="w-full md:w-4/12 mb-1 md:mb-0">
           {{ slotProps.item.displayName }}
         </p>
         <p class="w-full md:w-2/12 mb-1 md:mb-0">

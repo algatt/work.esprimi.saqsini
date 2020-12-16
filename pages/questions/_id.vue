@@ -1,6 +1,8 @@
 <template>
   <div v-if="!loading" class="flex flex-col flex-wrap">
-    <div class="flex md:hidden items-center justify-between mb-3 px-1">
+    <div
+      class="flex md:hidden items-center justify-between px-2 py-2 bg-gray-100"
+    >
       <h6>{{ survey.name }}</h6>
       <p>{{ survey.referenceDate }}</p>
     </div>
@@ -13,16 +15,14 @@
         <button
           v-for="menuOption in menu"
           :key="menuOption.code"
-          class="flex-grow md:flex md:justify-center md:w-24 font-semibold hover:text-primary transition duration-300 focus:outline-none"
-          :class="selectedMenu === menuOption.code ? 'text-primary' : null"
+          class="flex-grow items-center md:flex md:justify-center md:w-44 font-semibold hover:text-primary transition duration-300 focus:outline-none"
+          :class="
+            selectedMenu === menuOption.code ? 'text-primary' : 'text-gray-600'
+          "
           @click="selectMenu(menuOption.code)"
         >
+          <i class="mr-2" :class="menuOption.icon" :title="menuOption.text"></i>
           <span class="hidden md:block">{{ menuOption.text }}</span>
-          <i
-            class="block md:hidden"
-            :class="menuOption.icon"
-            :title="menuOption.text"
-          ></i>
         </button>
       </div>
       <div class="hidden md:flex items-center space-x-2">

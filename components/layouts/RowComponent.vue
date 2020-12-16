@@ -1,17 +1,39 @@
 <template>
   <div
-    class="flex pl-1 pr-2 md:px-4 py-3 md:py-2 transition duration-500 border-b border-gray-200 hover:bg-gray-50 items-center focus:bg-white h-auto md:h-14 cursor-default"
+    class="flex pl-1 pr-2 md:px-4 py-3 md:py-2 transition duration-500 border-b border-gray-200 hover:bg-gray-50 items-center focus:bg-white h-auto md:h-14 cursor-pointer"
     :class="existsInSelectedItems ? 'bg-gray-100 ' : null"
-    @click="selectItem(item)"
-    @mouseover="$emit('hovered', item.code)"
-    @mouseleave="$emit('hovered', null)"
+    @mouseover="mouseOverDiv(item)"
+    @mouseleave="mouseExitDiv"
+    @click="$emit('clicked', item)"
   >
-    <span class="hidden md:flex w-8 justify-center text-primary items-center">
+    <button
+      class="hidden md:flex w-12 justify-center items-center cursor-pointer focus:outline-none"
+      @click.stop="selectItem(item)"
+    >
+      <span>
+        <i
+          class="fas fa-check-circle fa-fw transition duration-300"
+          :class="
+            existsInSelectedItems
+              ? 'text-primary'
+              : isHovered
+              ? 'text-gray-200'
+              : 'text-transparent'
+          "
+        >
+        </i>
+      </span>
+    </button>
+    <button
+      class="flex md:hidden w-12 justify-center items-center cursor-pointer focus:outline-none"
+      @click="selectItem(item)"
+    >
       <i
-        class="fas fa-check-circle"
-        :class="existsInSelectedItems ? 'visible' : 'invisible'"
+        class="fas fa-check-circle fa-fw transition duration-300"
+        :class="existsInSelectedItems ? 'text-primary' : 'text-gray-200'"
       ></i>
-    </span>
+    </button>
+
     <span class="flex flex-wrap flex-grow items-center">
       <slot name="content"></slot
     ></span>
@@ -30,6 +52,11 @@ export default {
       type: Object,
     },
   },
+  data() {
+    return {
+      isHovered: false,
+    }
+  },
   computed: {
     selectedItems() {
       return this.$store.state.selectedItems
@@ -40,10 +67,17 @@ export default {
       })
     },
   },
-
   methods: {
     selectItem(item) {
       this.$store.dispatch('selectedItemsManage', item)
+    },
+    mouseOverDiv(item) {
+      this.isHovered = true
+      this.$emit('hovered', item.code)
+    },
+    mouseExitDiv() {
+      this.isHovered = false
+      this.$emit('hovered', null)
     },
   },
 }

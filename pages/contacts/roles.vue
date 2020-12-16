@@ -3,21 +3,19 @@
     <display-table-component
       :items="roles"
       which="roles"
+      new-text="Role"
       @hovered="hovered = $event"
+      @clicked="setCurrentItem($event)"
     >
-      <template v-slot:title>Roles</template>
       <template v-slot:titleContent>
         <p class="w-full">Role</p>
       </template>
       <template v-slot:titleContentSmall>Roles</template>
       <template v-slot:content="slotProps"
         ><div class="w-full flex items-center">
-          <p
-            class="cursor-pointer hover:text-primary"
-            @click.stop="setCurrentItem(slotProps.item)"
-          >
+          <span>
             {{ slotProps.item.name }}
-          </p>
+          </span>
           <span class="badge-gray">{{ slotProps.item.abbr }}</span>
         </div>
       </template>

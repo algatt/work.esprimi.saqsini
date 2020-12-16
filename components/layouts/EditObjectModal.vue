@@ -1,7 +1,7 @@
 <template>
   <div class="frosted p-0 md:p-8" @click.stop="cancelCurrentItem">
     <div
-      class="check-height w-full self-start h-screen md:h-auto md:w-6/12 mx-auto flex flex-col bg-white relative rounded-none md:rounded-lg border border-gray-100 shadow-md"
+      class="check-height w-full self-start h-screen md:h-auto md:w-6/12 mx-auto flex flex-col bg-white relative rounded-none md:rounded-lg md:border md:border-gray-100 shadow-md"
       @click.stop
     >
       <div

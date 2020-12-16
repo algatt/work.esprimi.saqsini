@@ -5,6 +5,7 @@
       :disable-new-button="disableNewButton"
       which="jobs"
       @hovered="hovered = $event"
+      @clicked="setCurrentItem($event)"
     >
       <template v-slot:title
         >Job History for
