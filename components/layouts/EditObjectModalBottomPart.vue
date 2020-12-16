@@ -1,37 +1,35 @@
 <template>
-  <div
-    class="flex flex-wrap absolute bottom-0 left-0 w-full px-5 pb-3 h-16 justify-between items-center"
-  >
+  <div class="flex flex-wrap w-full justify-between items-center py-8">
     <div class="flex flex-wrap items-center w-6/12">
-      <button class="btn-round-primary mr-2" @click="cancelCurrentItem">
-        <i class="fas fa-times fa-fw"></i>
+      <button class="btn-primary mr-2" @click="cancelCurrentItem">
+        Cancel
       </button>
       <button
         v-if="showDelete && form.code !== -1"
-        class="btn-round-danger mr-2"
+        class="btn-danger mr-2"
         :disabled="form.code === -1"
         @click="deleteItem"
       >
-        <i class="far fa-trash-alt fa-fw"></i>
+        Delete
       </button>
       <button
         v-if="false"
-        class="btn-round-danger mr-2"
+        class="btn-danger mr-2"
         :disabled="form.code === -1"
         @click="deleteItem"
       >
-        <i class="far fa-trash-alt fa-fw"></i>
+        Delete
       </button>
     </div>
 
     <div class="flex flex-wrap items-center w-6/12 justify-end">
       <button
         v-if="showSave"
-        class="btn-round-primary mr-2"
+        class="btn-primary"
         :disabled="!isValid"
         @click="saveItem"
       >
-        <i class="fas fa-save fa-fw"></i>
+        Save
       </button>
     </div>
   </div>

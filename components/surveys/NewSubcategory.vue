@@ -1,33 +1,40 @@
 <template>
-  <div class="flex flex-col w-full md:w-10/12">
-    <label for="inputSector" class="label-required">Sector</label>
-    <select id="inputSector" v-model="form.categoryCode" class="input select">
-      <option
-        v-for="category in categories"
-        :key="category.code"
-        :value="category.code"
+  <div class="flex flex-col w-full space-y-5">
+    <div class="flex flex-col">
+      <label for="inputCategory" class="label">Category</label>
+      <select
+        id="inputCategory"
+        v-model="form.categoryCode"
+        class="input select"
       >
-        {{ category.name }}
-      </option>
-    </select>
-    <span>&nbsp;</span>
+        <option
+          v-for="category in categories"
+          :key="category.code"
+          :value="category.code"
+        >
+          {{ category.name }}
+        </option>
+      </select>
+    </div>
 
-    <label for="inputName" class="label-required">Subcategory</label>
-    <input
-      id="inputName"
-      v-model="form.name"
-      placeholder="Enter subcategory name"
-      class="input"
-      @change="$v.form.name.$touch()"
-    />
-    <span v-if="!$v.form.name.$error">&nbsp;</span>
-    <span v-else>
-      <span v-if="!$v.form.name.required" class="error"
-        >The name is required.</span
-      ><span v-else-if="!$v.form.name.uniqueNames" class="error"
-        >This subcategory already exists.</span
-      ></span
-    >
+    <div class="flex flex-col">
+      <div class="flex items-center">
+        <label for="inputName" class="label">Subcategory</label>
+        <span v-if="$v.form.name.$error">
+          <span v-if="!$v.form.name.required" class="error">required</span
+          ><span v-else-if="!$v.form.name.uniqueNames" class="error"
+            >this subcategory already exists</span
+          ></span
+        >
+      </div>
+      <input
+        id="inputName"
+        v-model="form.name"
+        placeholder="Enter subcategory name"
+        class="input"
+        @change="$v.form.name.$touch()"
+      />
+    </div>
 
     <edit-object-modal-bottom-part
       :form="form"

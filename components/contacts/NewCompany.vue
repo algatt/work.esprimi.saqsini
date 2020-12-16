@@ -1,87 +1,107 @@
 <template>
-  <div class="flex flex-col w-full md:w-10/12">
-    <label for="inputSector" class="label-required">Sector</label>
-    <select
-      id="inputSector"
-      v-model="sectorCode"
-      class="input select"
-      @change="form.industryCode = industries[0].code"
-    >
-      <option v-for="sector in sectors" :key="sector.code" :value="sector.code">
-        {{ sector.name }}
-      </option>
-    </select>
-    <span>&nbsp;</span>
-
-    <label for="inputIndustry" class="label-required">Industry</label>
-    <select id="inputIndustry" v-model="form.industryCode" class="input select">
-      <option
-        v-for="industry in industries"
-        :key="industry.code"
-        :value="industry.code"
+  <div class="flex flex-col w-full space-y-5">
+    <div class="flex flex-col">
+      <label for="inputSector" class="label">Sector</label>
+      <select
+        id="inputSector"
+        v-model="sectorCode"
+        class="input select"
+        @change="form.industryCode = industries[0].code"
       >
-        {{ industry.name }}
-      </option>
-    </select>
-    <span>&nbsp;</span>
-
-    <label for="inputName" class="label-required">Name</label>
-    <input
-      id="inputName"
-      v-model="form.name"
-      placeholder="Enter company name"
-      class="input"
-      @change="$v.form.name.$touch()"
-    />
-    <span v-if="!$v.form.name.$error">&nbsp;</span>
-    <span v-else>
-      <span v-if="!$v.form.name.required" class="error"
-        >The name is required.</span
-      ></span
-    >
-
-    <label for="inputAbbr" class="label-required">Abbreviation</label>
-    <input
-      id="inputAbbr"
-      v-model="form.abbr"
-      placeholder="Enter abbreviation"
-      class="input"
-      @change="$v.form.abbr.$touch()"
-    />
-    <span v-if="!$v.form.abbr.$error">&nbsp;</span>
-    <span v-else>
-      <span v-if="!$v.form.abbr.required" class="error"
-        >The name is required.</span
-      >
-    </span>
-
-    <label for="inputSize" class="label">Company Size</label>
-    <input
-      id="inputSize"
-      v-model="form.size"
-      placeholder="Enter company size"
-      class="input"
-      @change="$v.form.size.$touch()"
-    />
-    <span v-if="!$v.form.size.$error">&nbsp;</span>
-    <span v-else>
-      <span v-if="!$v.form.size.numeric" class="error"
-        >The company size must be a number.</span
-      >
-    </span>
-
-    <label for="inputLogo" class="label">Company Logo</label>
-    <input id="inputLogo" type="file" hidden @change="updateLogo" />
-    <div class="flex justify-start items-center mb-10">
-      <button
-        class="text-primary focus:outline-none hover:text-primary-darker h-24 w-24"
-        @click="activateInput"
-      >
-        <img v-if="form.logo" :src="form.logo" class="rounded bg-cover" />
-        <i v-else class="far fa-image fa-fw fa-3x"></i>
-      </button>
+        <option
+          v-for="sector in sectors"
+          :key="sector.code"
+          :value="sector.code"
+        >
+          {{ sector.name }}
+        </option>
+      </select>
     </div>
-    <span>&nbsp;</span>
+
+    <div class="flex flex-col">
+      <label for="inputIndustry" class="label-optional">Industry</label>
+      <select
+        id="inputIndustry"
+        v-model="form.industryCode"
+        class="input select"
+      >
+        <option
+          v-for="industry in industries"
+          :key="industry.code"
+          :value="industry.code"
+        >
+          {{ industry.name }}
+        </option>
+      </select>
+    </div>
+
+    <div class="flex flex-col">
+      <div class="flex items-center">
+        <label for="inputName" class="label">Name</label>
+        <span v-if="$v.form.name.$error">
+          <span v-if="!$v.form.name.required" class="error"
+            >required</span
+          ></span
+        >
+      </div>
+      <input
+        id="inputName"
+        v-model="form.name"
+        placeholder="Enter company name"
+        class="input"
+        @change="$v.form.name.$touch()"
+      />
+    </div>
+
+    <div class="flex flex-col">
+      <div class="flex items-center">
+        <label for="inputAbbr" class="label">Abbreviation</label>
+        <span v-if="$v.form.abbr.$error">
+          <span v-if="!$v.form.abbr.required" class="error"
+            >The name is required.</span
+          >
+        </span>
+      </div>
+      <input
+        id="inputAbbr"
+        v-model="form.abbr"
+        placeholder="Enter abbreviation"
+        class="input"
+        @change="$v.form.abbr.$touch()"
+      />
+    </div>
+
+    <div class="flex flex-col">
+      <div class="flex items-center">
+        <label for="inputSize" class="label">Company Size</label>
+        <span v-if="$v.form.size.$error">
+          <span v-if="!$v.form.size.numeric" class="error"
+            >the company size must be a number</span
+          >
+        </span>
+      </div>
+      <input
+        id="inputSize"
+        v-model="form.size"
+        placeholder="Enter company size"
+        class="input"
+        @change="$v.form.size.$touch()"
+      />
+    </div>
+
+    <div class="flex flex-col">
+      <label for="inputLogo" class="label">Company Logo</label>
+      <input id="inputLogo" type="file" hidden @change="updateLogo" />
+      <div class="flex justify-start items-center">
+        <button
+          class="text-primary focus:outline-none hover:text-primary-darker h-24 w-24"
+          @click="activateInput"
+        >
+          <img v-if="form.logo" :src="form.logo" class="rounded bg-cover" />
+          <i v-else class="far fa-image fa-fw fa-3x"></i>
+        </button>
+      </div>
+    </div>
 
     <edit-object-modal-bottom-part
       :form="form"

@@ -1,9 +1,9 @@
 <template>
   <div
-    class="w-full flex flex-wrap justify-between items-center h-auto md:h-10 mb-3"
+    class="w-full flex flex-wrap justify-between items-center h-auto bg-gray-100 py-3 px-2 mb-2 border-b border-gray-200 shadow-sm"
   >
     <h6
-      class="w-full md:w-auto text-lg"
+      class="w-full md:w-auto text-lg font-semibold"
       :class="hasSideNav ? 'pl-0' : 'pl-0 md:pl-3'"
     >
       <slot name="title"> </slot>

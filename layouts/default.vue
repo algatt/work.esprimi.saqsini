@@ -14,7 +14,7 @@
       :is-visible="menuShow"
     ></nav-bar>
 
-    <div class="px-3 pt-3 pb-1 w-full flex flex-col">
+    <div class="flex flex-col flex-grow">
       <Nuxt />
     </div>
   </div>

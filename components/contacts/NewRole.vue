@@ -1,39 +1,42 @@
 <template>
-  <div class="flex flex-col w-full md:w-10/12">
-    <label for="inputName" class="label-required">Name</label>
-    <input
-      id="inputName"
-      v-model="form.name"
-      placeholder="Enter role name"
-      class="input"
-      @change="$v.form.name.$touch()"
-    />
-    <span v-if="!$v.form.name.$error">&nbsp;</span>
-    <span v-else>
-      <span v-if="!$v.form.name.required" class="error"
-        >The name is required.</span
-      ><span v-else-if="!$v.form.name.uniqueNames" class="error"
-        >This role already exists.</span
-      ></span
-    >
+  <div class="flex flex-col w-full space-y-5">
+    <div class="flex flex-col">
+      <div class="flex items-center">
+        <label for="inputName" class="label">Name</label>
+        <span v-if="$v.form.name.$error">
+          <span v-if="!$v.form.name.required" class="error">required</span
+          ><span v-else-if="!$v.form.name.uniqueNames" class="error"
+            >this role already exists</span
+          ></span
+        >
+      </div>
+      <input
+        id="inputName"
+        v-model="form.name"
+        placeholder="Enter role name"
+        class="input"
+        @change="$v.form.name.$touch()"
+      />
+    </div>
 
-    <label for="inputAbbr" class="label-required">Abbreviation</label>
-    <input
-      id="inputAbbr"
-      v-model="form.abbr"
-      placeholder="Enter abbreviation"
-      class="input"
-      @change="$v.form.abbr.$touch()"
-    />
-    <span v-if="!$v.form.abbr.$error">&nbsp;</span>
-    <span v-else>
-      <span v-if="!$v.form.abbr.required" class="error"
-        >The name is required.</span
-      >
-      <span v-else-if="!$v.form.abbr.uniqueAbbr" class="error"
-        >This abbreviation already exists.</span
-      ></span
-    >
+    <div class="flex flex-col">
+      <div class="flex items-center">
+        <label for="inputAbbr" class="label">Abbreviation</label>
+        <span v-if="$v.form.abbr.$error">
+          <span v-if="!$v.form.abbr.required" class="error">required</span>
+          <span v-else-if="!$v.form.abbr.uniqueAbbr" class="error"
+            >this abbreviation already exists</span
+          ></span
+        >
+      </div>
+      <input
+        id="inputAbbr"
+        v-model="form.abbr"
+        placeholder="Enter abbreviation"
+        class="input"
+        @change="$v.form.abbr.$touch()"
+      />
+    </div>
 
     <edit-object-modal-bottom-part
       :form="form"

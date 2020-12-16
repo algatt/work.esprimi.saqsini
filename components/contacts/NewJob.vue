@@ -1,101 +1,102 @@
 <template>
-  <div class="flex flex-col w-full h-screen md:w-10/12">
-    <label for="inputCompany" class="label-required">Company</label>
-    <select
-      id="inputCompany"
-      v-model="form.companyCode"
-      class="input select"
-      @change="
-        updateDepartments()
-        form.departmentCode = null
-      "
-    >
-      <option
-        v-for="company in companies"
-        :key="company.code"
-        :value="company.code"
-        @click="form.companyName = company.name"
+  <div class="flex flex-col w-full space-y-5">
+    <div class="flex flex-col">
+      <label for="inputCompany" class="label">Company</label>
+      <select
+        id="inputCompany"
+        v-model="form.companyCode"
+        class="input select"
+        @change="
+          updateDepartments()
+          form.departmentCode = null
+        "
       >
-        {{ company.name }}
-      </option>
-    </select>
-    <span>&nbsp;</span>
+        <option
+          v-for="company in companies"
+          :key="company.code"
+          :value="company.code"
+          @click="form.companyName = company.name"
+        >
+          {{ company.name }}
+        </option>
+      </select>
+    </div>
 
-    <label for="inputDepartment" class="label-required">Department</label>
-    <select
-      id="inputDepartment"
-      v-model="form.departmentCode"
-      class="input select"
-    >
-      <option
-        v-for="department in departments"
-        :key="department.code"
-        :value="department.code"
-        @click="form.departmentName = department.name"
+    <div class="flex flex-col">
+      <label for="inputDepartment" class="label">Department</label>
+      <select
+        id="inputDepartment"
+        v-model="form.departmentCode"
+        class="input select"
       >
-        {{ department.name }}
-      </option>
-    </select>
-    <span>&nbsp;</span>
+        <option
+          v-for="department in departments"
+          :key="department.code"
+          :value="department.code"
+          @click="form.departmentName = department.name"
+        >
+          {{ department.name }}
+        </option>
+      </select>
+    </div>
 
-    <label for="inputRole" class="label-required">Role</label>
-    <select id="inputRole" v-model="form.roleCode" class="input select">
-      <option
-        v-for="role in roles"
-        :key="role.code"
-        :value="role.code"
-        @click="form.roleName = role.name"
+    <div class="flex flex-col">
+      <label for="inputRole" class="label">Role</label>
+      <select id="inputRole" v-model="form.roleCode" class="input select">
+        <option
+          v-for="role in roles"
+          :key="role.code"
+          :value="role.code"
+          @click="form.roleName = role.name"
+        >
+          {{ role.name }}
+        </option>
+      </select>
+    </div>
+
+    <div class="flex flex-col">
+      <div class="flex items-center">
+        <label for="inputEmail" class="label">Email</label>
+        <span v-if="$v.form.email.$error">
+          <span v-if="!$v.form.email.email" class="error"
+            >Invalid email format.</span
+          ></span
+        >
+      </div>
+      <input
+        id="inputEmail"
+        v-model="form.email"
+        placeholder="Enter email address"
+        class="input"
+        @change="$v.form.email.$touch()"
+      />
+    </div>
+
+    <div class="flex flex-col">
+      <div class="flex items-center">
+        <label for="inputPhone" class="label">Phone</label>
+        <span v-if="!isPhoneValid" class="error">invalid phone</span>
+      </div>
+      <vue-tel-input
+        id="inputPhone"
+        v-model="phoneNumber"
+        class="border-2 border-gray-300 rounded-sm py-1 focus:bg-gray-100 focus:border-primary transition duration-500 ring-offset-2 focus:outline-none"
+        @validate="validatePhone"
+      />
+    </div>
+
+    <div class="flex items-center">
+      <toggle-switch :checked="form.isActive" @clicked="form.isActive = $event">
+        <template v-slot:leftLabel>Not Active</template>
+        <template v-slot:rightLabel>Active</template>
+      </toggle-switch>
+      <popup-info
+        ><template v-slot:text
+          >Determines if employee is still active in this position or
+          not.</template
+        ></popup-info
       >
-        {{ role.name }}
-      </option>
-    </select>
-    <span>&nbsp;</span>
-
-    <label for="inputEmail" class="label">Email</label>
-    <input
-      id="inputEmail"
-      v-model="form.email"
-      placeholder="Enter email address"
-      class="input"
-      @change="$v.form.email.$touch()"
-    />
-    <span v-if="!$v.form.email.$error">&nbsp;</span>
-    <span v-else>
-      <span v-if="!$v.form.email.email" class="error"
-        >Invalid email format.</span
-      ></span
-    >
-
-    <label for="inputPhone" class="label">Phone</label>
-    <vue-tel-input
-      id="inputPhone"
-      v-model="phoneNumber"
-      class="border-2 border-gray-300 rounded-sm py-1 focus:bg-gray-100 focus:border-primary transition duration-500 ring-offset-2 focus:outline-none"
-      @validate="validatePhone"
-    />
-    <span v-if="isPhoneValid">&nbsp;</span>
-    <span v-else class="error">Invalid phone</span>
-
-    <toggle-switch :checked="form.isActive" @clicked="form.isActive = $event">
-      <template v-slot:leftLabel>Not Active</template>
-      <template v-slot:rightLabel>Active</template>
-    </toggle-switch>
-    <!--    <label class="label" for="inputActive"-->
-    <!--      >Currently Active in this Position</label-->
-    <!--    >-->
-    <!--    <div class="flex space-x-2 items-center">-->
-    <!--      <p class="text-sm">No</p>-->
-    <!--      <input-->
-    <!--        id="inputActive"-->
-    <!--        v-model="form.isActive"-->
-    <!--        type="checkbox"-->
-    <!--        class="checkbox"-->
-    <!--      /><label for="inputActive" class="switch"></label>-->
-    <!--      <p class="text-sm">Yes</p>-->
-    <!--    </div>-->
-
-    <span v-if="isPhoneValid">&nbsp;</span>
-    <span v-else class="error">Invalid phone</span>
+    </div>
 
     <edit-object-modal-bottom-part
       :form="form"
@@ -110,10 +111,11 @@ import { validationMixin } from 'vuelidate'
 import { email, required } from 'vuelidate/lib/validators'
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
 import ToggleSwitch from '~/components/layouts/ToggleSwitch'
+import PopupInfo from '~/components/layouts/PopupInfo'
 
 export default {
   name: 'NewJob',
-  components: { ToggleSwitch, EditObjectModalBottomPart },
+  components: { PopupInfo, ToggleSwitch, EditObjectModalBottomPart },
   mixins: [validationMixin],
 
   data() {

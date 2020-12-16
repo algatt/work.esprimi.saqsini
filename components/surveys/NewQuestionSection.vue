@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col w-full pb-32">
-    <label for="inputName" class="label-required">Name</label>
+    <label for="inputName" class="label-optional">Name</label>
     <input
       id="inputName"
       v-model="form.name"
@@ -15,7 +15,7 @@
       >
     </span>
 
-    <label for="inputText" class="label-required">Text</label>
+    <label for="inputText" class="label-optional">Text</label>
     <input
       id="inputText"
       v-model="form.text"

@@ -156,13 +156,13 @@ h5 {
     transform: translateX(0px);
   }
   100% {
-    transform: translateX(-127px);
+    transform: translateX(-110px);
   }
 }
 
 @keyframes moveRight {
   0% {
-    transform: translateX(-127px);
+    transform: translateX(-110px);
   }
   100% {
     transform: translateX(0px);
