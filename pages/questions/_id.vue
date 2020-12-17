@@ -39,23 +39,19 @@
       >
         <div
           v-if="!showPreview"
-          class="border shadow p-5 rounded w-full md:w-8/12 mx-auto flex items-center"
-          :class="
-            question.flags.includes('SECTION')
-              ? 'border-primary'
-              : 'border-gray-100'
-          "
+          class="border border-gray-100 shadow rounded w-full mx-auto flex items-center"
         >
-          <span v-if="question.questionNumber !== 0"
-            >{{ question.questionNumber }} - </span
-          ><span
-            :class="
-              question.flags.includes('SECTION')
-                ? 'text-primary font-bold'
-                : null
-            "
-            >{{ question.name }}</span
+          <div
+            class="w-12 bg-primary flex justify-center items-center p-5 text-white text-lg rounded-l"
           >
+            {{ question.ordinalPosition }}
+          </div>
+          <div class="flex items-center flex-grow p-5">{{ question.name }}</div>
+          <div
+            class="w-12 flex justify-center items-center p-5 text-gray-300 rounded-r"
+          >
+            <i class="fa-fw" :class="questionIcon(question)"></i>
+          </div>
         </div>
         <display-question
           v-else
@@ -137,7 +133,7 @@
     ></question-move-menu>
 
     <div class="fixed bottom-0 right-0 mr-5 mb-5 z-10">
-      <button class="btn-round-primary" @click="showPreview = !showPreview">
+      <button class="btn-round-primary" @click="showPreviewToggle">
         <i v-if="!showPreview" class="fas fa-eye fa-fw"></i>
         <i v-else class="fas fa-eye-slash fa-fw"></i>
       </button>
@@ -147,10 +143,14 @@
 </template>
 
 <script>
+import cookies from 'js-cookie'
 import Spinner from '~/components/layouts/Spinner'
 import DisplayQuestion from '~/components/surveys/DisplayQuestion'
 import NewQuestionToolbar from '~/components/surveys/NewQuestionToolBar'
-import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
+import {
+  getQuestionType,
+  parseSurveyToForm,
+} from '~/helpers/parseSurveyObjects'
 import NewQuestion from '~/components/surveys/NewQuestion'
 import EditObjectModal from '~/components/layouts/EditObjectModal'
 import SurveySettings from '~/components/surveys/SurveySettings'
@@ -158,6 +158,7 @@ import PreviewSurveyModal from '~/components/surveys/PreviewSurveyModal'
 import SurveyLanguageSettings from '~/components/surveys/SurveyLanguageSettings'
 import QuestionMoveMenu from '~/components/surveys/QuestionMoveMenu'
 import SurveyCollaborators from '~/components/surveys/SurveyCollaborators'
+import { QUESTION_TYPES } from '~/helpers/constants'
 
 export default {
   name: 'QuestionList',
@@ -183,7 +184,7 @@ export default {
         { code: 5, text: 'Collaborators', icon: 'fas fa-users' },
       ],
       selectedMenu: 1,
-      showPreview: true,
+      showPreview: null,
       whichSubMenu: null,
       showMoveMenu: null,
     }
@@ -217,10 +218,14 @@ export default {
       this.$store.dispatch('setLoading', false)
     })
   },
+  mounted() {
+    this.showPreview = cookies.get('questionPreviewMode') === 'true'
+  },
   methods: {
     newQuestion(flag, ordinalPosition) {
       this.$store.dispatch('setCurrentItemToBeEdited', {
         code: -1,
+        questionNumber: ordinalPosition,
         surveyCode: Number(this.$route.params.id),
         flags: [flag],
         ordinalPosition,
@@ -245,6 +250,13 @@ export default {
     },
     changeSubMenu(code) {
       this.whichSubMenu = code
+    },
+    questionIcon(question) {
+      return QUESTION_TYPES[getQuestionType(question)].icon
+    },
+    showPreviewToggle() {
+      this.showPreview = !this.showPreview
+      cookies.set('questionPreviewMode', this.showPreview)
     },
   },
 }

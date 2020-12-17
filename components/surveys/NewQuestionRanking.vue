@@ -1,28 +1,28 @@
 <template>
   <div class="flex flex-col w-full space-y-5">
-    <div class="flex flex-col">
-      <div class="flex items-center">
-        <label for="inputNumber" class="label">Number</label>
-        <span v-if="$v.form.questionNumber.$error">
-          <span v-if="!$v.form.questionNumber.required" class="error"
-            >required</span
-          >
-          <span v-else-if="!$v.form.questionNumber.numeric" class="error"
-            >must be a number</span
-          >
-        </span>
-        <popup-info
-          ><template v-slot:text>{{ infoNumber }}</template></popup-info
-        >
-      </div>
-      <input
-        id="inputNumber"
-        v-model="form.questionNumber"
-        placeholder="Enter question number"
-        class="input"
-        @change="$v.form.questionNumber.$touch()"
-      />
-    </div>
+    <!--    <div class="flex flex-col">-->
+    <!--      <div class="flex items-center">-->
+    <!--        <label for="inputNumber" class="label">Number</label>-->
+    <!--        <span v-if="$v.form.questionNumber.$error">-->
+    <!--          <span v-if="!$v.form.questionNumber.required" class="error"-->
+    <!--            >required</span-->
+    <!--          >-->
+    <!--          <span v-else-if="!$v.form.questionNumber.numeric" class="error"-->
+    <!--            >must be a number</span-->
+    <!--          >-->
+    <!--        </span>-->
+    <!--        <popup-info-->
+    <!--          ><template v-slot:text>{{ infoNumber }}</template></popup-info-->
+    <!--        >-->
+    <!--      </div>-->
+    <!--      <input-->
+    <!--        id="inputNumber"-->
+    <!--        v-model="form.questionNumber"-->
+    <!--        placeholder="Enter question number"-->
+    <!--        class="input"-->
+    <!--        @change="$v.form.questionNumber.$touch()"-->
+    <!--      />-->
+    <!--    </div>-->
 
     <div class="flex flex-col">
       <div class="flex items-center">

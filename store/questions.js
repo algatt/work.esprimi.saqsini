@@ -35,7 +35,10 @@ export const actions = {
       return { question: el.code, position: el.ordinalPosition }
     })
     newPositions.forEach((el) => {
-      if (el.position >= question.ordinalPosition) el.position++
+      if (el.position >= question.ordinalPosition) {
+        el.position++
+        el.questionNumber++
+      }
     })
 
     return new Promise((resolve, reject) => {
@@ -94,7 +97,8 @@ export const actions = {
           })
           let position = 1
           newPositions.forEach((el) => {
-            el.position = position++
+            el.position = position
+            el.questioNumber = position++
           })
           await dispatch('updateQuestionList', newPositions)
           resolve()
@@ -126,7 +130,6 @@ export const actions = {
 
 export const mutations = {
   updateLocalList(state, list) {
-    console.log(list)
     state.items.forEach((el) => {
       const newNumber = list.find((el2) => {
         return el2.question === el.code
@@ -134,6 +137,7 @@ export const mutations = {
 
       if (newNumber) {
         el.ordinalPosition = newNumber.position
+        el.questionNumber = newNumber.position
       }
     })
   },
