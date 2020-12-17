@@ -8,6 +8,7 @@
       @hovered="hovered = $event"
       @clicked="setCurrentItem($event)"
     >
+      <template v-slot:title>Company List</template>
       <template v-slot:sideNav>
         <side-tree-nav
           v-if="!loading"

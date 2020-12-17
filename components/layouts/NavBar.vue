@@ -4,10 +4,12 @@
       <div class="flex flex-col">
         <h5 class="h-10 py-3 mb-2">
           <span
+            v-if="isVisible"
             :class="isVisible ? 'opacity-100' : 'opacity-0'"
             class="transition-all duration-300"
             >Saqsini</span
           >
+          <span v-if="!isVisible"><i class="far fa-comments fa-fw"></i></span>
         </h5>
         <button
           v-for="(item, index) in menu"

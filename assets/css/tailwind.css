@@ -138,7 +138,7 @@ h1{
 }
 
 .label, .label-optional {
-  @apply py-2 font-medium;
+  @apply py-2 font-semibold;
 }
 
 .label-optional::after {

@@ -7,11 +7,8 @@
       @hovered="hovered = $event"
       @clicked="setCurrentItem($event)"
     >
-      <template v-slot:button
-        ><nuxt-link :to="{ name: 'contacts-roles' }">
-          <button class="btn-primary px-5 mr-3">Roles</button></nuxt-link
-        ></template
-      >
+      <template v-slot:title>Contact List</template>
+
       <template v-slot:titleContent>
         <p class="w-4/12">Name</p>
         <p class="w-2/12">Demographics</p>

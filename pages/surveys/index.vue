@@ -8,6 +8,7 @@
       @hovered="hovered = $event"
       @clicked="setCurrentItem($event)"
     >
+      <template v-slot:title>Survey List</template>
       <template v-slot:sideNav>
         <side-tree-nav
           :parents="categories"

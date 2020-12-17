@@ -1,22 +1,24 @@
 <template>
   <div class="flex flex-wrap w-full justify-between items-center py-8">
     <div class="flex flex-wrap items-center w-6/12">
-      <button
-        v-if="showDelete && form.code !== -1"
-        class="btn-danger mr-2"
-        :disabled="form.code === -1"
-        @click="deleteItem"
-      >
-        Delete
-      </button>
-      <button
-        v-if="false"
-        class="btn-danger mr-2"
-        :disabled="form.code === -1"
-        @click="deleteItem"
-      >
-        Delete
-      </button>
+      <template v-if="showDelete && form.code !== -1">
+        <button
+          v-if="form.ordinalPosition !== 1"
+          class="btn-danger mr-2"
+          :disabled="form.code === -1"
+          @click="deleteItem"
+        >
+          Delete
+        </button>
+      </template>
+      <!--      <button-->
+      <!--        v-if="false"-->
+      <!--        class="btn-danger mr-2"-->
+      <!--        :disabled="form.code === -1"-->
+      <!--        @click="deleteItem"-->
+      <!--      >-->
+      <!--        Delete-->
+      <!--      </button>-->
     </div>
 
     <div class="flex flex-wrap items-center w-6/12 justify-end">

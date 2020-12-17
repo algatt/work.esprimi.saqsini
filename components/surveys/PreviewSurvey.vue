@@ -18,16 +18,21 @@
     >
       <div class="w-full h-32 flex justify-between items-center">
         <h3
-          class="px-5 py-3 frosted-area"
+          class="px-5 py-3"
+          :class="survey.options.headerImage === '' ? null : 'frosted-area'"
           :style="{
-            color: survey.options.backgroundColour,
+            color:
+              survey.options.headerImage === ''
+                ? survey.options.textColour
+                : survey.options.backgroundColour,
           }"
         >
           {{ survey.name }}
         </h3>
 
         <popup-menu-vue
-          class="px-5 py-3 frosted-area"
+          class="px-5 py-3"
+          :class="survey.options.headerImage === '' ? null : 'frosted-area'"
           :style="{
             color: survey.options.textColour,
           }"

@@ -1,10 +1,11 @@
 <template>
-  <div v-if="!loading" class="flex flex-col ml-5 mr-auto">
-    <div class="w-full mb-3">
-      <h5 class="text-xl">Your Account</h5>
-    </div>
-    <div class="flex p-5">
-      <div class="flex-none flex flex-col w-52 items-center">
+  <div v-if="!loading" class="flex flex-wrap">
+    <top-header-bar
+      ><template v-slot:title>Your Account</template></top-header-bar
+    >
+
+    <div class="flex flex-wrap p-5 w-full md:w-6/12">
+      <div class="flex flex-col p-5 items-center w-full md:w-4/12">
         <input
           id="inputAvatar"
           type="file"
@@ -27,21 +28,67 @@
         </span>
         <button class="btn-link my-2" @click="resetImage">Clear</button>
       </div>
-      <div class="flex flex-col pl-5">
+      <div class="flex flex-col p-5 w-full md:w-8/12">
         <label for="inputName" class="label">Display Name</label>
         <input id="inputName" v-model="displayName" class="input mb-3" />
         <label for="inputEmail" class="label">Email</label>
         <input id="inputEmail" v-model="email" class="input mb-3" />
       </div>
+      <div class="flex justify-center px-1 w-full">
+        <button
+          class="btn-primary px-3"
+          :disabled="$v.$invalid"
+          @click="updateDetails"
+        >
+          Update Details
+        </button>
+      </div>
     </div>
-    <div class="flex justify-center mt-3">
-      <button
-        class="btn-primary px-3"
-        :disabled="$v.$invalid"
-        @click="updateDetails"
+    <div class="flex w-full md:w-6/12 items-center justify-center">
+      <div
+        class="w-auto flex flex-col bg-gray-100 border-2 border-gray-100 p-10 rounded shadow"
       >
-        Update Details
-      </button>
+        <button class="btn-danger px-3" @click="showConfirm = true">
+          <i class="fas fa-exclamation-triangle fa-sm fa-fw mr-2"></i>Delete
+          Account
+        </button>
+      </div>
+    </div>
+
+    <div
+      v-if="showConfirm"
+      class="fixed top-0 left-0 w-full h-full bg-gray-200 bg-opacity-75 flex items-center justify-center"
+    >
+      <div
+        class="bg-white border border-gray-200 shadow-md flex flex-col p-5 space-y-5"
+      >
+        <h5>Deleting Account</h5>
+        <p>
+          If you delete your account, all your work will be lost and cannot be
+          recovered.
+        </p>
+        <p>
+          if you are sure input your email below to confirm and press Delete.
+        </p>
+        <input
+          v-model="confirmEmail"
+          class="input"
+          placeholder="confirm your email"
+        />
+        <div class="flex justify-between w-full">
+          <button class="btn-primary px-3" @click="showConfirm = false">
+            Cancel
+          </button>
+          <button
+            class="btn-danger px-3"
+            :disabled="confirmEmail !== accountDetails.email"
+            @click="logoutUser"
+          >
+            <i class="fas fa-exclamation-triangle fa-sm fa-fw mr-2"></i>Delete
+            Account
+          </button>
+        </div>
+      </div>
     </div>
   </div>
   <spinner v-else></spinner>
@@ -51,9 +98,10 @@
 import { validationMixin } from 'vuelidate'
 import { required, email } from 'vuelidate/lib/validators'
 import Spinner from '~/components/layouts/Spinner'
+import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 export default {
   name: 'AccountDetails',
-  components: { Spinner },
+  components: { TopHeaderBar, Spinner },
   mixins: [validationMixin],
   data() {
     return {
@@ -61,6 +109,8 @@ export default {
       imageFile: '',
       displayName: '',
       email: '',
+      showConfirm: false,
+      confirmEmail: '',
     }
   },
   validations: {
@@ -99,6 +149,11 @@ export default {
   methods: {
     activateInput() {
       document.getElementById('inputAvatar').click()
+    },
+    logoutUser() {
+      this.$store.dispatch('auth/logout').then(() => {
+        this.$router.push('/login')
+      })
     },
     updateAvatar() {
       const t = this
