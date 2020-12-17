@@ -37,6 +37,10 @@
           class="w-8/12 md:w-4/12 flex items-center justify-between md:justify-start mb-1 md:mb-0"
         >
           {{ slotProps.item.name }}
+          <i
+            v-if="slotProps.item.flags.includes('FLAGGED_FOR_REMOVAL')"
+            class="fas fa-trash fa-fw text-gray-300 ml-2"
+          ></i>
         </p>
 
         <p

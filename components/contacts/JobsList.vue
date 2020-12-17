@@ -3,6 +3,7 @@
     <display-table-component
       :items="jobs"
       :disable-new-button="disableNewButton"
+      new-text="Job"
       which="jobs"
       @hovered="hovered = $event"
       @clicked="setCurrentItem($event)"

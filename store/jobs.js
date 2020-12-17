@@ -23,21 +23,42 @@ export const actions = {
     })
   },
 
-  newJob({ commit }, job) {
+  newJob({ dispatch, commit }, job) {
     delete job.code
-
-    const companyName = job.companyName
-    const departmentName = job.departmentName
-    const roleName = job.roleName
 
     return new Promise((resolve, reject) => {
       this.$axios
         .post('/contact/job/', qs.stringify(job))
-        .then((response) => {
-          response.data.companyName = companyName
-          response.data.departmentName = departmentName
-          response.data.roleName = roleName
+        .then(async (response) => {
+          if (!job.isActive) {
+            await dispatch('setPast', response.data.code)
+            response.data.flags = response.data.flags.filter((el) => {
+              return el !== 'ONGOING'
+            })
+            response.data.flags.push('PAST')
+          }
           resolve(response.data)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  setPast({ commit }, code) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .patch(
+          `/contact/job/${code}/setPast`,
+          {},
+          {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+          }
+        )
+        .then(() => {
+          resolve()
         })
         .catch((error) => {
           reject(error)

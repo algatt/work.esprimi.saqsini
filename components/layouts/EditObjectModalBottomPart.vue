@@ -71,14 +71,21 @@ export default {
   },
   mounted() {
     document.addEventListener('keydown', this.mapEscape)
+    document.addEventListener('keydown', this.mapEnter)
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.mapEscape)
+    document.removeEventListener('keydown', this.mapEnter)
   },
   methods: {
     mapEscape(key) {
       if (key.key === 'Escape') {
         this.cancelCurrentItem()
+      }
+    },
+    mapEnter(key) {
+      if (key.key === 'Enter' && this.isValid) {
+        this.saveItem()
       }
     },
     cancelCurrentItem() {

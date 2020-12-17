@@ -1,6 +1,6 @@
 <template>
   <div v-if="!loading" class="flex flex-wrap">
-    <top-header-bar
+    <top-header-bar which=""
       ><template v-slot:title>Your Account</template></top-header-bar
     >
 

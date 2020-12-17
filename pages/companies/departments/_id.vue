@@ -7,7 +7,7 @@
       @hovered="hovered = $event"
       @clicked="setCurrentItem($event)"
     >
-      <template v-slot:title>Departments</template>
+      <template v-slot:title>Departments for {{ company.name }}</template>
       <template v-slot:titleContent>
         <p class="w-full">Name</p>
       </template>
@@ -85,6 +85,11 @@ export default {
     },
     departments() {
       return this.$store.getters.getItems('departments')
+    },
+    company() {
+      return this.$store.getters.getItems('companies').find((el) => {
+        return el.code === this.$route.params.id
+      })
     },
   },
   created() {

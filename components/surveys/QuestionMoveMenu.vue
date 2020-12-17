@@ -1,10 +1,9 @@
 <template>
-  <div
-    class="fixed top-0 left-0 bg-gray-100 bg-opacity-75 w-full h-full z-10 flex items-center justify-center"
-    @click="$emit('close')"
-  >
-    <div class="bg-white flex flex-col shadow-lg rounded w-11/12 md:w-6/12">
-      <div class="bg-gray-200 font-semibold p-2 text-gray-700">
+  <div class="frosted flex items-center justify-center z-30">
+    <div
+      class="bg-white flex flex-col shadow-lg rounded w-full h-full md:w-6/12 md:h-auto"
+    >
+      <div class="bg-primary text-white font-semibold p-2 rounded-t">
         Move {{ question.name }} after
       </div>
       <div class="px-5 py-2">
@@ -17,14 +16,18 @@
             item.code === question.code
               ? 'cursor-not-allowed'
               : 'cursor-pointer',
-            item.flags.includes('SECTION') ? null : 'ml-4',
+            item.flags.includes('SECTION') ? 'font-semibold' : 'ml-4',
           ]"
           @click="moveCurrentQuestionAfter(item.ordinalPosition)"
         >
           <p :class="item.code === question.code ? 'italic' : null">
             {{ item.name }}
+            <span v-if="item.code === question.code"> (current question)</span>
           </p>
         </button>
+      </div>
+      <div class="w-full p-3 justify-end w-full flex">
+        <button class="btn-primary px-3" @click="$emit('close')">Cancel</button>
       </div>
     </div>
   </div>
@@ -82,4 +85,12 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.frosted {
+  @apply flex fixed top-0 left-0 w-full h-screen;
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+</style>
