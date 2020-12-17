@@ -30,6 +30,41 @@ export const actions = {
     })
   },
 
+  resetPassword({ commit }, email) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post(
+          '/auth/tokens/resetPassword',
+          qs.stringify({
+            email,
+            siteUrl: 'https://saqsini.herokuapp.com/reset',
+          })
+        )
+        .then(() => {
+          resolve()
+        })
+        .catch((error) => reject(error))
+    })
+  },
+
+  setPassword({ commit }, { email, token, password }) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .patch(
+          '/auth/tokens/setPassword',
+          qs.stringify({
+            email,
+            token,
+            password,
+          })
+        )
+        .then(() => {
+          resolve()
+        })
+        .catch((error) => reject(error))
+    })
+  },
+
   async loginWithToken({ dispatch, commit }, token) {
     commit('setAuthToken', token)
     await dispatch('getUserDetails')

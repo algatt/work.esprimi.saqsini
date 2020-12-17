@@ -33,6 +33,10 @@
         ><i class="fas fa-spinner fa-fw animate-spin"></i> Logging In</span
       >
     </button>
+
+    <nuxt-link :to="{ name: 'forgot' }" class="btn-link my-3 text-center"
+      >Forgot Password</nuxt-link
+    >
   </div>
 </template>
 
