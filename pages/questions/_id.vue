@@ -42,11 +42,30 @@
           class="border border-gray-100 shadow rounded w-full mx-auto flex items-center"
         >
           <div
-            class="w-12 bg-primary flex justify-center items-center p-5 text-white text-lg rounded-l"
+            class="w-12 flex justify-center items-center p-5 text-white text-lg rounded-l"
+            :class="
+              question.flags.includes('SECTION')
+                ? ' bg-primary-dark'
+                : ' bg-primary'
+            "
           >
             {{ question.ordinalPosition }}
           </div>
-          <div class="flex items-center flex-grow p-5">{{ question.name }}</div>
+          <div
+            class="flex items-center flex-grow p-5"
+            :class="
+              question.flags.includes('SECTION') ? 'font-bold' : 'font-medium'
+            "
+          >
+            <span
+              v-if="
+                JSON.parse(question.surveyOptions).branching.rules.length !== 0
+              "
+              title="Has Branching"
+              class="w-6"
+              ><i class="fas fa-code-branch fa-fw"></i></span
+            ><span v-else class="w-6">&nbsp;</span>{{ question.name }}
+          </div>
           <div
             class="w-12 flex justify-center items-center p-5 text-gray-300 rounded-r"
           >
