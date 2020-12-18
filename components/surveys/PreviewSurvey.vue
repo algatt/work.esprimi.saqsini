@@ -65,17 +65,16 @@
         :key="question.code"
         class="mb-5"
       >
-        <transition name="fade">
-          <display-question
-            class="rounded shadow-lg"
-            :style="{ backgroundColor: survey.options.backgroundColour }"
-            :language="currentLanguage"
-            :question="question"
-            :existing-answer="getAnswer(question.code)"
-            @answers="processAnswers($event, question)"
-          ></display-question>
-        </transition>
+        <display-question
+          class="rounded shadow-lg"
+          :style="{ backgroundColor: survey.options.backgroundColour }"
+          :language="currentLanguage"
+          :question="question"
+          :existing-answer="getAnswer(question.code)"
+          @answers="processAnswers($event, question)"
+        ></display-question>
       </div>
+
       <div class="flex items-center justify-center space-x-3 my-5">
         <button
           :disabled="!enablePrevious"
@@ -203,12 +202,15 @@ export default {
     enablePrevious() {
       return this.currentPage > 1
     },
-    isFinalPage() {
+    totalPages() {
       let pages = this.questionsWithSections.map((el) => {
         return el.page
       })
       pages = Math.max(...pages)
-      return pages === this.currentPage
+      return pages
+    },
+    isFinalPage() {
+      return this.totalPages === this.currentPage
     },
     questionsWithSections() {
       const x = JSON.parse(JSON.stringify(this.questions))
@@ -226,34 +228,7 @@ export default {
 
       const finalResult = []
       questionsOnThisPage.forEach((el) => {
-        let branching = JSON.parse(el.surveyOptions)
-        branching = branching.branching
-        if (branching.rules.length !== 0) {
-          const matching = {
-            true: 0,
-            false: 0,
-          }
-          branching.rules.forEach((iter) => {
-            const answer = this.getAnswer(iter.questionCode)
-
-            if (answer.length === 0) matching.false++
-            answer.forEach((eachAnswer) => {
-              matching[eachAnswer === iter.answer]++
-            })
-          })
-
-          if (branching.allMustBeMet === true) {
-            if (matching.true > 0 && matching.false === 0) {
-              finalResult.push(el)
-            }
-          } else if (branching.allMustBeMet === false) {
-            if (matching.true > 0) {
-              finalResult.push(el)
-            }
-          }
-        } else {
-          finalResult.push(el)
-        }
+        if (this.getConditionState(el.surveyOptions)) finalResult.push(el)
       })
 
       return finalResult
@@ -261,6 +236,40 @@ export default {
   },
   created() {},
   methods: {
+    getConditionState(surveyOptions) {
+      let branching = JSON.parse(surveyOptions)
+      branching = branching.branching
+      if (branching.rules.length !== 0) {
+        const matching = {
+          true: 0,
+          false: 0,
+        }
+        branching.rules.forEach((iter) => {
+          const answer = this.getAnswer(iter.questionCode)
+
+          if (answer.length === 0) matching.false++
+          answer.forEach((eachAnswer) => {
+            matching[eachAnswer === iter.answer]++
+          })
+        })
+
+        if (branching.allMustBeMet === true) {
+          if (matching.true > 0 && matching.false === 0) {
+            // finalResult.push(el)
+            return true
+          }
+        } else if (branching.allMustBeMet === false) {
+          if (matching.true > 0) {
+            // finalResult.push(el)
+            return true
+          }
+        }
+      } else {
+        // finalResult.push(el)
+        return true
+      }
+      return false
+    },
     processAnswers(answers, question) {
       if (question.flags.includes('RANKING')) {
         if (answers.length !== question.options.length) {
@@ -292,7 +301,19 @@ export default {
       this.$refs.surveyModal.scrollIntoView()
     },
     showNextPage() {
-      this.currentPage++
+      let currentPage = this.currentPage + 1
+
+      while (currentPage <= this.totalPages) {
+        const x = this.questionsWithSections.filter((el) => {
+          return el.page === currentPage
+        })
+        if (this.getConditionState(x[0].surveyOptions)) {
+          this.currentPage = currentPage
+          break
+        }
+        currentPage++
+      }
+
       this.$refs.surveyModal.scrollIntoView()
     },
     finishSurvey() {
