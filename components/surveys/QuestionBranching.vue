@@ -1,6 +1,9 @@
 <template>
   <div class="flex flex-col mt-2">
-    <div v-if="conditions.length !== 0" class="mb-3">
+    <div v-if="conditions.length === 0" class="mb-3">
+      <p>Currently, this question has no branching.</p>
+    </div>
+    <div v-else class="mb-3">
       <label class="label">Existing Branching</label>
       <toggle-switch
         class="my-3"
@@ -14,7 +17,7 @@
       <div
         v-for="(condition, index) in conditions"
         :key="index"
-        class="flex items-center justify-between px-3 py-2 border border-gray-100 my-1 rounded w-full md:w-10/12 shadow"
+        class="flex items-center justify-between px-3 py-2 border border-gray-100 my-1 rounded w-full md:w-10/12 shadow-sm"
       >
         <div v-if="condition.questionCode" class="flex flex-grow flex-col">
           <p>{{ condition.questionText }}</p>
@@ -33,25 +36,31 @@
       </div>
     </div>
 
-    <label class="label">New Branching</label>
     <toggle-switch
       class="my-3"
       :checked="isDemographicBranching"
       :change-colour="false"
       @clicked="isDemographicBranching = $event"
     >
-      <template v-slot:leftLabel>Question</template>
-      <template v-slot:rightLabel>Demographics</template>
+      <template v-slot:label
+        >Branching by
+        <popup-info
+          ><template v-slot:text
+            >You can choose to add conditions either by previous responses or
+            contact details.</template
+          ></popup-info
+        ></template
+      >
+      <template v-slot:leftLabel>Survey</template>
+      <template v-slot:rightLabel>Contact Book</template>
     </toggle-switch>
-    <div
-      v-if="!isDemographicBranching"
-      class="flex flex-wrap items-center w-10/12"
-    >
+    <div v-if="!isDemographicBranching" class="flex flex-wrap items-center">
       <template v-if="previousQuestions.length !== 0">
-        <div class="w-full flex items-center">
+        <div class="w-full flex flex-wrap items-center mb-2">
+          <label class="label md:w-2/12 w-full">Question</label>
           <select
             v-model="selectedQuestion"
-            class="input select w-full"
+            class="input select md:w-8/12 w-full"
             @change="updateSelectAnswers"
           >
             <option
@@ -63,8 +72,12 @@
             </option>
           </select>
         </div>
-        <div class="flex items-center w-10/12 pr-2 mt-2">
-          <select v-model="selectedAnswer" class="input select w-full">
+        <div class="flex items-center w-full flex-wrap mb-2">
+          <label class="label md:w-2/12 w-full">Response</label>
+          <select
+            v-model="selectedAnswer"
+            class="input select md:w-8/12 w-full"
+          >
             <option
               v-for="(answer, index) in previousQuestionAnswers"
               :key="answer + index"
@@ -73,15 +86,17 @@
               {{ answer.value }}
             </option>
           </select>
-        </div>
-        <div class="flex w-2/12 justify-center items-center mt-2">
-          <button
-            class="btn-primary flex-grow"
-            :disabled="checkIfDisabledQuestion()"
-            @click="addConditionQuestion"
+          <div
+            class="flex w-full md:w-2/12 justify-center items-center px-3 mt-1 md:mt-0"
           >
-            Add
-          </button>
+            <button
+              class="btn-primary px-3"
+              :disabled="checkIfDisabledQuestion()"
+              @click="addConditionQuestion"
+            >
+              Add
+            </button>
+          </div>
         </div>
       </template>
       <div v-else class="w-full flex items-center">
@@ -89,8 +104,8 @@
       </div>
     </div>
     <template v-else
-      ><div class="flex flex-wrap items-center w-10/12">
-        <div class="flex w-full flex-wrap">
+      ><div class="flex flex-wrap items-center w-full mb-2">
+        <div class="flex w-full flex-wrap w-full md:w-10/12">
           <select
             v-model="selectedFilter"
             class="input select w-full"
@@ -100,25 +115,31 @@
               {{ item }}
             </option>
           </select>
-          <div class="flex items-center w-10/12 pr-2 mt-2">
-            <select v-model="selectedFilterItem" class="input select w-full">
-              <option
-                v-for="(item, index) in filterItems"
-                :key="index"
-                :value="item.code"
-              >
-                <template v-if="selectedFilter !== 'Contacts'">{{
-                  item.name
-                }}</template>
-                <template v-else-if="selectedFilter === 'Contacts'">{{
-                  item.displayName
-                }}</template>
-              </option>
-            </select>
-          </div>
-          <div class="flex w-2/12 justify-center items-center mt-2">
+        </div>
+        <div class="flex flex-wrap items-center w-full mt-2">
+          <select
+            v-model="selectedFilterItem"
+            class="input select w-10/12"
+            :disabled="!filterItems || filterItems.length === 0"
+          >
+            <option
+              v-for="(item, index) in filterItems"
+              :key="index"
+              :value="item.code"
+            >
+              <template v-if="selectedFilter !== 'Contacts'">{{
+                item.name
+              }}</template>
+              <template v-else-if="selectedFilter === 'Contacts'">{{
+                item.displayName
+              }}</template>
+            </option>
+          </select>
+          <div
+            class="flex w-full md:w-2/12 justify-center items-center mt-2 md:mt-0"
+          >
             <button
-              class="btn-primary flex-grow"
+              class="btn-primary px-3"
               :disabled="checkIfDisabledDemographic()"
               @click="addConditionDemographic"
             >
@@ -134,10 +155,11 @@
 <script>
 import { parseQuestionToForm } from '~/helpers/parseSurveyObjects'
 import ToggleSwitch from '~/components/layouts/ToggleSwitch'
+import PopupInfo from '~/components/layouts/PopupInfo'
 
 export default {
   name: 'QuestionBranching',
-  components: { ToggleSwitch },
+  components: { PopupInfo, ToggleSwitch },
   props: {
     existingConditions: {
       type: Object,
@@ -200,7 +222,18 @@ export default {
       return result
     },
     filterItems() {
-      return this.filters[this.selectedFilter.toLowerCase()]
+      let x = this.filters[this.selectedFilter.toLowerCase()]
+      const fieldToSort =
+        this.selectedFilter.toLowerCase() === 'contacts'
+          ? 'displayName'
+          : 'name'
+      x = x.sort((a, b) => {
+        return a[fieldToSort].toLowerCase() > b[fieldToSort].toLowerCase()
+          ? 1
+          : -1
+      })
+      x.unshift({ [fieldToSort]: 'All', value: 'ALL' })
+      return x
     },
   },
   watch: {
@@ -214,7 +247,7 @@ export default {
       })
     },
   },
-  created() {
+  async created() {
     if (this.previousQuestionsText && this.previousQuestionsText.length > 0) {
       this.selectedQuestion = this.previousQuestionsText[0].code
       this.selectedAnswer = this.previousQuestionAnswers[0].value
@@ -222,11 +255,10 @@ export default {
     this.conditions = this.existingConditions.rules
     this.allMustBeMet = this.existingConditions.allMustBeMet
 
-    this.$store.dispatch('invitations/getFilters').then((response) => {
-      this.filters = response
-      this.selectedFilter = this.filterKeys[0]
-      this.selectedFilterItem = this.filterItems[0].code
-    })
+    this.filters = await this.$store.dispatch('invitations/getFilters')
+    this.selectedFilter = this.filterKeys[0]
+    this.selectedFilterItem =
+      this.filterItems.length > 0 ? this.filterItems[0].code : null
   },
   methods: {
     getQuestionText(question) {

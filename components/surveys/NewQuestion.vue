@@ -40,7 +40,12 @@ export default {
     NewQuestionLikert,
     NewQuestionMultipleChoice,
   },
-
+  data() {
+    return {
+      selectedSection: 'details',
+      branching: {},
+    }
+  },
   computed: {
     questionType() {
       const x = this.$store.state.currentItemToBeEdited.flags

@@ -7,6 +7,7 @@ export default {
       infoName: QUESTION_HELP.NAME,
       infoText: QUESTION_HELP.TEXT,
       infoRequired: QUESTION_HELP.REQUIRED,
+      selectedSection: 'details',
     }
   },
 }

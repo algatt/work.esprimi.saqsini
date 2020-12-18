@@ -1,147 +1,152 @@
 <template>
   <div class="flex flex-col w-full space-y-5">
-    <!--    <div class="flex flex-col">-->
-    <!--      <div class="flex items-center">-->
-    <!--        <label for="inputNumber" class="label">Number</label>-->
-    <!--        <span v-if="$v.form.questionNumber.$error">-->
-    <!--          <span v-if="!$v.form.questionNumber.required" class="error"-->
-    <!--            >required</span-->
-    <!--          >-->
-    <!--          <span v-else-if="!$v.form.questionNumber.numeric" class="error"-->
-    <!--            >must be a number</span-->
-    <!--          >-->
-    <!--        </span>-->
-    <!--        <popup-info-->
-    <!--          ><template v-slot:text>{{ infoNumber }}</template></popup-info-->
-    <!--        >-->
-    <!--      </div>-->
-    <!--      <input-->
-    <!--        id="inputNumber"-->
-    <!--        v-model="form.questionNumber"-->
-    <!--        placeholder="Enter question number"-->
-    <!--        class="input"-->
-    <!--        @change="$v.form.questionNumber.$touch()"-->
-    <!--      />-->
-    <!--    </div>-->
-
-    <div class="flex flex-col">
-      <div class="flex items-center">
-        <label for="inputName" class="label">Name</label
-        ><span v-if="$v.form.name.$error">
-          <span v-if="!$v.form.name.required" class="error">required</span>
-        </span>
-        <popup-info
-          ><template v-slot:text>{{ infoName }}</template></popup-info
-        >
-      </div>
-      <input
-        id="inputName"
-        v-model="form.name"
-        placeholder="Enter question name"
-        class="input"
-        @change="$v.form.name.$touch()"
-      />
+    <div
+      class="w-full flex items-center border-b border-gray-200 space-x-2 mb-1 py-2"
+    >
+      <button
+        class="w-24 text-left font-semibold hover:text-primary focus:outline-none"
+        :class="selectedSection === 'details' ? 'text-primary' : null"
+        @click="selectedSection = 'details'"
+      >
+        Details
+      </button>
+      <button
+        class="w-24 text-left font-semibold hover:text-primary focus:outline-none"
+        :class="selectedSection === 'branching' ? 'text-primary' : null"
+        @click="selectedSection = 'branching'"
+      >
+        Branching
+      </button>
     </div>
 
-    <div class="flex flex-col">
-      <div class="flex items-center">
-        <label for="inputText" class="label">Text</label>
-        <span v-if="$v.form.text.$error">
-          <span v-if="!$v.form.text.required" class="error"
-            >The question text is required.</span
+    <template v-if="selectedSection === 'details'">
+      <div class="flex flex-col">
+        <div class="flex items-center">
+          <label for="inputName" class="label">Name</label
+          ><span v-if="$v.form.name.$error">
+            <span v-if="!$v.form.name.required" class="error">required</span>
+          </span>
+          <popup-info
+            ><template v-slot:text>{{ infoName }}</template></popup-info
           >
-        </span>
-        <popup-info
-          ><template v-slot:text>{{ infoText }}</template></popup-info
-        >
-      </div>
-      <input
-        id="inputText"
-        v-model="form.text"
-        placeholder="Enter question text"
-        class="input"
-        @change="$v.form.text.$touch()"
-      />
-    </div>
-
-    <div class="flex flex-col">
-      <div class="flex items-center">
-        <label class="label">Options</label>
-        <span v-if="$v.options.$error">
-          <span class="error">all options must be filled in</span>
-        </span>
-      </div>
-      <div
-        v-for="(option, index) in options"
-        :key="option.ordinalPosition"
-        class="flex items-center mb-2"
-      >
+        </div>
         <input
-          :id="'inputOptions' + index"
-          v-model="option.text"
-          placeholder="Enter option text"
-          class="input w-7/12"
-          @keyup="updateValues"
-          @change="$v.options.$touch()"
+          id="inputName"
+          v-model="form.name"
+          placeholder="Enter question name"
+          class="input"
+          @change="$v.form.name.$touch()"
         />
-        <button
-          class="btn-link ml-2"
-          :disabled="form.options.length < 3"
-          @click="deleteOptionAtIndex(index)"
+      </div>
+
+      <div class="flex flex-col">
+        <div class="flex items-center">
+          <label for="inputText" class="label">Text</label>
+          <span v-if="$v.form.text.$error">
+            <span v-if="!$v.form.text.required" class="error"
+              >The question text is required.</span
+            >
+          </span>
+          <popup-info
+            ><template v-slot:text>{{ infoText }}</template></popup-info
+          >
+        </div>
+        <input
+          id="inputText"
+          v-model="form.text"
+          placeholder="Enter question text"
+          class="input"
+          @change="$v.form.text.$touch()"
+        />
+      </div>
+
+      <div class="flex flex-col">
+        <div class="flex items-center">
+          <label class="label">Options</label>
+          <span v-if="$v.options.$error">
+            <span class="error">all options must be filled in</span>
+          </span>
+        </div>
+        <div
+          v-for="(option, index) in options"
+          :key="option.ordinalPosition"
+          class="flex items-center mb-2"
         >
-          Delete
-        </button>
+          <input
+            :id="'inputOptions' + index"
+            v-model="option.text"
+            placeholder="Enter option text"
+            class="input w-7/12"
+            @keyup="updateValues"
+            @change="$v.options.$touch()"
+          />
+          <button
+            class="btn-link ml-2"
+            :disabled="form.options.length < 3"
+            @click="deleteOptionAtIndex(index)"
+          >
+            Delete
+          </button>
+        </div>
+
+        <div class="flex justify-start mt-2">
+          <button class="btn-primary px-3" @click="addNewOption">
+            Add New
+          </button>
+        </div>
       </div>
 
-      <div class="flex justify-start mt-2">
-        <button class="btn-primary px-3" @click="addNewOption">Add New</button>
-      </div>
-    </div>
-
-    <toggle-switch
-      :checked="form.isMandatory"
-      @clicked="form.isMandatory = $event"
-    >
-      <template v-slot:label>
-        Required
-        <popup-info
-          ><template v-slot:text>{{ infoRequired }}</template></popup-info
-        ></template
+      <toggle-switch
+        :checked="form.isMandatory"
+        @clicked="form.isMandatory = $event"
       >
-      <template v-slot:leftLabel>No</template>
-      <template v-slot:rightLabel>Yes</template>
-    </toggle-switch>
+        <template v-slot:label>
+          Required
+          <popup-info
+            ><template v-slot:text>{{ infoRequired }}</template></popup-info
+          ></template
+        >
+        <template v-slot:leftLabel>No</template>
+        <template v-slot:rightLabel>Yes</template>
+      </toggle-switch>
 
-    <toggle-switch
-      :checked="form.allowMultiple"
-      @clicked="form.allowMultiple = $event"
-    >
-      <template v-slot:label>
-        Allow Multiple Answers<popup-info
-          ><template v-slot:text
-            >Allows the respondent to choose more than one option.</template
-          ></popup-info
-        ></template
+      <toggle-switch
+        :checked="form.allowMultiple"
+        @clicked="form.allowMultiple = $event"
       >
-      <template v-slot:leftLabel>No</template>
-      <template v-slot:rightLabel>Yes</template>
-    </toggle-switch>
+        <template v-slot:label>
+          Allow Multiple Answers<popup-info
+            ><template v-slot:text
+              >Allows the respondent to choose more than one option.</template
+            ></popup-info
+          ></template
+        >
+        <template v-slot:leftLabel>No</template>
+        <template v-slot:rightLabel>Yes</template>
+      </toggle-switch>
 
-    <toggle-switch
-      :checked="form.allowOther"
-      @clicked="form.allowOther = $event"
-    >
-      <template v-slot:label>
-        Allow Other Entry<popup-info
-          ><template v-slot:text
-            >Allow the respondent to input another answer not present in the
-            given options.</template
-          ></popup-info
-        ></template
+      <toggle-switch
+        :checked="form.allowOther"
+        @clicked="form.allowOther = $event"
       >
-      <template v-slot:leftLabel>No</template>
-      <template v-slot:rightLabel>Yes</template>
-    </toggle-switch>
+        <template v-slot:label>
+          Allow Other Entry<popup-info
+            ><template v-slot:text
+              >Allow the respondent to input another answer not present in the
+              given options.</template
+            ></popup-info
+          ></template
+        >
+        <template v-slot:leftLabel>No</template>
+        <template v-slot:rightLabel>Yes</template>
+      </toggle-switch>
+    </template>
+
+    <question-branching
+      v-else
+      :existing-conditions="form.branching"
+      @conditions="receiveConditions"
+    ></question-branching>
 
     <edit-object-modal-bottom-part
       :form="form"
@@ -218,6 +223,12 @@ export default {
     } else {
       this.options = this.form.options
     }
+
+    if (!this.form.branching)
+      this.form.branching = {
+        rules: [],
+        allMustBeMet: false,
+      }
   },
   methods: {
     addNewOption() {
@@ -245,6 +256,9 @@ export default {
       this.form.options.forEach((item) => {
         item.value = item.text
       })
+    },
+    receiveConditions(ev) {
+      this.form.branching = ev
     },
   },
 }

@@ -110,6 +110,7 @@ export const actions = {
           const question = {
             surveyCode: response.data.code,
             ordinalPosition: 1,
+            surveyOptions: JSON.stringify({ branching: { rules: [] } }),
             name: 'Page 1',
             text: [{ language: response.data.defaultLanguage, text: 'Page 1' }],
             flags: ['SECTION'],

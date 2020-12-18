@@ -65,14 +65,16 @@
         :key="question.code"
         class="mb-5"
       >
-        <display-question
-          class="rounded shadow-lg"
-          :style="{ backgroundColor: survey.options.backgroundColour }"
-          :language="currentLanguage"
-          :question="question"
-          :existing-answer="getAnswer(question.code)"
-          @answers="processAnswers($event, question)"
-        ></display-question>
+        <transition name="fade">
+          <display-question
+            class="rounded shadow-lg"
+            :style="{ backgroundColor: survey.options.backgroundColour }"
+            :language="currentLanguage"
+            :question="question"
+            :existing-answer="getAnswer(question.code)"
+            @answers="processAnswers($event, question)"
+          ></display-question>
+        </transition>
       </div>
       <div class="flex items-center justify-center space-x-3 my-5">
         <button
@@ -190,7 +192,10 @@ export default {
   computed: {
     enableNext() {
       for (const cnt of this.questionsWithSectionsFiltered) {
-        if (cnt.flags.includes('IS_MANDATORY') && !this.getAnswer(cnt.code))
+        if (
+          cnt.flags.includes('IS_MANDATORY') &&
+          this.getAnswer(cnt.code).length === 0
+        )
           return false
       }
       return true
@@ -215,9 +220,43 @@ export default {
       return x
     },
     questionsWithSectionsFiltered() {
-      return this.questionsWithSections.filter((el) => {
+      const questionsOnThisPage = this.questionsWithSections.filter((el) => {
         return el.page === this.currentPage
       })
+
+      const finalResult = []
+      questionsOnThisPage.forEach((el) => {
+        let branching = JSON.parse(el.surveyOptions)
+        branching = branching.branching
+        if (branching.rules.length !== 0) {
+          const matching = {
+            true: 0,
+            false: 0,
+          }
+          branching.rules.forEach((iter) => {
+            const answer = this.getAnswer(iter.questionCode)
+
+            if (answer.length === 0) matching.false++
+            answer.forEach((eachAnswer) => {
+              matching[eachAnswer === iter.answer]++
+            })
+          })
+
+          if (branching.allMustBeMet === true) {
+            if (matching.true > 0 && matching.false === 0) {
+              finalResult.push(el)
+            }
+          } else if (branching.allMustBeMet === false) {
+            if (matching.true > 0) {
+              finalResult.push(el)
+            }
+          }
+        } else {
+          finalResult.push(el)
+        }
+      })
+
+      return finalResult
     },
   },
   created() {},
@@ -263,7 +302,7 @@ export default {
       const x = this.answers.find((el) => {
         return el.code === code
       })
-      return x && x.answers ? x.answers : null
+      return x && x.answers ? x.answers : []
     },
   },
 }
