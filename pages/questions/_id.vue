@@ -248,6 +248,7 @@ export default {
         surveyCode: Number(this.$route.params.id),
         flags: [flag],
         ordinalPosition,
+        surveyOptions: JSON.stringify({}),
       })
     },
     editQuestion(question) {

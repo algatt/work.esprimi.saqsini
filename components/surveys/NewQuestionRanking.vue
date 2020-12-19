@@ -1,69 +1,5 @@
 <template>
   <div class="flex flex-col w-full space-y-5">
-    <!--    <div class="flex flex-col">-->
-    <!--      <div class="flex items-center">-->
-    <!--        <label for="inputNumber" class="label">Number</label>-->
-    <!--        <span v-if="$v.form.questionNumber.$error">-->
-    <!--          <span v-if="!$v.form.questionNumber.required" class="error"-->
-    <!--            >required</span-->
-    <!--          >-->
-    <!--          <span v-else-if="!$v.form.questionNumber.numeric" class="error"-->
-    <!--            >must be a number</span-->
-    <!--          >-->
-    <!--        </span>-->
-    <!--        <popup-info-->
-    <!--          ><template v-slot:text>{{ infoNumber }}</template></popup-info-->
-    <!--        >-->
-    <!--      </div>-->
-    <!--      <input-->
-    <!--        id="inputNumber"-->
-    <!--        v-model="form.questionNumber"-->
-    <!--        placeholder="Enter question number"-->
-    <!--        class="input"-->
-    <!--        @change="$v.form.questionNumber.$touch()"-->
-    <!--      />-->
-    <!--    </div>-->
-
-    <div class="flex flex-col">
-      <div class="flex items-center">
-        <label for="inputName" class="label">Name</label
-        ><span v-if="$v.form.name.$error">
-          <span v-if="!$v.form.name.required" class="error">required</span>
-        </span>
-        <popup-info
-          ><template v-slot:text>{{ infoName }}</template></popup-info
-        >
-      </div>
-      <input
-        id="inputName"
-        v-model="form.name"
-        placeholder="Enter question name"
-        class="input"
-        @change="$v.form.name.$touch()"
-      />
-    </div>
-
-    <div class="flex flex-col">
-      <div class="flex items-center">
-        <label for="inputText" class="label">Text</label>
-        <span v-if="$v.form.text.$error">
-          <span v-if="!$v.form.text.required" class="error"
-            >The question text is required.</span
-          >
-        </span>
-        <popup-info
-          ><template v-slot:text>{{ infoText }}</template></popup-info
-        >
-      </div>
-      <input
-        id="inputText"
-        v-model="form.text"
-        placeholder="Enter question text"
-        class="input"
-        @change="$v.form.text.$touch()"
-      />
-    </div>
-
     <div class="flex flex-col">
       <div class="flex items-center">
         <label class="label">Options</label>
@@ -86,7 +22,7 @@
         />
         <button
           class="btn-link ml-2"
-          :disabled="form.options.length < 3"
+          :disabled="options.length < 3"
           @click="deleteOptionAtIndex(index)"
         >
           Delete
@@ -97,74 +33,44 @@
         <button class="btn-primary px-3" @click="addNewOption">Add New</button>
       </div>
     </div>
-
-    <toggle-switch
-      :checked="form.isMandatory"
-      @clicked="form.isMandatory = $event"
-    >
-      <template v-slot:label>
-        Required
-        <popup-info
-          ><template v-slot:text>{{ infoRequired }}</template></popup-info
-        ></template
-      >
-      <template v-slot:leftLabel>No</template>
-      <template v-slot:rightLabel>Yes</template>
-    </toggle-switch>
-
-    <edit-object-modal-bottom-part
-      :form="form"
-      which="questions"
-      :is-valid="isValid"
-    ></edit-object-modal-bottom-part>
   </div>
 </template>
 
 <script>
 import { validationMixin } from 'vuelidate'
-import { required, numeric } from 'vuelidate/lib/validators'
-import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
-import { parseQuestionToForm } from '~/helpers/parseSurveyObjects'
-import questionMixin from '~/helpers/questionMixin'
+import { required } from 'vuelidate/lib/validators'
 
 export default {
   name: 'NewQuestionRanking',
-  components: { EditObjectModalBottomPart },
-  mixins: [validationMixin, questionMixin],
+
+  mixins: [validationMixin],
+  props: {
+    form: {
+      required: true,
+      type: Object,
+    },
+  },
   data() {
     return {
-      form: null,
       options: [],
     }
   },
   computed: {
-    question() {
-      return this.$store.state.currentItemToBeEdited
-    },
     isValid() {
       return !this.$v.$invalid
     },
   },
   watch: {
-    options(data) {
-      this.form.options = data
+    options() {
       this.updateValues()
+      this.$emit('updatedOptions', this.options)
+    },
+    isValid() {
+      this.$emit('isValid', !this.$v.$invalid)
     },
   },
 
   validations: {
-    form: {
-      questionNumber: {
-        required,
-        numeric,
-      },
-      name: {
-        required,
-      },
-      text: {
-        required,
-      },
-    },
     options: {
       $each: {
         text: {
@@ -174,14 +80,11 @@ export default {
     },
   },
   created() {
-    this.form = parseQuestionToForm(this.question)
-
     if (!this.form.options) {
       this.options = [
-        { ordinalPosition: 1, text: 'Option 1' },
-        { ordinalPosition: 2, text: 'Option 2' },
+        { ordinalPosition: 1, text: 'Option 1', value: 'Option 1' },
+        { ordinalPosition: 2, text: 'Option 2', value: 'Option 2' },
       ]
-      this.form.options = this.options
     } else {
       this.options = this.form.options
     }
@@ -209,7 +112,7 @@ export default {
       })
     },
     updateValues() {
-      this.form.options.forEach((item) => {
+      this.options.forEach((item) => {
         item.value = item.text
       })
     },

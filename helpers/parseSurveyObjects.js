@@ -120,6 +120,11 @@ export function parseQuestionToForm(question, language = PREFERRED_LANGUAGE) {
 
     if (surveyOptions.branching) {
       temp.branching = surveyOptions.branching
+    } else {
+      temp.branching = {
+        rules: [],
+        allMustBeMet: false,
+      }
     }
 
     delete temp.surveyOptions

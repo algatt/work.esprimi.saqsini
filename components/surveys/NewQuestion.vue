@@ -1,38 +1,153 @@
 <template>
-  <div class="flex flex-col">
-    <new-question-section
-      v-if="questionType === 'SECTION'"
-    ></new-question-section>
-    <new-question-multiple-choice
-      v-else-if="questionType === 'MULTIPLE_CHOICE'"
-    ></new-question-multiple-choice>
-    <new-question-likert
-      v-else-if="questionType === 'LIKERT'"
-    ></new-question-likert>
-    <new-question-drop-down
-      v-else-if="questionType === 'DROPDOWN'"
-    ></new-question-drop-down>
-    <new-question-type-in
-      v-else-if="questionType === 'TYPE_IN'"
-    ></new-question-type-in>
-    <new-question-ranking
-      v-else-if="questionType === 'RANKING'"
-    ></new-question-ranking>
+  <div class="flex flex-col space-y-5">
+    <div
+      class="w-full flex items-center border-b border-gray-200 space-x-2 mb-1 py-2"
+    >
+      <button
+        class="w-24 text-left font-semibold hover:text-primary focus:outline-none"
+        :class="selectedSection === 'details' ? 'text-primary' : null"
+        @click="selectedSection = 'details'"
+      >
+        Details
+      </button>
+      <button
+        class="w-24 text-left font-semibold hover:text-primary focus:outline-none"
+        :class="selectedSection === 'branching' ? 'text-primary' : null"
+        @click="selectedSection = 'branching'"
+      >
+        Branching
+      </button>
+    </div>
+
+    <template v-if="selectedSection === 'details'">
+      <div class="flex flex-col">
+        <div class="flex items-center">
+          <label for="inputName" class="label">Name</label>
+          <span v-if="$v.form.name.$error">
+            <span v-if="!$v.form.name.required" class="error">required</span>
+          </span>
+          <popup-info
+            ><template v-slot:text
+              >This is the name of the section used for internal purposes. The
+              respondent will not see this.
+            </template></popup-info
+          >
+        </div>
+        <input
+          id="inputName"
+          v-model="form.name"
+          placeholder="Enter question name"
+          class="input w-full md:w-10/12"
+          @change="$v.form.name.$touch()"
+        />
+      </div>
+
+      <div class="flex flex-col">
+        <div class="flex items-center">
+          <label for="inputText" class="label">Text</label>
+          <span v-if="$v.form.text.$error">
+            <span v-if="!$v.form.text.required" class="error">required</span>
+          </span>
+          <popup-info
+            ><template v-slot:text
+              >This page text will be seen by the respondent.</template
+            ></popup-info
+          >
+        </div>
+        <input
+          id="inputText"
+          v-model="form.text"
+          placeholder="Enter question text"
+          class="input w-full md:w-10/12"
+          @change="$v.form.text.$touch()"
+        />
+      </div>
+
+      <toggle-switch
+        v-if="questionType !== 'SECTION'"
+        :checked="form.isMandatory"
+        @clicked="form.isMandatory = $event"
+      >
+        <template v-slot:label>
+          Required
+          <popup-info
+            ><template v-slot:text>{{ infoRequired }}</template></popup-info
+          ></template
+        >
+        <template v-slot:leftLabel>No</template>
+        <template v-slot:rightLabel>Yes</template>
+      </toggle-switch>
+
+      <new-question-section
+        v-if="questionType === 'SECTION'"
+        :form="form"
+      ></new-question-section>
+      <new-question-multiple-choice
+        v-else-if="questionType === 'MULTIPLE_CHOICE'"
+        :form="form"
+        @updatedOptions="form.options = $event"
+        @updateAllowOther="form.allowOther = $event"
+        @updateAllowMultiple="form.allowMultiple = $event"
+        @isValid="isRemainderOfFormValid = $event"
+      ></new-question-multiple-choice>
+      <new-question-likert
+        v-else-if="questionType === 'LIKERT'"
+        :form="form"
+        @updatedOptions="form.options = $event"
+        @updatedShowWeights="form.showWeights = $event"
+        @isValid="isRemainderOfFormValid = $event"
+      ></new-question-likert>
+      <new-question-drop-down
+        v-else-if="questionType === 'DROPDOWN'"
+        :form="form"
+        @updatedOptions="form.options = $event"
+        @isValid="isRemainderOfFormValid = $event"
+      ></new-question-drop-down>
+      <new-question-type-in
+        v-else-if="questionType === 'TYPE_IN'"
+        :form="form"
+      ></new-question-type-in>
+      <new-question-ranking
+        v-else-if="questionType === 'RANKING'"
+        :form="form"
+        @updatedOptions="form.options = $event"
+        @isValid="isRemainderOfFormValid = $event"
+      ></new-question-ranking>
+    </template>
+
+    <question-branching
+      v-else
+      :existing-conditions="form.branching"
+      @conditions="receiveConditions"
+    ></question-branching>
+    <edit-object-modal-bottom-part
+      :form="form"
+      which="questions"
+      :is-valid="!$v.$invalid && isRemainderOfFormValid"
+    ></edit-object-modal-bottom-part>
   </div>
 </template>
 
 <script>
-import NewQuestionMultipleChoice from '~/components/surveys/NewQuestionMultipleChoice'
-import NewQuestionLikert from '~/components/surveys/NewQuestionLikert'
+import { required } from 'vuelidate/lib/validators'
+import { validationMixin } from 'vuelidate'
 import NewQuestionSection from '~/components/surveys/NewQuestionSection'
 import NewQuestionDropDown from '~/components/surveys/NewQuestionDropDown'
 import NewQuestionTypeIn from '~/components/surveys/NewQuestionTypeIn'
 import NewQuestionRanking from '~/components/surveys/NewQuestionRanking'
+import NewQuestionMultipleChoice from '~/components/surveys/NewQuestionMultipleChoice'
+import NewQuestionLikert from '~/components/surveys/NewQuestionLikert'
 import { QUESTION_TYPES } from '~/helpers/constants'
+import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
+import { parseQuestionToForm } from '~/helpers/parseSurveyObjects'
+import QuestionBranching from '~/components/surveys/QuestionBranching'
+import questionMixin from '~/helpers/questionMixin'
 
 export default {
   name: 'NewQuestion',
   components: {
+    EditObjectModalBottomPart,
+    QuestionBranching,
     NewQuestionRanking,
     NewQuestionTypeIn,
     NewQuestionDropDown,
@@ -40,16 +155,31 @@ export default {
     NewQuestionLikert,
     NewQuestionMultipleChoice,
   },
+  mixins: [validationMixin, questionMixin],
   data() {
     return {
       selectedSection: 'details',
-      branching: {},
+      form: {},
+      isRemainderOfFormValid: true,
     }
   },
+  validations: {
+    form: {
+      name: {
+        required,
+      },
+      text: {
+        required,
+      },
+    },
+  },
   computed: {
+    question() {
+      return this.$store.state.currentItemToBeEdited
+    },
     questionType() {
-      const x = this.$store.state.currentItemToBeEdited.flags
-      if (x.includes('SECTION')) return 'SECTION'
+      const x = this.question.flags
+
       let questionType = null
       Object.keys(QUESTION_TYPES).forEach((el) => {
         if (x.includes(el)) questionType = el
@@ -57,7 +187,13 @@ export default {
       return questionType
     },
   },
+  created() {
+    this.form = parseQuestionToForm(this.question)
+  },
+  methods: {
+    receiveConditions(ev) {
+      this.form.branching = ev
+    },
+  },
 }
 </script>
-
-<style scoped></style>
