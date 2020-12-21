@@ -4,9 +4,12 @@
       <p>Currently, this question has no branching.</p>
     </div>
     <div v-else class="mb-3">
-      <toggle-switch>
-        class="my-3" :checked="allMustBeMet" :change-colour="false"
-        @clicked="allMustBeMet = $event" >
+      <toggle-switch
+        class="my-3"
+        :checked="allMustBeMet"
+        :change-colour="false"
+        @clicked="allMustBeMet = $event"
+      >
         <template v-slot:leftLabel>Match any</template>
         <template v-slot:rightLabel>Match all</template>
       </toggle-switch>

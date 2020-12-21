@@ -239,18 +239,26 @@ export default {
     getConditionState(surveyOptions) {
       let branching = JSON.parse(surveyOptions)
       branching = branching.branching
+
       if (branching.rules.length !== 0) {
         const matching = {
           true: 0,
           false: 0,
         }
         branching.rules.forEach((iter) => {
-          const answer = this.getAnswer(iter.questionCode)
+          if (iter.type === 'question') {
+            const answer = this.getAnswer(iter.parentObject.code)
 
-          if (answer.length === 0) matching.false++
-          answer.forEach((eachAnswer) => {
-            matching[eachAnswer === iter.answer]++
-          })
+            if (answer.length === 0) matching.false++
+            let matchAtLeastOne = 0
+            answer.forEach((eachAnswer) => {
+              iter.condition.forEach((eachCondition) => {
+                // matching[eachAnswer === eachCondition]++
+                if (eachAnswer === eachCondition) matchAtLeastOne++
+              })
+            })
+            matching[matchAtLeastOne > 0]++
+          }
         })
 
         if (branching.allMustBeMet === true) {
