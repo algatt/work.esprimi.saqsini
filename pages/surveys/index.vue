@@ -110,8 +110,8 @@
 
       <template v-if="disableNewButton" v-slot:extra>
         <p class="flex w-full items-center justify-center p-4">
-          You cannot create a company right now. Make sure to have sectors and
-          at least one industry.
+          You cannot create a survey right now. Make sure to have set up
+          categories and at least one subcategory.
         </p>
       </template>
     </display-table-component>

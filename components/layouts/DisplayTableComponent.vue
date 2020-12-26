@@ -43,11 +43,8 @@
             <slot name="popup-menu" :item="item"></slot>
           </template>
         </row-component>
+        <slot name="extra"></slot>
       </div>
-    </div>
-
-    <div class="flex flex-col w-11/12 mx-auto">
-      <slot name="extra"></slot>
     </div>
   </div>
 </template>
