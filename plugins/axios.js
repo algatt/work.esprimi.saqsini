@@ -1,5 +1,5 @@
 export default function ({ $axios, store, redirect }) {
-  $axios.setHeader('Authorization', '88920fdb-d8ad-4133-a0da-2580a56d7718')
+  $axios.setHeader('Authorization', '2c276e30-b685-493e-a660-559feae22f8d')
   $axios.setHeader('Content-Type', 'application/x-www-form-urlencoded', [
     'post',
   ])
