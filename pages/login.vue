@@ -1,6 +1,7 @@
 <template>
   <div
-    class="bg-white w-auto rounded border border-primary shadow-xl py-4 px-14 mb-20 flex flex-col"
+    class="bg-white rounded border border-primary shadow-xl py-4 px-14 mb-20 flex flex-col flex-grow"
+    style="max-width: 350px"
   >
     <h5 class="text-2xl text-primary font-bold text-center mb-4">
       saqsini<i class="far fa-comments fa-fw ml-1"></i>
@@ -16,15 +17,22 @@
     />
 
     <label for="password" class="mb-1 font-semibold">Password</label>
-    <input
-      id="password"
-      v-model="password"
-      class="input-login mb-3"
-      type="password"
-      @keyup="$v.password.$touch"
-    />
+    <div class="flex w-full relative">
+      <input
+        id="password"
+        v-model="password"
+        class="input-login w-full mb-3"
+        type="password"
+        @keyup="$v.password.$touch"
+      />
+      <nuxt-link
+        :to="{ name: 'forgot' }"
+        class="btn-link absolute right-0 py-1 px-3"
+        >Forgot</nuxt-link
+      >
+    </div>
     <button
-      class="btn-primary my-3 py-2"
+      class="btn btn-primary my-3 py-2"
       :disabled="$v.$invalid || inProgress"
       @click="attemptLogin"
     >
@@ -33,10 +41,6 @@
         ><i class="fas fa-spinner fa-fw animate-spin"></i> Logging In</span
       >
     </button>
-
-    <nuxt-link :to="{ name: 'forgot' }" class="btn-link my-3 text-center"
-      >Forgot Password</nuxt-link
-    >
   </div>
 </template>
 

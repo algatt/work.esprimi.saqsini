@@ -1,9 +1,31 @@
 <template>
-  <div v-if="!loading">
+  <div v-if="!loading" class="flex flex-wrap items-start">
+    <top-header-bar which="contacts" class="w-full"
+      ><template v-slot:title>Contacts</template>
+      <template v-slot:button>
+        <button
+          v-if="contacts.length !== 0"
+          class="btn btn-primary"
+          @click="setCurrentItem({ code: -1 })"
+        >
+          New Contact
+        </button></template
+      ></top-header-bar
+    >
+
+    <info-box v-if="contacts.length === 0" class="flex-grow mx-5 mt-2 md:mt-0">
+      <template v-slot:title>No Contacts here...</template>
+      <template v-slot:content>
+        <button class="btn-link" @click="setCurrentItem({ code: -1 })">
+          Create Contact
+        </button>
+      </template></info-box
+    >
+
     <display-table-component
+      v-else
+      class="w-full"
       :items="contacts"
-      which="contacts"
-      new-text="Contact"
       @hovered="hovered = $event"
       @clicked="setCurrentItem($event)"
     >
@@ -18,10 +40,10 @@
       </template>
       <template v-slot:titleContentSmall>Contacts</template>
       <template v-slot:content="slotProps"
-        ><p class="w-full md:w-4/12 mb-1 md:mb-0">
+        ><p class="w-full xl:w-4/12">
           {{ slotProps.item.displayName }}
         </p>
-        <p class="w-full md:w-2/12 mb-1 md:mb-0">
+        <p class="w-full xl:w-2/12">
           <span v-if="slotProps.item.gender === 'M'">Male</span>
           <span v-else-if="slotProps.item.gender === 'F'">Female</span>
           <span v-if="calculateAge(slotProps.item.dob) !== 0"
@@ -29,32 +51,32 @@
           </span>
         </p>
 
-        <p class="w-full md:w-2/12 mb-1 md:mb-0">
+        <p class="w-full xl:w-2/12">
           <span v-if="slotProps.item.email">{{ slotProps.item.email }}</span>
         </p>
-        <p class="w-full md:w-2/12 mb-1 md:mb-0">
+        <p class="w-full xl:w-2/12">
           <span v-if="slotProps.item.contactNumber !== 0"
             >{{ slotProps.item.countryExtension }}
             {{ slotProps.item.contactNumber }}</span
           >
         </p>
 
-        <p class="w-full md:w-1/12 md:justify-center flex mb-1 md:mb-0">
+        <p class="w-full xl:w-1/12 xl:justify-center flex">
           <nuxt-link
-            class="btn-table"
+            class="btn-link"
             :to="{
               name: 'contacts-jobs-id',
               params: { id: slotProps.item.code },
             }"
             @click.stop.native
             >{{ slotProps.item.jobCount }}
-            <span class="flex md:hidden">&nbsp; Jobs</span>
+            <span class="flex xl:hidden">&nbsp; Jobs</span>
           </nuxt-link>
         </p>
       </template>
       <template v-slot:popup-menu="slotProps">
         <span
-          :class="hovered === slotProps.item.code ? 'flex' : 'flex md:hidden'"
+          :class="hovered === slotProps.item.code ? 'flex' : 'flex xl:hidden'"
           class="items-center"
         >
           <popup-menu-vue
@@ -92,6 +114,7 @@ import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
 import NewContact from '~/components/contacts/NewContact'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
+import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 
 export default {
   name: 'ContactsList',
@@ -101,6 +124,7 @@ export default {
     EditObjectModal,
     PopupMenuVue,
     Spinner,
+    TopHeaderBar,
   },
   data() {
     return {

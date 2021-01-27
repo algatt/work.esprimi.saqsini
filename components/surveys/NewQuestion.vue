@@ -1,18 +1,24 @@
 <template>
   <div class="flex flex-col space-y-5">
-    <div
-      class="w-full flex items-center border-b border-gray-200 space-x-2 mb-1 py-2"
-    >
+    <div class="w-full flex items-center mb-1">
       <button
-        class="w-24 text-left font-semibold hover:text-primary focus:outline-none"
-        :class="selectedSection === 'details' ? 'text-primary' : null"
+        class="w-24 text-center font-semibold hover:text-primary focus:outline-none py-2 border-b-2"
+        :class="
+          selectedSection === 'details'
+            ? 'text-primary border-primary'
+            : 'border-gray-200'
+        "
         @click="selectedSection = 'details'"
       >
         Details
       </button>
       <button
-        class="w-24 text-left font-semibold hover:text-primary focus:outline-none"
-        :class="selectedSection === 'branching' ? 'text-primary' : null"
+        class="w-24 text-center font-semibold hover:text-primary focus:outline-none py-2 border-b-2"
+        :class="
+          selectedSection === 'branching'
+            ? 'text-primary border-primary'
+            : 'border-gray-200'
+        "
         @click="selectedSection = 'branching'"
       >
         Branching

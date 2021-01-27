@@ -1,21 +1,9 @@
 <template>
-  <div class="flex flex-col relative md:mb-0">
-    <button
-      class="flex items-center font-bold justify-between py-2 px-2 bg-gray-100 focus:outline-none"
-      :class="isCollapsed ? ' mb-0' : 'mb-2'"
-      @click="isCollapsed = !isCollapsed"
-    >
+  <div class="flex flex-col relative px-3">
+    <div class="flex items-center font-bold py-2 px-2">
       <slot name="title"></slot>
-      <button
-        class="focus:outline-none text-gray-600 focus:text-gray-700 transition duration-300"
-      >
-        <i
-          class="fas"
-          :class="isCollapsed ? 'fa-caret-down' : 'fa-caret-up'"
-        ></i>
-      </button>
-    </button>
-    <div v-if="!isCollapsed">
+    </div>
+    <div>
       <button
         class="tree-view-parent-button"
         @click="selectParent({ code: -1 })"
@@ -55,7 +43,9 @@
             >{{ truncateString(parentItem.name) }}</span
           >
           <div class="flex items-center justify-end">
-            <div :class="hoverParent === parentItem.code ? null : 'md:hidden'">
+            <div
+              :class="hoverParent === parentItem.code ? null : 'xl:invisible'"
+            >
               <button
                 class="pencil-rounded-small"
                 @click.stop="$emit('newParent', parentItem)"
@@ -93,7 +83,7 @@
               >
               <div class="flex items-center justify-end">
                 <div
-                  :class="hoverChild === childItem.code ? null : 'md:hidden'"
+                  :class="hoverChild === childItem.code ? null : 'xl:invisible'"
                 >
                   <button
                     class="pencil-rounded-small"

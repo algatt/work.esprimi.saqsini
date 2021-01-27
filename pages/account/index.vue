@@ -4,8 +4,14 @@
       ><template v-slot:title>Your Account</template></top-header-bar
     >
 
-    <div class="flex flex-wrap p-5 w-full md:w-6/12">
-      <div class="flex flex-col p-5 items-center w-full md:w-4/12">
+    <div class="flex flex-wrap p-5 w-full xl:w-6/12">
+      <div class="flex flex-col p-5 w-full xl:w-8/12">
+        <label for="inputName" class="label">Display Name</label>
+        <input id="inputName" v-model="displayName" class="input mb-3" />
+        <label for="inputEmail" class="label">Email</label>
+        <input id="inputEmail" v-model="email" class="input mb-3" />
+      </div>
+      <div class="flex flex-col p-5 items-center w-full xl:w-4/12">
         <input
           id="inputAvatar"
           type="file"
@@ -16,7 +22,7 @@
         <img
           v-if="avatarImage !== ''"
           :src="avatarImage"
-          class="h-48 w-48 object-cover rounded-lg cursor-pointer shadow"
+          class="h-36 w-36 object-cover rounded-full cursor-pointer shadow"
           @click="activateInput"
         />
         <span
@@ -28,29 +34,18 @@
         </span>
         <button class="btn-link my-2" @click="resetImage">Clear</button>
       </div>
-      <div class="flex flex-col p-5 w-full md:w-8/12">
-        <label for="inputName" class="label">Display Name</label>
-        <input id="inputName" v-model="displayName" class="input mb-3" />
-        <label for="inputEmail" class="label">Email</label>
-        <input id="inputEmail" v-model="email" class="input mb-3" />
-      </div>
-      <div class="flex justify-center px-1 w-full">
+
+      <div class="flex justify-between px-5 w-full">
+        <button class="btn btn-danger px-3" @click="showConfirm = true">
+          <i class="fas fa-exclamation-triangle fa-sm fa-fw mr-2"></i>Delete
+          Account
+        </button>
         <button
-          class="btn-primary px-3"
+          class="btn btn-primary px-3"
           :disabled="$v.$invalid"
           @click="updateDetails"
         >
           Update Details
-        </button>
-      </div>
-    </div>
-    <div class="flex w-full md:w-6/12 items-center justify-center">
-      <div
-        class="w-auto flex flex-col bg-gray-100 border-2 border-gray-100 p-10 rounded shadow"
-      >
-        <button class="btn-danger px-3" @click="showConfirm = true">
-          <i class="fas fa-exclamation-triangle fa-sm fa-fw mr-2"></i>Delete
-          Account
         </button>
       </div>
     </div>
@@ -76,11 +71,11 @@
           placeholder="confirm your email"
         />
         <div class="flex justify-between w-full">
-          <button class="btn-primary px-3" @click="showConfirm = false">
+          <button class="btn btn-primary px-3" @click="showConfirm = false">
             Cancel
           </button>
           <button
-            class="btn-danger px-3"
+            class="btn btn-danger px-3"
             :disabled="confirmEmail !== accountDetails.email"
             @click="logoutUser"
           >

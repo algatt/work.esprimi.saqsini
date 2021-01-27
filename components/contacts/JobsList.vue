@@ -1,24 +1,58 @@
 <template>
-  <div v-if="!loading">
+  <div v-if="!loading" class="flex flex-wrap items-start">
+    <top-header-bar which="jobs" class="w-full"
+      ><template v-slot:title
+        >Job History for
+        {{ getValueFromObject(contacts, 'displayName', $route.params.id) }}
+      </template>
+      <template v-slot:button>
+        <nuxt-link :to="{ name: 'contacts-roles' }">
+          <button class="btn btn-primary w-16 mr-3">Roles</button></nuxt-link
+        >
+        <button
+          v-if="!disableNewButton && jobs.length !== 0"
+          class="btn btn-primary"
+          @click="setCurrentItem({ code: -1 })"
+        >
+          New Job
+        </button>
+      </template></top-header-bar
+    >
+
+    <info-box v-if="disableNewButton" class="flex-grow mx-5 mt-2 md:mt-0">
+      <template v-slot:title>We have a problem...</template>
+      <template v-slot:content>
+        <p v-if="companies.length === 0 && roles.length === 0">
+          You cannot create a job entry right now. Make sure to have at least
+          one company and one role.
+        </p>
+        <p v-else-if="companies.length === 0">
+          You cannot create a job entry right now. Make sure to have at least
+          one company.
+        </p>
+        <p v-else>
+          You cannot create a job entry right now. Make sure to have at least
+          one role.
+        </p>
+      </template>
+    </info-box>
+
+    <info-box v-else-if="jobs.length === 0" class="flex-grow mx-5 mt-2 md:mt-0">
+      <template v-slot:title>No Job History here...</template>
+      <template v-slot:content>
+        <button class="btn-link" @click="setCurrentItem({ code: -1 })">
+          Add a new one...
+        </button>
+      </template></info-box
+    >
+
     <display-table-component
+      v-else
       :items="jobs"
-      :disable-new-button="disableNewButton"
-      new-text="Job"
-      which="jobs"
+      class="w-full"
       @hovered="hovered = $event"
       @clicked="setCurrentItem($event)"
     >
-      <template v-slot:title
-        >Job History for
-        {{
-          getValueFromObject(contacts, 'displayName', $route.params.id)
-        }}</template
-      >
-      <template v-slot:button
-        ><nuxt-link :to="{ name: 'contacts-roles' }">
-          <button class="btn-primary w-16 mr-3">Roles</button></nuxt-link
-        ></template
-      >
       <template v-slot:titleContent>
         <p class="w-4/12">Company</p>
         <p class="w-3/12">Department</p>
@@ -27,23 +61,23 @@
       </template>
       <template v-slot:titleContentSmall>Job Details</template>
       <template v-slot:content="slotProps"
-        ><p class="w-full md:w-4/12 md:mb-0 mb-1">
+        ><p class="w-full xl:w-4/12">
           {{ slotProps.item.companyName }}
         </p>
-        <p class="w-full md:w-3/12 md:mb-0 mb-1">
+        <p class="w-full xl:w-3/12">
           {{ slotProps.item.departmentName }}
         </p>
-        <p class="w-full md:w-3/12 md:mb-0 mb-1">
+        <p class="w-full xl:w-3/12">
           {{ slotProps.item.roleName }}
         </p>
-        <p class="w-full md:w-2/12 md:mb-0 mb-1">
+        <p class="w-full xl:w-2/12">
           <span v-if="slotProps.item.flags.includes('ONGOING')">Active</span>
           <span v-else>Stopped</span>
         </p>
       </template>
       <template v-slot:popup-menu="slotProps">
         <span
-          :class="hovered === slotProps.item.code ? 'flex' : 'flex md:hidden'"
+          :class="hovered === slotProps.item.code ? 'flex' : 'flex xl:hidden'"
           class="items-center"
         >
           <popup-menu-vue
@@ -62,26 +96,7 @@
         </span>
       </template>
 
-      <template v-if="disableNewButton" v-slot:extra>
-        <p
-          v-if="companies.length === 0 && roles.length === 0"
-          class="flex w-full items-center justify-center p-4"
-        >
-          You cannot create a job entry right now. Make sure to have at least
-          one company and one role.
-        </p>
-        <p
-          v-else-if="companies.length === 0"
-          class="flex w-full items-center justify-center p-4"
-        >
-          You cannot create a job entry right now. Make sure to have at least
-          one company.
-        </p>
-        <p v-else class="flex w-full items-center justify-center p-4">
-          You cannot create a job entry right now. Make sure to have at least
-          one role.
-        </p>
-      </template>
+      <template v-if="disableNewButton" v-slot:extra> </template>
     </display-table-component>
 
     <transition name="fade">

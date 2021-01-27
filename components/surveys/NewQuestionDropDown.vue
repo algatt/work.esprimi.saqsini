@@ -44,7 +44,7 @@
         </div>
 
         <div class="flex justify-start mt-2">
-          <button class="btn-primary px-3" @click="addNewOption">
+          <button class="btn btn-primary px-3" @click="addNewOption">
             Add New
           </button>
         </div></template

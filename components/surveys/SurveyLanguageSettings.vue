@@ -5,7 +5,7 @@
         This survey only has the default language. You can generate a file that
         allows you to translate your survey in other languages.
       </p>
-      <button class="btn-primary my-2 w-32" @click="generateLanguagePack">
+      <button class="btn btn-primary my-2 w-32" @click="generateLanguagePack">
         Generate
       </button>
     </div>
@@ -24,17 +24,17 @@
         </span>
       </div>
       <p class="mt-3">This survey has a generated language pack.</p>
-      <button class="btn-primary my-3 w-32" @click="downloadLanguagePack">
+      <button class="btn btn-primary my-3 w-32" @click="downloadLanguagePack">
         Download
       </button>
       <p class="mt-3">You can also re-generate the language pack.</p>
-      <button class="btn-primary my-3 w-32" @click="generateLanguagePack">
+      <button class="btn btn-primary my-3 w-32" @click="generateLanguagePack">
         Generate
       </button>
 
       <p class="mt-3">You can upload your language pack here.</p>
       <input id="inputFile" type="file" hidden @change="uploadFile" />
-      <button class="btn-primary my-3 w-32" @click="activateInputFile">
+      <button class="btn btn-primary my-3 w-32" @click="activateInputFile">
         Upload
       </button>
     </div>

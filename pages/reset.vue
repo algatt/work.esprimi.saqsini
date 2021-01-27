@@ -27,7 +27,7 @@
     />
 
     <button
-      class="btn-primary my-3 py-2"
+      class="btn btn-primary my-3 py-2"
       :disabled="$v.$invalid || inProgress"
       @click="resetPassword"
     >

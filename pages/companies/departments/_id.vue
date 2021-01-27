@@ -1,9 +1,34 @@
 <template>
-  <div v-if="!loading">
+  <div v-if="!loading" class="flex flex-wrap items-start">
+    <top-header-bar which="departments" class="w-full"
+      ><template v-slot:title>Departments in {{ company.name }}</template>
+      <template v-slot:button>
+        <button
+          v-if="departments.length !== 0"
+          class="btn btn-primary"
+          @click="setCurrentItem({ code: -1 })"
+        >
+          New Department
+        </button></template
+      ></top-header-bar
+    >
+
+    <info-box
+      v-if="departments.length === 0"
+      class="flex-grow mx-5 mt-2 md:mt-0"
+    >
+      <template v-slot:title>No Departments here...</template>
+      <template v-slot:content>
+        <button class="btn-link" @click="setCurrentItem({ code: -1 })">
+          Create a Department
+        </button>
+      </template></info-box
+    >
+
     <display-table-component
+      v-else
+      class="w-full"
       :items="departments"
-      which="departments"
-      new-text="Department"
       @hovered="hovered = $event"
       @clicked="setCurrentItem($event)"
     >
@@ -13,7 +38,7 @@
       </template>
       <template v-slot:titleContentSmall>Departments</template>
       <template v-slot:content="slotProps"
-        ><div class="w-full flex items-center">
+        ><div class="w-full flex items-baseline">
           <span>
             {{ slotProps.item.name }}
           </span>

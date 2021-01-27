@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col w-full md:w-10/12">
+  <div class="flex flex-col w-full">
     <h5>{{ notification.author.displayName }}</h5>
     <h5>{{ notification.author.email }}</h5>
     <p class="mt-3">{{ notification.subject }}</p>
@@ -10,7 +10,7 @@
           name: 'questions-id',
           params: { id: notification.linkedEntityCode },
         }"
-        class="btn-primary px-3"
+        class="btn btn-primary px-3"
         >Go To Survey</nuxt-link
       >
     </p>

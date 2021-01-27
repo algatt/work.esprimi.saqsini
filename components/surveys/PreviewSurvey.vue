@@ -98,7 +98,7 @@
           "
           @click="showPreviousPage"
         >
-          <i class="fas fa-backward fa-fw py-1"></i>
+          Previous
         </button>
 
         <button
@@ -123,7 +123,7 @@
           "
           @click="showNextPage"
         >
-          <i class="fas fa-forward fa-fw py-1"></i>
+          Next
         </button>
 
         <button
@@ -148,7 +148,7 @@
           "
           @click="finishSurvey"
         >
-          <i class="fas fa-check-circle fa-fw py-1"></i>
+          Finish
         </button>
       </div>
     </div>

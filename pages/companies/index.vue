@@ -1,30 +1,62 @@
 <template>
-  <div v-if="!loading" class="flex flex-wrap">
+  <div v-if="!loading" class="flex flex-wrap items-start">
+    <top-header-bar which="companies" class="w-full"
+      ><template v-slot:title>Companies</template>
+      <template v-slot:button>
+        <button
+          v-if="!disableNewButton && companies.length !== 0"
+          class="btn btn-primary"
+          @click="setCurrentItem({ code: -1 })"
+        >
+          New Company
+        </button></template
+      ></top-header-bar
+    >
+
+    <side-tree-nav
+      class="w-full xl:w-3/12"
+      :parents="sectors"
+      :children="industries"
+      parent-code-name="sectorCode"
+      count-name="companyCount"
+      @parentChanged="parentChanged"
+      @childChanged="childChanged"
+      @newParent="newParent"
+      @newChild="newChild"
+    >
+      <template v-slot:title>Sectors and Industries</template>
+      <template v-slot:newText>New Sector</template>
+    </side-tree-nav>
+
+    <info-box v-if="disableNewButton" class="flex-grow mx-5 mt-2 md:mt-0">
+      <template v-slot:title>We have a problem...</template>
+      <template v-slot:content>
+        You cannot create a company right now. Make sure to have at least one
+        sector with one industry in it.
+      </template>
+    </info-box>
+
+    <info-box
+      v-else-if="companies.length === 0"
+      class="flex-grow mx-5 mt-2 md:mt-0"
+    >
+      <template v-slot:title>No Companies here...</template>
+      <template v-slot:content>
+        <button class="btn-link" @click="setCurrentItem({ code: -1 })">
+          Create one...
+        </button>
+      </template></info-box
+    >
+
     <display-table-component
+      v-else
+      class="w-full xl:w-9/12"
       :items="companies"
-      which="companies"
-      new-text="Company"
-      :disable-new-button="disableNewButton"
       @hovered="hovered = $event"
       @clicked="setCurrentItem($event)"
     >
       <template v-slot:title>Company List</template>
-      <template v-slot:sideNav>
-        <side-tree-nav
-          v-if="!loading"
-          :parents="sectors"
-          :children="industries"
-          parent-code-name="sectorCode"
-          count-name="companyCount"
-          @parentChanged="parentChanged"
-          @childChanged="childChanged"
-          @newParent="newParent"
-          @newChild="newChild"
-        >
-          <template v-slot:title>Sectors and Industries</template>
-          <template v-slot:newText>New Sector</template>
-        </side-tree-nav></template
-      >
+      <template v-slot:sideNav> </template>
       <template v-slot:titleContent>
         <p class="w-7/12">Name</p>
         <p class="w-3/12 text-center">Size</p>
@@ -32,40 +64,38 @@
       </template>
       <template v-slot:titleContentSmall>Companies</template>
       <template v-slot:content="slotProps">
-        <p
-          class="w-full md:w-7/12 flex items-center justify-start mb-1 md:mb-0"
-        >
-          <span class="hidden md:flex mr-2">
+        <p class="w-full xl:w-7/12 flex items-center justify-start">
+          <span class="hidden xl:flex mr-2">
             <img
               v-if="slotProps.item.logo"
               :src="slotProps.item.logo"
               class="w-8 h-8 rounded bg-cover"
             />
-            <span v-else class="w-8 h-8 hidden md:flex">&nbsp;</span>
+            <span v-else class="w-8 h-8 hidden xl:flex">&nbsp;</span>
           </span>
-          <span> {{ slotProps.item.name }}</span>
-          <span class="badge-gray">{{ slotProps.item.abbr }}</span>
+          <span class="flex items-baseline">
+            <span> {{ slotProps.item.name }}</span>
+            <span class="badge-gray">{{ slotProps.item.abbr }}</span></span
+          >
         </p>
 
-        <p class="w-6/12 md:w-3/12 mb-1 md:mb-0 flex md:justify-center">
+        <p class="w-full xl:w-3/12 flex xl:justify-center">
           <template v-if="slotProps.item.size !== 0">
             <span>{{ slotProps.item.size }}</span
-            ><span class="block md:hidden">&nbsp;employees </span>
+            ><span class="block xl:hidden">&nbsp;employees </span>
           </template>
         </p>
 
-        <p
-          class="w-6/12 md:w-2/12 mb-1 md:mb-0 flex justify-end md:justify-center"
-        >
+        <p class="w-full xl:w-2/12 flex xl:justify-center">
           <nuxt-link
-            class="btn-table px-3"
+            class="btn-link"
             :to="{
               name: 'companies-departments-id',
               params: { id: slotProps.item.code },
             }"
             @click.stop.native
             >{{ slotProps.item.departmentCount
-            }}<span class="visible md:hidden"
+            }}<span class="visible xl:hidden"
               >&nbsp; departments
             </span></nuxt-link
           >
@@ -73,7 +103,7 @@
       </template>
       <template v-slot:popup-menu="slotProps">
         <span
-          :class="hovered === slotProps.item.code ? 'flex' : 'flex md:hidden'"
+          :class="hovered === slotProps.item.code ? 'flex' : 'flex xl:hidden'"
           class="items-center"
         >
           <popup-menu-vue
@@ -90,13 +120,6 @@
             </template>
           </popup-menu-vue>
         </span>
-      </template>
-
-      <template v-if="disableNewButton" v-slot:extra>
-        <p class="flex w-full items-center justify-center p-4">
-          You cannot create a company right now. Make sure to have sectors and
-          at least one industry.
-        </p>
       </template>
     </display-table-component>
 

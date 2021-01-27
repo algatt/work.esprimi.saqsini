@@ -7,7 +7,7 @@
       <div
         class="bg-primary p-3 text-white text-lg rounded-none md:rounded-t-lg"
       >
-        <h6>
+        <h5 class="pl-2">
           <slot name="title"></slot>
           <span v-if="!$slots.title && currentItemToBeEdited.code === -1"
             >New</span
@@ -15,7 +15,7 @@
           <span v-if="!$slots.title && currentItemToBeEdited.code !== -1"
             >Edit</span
           >
-        </h6>
+        </h5>
       </div>
       <div class="flex flex-col p-5 overflow-y-auto">
         <slot name="content"></slot>

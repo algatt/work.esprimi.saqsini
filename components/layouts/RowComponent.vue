@@ -1,13 +1,13 @@
 <template>
   <div
-    class="flex pl-1 pr-2 md:px-4 py-3 md:py-2 transition duration-500 border-b border-gray-200 hover:bg-gray-50 items-center focus:bg-white h-auto md:h-14 cursor-pointer"
-    :class="existsInSelectedItems ? 'bg-gray-100 ' : null"
+    class="flex pl-1 pr-2 xl:px-4 py-3 xl:py-2 transition duration-500 border-b border-gray-200 hover:bg-gray-50 items-center focus:bg-white h-auto xl:h-14 cursor-pointer"
+    :class="existsInSelectedItems ? null : null"
     @mouseover="mouseOverDiv(item)"
     @mouseleave="mouseExitDiv"
-    @click="$emit('clicked', item)"
+    @click="selectItem(item) /*$emit('clicked', item)*/"
   >
     <button
-      class="hidden md:flex w-12 justify-center items-center cursor-pointer focus:outline-none self-stretch"
+      class="hidden xl:flex w-12 justify-center items-center cursor-pointer focus:outline-none self-stretch"
       @click.stop="selectItem(item)"
     >
       <span>
@@ -25,7 +25,7 @@
       </span>
     </button>
     <button
-      class="flex md:hidden w-12 justify-center items-center cursor-pointer focus:outline-none self-stretch"
+      class="flex xl:hidden w-12 justify-center items-center cursor-pointer focus:outline-none self-stretch"
       @click.stop="selectItem(item)"
     >
       <i
@@ -38,7 +38,7 @@
       <slot name="content"></slot
     ></span>
     <span
-      class="flex w-12 justify-end md:justify-center items-center self-stretch"
+      class="flex w-12 justify-end xl:justify-center items-center self-stretch"
       @click.stop
     >
       <slot name="popup-menu"></slot>

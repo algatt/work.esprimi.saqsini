@@ -8,10 +8,10 @@
       </h5>
       <div class="mb-3"><slot name="message"></slot></div>
       <div class="flex w-full justify-center">
-        <button class="btn-danger mr-3 w-20" @click="$emit('confirm')">
+        <button class="btn btn-danger mr-3 w-20" @click="$emit('confirm')">
           Delete
         </button>
-        <button class="btn-primary w-20" @click="$emit('cancel')">
+        <button class="btn btn-primary w-20" @click="$emit('cancel')">
           Cancel
         </button>
       </div>

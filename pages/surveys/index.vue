@@ -1,29 +1,60 @@
 <template>
-  <div v-if="!loading" class="flex flex-wrap">
+  <div v-if="!loading" class="flex flex-wrap items-start">
+    <top-header-bar which="surveys" class="w-full"
+      ><template v-slot:title>Surveys</template>
+      <template v-slot:button>
+        <button
+          v-if="!disableNewButton && surveys.length !== 0"
+          class="btn btn-primary"
+          @click="setCurrentItem({ code: -1 })"
+        >
+          New Survey
+        </button></template
+      ></top-header-bar
+    >
+
+    <side-tree-nav
+      class="w-full xl:w-3/12"
+      :parents="categories"
+      :children="subcategories"
+      parent-code-name="categoryCode"
+      count-name="surveyCount"
+      @parentChanged="parentChanged"
+      @childChanged="childChanged"
+      @newParent="newParent"
+      @newChild="newChild"
+    >
+      <template v-slot:title>Categories </template>
+      <template v-slot:newText>New Category</template>
+    </side-tree-nav>
+
+    <info-box v-if="disableNewButton" class="flex-grow mx-5 mt-2 md:mt-0">
+      <template v-slot:title>We have a problem...</template>
+      <template v-slot:content>
+        You cannot create a survey right now. Make sure to have set up
+        categories and at least one subcategory.
+      </template>
+    </info-box>
+
+    <info-box
+      v-else-if="surveys.length === 0"
+      class="flex-grow mx-5 mt-2 md:mt-0"
+    >
+      <template v-slot:title>No Surveys here...</template>
+      <template v-slot:content>
+        <button class="btn-link" @click="setCurrentItem({ code: -1 })">
+          Create Survey
+        </button>
+      </template></info-box
+    >
+
     <display-table-component
+      v-else
+      class="w-full xl:w-9/12"
       :items="surveys"
-      which="surveys"
-      new-text="Survey"
-      :disable-new-button="disableNewButton"
       @hovered="hovered = $event"
       @clicked="setCurrentItem($event)"
     >
-      <template v-slot:title>Survey List</template>
-      <template v-slot:sideNav>
-        <side-tree-nav
-          :parents="categories"
-          :children="subcategories"
-          parent-code-name="categoryCode"
-          count-name="surveyCount"
-          @parentChanged="parentChanged"
-          @childChanged="childChanged"
-          @newParent="newParent"
-          @newChild="newChild"
-        >
-          <template v-slot:title>Categories </template>
-          <template v-slot:newText>New Category</template>
-        </side-tree-nav>
-      </template>
       <template v-slot:titleContent>
         <p class="w-4/12">Name</p>
         <p class="w-4/12">Date</p>
@@ -33,9 +64,7 @@
       <template v-slot:titleContentSmall>Surveys</template>
 
       <template v-slot:content="slotProps">
-        <p
-          class="w-8/12 md:w-4/12 flex items-center justify-between md:justify-start mb-1 md:mb-0"
-        >
+        <p class="w-full xl:w-4/12 flex items-center">
           {{ slotProps.item.name }}
           <i
             v-if="slotProps.item.flags.includes('FLAGGED_FOR_REMOVAL')"
@@ -43,35 +72,34 @@
           ></i>
         </p>
 
-        <p
-          class="w-4/12 md:w-4/12 flex justify-end md:justify-start mb-1 md:mb-0"
-        >
+        <p class="w-full xl:w-4/12 flex">
           {{ slotProps.item.referenceDate }}
         </p>
 
-        <p class="w-6/12 md:w-2/12 md:justify-center flex mb-1 md:mb-0">
-          <button class="btn-table">
+        <p class="w-full xl:w-2/12 flex xl:justify-center">
+          <button class="btn-link">
             {{ slotProps.item.responses
-            }}<span class="flex md:hidden">&nbsp; Responses</span>
+            }}<span class="flex xl:hidden">&nbsp; Responses</span>
           </button>
         </p>
-        <p
-          class="w-6/12 md:w-2/12 md:justify-center flex justify-end md:justify-start mb-1 md:mb-0"
-        >
+        <p class="w-full xl:w-2/12 flex xl:justify-center">
           <nuxt-link
-            :to="{ name: 'questions-id', params: { id: slotProps.item.code } }"
+            :to="{
+              name: 'questions-id',
+              params: { id: slotProps.item.code },
+            }"
             @click.stop.native
           >
-            <button class="btn-table">
+            <button class="btn-link">
               {{ slotProps.item.questions }}
-              <span class="flex md:hidden">&nbsp; Questions</span>
+              <span class="flex xl:hidden">&nbsp; Questions</span>
             </button>
           </nuxt-link>
         </p>
       </template>
       <template v-slot:popup-menu="slotProps">
         <span
-          :class="hovered === slotProps.item.code ? 'flex' : 'flex md:hidden'"
+          :class="hovered === slotProps.item.code ? 'flex' : 'flex xl:hidden'"
           class="items-center"
         >
           <popup-menu-vue
@@ -107,13 +135,6 @@
           </popup-menu-vue>
         </span>
       </template>
-
-      <template v-if="disableNewButton" v-slot:extra>
-        <p class="flex w-full items-center justify-center p-4">
-          You cannot create a survey right now. Make sure to have set up
-          categories and at least one subcategory.
-        </p>
-      </template>
     </display-table-component>
 
     <transition name="fade">
@@ -148,6 +169,8 @@ import NewCategory from '~/components/surveys/NewCategory'
 import NewSubcategory from '~/components/surveys/NewSubcategory'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
+import TopHeaderBar from '~/components/layouts/TopHeaderBar'
+import InfoBox from '~/components/layouts/InfoBox'
 
 export default {
   name: 'CompaniesList',
@@ -159,6 +182,8 @@ export default {
     DisplayTableComponent,
     Spinner,
     EditObjectModal,
+    TopHeaderBar,
+    InfoBox,
   },
   data() {
     return {

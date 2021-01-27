@@ -38,7 +38,7 @@ h6 {
 }
 
 h6 {
-@apply text-lg;
+@apply font-semibold text-gray-600;
 }
 
 h5 {
@@ -61,12 +61,20 @@ h1{
   @apply text-5xl;
 }
 
+.btn {
+  @apply font-medium shadow  px-3 py-1 rounded transition duration-300 disabled:opacity-50 focus:ring-2 ring-offset-2 focus:outline-none;
+}
+
 .btn-primary {
-  @apply bg-primary font-medium text-white px-3 py-1 rounded-sm hover:bg-primary-darker transition duration-300 disabled:opacity-50 disabled:bg-primary focus:ring-2 ring-primary-darker  ring-offset-2 focus:outline-none;
+  @apply bg-primary border-t text-white border-primary-lighter  hover:bg-primary-darker disabled:bg-primary ring-primary-darker active:border-primary-darker;
 }
 
 .btn-danger {
-  @apply bg-red-500 font-medium text-white px-3 py-1 rounded-sm hover:bg-red-600 transition duration-300 disabled:opacity-50 disabled:bg-red-500 focus:ring-2 ring-red-600  ring-offset-2 focus:outline-none;
+  @apply bg-red-500  border-t text-white border-red-400 hover:bg-red-600 disabled:bg-red-500 ring-red-500 active:border-red-500;
+}
+
+.btn-secondary {
+  @apply mr-2 bg-white text-primary border border-primary hover:bg-primary hover:text-white disabled:bg-white ring-primary active:border-primary;
 }
 
 .btn-round-primary {
@@ -83,7 +91,7 @@ h1{
 }
 
 .btn-link {
-  @apply text-primary hover:text-primary-darker transition duration-300 focus:outline-none focus:ring-1 focus:ring-primary focus:ring-offset-2 rounded;
+  @apply hover:underline text-primary font-semibold hover:text-primary-darker transition duration-300 focus:outline-none flex;
 }
 
 .btn-link:disabled {
@@ -105,7 +113,10 @@ h1{
 }
 
 .btn-link-rounded {
-  @apply mx-1 text-gray-300 bg-gray-100 h-6 w-6 rounded-full hover:bg-gray-300 hover:text-gray-500 transition duration-300 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-1;
+  @apply mx-1 text-gray-300 bg-gray-100 h-6 w-6 rounded-full
+  hover:bg-gray-300 hover:text-gray-500 transition duration-300
+  focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-1
+  border-t border-gray-200 shadow active:border-gray-100;
 }
 
 /*.btn-link-rounded-primary {*/
@@ -155,7 +166,7 @@ h1{
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.5s;
+  transition: opacity 0.3s;
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
@@ -163,9 +174,13 @@ h1{
 
 
 .popup-menu-button {
-  @apply flex justify-start items-center mx-auto px-5 text-gray-600;
+  @apply flex justify-start items-center mx-auto px-5 text-gray-600 py-1 transition-all duration-300;
+}
+
+.popup-menu-button:hover {
+  @apply bg-gray-100 transition-all duration-300;
 }
 
 .popup-menu-button i {
-  @apply text-gray-400 mr-2;
+  @apply text-gray-300 mr-2;
 }

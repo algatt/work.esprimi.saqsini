@@ -19,7 +19,7 @@
 
     <div class="flex justify-center">
       <button
-        class="btn-primary py-2 px-5"
+        class="btn btn-primary py-2 px-5"
         :disabled="$v.$invalid || inProgress"
         @click="resetPassword"
       >

@@ -1,15 +1,17 @@
 <template>
   <div
-    class="flex flex-wrap px-1 md:px-4 py-2 transition duration-300 border-b border-gray-200 bg-gray-100 items-center"
+    class="flex flex-wrap px-1 xl:px-4 py-3 transition duration-300 border-b-2 border-gray-200 bg-gray-100 items-center"
   >
-    <span class="hidden md:flex w-12 justify-center text-primary items-center">
+    <span class="hidden xl:flex w-12 justify-center text-primary items-center">
       &nbsp;
     </span>
-    <span class="hidden md:flex flex-wrap flex-grow items-center font-bold">
+    <span
+      class="hidden xl:flex flex-wrap flex-grow items-center uppercase text-gray-600"
+    >
       <slot name="content"></slot>
     </span>
     <span
-      class="flex md:hidden flex-wrap flex-grow items-center font-bold pl-1"
+      class="flex xl:hidden flex-wrap flex-grow items-center font-bold pl-1"
     >
       <slot name="contentSmall"></slot>
     </span>

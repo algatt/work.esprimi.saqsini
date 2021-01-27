@@ -8,10 +8,12 @@
       <slot name="menuButton"></slot>
       <i v-if="!$slots.menuButton" class="fas fa-ellipsis-v fa-fw"></i>
     </button>
-    <button v-if="showMenu" class="absolute bg-blue-300 min-w-max">
+
+    <button v-if="showMenu" class="absolute flex p-3">
       <div
         id="popupMenuContainer"
-        class="absolute flex flex-col z-20 bg-white border-gray-200 rounded shadow min-w-max"
+        class="absolute flex flex-col z-20 bg-white border-gray-200 rounded shadow"
+        style="min-width: max-content; width: 150px"
         :style="styleForMenu"
         @click.stop="closeMenu"
       >
@@ -59,10 +61,11 @@ export default {
           const rect = document
             .getElementById('popupMenuContainer')
             .getBoundingClientRect()
+
           const right = rect.right
           const bottom = rect.bottom
-          const windowWidth = window.screen.width
-          const windowHeight = window.screen.height
+          const windowWidth = window.innerWidth
+          const windowHeight = window.innerHeight
 
           if (right > windowWidth) {
             this.styleForMenu = `left : -${right - windowWidth + 25}px`
@@ -85,6 +88,6 @@ export default {
 
 <style scoped>
 #popupMenuContainer button {
-  @apply py-2 px-1 text-gray-700 hover:bg-gray-100 transition duration-300;
+  @apply py-1 px-1 text-gray-700 hover:bg-gray-100 transition duration-300;
 }
 </style>

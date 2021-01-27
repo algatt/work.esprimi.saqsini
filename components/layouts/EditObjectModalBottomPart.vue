@@ -4,7 +4,7 @@
       <template v-if="showDelete && form.code !== -1">
         <button
           v-if="form.ordinalPosition !== 1"
-          class="btn-danger mr-2"
+          class="btn btn-danger mr-2"
           :disabled="form.code === -1"
           @click="deleteItem"
         >
@@ -22,12 +22,12 @@
     </div>
 
     <div class="flex flex-wrap items-center w-6/12 justify-end">
-      <button class="btn-primary mr-2" @click="cancelCurrentItem">
+      <button class="btn btn-secondary" @click="cancelCurrentItem">
         Cancel
       </button>
       <button
         v-if="showSave"
-        class="btn-primary"
+        class="btn btn-primary"
         :disabled="!isValid"
         @click="saveItem"
       >

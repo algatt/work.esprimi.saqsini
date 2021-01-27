@@ -1,23 +1,23 @@
 <template>
   <div v-if="!loading" class="flex flex-col flex-wrap">
-    <div
-      class="flex md:hidden items-center justify-between px-2 py-2 bg-gray-100"
-    >
+    <div class="flex md:hidden items-baseline justify-between px-2 py-2">
       <h6>{{ survey.name }}</h6>
       <p>{{ survey.referenceDate }}</p>
     </div>
     <div
-      class="w-full flex flex-wrap items-center justify-between bg-gray-100 py-4 md:py-2 rounded px-3"
+      class="w-full flex flex-wrap items-baseline justify-between bg-white py-4 md:py-2 rounded px-3"
     >
       <div
-        class="flex items-center md:space-x-3 justify-around md:justify-start w-full md:w-auto"
+        class="flex items-center md:space-x-3 justify-around md:justify-start w-full md:w-auto border-b-2 border-gray-100"
       >
         <button
           v-for="menuOption in menu"
           :key="menuOption.code"
-          class="flex-grow items-center md:flex md:justify-center md:w-44 font-semibold hover:text-primary transition duration-300 focus:outline-none"
+          class="flex-grow items-center md:flex md:justify-center md:w-44 font-semibold hover:text-primary transition duration-300 focus:outline-none py-2"
           :class="
-            selectedMenu === menuOption.code ? 'text-primary' : 'text-gray-600'
+            selectedMenu === menuOption.code
+              ? 'text-primary border-b-2 border-primary'
+              : 'text-gray-500'
           "
           @click="selectMenu(menuOption.code)"
         >
@@ -31,66 +31,104 @@
       </div>
     </div>
     <div class="mt-5 w-full md:w-8/12 mx-auto flex flex-col">
-      <div
-        v-for="question in questions"
-        :key="question.code"
-        class="relative py-3"
-        @mouseenter="changeSubMenu(question.code)"
-      >
+      <div v-for="question in questions" :key="question.code" class="relative">
         <div
-          v-if="!showPreview"
-          class="border border-gray-100 shadow rounded w-full mx-auto flex items-center"
+          class="border border-gray-100 shadow rounded w-full mx-auto flex items-stretch"
         >
           <div
-            class="w-12 flex justify-center items-center p-5 text-white text-lg rounded-l"
-            :class="
-              question.flags.includes('SECTION')
-                ? ' bg-primary-dark'
-                : ' bg-primary'
-            "
+            class="w-12 flex justify-center items-center p-5 text-white text-lg rounded-l bg-primary"
           >
             {{ question.ordinalPosition }}
           </div>
-          <div
-            class="flex items-center flex-grow p-5"
-            :class="
-              question.flags.includes('SECTION') ? 'font-bold' : 'font-medium'
-            "
-          >
+          <div v-if="!showPreview" class="flex flex-col flex-grow p-3">
             <span
-              v-if="
-                JSON.parse(question.surveyOptions).branching.rules.length !== 0
+              class="mb-2"
+              :class="
+                question.flags.includes('SECTION')
+                  ? 'font-semibold'
+                  : 'font-medium'
               "
-              title="Has Branching"
-              class="w-6"
-              ><i class="fas fa-code-branch fa-fw"></i></span
-            ><span v-else class="w-6">&nbsp;</span>{{ question.name }}
+              >{{ question.name }}</span
+            >
+            <div class="flex">
+              <span
+                class="text-sm bg-gray-100 rounded border border-gray-200 px-2 text-gray-700 mr-2"
+                >{{ questionText(question).toLowerCase() }}</span
+              >
+              <span
+                v-if="
+                  JSON.parse(question.surveyOptions).branching.rules.length !==
+                  0
+                "
+                title="Has Branching"
+                class="text-sm bg-gray-100 rounded border border-gray-200 px-2 text-gray-700 mr-2"
+                >branching</span
+              >
+            </div>
           </div>
-          <div
-            class="w-12 flex justify-center items-center p-5 text-gray-300 rounded-r"
-          >
-            <i class="fa-fw" :class="questionIcon(question)"></i>
+          <display-question
+            v-else
+            :question="question"
+            class="p-8 w-full"
+            :default-style="true"
+          ></display-question>
+          <div class="w-12 flex justify-center items-center p-5">
+            <popup-menu direction="center">
+              <template v-slot:menuButton
+                ><button class="btn-link-rounded">
+                  <i class="fas fa-ellipsis-v fa-fw"></i></button
+              ></template>
+              <template v-slot:menuItems>
+                <button class="w-full" @click="editQuestion(question)">
+                  <span class="popup-menu-button">
+                    <i class="fa-fw fas fa-pencil-alt fa-sm"></i>Edit</span
+                  >
+                </button>
+                <button
+                  v-if="question.ordinalPosition !== 1"
+                  class="w-full"
+                  @click="moveQuestion(question)"
+                >
+                  <span class="popup-menu-button">
+                    <i class="fa-fw fas fa-arrows-alt-v fa-sm"></i>Move</span
+                  >
+                </button>
+                <button
+                  v-if="question.ordinalPosition !== 1"
+                  class="w-full"
+                  @click="deleteQuestion(question)"
+                >
+                  <span class="popup-menu-button">
+                    <i class="fa-fw fas fa-trash-alt fa-sm"></i>Delete</span
+                  >
+                </button>
+              </template>
+            </popup-menu>
           </div>
         </div>
-        <display-question
-          v-else
-          :question="question"
-          class="border border-gray-100 shadow p-8 rounded"
-          :default-style="true"
-          @showSubMenu="changeSubMenu(question.code)"
-        ></display-question>
 
-        <new-question-toolbar
-          class="absolute w-full bottom-0 mb-1"
-          :class="
-            whichSubMenu === question.code ? 'visible' : 'visible md:hidden'
-          "
-          :first-element="question.ordinalPosition === 1"
-          @newQuestion="newQuestion($event, question.ordinalPosition + 1)"
-          @editQuestion="editQuestion(question)"
-          @moveQuestion="moveQuestion(question)"
-          @deleteQuestion="deleteQuestion(question)"
-        ></new-question-toolbar>
+        <div class="flex justify-center my-2 p-2">
+          <popup-menu direction="center">
+            <template v-slot:menuButton
+              ><span class="btn-link-rounded"
+                ><i class="fas fa-plus fa-fw"></i></span
+            ></template>
+            <template v-slot:menuItems>
+              <button
+                v-for="questionType in questionTypes"
+                :key="questionType.code"
+                @click="
+                  newQuestion(questionType.flag, question.ordinalPosition + 1)
+                "
+              >
+                <span class="popup-menu-button">
+                  <i class="fa-fw fa-sm" :class="questionType.icon"></i
+                  >{{ questionType.text }}</span
+                >
+              </button>
+            </template>
+          </popup-menu>
+        </div>
       </div>
     </div>
 
@@ -165,7 +203,6 @@
 import cookies from 'js-cookie'
 import Spinner from '~/components/layouts/Spinner'
 import DisplayQuestion from '~/components/surveys/DisplayQuestion'
-import NewQuestionToolbar from '~/components/surveys/NewQuestionToolBar'
 import {
   getQuestionType,
   parseSurveyToForm,
@@ -178,6 +215,7 @@ import SurveyLanguageSettings from '~/components/surveys/SurveyLanguageSettings'
 import QuestionMoveMenu from '~/components/surveys/QuestionMoveMenu'
 import SurveyCollaborators from '~/components/surveys/SurveyCollaborators'
 import { QUESTION_TYPES } from '~/helpers/constants'
+import PopupMenu from '~/components/layouts/PopupMenu'
 
 export default {
   name: 'QuestionList',
@@ -188,10 +226,10 @@ export default {
     NewQuestion,
     Spinner,
     DisplayQuestion,
-    NewQuestionToolbar,
     EditObjectModal,
     SurveySettings,
     SurveyLanguageSettings,
+    PopupMenu,
   },
   data() {
     return {
@@ -222,6 +260,9 @@ export default {
     },
     currentItemToBeEdited() {
       return this.$store.state.currentItemToBeEdited
+    },
+    questionTypes() {
+      return QUESTION_TYPES
     },
   },
   created() {
@@ -271,8 +312,8 @@ export default {
     changeSubMenu(code) {
       this.whichSubMenu = code
     },
-    questionIcon(question) {
-      return QUESTION_TYPES[getQuestionType(question)].icon
+    questionText(question) {
+      return QUESTION_TYPES[getQuestionType(question)].text
     },
     showPreviewToggle() {
       this.showPreview = !this.showPreview

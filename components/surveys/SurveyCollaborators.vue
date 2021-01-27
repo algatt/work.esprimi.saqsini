@@ -15,7 +15,7 @@
         </div>
         <div class="flex items-center">
           <button
-            class="btn-primary"
+            class="btn btn-primary"
             :disabled="$v.$invalid"
             @click="addCollaborator"
           >

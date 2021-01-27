@@ -1,24 +1,19 @@
 <template>
   <div
-    class="w-full flex flex-wrap justify-between items-center h-auto bg-gray-100 py-3 px-2 md:mb-2"
+    class="w-full flex-wrap justify-between items-center h-auto p-4 flex fixed xl:relative bottom-0 right-0"
   >
-    <h6
-      class="w-full md:w-auto text-lg font-semibold"
-      :class="hasSideNav ? 'pl-0' : 'pl-0 md:pl-3'"
-    >
+    <h6 class="hidden xl:flex xl:w-auto text-2xl font-semibold">
       <slot name="title"> </slot>
     </h6>
-    <div
-      class="flex justify-start w-full md:w-auto md:justify-end pt-2 md:pt-0 items-center"
-    >
+    <div class="flex w-full xl:w-auto justify-end items-center">
       <template v-if="selectedItems === 0">
         <slot name="button"></slot
       ></template>
       <template v-else
-        ><button class="btn-primary mr-2" @click="emptySelectedItems">
+        ><button class="btn btn-primary mr-2" @click="emptySelectedItems">
           Clear Selection
         </button>
-        <button class="btn-danger mr-2" @click="showModal = true">
+        <button class="btn btn-danger mr-2" @click="showModal = true">
           Delete
           <span v-if="selectedItems === 1">{{ selectedItems }} item</span>
           <span v-else-if="selectedItems > 1">{{ selectedItems }} items</span>
@@ -53,11 +48,6 @@ export default {
     which: {
       type: String,
       required: true,
-    },
-    hasSideNav: {
-      type: Array,
-      required: false,
-      default: null,
     },
   },
   data() {

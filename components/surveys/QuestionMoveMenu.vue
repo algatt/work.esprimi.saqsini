@@ -27,7 +27,9 @@
         </button>
       </div>
       <div class="w-full p-3 justify-end w-full flex">
-        <button class="btn-primary px-3" @click="$emit('close')">Close</button>
+        <button class="btn btn-primary px-3" @click="$emit('close')">
+          Close
+        </button>
       </div>
     </div>
   </div>
