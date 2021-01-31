@@ -5,6 +5,24 @@ export const state = () => ({
 })
 
 export const actions = {
+  getAllJobs({ commit }, { limit, offset }) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .get(`/contact/job/?limit=${limit}&offset=${offset}`)
+        .then((response) => {
+          commit(
+            'setItems',
+            { which: 'jobs', items: response.data },
+            { root: true }
+          )
+          resolve(response.data)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
   getJobsByContact({ commit }, contactCode) {
     return new Promise((resolve, reject) => {
       this.$axios

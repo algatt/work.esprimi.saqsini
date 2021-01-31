@@ -1,24 +1,39 @@
 <template>
   <div
-    class="w-full flex-wrap justify-between items-center h-auto p-4 flex fixed xl:relative bottom-0 right-0"
+    class="w-full flex-wrap justify-between items-center h-16 p-4 flex fixed xl:relative bottom-0 right-0"
   >
     <h6 class="hidden xl:flex xl:w-auto text-2xl font-semibold">
       <slot name="title"> </slot>
     </h6>
-    <div class="flex w-full xl:w-auto justify-end items-center">
+    <div class="flex w-full xl:w-auto justify-end items-center space-x-2">
       <template v-if="selectedItems === 0">
-        <slot name="button"></slot
-      ></template>
-      <template v-else
-        ><button class="btn btn-primary mr-2" @click="emptySelectedItems">
-          Clear Selection
+        <button
+          v-if="!hideSelectAll"
+          class="btn btn-primary"
+          @click="selectAll"
+        >
+          Select All
         </button>
-        <button class="btn btn-danger mr-2" @click="showModal = true">
+      </template>
+      <template v-else>
+        <button
+          v-if="!hideDelete"
+          class="btn btn-danger"
+          @click="showModal = true"
+        >
           Delete
           <span v-if="selectedItems === 1">{{ selectedItems }} item</span>
           <span v-else-if="selectedItems > 1">{{ selectedItems }} items</span>
         </button>
+        <button
+          ref="clearAll"
+          class="btn btn-primary"
+          @click="emptySelectedItems"
+        >
+          Clear Selection
+        </button>
       </template>
+      <slot name="button"></slot>
     </div>
 
     <modal-confirm
@@ -49,6 +64,18 @@ export default {
       type: String,
       required: true,
     },
+    hideDelete: {
+      type: Boolean,
+      default: false,
+    },
+    hideSelectAll: {
+      type: Boolean,
+      default: false,
+    },
+    items: {
+      type: Array,
+      required: false,
+    },
   },
   data() {
     return {
@@ -57,7 +84,11 @@ export default {
   },
   computed: {
     selectedItems() {
-      return this.$store.state.selectedItems.length
+      const x = this.$store.state.selectedItems.length
+      this.$nextTick(() => {
+        if (x > 0) this.$refs.clearAll.focus()
+      })
+      return x
     },
   },
   methods: {
@@ -69,6 +100,9 @@ export default {
       this.$store.dispatch('deleteSelectedItems', this.which).then(() => {
         this.showModal = false
       })
+    },
+    selectAll() {
+      this.$store.dispatch('selectedItemsManageAll', this.items)
     },
   },
 }

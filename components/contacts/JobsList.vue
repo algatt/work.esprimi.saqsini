@@ -1,20 +1,20 @@
 <template>
   <div v-if="!loading" class="flex flex-wrap items-start">
-    <top-header-bar which="jobs" class="w-full"
+    <top-header-bar which="jobs" :items="jobs" class="w-full"
       ><template v-slot:title
         >Job History for
         {{ getValueFromObject(contacts, 'displayName', $route.params.id) }}
       </template>
       <template v-slot:button>
-        <nuxt-link :to="{ name: 'contacts-roles' }">
-          <button class="btn btn-primary w-16 mr-3">Roles</button></nuxt-link
+        <nuxt-link :to="{ name: 'companies-roles' }">
+          <button class="btn btn-primary w-16">Roles</button></nuxt-link
         >
         <button
           v-if="!disableNewButton && jobs.length !== 0"
           class="btn btn-primary"
           @click="setCurrentItem({ code: -1 })"
         >
-          New Job
+          <i class="fas fa-plus fa-fw fa-sm"></i>New Job
         </button>
       </template></top-header-bar
     >
@@ -88,7 +88,7 @@
             <template v-slot:menuItems>
               <button @click="setCurrentItem(slotProps.item)">
                 <span class="popup-menu-button">
-                  <i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit</span
+                  <i class="fas fa-pencil-alt fa-fw fa-sm mr-1"></i>Edit</span
                 >
               </button>
             </template>

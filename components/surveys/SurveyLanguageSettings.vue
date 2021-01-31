@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="!survey.flags.includes('HAS_LANGUAGE_PACK_FILE')">
+    <div v-if="!survey.flags.includes('HAS_SURVEY_DATA_FILE')">
       <p>
         This survey only has the default language. You can generate a file that
         allows you to translate your survey in other languages.

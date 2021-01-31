@@ -1,14 +1,17 @@
 <template>
   <div v-if="!loading" class="flex flex-wrap items-start">
-    <top-header-bar which="companies" class="w-full"
+    <top-header-bar which="companies" :items="companies" class="w-full"
       ><template v-slot:title>Companies</template>
       <template v-slot:button>
+        <nuxt-link :to="{ name: 'companies-roles' }">
+          <button class="btn btn-primary w-16">Roles</button></nuxt-link
+        >
         <button
           v-if="!disableNewButton && companies.length !== 0"
           class="btn btn-primary"
           @click="setCurrentItem({ code: -1 })"
         >
-          New Company
+          <i class="fas fa-plus fa-sm fa-fw mr-1"></i>New Company
         </button></template
       ></top-header-bar
     >

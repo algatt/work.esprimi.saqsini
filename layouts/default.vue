@@ -14,7 +14,7 @@
       :is-visible="menuShow"
     ></nav-bar>
 
-    <div class="flex flex-col flex-grow">
+    <div class="flex flex-col flex-1">
       <Nuxt />
     </div>
   </div>
@@ -33,12 +33,12 @@ export default {
   },
   created() {
     this.getNotifications()
-    setInterval(() => {
-      this.getNotifications()
-    }, 30000)
+    // setInterval(() => {
+    //   this.getNotifications()
+    // }, 30000)
   },
   beforeDestroy() {
-    clearInterval(this.getNotifications)
+    // clearInterval(this.getNotifications)
   },
   methods: {
     getNotifications() {

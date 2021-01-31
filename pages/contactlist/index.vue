@@ -1,53 +1,36 @@
 <template>
   <div v-if="!loading" class="flex flex-wrap items-start">
-    <top-header-bar which="departments" :items="departments" class="w-full"
-      ><template v-slot:title>Departments in {{ company.name }}</template>
+    <top-header-bar which="contacts" class="w-full"
+      ><template v-slot:title>Contact Lists</template>
       <template v-slot:button>
-        <button
-          v-if="departments.length !== 0"
-          class="btn btn-primary"
-          @click="setCurrentItem({ code: -1 })"
-        >
-          <i class="fas fa-plus fa-sm fa-fw mr-1"></i>New Department
+        <button class="btn btn-primary" @click="setCurrentItem({ code: -1 })">
+          <i class="fas fa-plus fa-sm mr-1"></i>New Contact List
         </button></template
       ></top-header-bar
     >
 
-    <info-box
-      v-if="departments.length === 0"
-      class="flex-grow mx-5 mt-2 md:mt-0"
-    >
-      <template v-slot:title>No Departments here...</template>
-      <template v-slot:content>
-        <button class="btn-link" @click="setCurrentItem({ code: -1 })">
-          Create a Department
-        </button>
-      </template></info-box
-    >
-
     <display-table-component
-      v-else
       class="w-full"
-      :items="departments"
+      :items="contactlists"
       @hovered="hovered = $event"
       @clicked="setCurrentItem($event)"
     >
-      <template v-slot:title>Departments for {{ company.name }}</template>
+      <template v-slot:title>Contact Lists</template>
+
       <template v-slot:titleContent>
-        <p class="w-full">Name</p>
+        <p class="w-5/12">List Name</p>
+        <p class="w-3/12 text-center">Total Contacts</p>
+        <p class="w-4/12">Validity</p>
       </template>
-      <template v-slot:titleContentSmall>Departments</template>
+      <template v-slot:titleContentSmall>Contacts</template>
       <template v-slot:content="slotProps"
-        ><div class="w-full flex items-baseline">
-          <span>
-            {{ slotProps.item.name }}
-          </span>
-          <span class="badge-gray">{{ slotProps.item.abbr }}</span>
-        </div>
+        ><p class="w-full xl:w-5/12">Default {{ slotProps.items }}</p>
+        <p class="w-full xl:w-3/12 xl:justify-center flex">129</p>
+        <p class="w-full xl:w-4/12">Until 28/2/2020 (xx days)</p>
       </template>
       <template v-slot:popup-menu="slotProps">
         <span
-          :class="hovered === slotProps.item.code ? 'flex' : 'flex md:hidden'"
+          :class="hovered === slotProps.item.code ? 'flex' : 'flex xl:hidden'"
           class="items-center"
         >
           <popup-menu-vue
@@ -70,7 +53,7 @@
     <transition name="fade">
       <edit-object-modal v-if="currentItemToBeEdited">
         <template v-slot:content>
-          <new-department></new-department>
+          <new-contact-list></new-contact-list>
         </template>
       </edit-object-modal>
     </transition>
@@ -79,20 +62,21 @@
 </template>
 
 <script>
+// import moment from 'moment'
 import EditObjectModal from '~/components/layouts/EditObjectModal'
 import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
-import NewDepartment from '~/components/contacts/NewDepartment'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
+import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 
 export default {
-  name: 'ContactsList',
+  name: 'ContactLists',
   components: {
-    Spinner,
-    NewDepartment,
     DisplayTableComponent,
     EditObjectModal,
     PopupMenuVue,
+    Spinner,
+    TopHeaderBar,
   },
   data() {
     return {
@@ -108,27 +92,29 @@ export default {
     currentItemToBeEdited() {
       return this.$store.state.currentItemToBeEdited
     },
-    departments() {
-      return this.$store.getters.getItems('departments')
-    },
-    company() {
-      return this.$store.getters.getItems('companies').find((el) => {
-        return el.code === this.$route.params.id
-      })
+    contactlists() {
+      return this.$store.getters.getItems('contactlist')
     },
   },
   created() {
-    this.$store.dispatch('setLoading', true)
-    this.$store
-      .dispatch('departments/getDepartments', this.$route.params.id)
-      .finally(() => {
-        this.$store.dispatch('setLoading', false)
-      })
+    this.$store.dispatch('contactlist/getContactLists', {
+      limit: 100,
+      offset: 0,
+    })
+    // this.$store.dispatch('setLoading', true)
+    // this.$store
+    //   .dispatch('contacts/getContacts', { limit: 100, offset: 0 })
+    //   .finally(() => {
+    //     this.$store.dispatch('setLoading', false)
+    //   })
   },
   methods: {
     setCurrentItem(item) {
       this.$store.dispatch('setCurrentItemToBeEdited', item)
     },
+    // calculateAge(dob) {
+    //   return moment().diff(moment(dob), 'y')
+    // },
   },
 }
 </script>

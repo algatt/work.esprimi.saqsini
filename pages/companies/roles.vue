@@ -1,6 +1,6 @@
 <template>
   <div v-if="!loading" class="flex flex-wrap items-start">
-    <top-header-bar which="roles" class="w-full"
+    <top-header-bar which="roles" :items="roles" class="w-full"
       ><template v-slot:title>Roles</template>
       <template v-slot:button>
         <button
@@ -8,7 +8,7 @@
           class="btn btn-primary"
           @click="setCurrentItem({ code: -1 })"
         >
-          New Role
+          <i class="fas fa-plus fa-sm fa-fw mr-1"></i>New Role
         </button></template
       ></top-header-bar
     >

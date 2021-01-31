@@ -1,11 +1,8 @@
 <template>
   <div v-if="!loading">
-    <top-header-bar which="notifications" class="w-full"
+    <top-header-bar which="notifications" :items="notifications" class="w-full"
       ><template v-slot:title>Notifications</template>
-      <template v-slot:button
-        ><button class="btn btn-primary px-3" @click="selectAll">
-          Select All
-        </button>
+      <template v-slot:button>
         <button class="btn btn-primary px-3 ml-2" @click="markAllAsRead">
           Mark All As Read
         </button>
@@ -54,7 +51,15 @@
               : 'text-gray-800'
           "
         >
-          <button class="btn-link" @click.stop="setCurrentItem(slotProps.item)">
+          <button
+            class="subject-link"
+            :class="
+              slotProps.item.flags.includes('READ')
+                ? 'text-gray-500'
+                : 'text-primary'
+            "
+            @click.stop="setCurrentItem(slotProps.item)"
+          >
             {{ slotProps.item.subject }}
           </button>
         </p>
@@ -156,11 +161,11 @@ export default {
       date = date.replace(' +', '+')
       return moment(date).format('Do MMM YYYY LT')
     },
-    selectAll() {
-      this.notifications.forEach((el) => {
-        this.$store.dispatch('selectedItemsManage', el)
-      })
-    },
+    // selectAll() {
+    //   this.notifications.forEach((el) => {
+    //     this.$store.dispatch('selectedItemsManage', el)
+    //   })
+    // },
     markAllAsRead() {
       this.$store.dispatch('notifications/markAllAsRead').then(() => {
         this.$store.dispatch('setLoading', true)
@@ -178,4 +183,8 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.subject-link {
+  @apply hover:underline hover:text-primary-darker transition duration-300 focus:outline-none flex;
+}
+</style>

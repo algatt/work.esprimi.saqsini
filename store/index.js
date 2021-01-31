@@ -66,13 +66,12 @@ export const actions = {
             {
               headers: {
                 token: cookies['x-access-token'],
-                Authorization: 'b0ded4a6-f1a8-45c4-aac5-7110ed437333',
+                Authorization: '2c276e30-b685-493e-a660-559feae22f8d',
               },
             }
           )
           commit('auth/setAuthUser', user.data)
         } catch (e) {
-          console.log(e)
           await context.store.commit('auth/setAuthToken', null, { root: true })
         }
       }
@@ -97,6 +96,12 @@ export const actions = {
     else items.push(item)
     commit('setSelectedItems', items)
   },
+
+  selectedItemsManageAll({ state, commit }, items) {
+    const temp = JSON.parse(JSON.stringify(items))
+    commit('setSelectedItems', temp)
+  },
+
   emptySelectedItems({ commit }) {
     commit('emptySelectedItems')
   },

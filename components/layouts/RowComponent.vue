@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex pl-1 pr-2 xl:px-4 py-3 xl:py-2 transition duration-500 border-b border-gray-200 hover:bg-gray-50 items-center focus:bg-white h-auto xl:h-14 cursor-pointer"
+    class="flex pl-1 pr-2 xl:px-4 py-3 xl:py-4 transition duration-500 border-b border-gray-200 hover:bg-gray-50 items-center focus:bg-white h-auto cursor-pointer"
     :class="existsInSelectedItems ? null : null"
     @mouseover="mouseOverDiv(item)"
     @mouseleave="mouseExitDiv"

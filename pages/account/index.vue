@@ -1,6 +1,6 @@
 <template>
   <div v-if="!loading" class="flex flex-wrap">
-    <top-header-bar which=""
+    <top-header-bar which="" :hide-select-all="true" :hide-delete="true"
       ><template v-slot:title>Your Account</template></top-header-bar
     >
 
@@ -35,18 +35,22 @@
         <button class="btn-link my-2" @click="resetImage">Clear</button>
       </div>
 
-      <div class="flex justify-between px-5 w-full">
-        <button class="btn btn-danger px-3" @click="showConfirm = true">
-          <i class="fas fa-exclamation-triangle fa-sm fa-fw mr-2"></i>Delete
-          Account
-        </button>
-        <button
-          class="btn btn-primary px-3"
-          :disabled="$v.$invalid"
-          @click="updateDetails"
-        >
-          Update Details
-        </button>
+      <div class="flex px-5 w-full">
+        <div class="w-full xl:w-8/12 flex flex-col items-start py-5">
+          <button class="btn btn-danger px-3" @click="showConfirm = true">
+            <i class="fas fa-exclamation-triangle fa-sm fa-fw mr-2"></i>Delete
+            Account
+          </button>
+        </div>
+        <div class="flex flex-col py-5 pl-5 items-center w-full xl:w-4/12">
+          <button
+            class="btn btn-primary px-3"
+            :disabled="$v.$invalid"
+            @click="updateDetails"
+          >
+            Update Details
+          </button>
+        </div>
       </div>
     </div>
 

@@ -115,8 +115,18 @@ export default {
       showSubMenu: false,
       menu: [
         { text: 'Surveys', link: 'surveys', icon: 'far fa-clipboard' },
-        { text: 'Contacts', link: 'contacts', icon: 'far fa-address-book' },
+        {
+          text: 'Contact List',
+          link: 'contactlist',
+          icon: 'far fa-address-book',
+        },
+        { text: 'Contacts', link: 'contacts', icon: 'fas fa-user-friends' },
         { text: 'Companies', link: 'companies', icon: 'far fa-building' },
+        {
+          text: 'Invites',
+          link: 'invites-contacts',
+          icon: 'far fa-paper-plane',
+        },
         { text: 'Account', link: 'account', icon: 'far fa-user-circle' },
         {
           text: 'Notifications',

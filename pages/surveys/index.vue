@@ -1,6 +1,6 @@
 <template>
   <div v-if="!loading" class="flex flex-wrap items-start">
-    <top-header-bar which="surveys" class="w-full"
+    <top-header-bar which="surveys" :items="surveys" class="w-full"
       ><template v-slot:title>Surveys</template>
       <template v-slot:button>
         <button
@@ -8,7 +8,7 @@
           class="btn btn-primary"
           @click="setCurrentItem({ code: -1 })"
         >
-          New Survey
+          <i class="fas fa-plus fa-sm fa-fw mr-1"></i>New Survey
         </button></template
       ></top-header-bar
     >

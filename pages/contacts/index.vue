@@ -1,6 +1,6 @@
 <template>
   <div v-if="!loading" class="flex flex-wrap items-start">
-    <top-header-bar which="contacts" class="w-full"
+    <top-header-bar which="contacts" :items="contacts" class="w-full"
       ><template v-slot:title>Contacts</template>
       <template v-slot:button>
         <button
@@ -8,7 +8,7 @@
           class="btn btn-primary"
           @click="setCurrentItem({ code: -1 })"
         >
-          New Contact
+          <i class="fas fa-plus fa-sm fa-fw mr-1"></i>New Contact
         </button></template
       ></top-header-bar
     >
@@ -34,9 +34,8 @@
       <template v-slot:titleContent>
         <p class="w-4/12">Name</p>
         <p class="w-2/12">Demographics</p>
-        <p class="w-2/12">Email</p>
+        <p class="w-3/12">Email</p>
         <p class="w-2/12">Phone</p>
-        <p class="w-1/12 text-center">Job History</p>
       </template>
       <template v-slot:titleContentSmall>Contacts</template>
       <template v-slot:content="slotProps"
@@ -51,7 +50,7 @@
           </span>
         </p>
 
-        <p class="w-full xl:w-2/12">
+        <p class="w-full xl:w-3/12">
           <span v-if="slotProps.item.email">{{ slotProps.item.email }}</span>
         </p>
         <p class="w-full xl:w-2/12">
@@ -59,19 +58,6 @@
             >{{ slotProps.item.countryExtension }}
             {{ slotProps.item.contactNumber }}</span
           >
-        </p>
-
-        <p class="w-full xl:w-1/12 xl:justify-center flex">
-          <nuxt-link
-            class="btn-link"
-            :to="{
-              name: 'contacts-jobs-id',
-              params: { id: slotProps.item.code },
-            }"
-            @click.stop.native
-            >{{ slotProps.item.jobCount }}
-            <span class="flex xl:hidden">&nbsp; Jobs</span>
-          </nuxt-link>
         </p>
       </template>
       <template v-slot:popup-menu="slotProps">
@@ -90,6 +76,18 @@
                   <i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit</span
                 >
               </button>
+              <nuxt-link
+                :to="{
+                  name: 'contacts-jobs-id',
+                  params: { id: slotProps.item.code },
+                }"
+                @click.stop.native
+                ><span class="popup-menu-button"
+                  ><i class="fas fa-briefcase fa-fw fa-sm"></i>Manage Jobs ({{
+                    slotProps.item.jobCount
+                  }})</span
+                >
+              </nuxt-link>
             </template>
           </popup-menu-vue>
         </span>
