@@ -1,11 +1,20 @@
 <template>
   <div
-    class="w-full flex-wrap justify-between items-center h-16 p-4 flex fixed xl:relative bottom-0 right-0"
+    class="w-full flex-wrap justify-between items-center h-16 flex relative px-2"
   >
-    <h6 class="hidden xl:flex xl:w-auto text-2xl font-semibold">
+    <h6
+      v-if="$slots.title"
+      class="hidden xl:flex xl:w-auto text-2xl font-semibold pl-2"
+    >
       <slot name="title"> </slot>
     </h6>
-    <div class="flex w-full xl:w-auto justify-end items-center space-x-2">
+    <div v-else class="w-full xl:w-auto">
+      <slot name="extraContent"> </slot>
+    </div>
+
+    <div
+      class="flex w-full xl:w-auto justify-end items-center space-x-2 fixed bottom-0 right-0 xl:relative z-10 p-3 xl:p-0"
+    >
       <template v-if="selectedItems === 0">
         <button
           v-if="!hideSelectAll"

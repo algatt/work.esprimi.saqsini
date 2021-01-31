@@ -1,19 +1,17 @@
 <template>
   <div v-if="!loading" class="flex flex-col flex-wrap">
-    <div class="flex md:hidden items-baseline justify-between px-2 py-2">
+    <div class="flex xl:hidden items-baseline justify-between p-2">
       <h6>{{ survey.name }}</h6>
       <p>{{ survey.referenceDate }}</p>
     </div>
-    <div
-      class="w-full flex flex-wrap items-baseline justify-between bg-white py-4 md:py-2 rounded px-3"
-    >
+    <div class="w-full flex flex-wrap items-baseline justify-between bg-white">
       <div
-        class="flex items-center md:space-x-3 justify-around md:justify-start w-full md:w-auto border-b-2 border-gray-100"
+        class="flex items-center md:space-x-3 justify-around md:justify-start w-full md:w-auto"
       >
         <button
           v-for="menuOption in menu"
           :key="menuOption.code"
-          class="flex-grow items-center md:flex md:justify-center md:w-44 font-semibold hover:text-primary transition duration-300 focus:outline-none py-2"
+          class="items-center md:flex md:justify-center md:w-44 font-semibold hover:text-primary transition duration-300 focus:outline-none py-3"
           :class="
             selectedMenu === menuOption.code
               ? 'text-primary border-b-2 border-primary'
@@ -21,16 +19,23 @@
           "
           @click="selectMenu(menuOption.code)"
         >
-          <i class="mr-2" :class="menuOption.icon" :title="menuOption.text"></i>
+          <i
+            class="xl:mr-2"
+            :class="menuOption.icon"
+            :title="menuOption.text"
+          ></i>
           <span class="hidden md:block">{{ menuOption.text }}</span>
         </button>
       </div>
-      <div class="hidden md:flex items-center space-x-2">
+      <div class="hidden md:flex items-center space-x-2 p-2">
         <h6>{{ survey.name }}</h6>
         <p>{{ survey.referenceDate }}</p>
       </div>
     </div>
-    <div class="mt-5 w-full md:w-8/12 mx-auto flex flex-col">
+    <div v-if="selectedMenu === 6">
+      <invites></invites>
+    </div>
+    <div v-else class="mt-5 w-full md:w-8/12 mx-auto flex flex-col">
       <div v-for="question in questions" :key="question.code" class="relative">
         <div
           class="border border-gray-100 shadow rounded w-full mx-auto flex items-stretch"
@@ -189,7 +194,10 @@
       @close="showMoveMenu = false"
     ></question-move-menu>
 
-    <div class="fixed bottom-0 right-0 mr-5 mb-5 z-10">
+    <div
+      v-if="selectedMenu !== 6"
+      class="fixed bottom-0 right-0 mr-5 mb-5 z-10"
+    >
       <button class="btn-round-primary" @click="showPreviewToggle">
         <i v-if="!showPreview" class="fas fa-eye fa-fw"></i>
         <i v-else class="fas fa-eye-slash fa-fw"></i>
@@ -216,6 +224,7 @@ import QuestionMoveMenu from '~/components/surveys/QuestionMoveMenu'
 import SurveyCollaborators from '~/components/surveys/SurveyCollaborators'
 import { QUESTION_TYPES } from '~/helpers/constants'
 import PopupMenu from '~/components/layouts/PopupMenu'
+import Invites from '~/components/contacts/Invites'
 
 export default {
   name: 'QuestionList',
@@ -230,6 +239,7 @@ export default {
     SurveySettings,
     SurveyLanguageSettings,
     PopupMenu,
+    Invites,
   },
   data() {
     return {
@@ -239,6 +249,7 @@ export default {
         { code: 3, text: 'Language', icon: 'fas fa-language' },
         { code: 4, text: 'Preview', icon: 'far fa-eye' },
         { code: 5, text: 'Collaborators', icon: 'fas fa-users' },
+        { code: 6, text: 'Invites', icon: 'far fa-paper-plane' },
       ],
       selectedMenu: 1,
       showPreview: null,

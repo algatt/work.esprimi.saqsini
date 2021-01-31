@@ -1,7 +1,7 @@
 <template>
   <div v-if="!loading" class="flex flex-wrap items-start">
     <top-header-bar which="departments" :items="departments" class="w-full"
-      ><template v-slot:title>Departments in {{ company.name }}</template>
+      ><template v-slot:extraContent> <top-links-bar></top-links-bar></template>
       <template v-slot:button>
         <button
           v-if="departments.length !== 0"
@@ -25,47 +25,54 @@
       </template></info-box
     >
 
-    <display-table-component
-      v-else
-      class="w-full"
-      :items="departments"
-      @hovered="hovered = $event"
-      @clicked="setCurrentItem($event)"
-    >
-      <template v-slot:title>Departments for {{ company.name }}</template>
-      <template v-slot:titleContent>
-        <p class="w-full">Name</p>
-      </template>
-      <template v-slot:titleContentSmall>Departments</template>
-      <template v-slot:content="slotProps"
-        ><div class="w-full flex items-baseline">
-          <span>
-            {{ slotProps.item.name }}
-          </span>
-          <span class="badge-gray">{{ slotProps.item.abbr }}</span>
-        </div>
-      </template>
-      <template v-slot:popup-menu="slotProps">
-        <span
-          :class="hovered === slotProps.item.code ? 'flex' : 'flex md:hidden'"
-          class="items-center"
+    <div v-else class="flex flex-col w-full">
+      <h6 class="hidden xl:block pl-6 pt-5 pb-2">
+        Departments for
+        {{ company.name }}
+      </h6>
+
+      <display-table-component
+        class="w-full"
+        :items="departments"
+        @hovered="hovered = $event"
+        @clicked="setCurrentItem($event)"
+      >
+        <template v-slot:titleContent>
+          <p class="w-full">Name</p>
+        </template>
+        <template v-slot:titleContentSmall
+          >Departments for {{ company.name }}</template
         >
-          <popup-menu-vue
-            :object-code="slotProps.item.code"
-            direction="left"
-            @closeMenu="hovered = null"
+        <template v-slot:content="slotProps"
+          ><div class="w-full flex items-baseline">
+            <span>
+              {{ slotProps.item.name }}
+            </span>
+            <span class="badge-gray">{{ slotProps.item.abbr }}</span>
+          </div>
+        </template>
+        <template v-slot:popup-menu="slotProps">
+          <span
+            :class="hovered === slotProps.item.code ? 'flex' : 'flex md:hidden'"
+            class="items-center"
           >
-            <template v-slot:menuItems>
-              <button @click="setCurrentItem(slotProps.item)">
-                <span class="popup-menu-button">
-                  <i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit</span
-                >
-              </button>
-            </template>
-          </popup-menu-vue>
-        </span>
-      </template>
-    </display-table-component>
+            <popup-menu-vue
+              :object-code="slotProps.item.code"
+              direction="left"
+              @closeMenu="hovered = null"
+            >
+              <template v-slot:menuItems>
+                <button @click="setCurrentItem(slotProps.item)">
+                  <span class="popup-menu-button">
+                    <i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit</span
+                  >
+                </button>
+              </template>
+            </popup-menu-vue>
+          </span>
+        </template>
+      </display-table-component>
+    </div>
 
     <transition name="fade">
       <edit-object-modal v-if="currentItemToBeEdited">
@@ -84,6 +91,7 @@ import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
 import NewDepartment from '~/components/contacts/NewDepartment'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
+import TopLinksBar from '~/components/contacts/TopLinksBar'
 
 export default {
   name: 'ContactsList',
@@ -93,6 +101,7 @@ export default {
     DisplayTableComponent,
     EditObjectModal,
     PopupMenuVue,
+    TopLinksBar,
   },
   data() {
     return {

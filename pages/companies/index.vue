@@ -1,11 +1,8 @@
 <template>
   <div v-if="!loading" class="flex flex-wrap items-start">
     <top-header-bar which="companies" :items="companies" class="w-full"
-      ><template v-slot:title>Companies</template>
+      ><template v-slot:extraContent><top-links-bar></top-links-bar></template>
       <template v-slot:button>
-        <nuxt-link :to="{ name: 'companies-roles' }">
-          <button class="btn btn-primary w-16">Roles</button></nuxt-link
-        >
         <button
           v-if="!disableNewButton && companies.length !== 0"
           class="btn btn-primary"
@@ -157,6 +154,7 @@ import NewIndustry from '~/components/contacts/NewIndustry'
 import NewSector from '~/components/contacts/NewSector'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
+import TopLinksBar from '~/components/contacts/TopLinksBar'
 
 export default {
   name: 'CompaniesList',
@@ -169,6 +167,7 @@ export default {
     DisplayTableComponent,
     EditObjectModal,
     PopupMenuVue,
+    TopLinksBar,
   },
   data() {
     return {

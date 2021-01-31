@@ -1,7 +1,7 @@
 <template>
   <div v-if="!loading" class="flex flex-wrap items-start">
-    <top-header-bar which="contacts" class="w-full"
-      ><template v-slot:title>Contact Lists</template>
+    <top-header-bar which="contacts" :items="contactlists" class="w-full"
+      ><template v-slot:extraContent> <top-links-bar></top-links-bar></template>
       <template v-slot:button>
         <button class="btn btn-primary" @click="setCurrentItem({ code: -1 })">
           <i class="fas fa-plus fa-sm mr-1"></i>New Contact List
@@ -68,6 +68,7 @@ import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
+import TopLinksBar from '~/components/contacts/TopLinksBar'
 
 export default {
   name: 'ContactLists',
@@ -77,6 +78,7 @@ export default {
     PopupMenuVue,
     Spinner,
     TopHeaderBar,
+    TopLinksBar,
   },
   data() {
     return {

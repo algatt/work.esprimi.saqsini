@@ -1,14 +1,9 @@
 <template>
   <div v-if="!loading" class="flex flex-wrap items-start">
-    <top-header-bar which="jobs" :items="jobs" class="w-full"
-      ><template v-slot:title
-        >Job History for
-        {{ getValueFromObject(contacts, 'displayName', $route.params.id) }}
-      </template>
+    <top-header-bar which="jobs" :items="jobs" class="w-full">
+      <template v-slot:extraContent><top-links-bar></top-links-bar></template>
+
       <template v-slot:button>
-        <nuxt-link :to="{ name: 'companies-roles' }">
-          <button class="btn btn-primary w-16">Roles</button></nuxt-link
-        >
         <button
           v-if="!disableNewButton && jobs.length !== 0"
           class="btn btn-primary"
@@ -46,58 +41,66 @@
       </template></info-box
     >
 
-    <display-table-component
-      v-else
-      :items="jobs"
-      class="w-full"
-      @hovered="hovered = $event"
-      @clicked="setCurrentItem($event)"
-    >
-      <template v-slot:titleContent>
-        <p class="w-4/12">Company</p>
-        <p class="w-3/12">Department</p>
-        <p class="w-3/12">Role</p>
-        <p class="w-2/12">Active</p>
-      </template>
-      <template v-slot:titleContentSmall>Job Details</template>
-      <template v-slot:content="slotProps"
-        ><p class="w-full xl:w-4/12">
-          {{ slotProps.item.companyName }}
-        </p>
-        <p class="w-full xl:w-3/12">
-          {{ slotProps.item.departmentName }}
-        </p>
-        <p class="w-full xl:w-3/12">
-          {{ slotProps.item.roleName }}
-        </p>
-        <p class="w-full xl:w-2/12">
-          <span v-if="slotProps.item.flags.includes('ONGOING')">Active</span>
-          <span v-else>Stopped</span>
-        </p>
-      </template>
-      <template v-slot:popup-menu="slotProps">
-        <span
-          :class="hovered === slotProps.item.code ? 'flex' : 'flex xl:hidden'"
-          class="items-center"
-        >
-          <popup-menu-vue
-            :object-code="slotProps.item.code"
-            direction="left"
-            @closeMenu="hovered = null"
+    <div v-else class="flex flex-col w-full">
+      <h6 class="hidden xl:block pl-6 pt-5 pb-2">
+        Job History for
+        {{ getValueFromObject(contacts, 'displayName', $route.params.id) }}
+      </h6>
+      <display-table-component
+        :items="jobs"
+        class="w-full"
+        @hovered="hovered = $event"
+        @clicked="setCurrentItem($event)"
+      >
+        <template v-slot:titleContent>
+          <p class="w-4/12">Company</p>
+          <p class="w-3/12">Department</p>
+          <p class="w-3/12">Role</p>
+          <p class="w-2/12">Active</p>
+        </template>
+        <template v-slot:titleContentSmall
+          >Job Details for
+          {{ getValueFromObject(contacts, 'displayName', $route.params.id) }}
+        </template>
+        <template v-slot:content="slotProps"
+          ><p class="w-full xl:w-4/12">
+            {{ slotProps.item.companyName }}
+          </p>
+          <p class="w-full xl:w-3/12">
+            {{ slotProps.item.departmentName }}
+          </p>
+          <p class="w-full xl:w-3/12">
+            {{ slotProps.item.roleName }}
+          </p>
+          <p class="w-full xl:w-2/12">
+            <span v-if="slotProps.item.flags.includes('ONGOING')">Active</span>
+            <span v-else>Stopped</span>
+          </p>
+        </template>
+        <template v-slot:popup-menu="slotProps">
+          <span
+            :class="hovered === slotProps.item.code ? 'flex' : 'flex xl:hidden'"
+            class="items-center"
           >
-            <template v-slot:menuItems>
-              <button @click="setCurrentItem(slotProps.item)">
-                <span class="popup-menu-button">
-                  <i class="fas fa-pencil-alt fa-fw fa-sm mr-1"></i>Edit</span
-                >
-              </button>
-            </template>
-          </popup-menu-vue>
-        </span>
-      </template>
+            <popup-menu-vue
+              :object-code="slotProps.item.code"
+              direction="left"
+              @closeMenu="hovered = null"
+            >
+              <template v-slot:menuItems>
+                <button @click="setCurrentItem(slotProps.item)">
+                  <span class="popup-menu-button">
+                    <i class="fas fa-pencil-alt fa-fw fa-sm mr-1"></i>Edit</span
+                  >
+                </button>
+              </template>
+            </popup-menu-vue>
+          </span>
+        </template>
 
-      <template v-if="disableNewButton" v-slot:extra> </template>
-    </display-table-component>
+        <template v-if="disableNewButton" v-slot:extra> </template>
+      </display-table-component>
+    </div>
 
     <transition name="fade">
       <edit-object-modal v-if="currentItemToBeEdited">
@@ -116,6 +119,7 @@ import EditObjectModal from '~/components/layouts/EditObjectModal'
 import NewJob from '~/components/contacts/NewJob'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
+import TopLinksBar from '~/components/contacts/TopLinksBar'
 
 export default {
   name: 'JobsList',
@@ -125,6 +129,7 @@ export default {
     EditObjectModal,
     NewJob,
     PopupMenuVue,
+    TopLinksBar,
   },
   props: {
     contacts: {

@@ -33,12 +33,12 @@ export default {
   },
   created() {
     this.getNotifications()
-    // setInterval(() => {
-    //   this.getNotifications()
-    // }, 30000)
+    setInterval(() => {
+      this.getNotifications()
+    }, 30000)
   },
   beforeDestroy() {
-    // clearInterval(this.getNotifications)
+    clearInterval(this.getNotifications)
   },
   methods: {
     getNotifications() {
