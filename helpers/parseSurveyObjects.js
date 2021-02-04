@@ -123,7 +123,6 @@ export function parseQuestionToForm(question, language = PREFERRED_LANGUAGE) {
     } else {
       temp.branching = {
         rules: [],
-        allMustBeMet: false,
       }
     }
 

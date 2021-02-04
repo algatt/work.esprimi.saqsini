@@ -236,7 +236,7 @@ export default {
   },
   created() {},
   methods: {
-    getConditionState(surveyOptions) {
+    getConditionState2(surveyOptions) {
       let branching = JSON.parse(surveyOptions)
       branching = branching.branching
 
@@ -261,22 +261,74 @@ export default {
           }
         })
 
-        if (branching.allMustBeMet === true) {
-          if (matching.true > 0 && matching.false === 0) {
-            // finalResult.push(el)
-            return true
-          }
-        } else if (branching.allMustBeMet === false) {
-          if (matching.true > 0) {
-            // finalResult.push(el)
-            return true
-          }
-        }
+        // if (branching.anyAreMet === true) {
+        //   if (matching.true > 0 && matching.false === 0) {
+        //     // finalResult.push(el)
+        //     return true
+        //   }
+        // } else if (branching.anyAreMet === false) {
+        //   if (matching.true > 0) {
+        //     // finalResult.push(el)
+        //     return true
+        //   }
+        // }
       } else {
         // finalResult.push(el)
         return true
       }
       return false
+    },
+    getConditionState(surveyOptions) {
+      const branching = JSON.parse(surveyOptions)
+      const rules = branching.branching.rules
+
+      if (rules.length !== 0) {
+        const rulesOutcome = {}
+        let finalOutcome = ''
+        for (const rule in rules) {
+          rulesOutcome[rule] = ''
+          rules[rule].questions.forEach((question) => {
+            const existingAnswers = this.getAnswer(question.code)
+            let foundAnswer = false
+            for (const i in existingAnswers) {
+              if (question.options.includes(existingAnswers[i])) {
+                foundAnswer = true
+                break
+              }
+            }
+            const operator = Object.prototype.hasOwnProperty.call(
+              question,
+              'isAnd'
+            )
+              ? question.isAnd
+                ? ' && '
+                : ' || '
+              : ''
+            rulesOutcome[rule] += `${foundAnswer}${operator}`
+          })
+          const operator = Object.prototype.hasOwnProperty.call(
+            rules[rule],
+            'isAnd'
+          )
+            ? rules[rule].isAnd
+              ? ' && '
+              : ' || '
+            : ''
+          finalOutcome += `${this.evaluateBooleanExpression(
+            rulesOutcome[rule]
+          )}${operator}`
+        }
+        console.log(rulesOutcome)
+
+        console.log(finalOutcome)
+        console.log(this.evaluateBooleanExpression(finalOutcome))
+        return this.evaluateBooleanExpression(finalOutcome)
+      }
+      return true
+    },
+    evaluateBooleanExpression(obj) {
+      // eslint-disable-next-line no-new-func
+      return Function('"use strict";return (' + obj + ')')()
     },
     processAnswers(answers, question) {
       if (question.flags.includes('RANKING')) {
