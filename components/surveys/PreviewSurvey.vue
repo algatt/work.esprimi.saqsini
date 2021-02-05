@@ -288,14 +288,6 @@ export default {
         for (const rule in rules) {
           rulesOutcome[rule] = ''
           rules[rule].questions.forEach((question) => {
-            const existingAnswers = this.getAnswer(question.code)
-            let foundAnswer = false
-            for (const i in existingAnswers) {
-              if (question.options.includes(existingAnswers[i])) {
-                foundAnswer = true
-                break
-              }
-            }
             const operator = Object.prototype.hasOwnProperty.call(
               question,
               'isAnd'
@@ -304,7 +296,25 @@ export default {
                 ? ' && '
                 : ' || '
               : ''
-            rulesOutcome[rule] += `${foundAnswer}${operator}`
+            if (question.code) {
+              const existingAnswers = this.getAnswer(question.code)
+              let foundAnswer = false
+              for (const i in existingAnswers) {
+                const temp = question.options.map((el) => {
+                  return el.name
+                })
+                console.log(temp)
+                if (temp.includes(existingAnswers[i])) {
+                  foundAnswer = true
+                  break
+                }
+              }
+
+              rulesOutcome[rule] += `${foundAnswer}${operator}`
+            } else {
+              // TODO: when implementing contactbook
+              rulesOutcome[rule] += `${true}${operator}`
+            }
           })
           const operator = Object.prototype.hasOwnProperty.call(
             rules[rule],
