@@ -1,21 +1,21 @@
 <template>
   <div v-if="!dataIsLoading" class="flex flex-wrap items-start">
-    <top-header-bar
-      which="invites"
-      :hide-delete="true"
-      :items="contacts"
-      class="w-full"
-      ><template v-slot:title></template>
-      <template v-slot:button
-        ><button
-          :disabled="selectedItemsLength === 0"
-          class="btn btn-primary"
-          @click="invite"
-        >
-          <i class="far fa-paper-plane fa-fw mr-1"></i>Invite
-        </button>
-      </template></top-header-bar
-    >
+    <!--    <top-header-bar-->
+    <!--      which="invites"-->
+    <!--      :hide-delete="true"-->
+    <!--      :items="contacts"-->
+    <!--      class="w-full"-->
+    <!--      ><template v-slot:title></template>-->
+    <!--      <template v-slot:button-->
+    <!--        ><button-->
+    <!--          :disabled="selectedItemsLength === 0"-->
+    <!--          class="btn btn-primary"-->
+    <!--          @click="invite"-->
+    <!--        >-->
+    <!--          <i class="far fa-paper-plane fa-fw mr-1"></i>Invite-->
+    <!--        </button>-->
+    <!--      </template></top-header-bar-->
+    <!--    >-->
 
     <div class="w-full xl:w-3/12 pt-2">
       <div class="px-3 py-1 mb-2">
@@ -292,6 +292,11 @@ export default {
       }
 
       return result
+    },
+  },
+  watch: {
+    contacts(val) {
+      return this.$emit('contacts', val)
     },
   },
   async created() {

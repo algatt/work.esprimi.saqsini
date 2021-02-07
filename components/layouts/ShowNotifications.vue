@@ -1,16 +1,19 @@
 <template>
   <div class="flex flex-col w-full">
-    <h5>{{ notification.author.displayName }}</h5>
-    <h5>{{ notification.author.email }}</h5>
+    <h6>{{ notification.author.displayName }}</h6>
+    <h6>{{ notification.author.email }}</h6>
     <p class="mt-3">{{ notification.subject }}</p>
     <p class="mt-2 mb-3">{{ notification.content }}</p>
-    <p v-if="notification.linkedEntityTypeFlags.includes('SURVEY')">
+    <p
+      v-if="notification.linkedEntityTypeFlags.includes('SURVEY')"
+      class="my-2"
+    >
       <nuxt-link
         :to="{
           name: 'questions-id',
           params: { id: notification.linkedEntityCode },
         }"
-        class="btn btn-primary px-3"
+        class="btn btn-primary"
         >Go To Survey</nuxt-link
       >
     </p>

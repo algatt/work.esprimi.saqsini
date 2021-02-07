@@ -2,9 +2,12 @@
   <div v-if="!loading">
     <top-header-bar which="notifications" :items="notifications" class="w-full"
       ><template v-slot:title>Notifications</template>
-      <template v-slot:button>
-        <button class="btn btn-primary px-3 ml-2" @click="markAllAsRead">
-          Mark All As Read
+      <template v-slot:menuButtonIfSelected>
+        <button class="w-full" @click="markAllAsRead">
+          <span class="popup-menu-button">
+            <i class="far fa-envelope-open fa-fw mr-1"></i>Mark All As
+            Read</span
+          >
         </button>
       </template></top-header-bar
     >
@@ -28,35 +31,43 @@
       <template v-slot:titleContent>
         <p class="w-3/12">From</p>
         <p class="w-6/12">Subject</p>
-        <p class="w-3/12">Date</p>
+        <p class="w-3/12 text-right">Date</p>
       </template>
       <template v-slot:titleContentSmall>Notifications</template>
       <template v-slot:content="slotProps">
         <p
-          class="w-full xl:w-3/12 flex flex-row justify-between xl:flex-col"
+          class="w-full xl:w-3/12 flex flex-row justify-between xl:flex-col mb-2 lg:mb-0"
           :class="
             slotProps.item.flags.includes('READ')
-              ? 'text-gray-500'
-              : 'text-gray-800'
+              ? 'text-gray-400'
+              : 'text-gray-600'
           "
         >
           <span>{{ slotProps.item.author.displayName }}</span>
-          <i> {{ slotProps.item.author.email }}</i>
+          <i class="hidden xl:flex"> {{ slotProps.item.author.email }}</i>
         </p>
         <p
-          class="w-full xl:w-6/12"
+          class="w-full xl:w-6/12 flex items-center mb-2 lg:mb-0"
           :class="
             slotProps.item.flags.includes('READ')
-              ? 'text-gray-500'
-              : 'text-gray-800'
+              ? 'text-gray-400'
+              : 'text-gray-600'
           "
         >
+          <i
+            v-if="slotProps.item.flags.includes('READ')"
+            class="hidden xl:flex far fa-envelope-open fa-fw text-gray-400 mr-2"
+          ></i
+          ><i
+            v-else
+            class="hidden xl:flex far fa-envelope fa-fw text-gray-700 mr-2"
+          ></i>
           <button
-            class="subject-link"
+            class="subject-link flex items-center"
             :class="
               slotProps.item.flags.includes('READ')
-                ? 'text-gray-500'
-                : 'text-primary'
+                ? 'text-gray-400'
+                : 'text-gray-600'
             "
             @click.stop="setCurrentItem(slotProps.item)"
           >
@@ -64,22 +75,15 @@
           </button>
         </p>
         <p
-          class="w-full xl:w-3/12"
+          class="w-full xl:w-3/12 text-left xl:text-right"
           :class="
             slotProps.item.flags.includes('READ')
-              ? 'text-gray-500'
-              : 'text-gray-800'
+              ? 'text-gray-400'
+              : 'text-gray-600'
           "
         >
           {{ formatDate(slotProps.item.createdTimestamp) }}
         </p>
-      </template>
-      <template v-slot:popup-menu="slotProps">
-        <i
-          v-if="slotProps.item.flags.includes('READ')"
-          class="far fa-envelope-open fa-fw text-gray-400"
-        ></i
-        ><i v-else class="far fa-envelope fa-fw text-gray-600"></i>
       </template>
     </display-table-component>
 
@@ -159,13 +163,9 @@ export default {
     },
     formatDate(date) {
       date = date.replace(' +', '+')
-      return moment(date).format('Do MMM YYYY LT')
+      // return moment(date).format('Do MMM YYYY LT')
+      return moment(date).fromNow()
     },
-    // selectAll() {
-    //   this.notifications.forEach((el) => {
-    //     this.$store.dispatch('selectedItemsManage', el)
-    //   })
-    // },
     markAllAsRead() {
       this.$store.dispatch('notifications/markAllAsRead').then(() => {
         this.$store.dispatch('setLoading', true)
@@ -185,6 +185,6 @@ export default {
 
 <style scoped>
 .subject-link {
-  @apply hover:underline hover:text-primary-darker transition duration-300 focus:outline-none flex;
+  @apply hover:underline hover:text-gray-800 transition duration-300 focus:outline-none font-medium;
 }
 </style>

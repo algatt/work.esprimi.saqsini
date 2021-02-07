@@ -1,184 +1,210 @@
 <template>
-  <span>
-    <div class="hidden md:flex flex-col justify-between h-full">
-      <div class="flex flex-col">
-        <h5 class="h-10 py-3 mb-2">
-          <span
-            v-if="isVisible"
-            :class="isVisible ? 'opacity-100' : 'opacity-0'"
-            class="transition-all duration-300"
-            >Saqsini</span
+  <div>
+    <div
+      v-if="smallScreenMenu"
+      class="flex flex-col lg:hidden fixed top-0 left-0 w-full h-screen bg-primary z-50"
+      @click="smallScreenMenu = false"
+    >
+      <div class="flex justify-between text-white pl-5 pr-5">
+        <div class="flex h-12 items-center">
+          <span class="text-white h-8 w-8 flex items-center justify-center"
+            ><i class="fas fa-comments fa-fw"></i
+          ></span>
+          <h6
+            class="text-white font-semibold text-xl pl-1 tracking-wide flex-1"
           >
-          <span v-if="!isVisible"><i class="far fa-comments fa-fw"></i></span>
-        </h5>
-        <button
-          v-for="(item, index) in menu"
-          :key="'menu' + index"
-          class="relative text-white h-10 font-medium tracking-wider py-2 w-full hover:bg-primary-darker active:bg-white active:text-primary transition duration-300 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-primary-darker"
-          :class="currentRoute === item.link ? 'bg-primary-darker' : null"
-          :title="item.text"
-          @click="gotoPage(item.link)"
-        >
-          <span
-            class="w-40 flex items-center justify-between mx-auto relative"
-            :class="isVisible ? 'moveRight' : 'moveLeft'"
-          >
-            <p>
-              {{ item.text }}
-            </p>
-
-            <i :class="item.icon" class="fa-fw"></i>
-            <span
-              v-if="item.link === 'notifications'"
-              class="absolute text-xs bg-white rounded text-primary px-1 font-semibold"
-              style="top: -5px; right: -5px"
-              >{{ unreadNotifications }}</span
-            >
-          </span>
+            Saqsini
+          </h6>
+        </div>
+        <button @click="smallScreenMenu = false">
+          <i class="fas fa-times fa-fw fa-lg"></i>
         </button>
       </div>
-      <div class="w-full mb-3 text-white flex">
-        <span
-          class="w-10/12 mx-auto flex"
-          :class="isVisible ? 'justify-end' : 'justify-center'"
+      <div
+        v-for="(item, index) in menuItems"
+        :key="index"
+        class="relative px-5"
+      >
+        <nuxt-link
+          v-for="(child, index) in item.children"
+          :key="index"
+          :to="{ name: child.link }"
+          class="flex flex-col text-white hover:text-primary hover:bg-gray-100 transition duration-300 rounded cursor-pointer my-2 p-2"
         >
-          <button
-            class="relative bg-primary h-7 w-7 rounded-full text-white hover:bg-primary-darker focus:ring-2 ring-primary-darker transition duration-300 ring-offset-2 focus:outline-none"
-            @click="$emit('clickToggle')"
-          >
-            <i
-              :class="
-                isVisible ? 'fa-angle-double-left' : 'fa-angle-double-right'
-              "
-              class="fas fa-fw"
-            ></i>
-          </button>
-        </span>
+          <div class="flex items-center">
+            <i class="w-8" :class="child.icon" />
+            <span class="font-semibold pl-2">
+              {{ child.header }}
+            </span>
+          </div>
+          <div class="text-xs flex mt-1">
+            <div class="w-8" />
+            <span class="pl-2">{{ child.text }}</span>
+          </div>
+        </nuxt-link>
       </div>
     </div>
     <div
-      class="flex md:hidden w-full bg-primary justify-between py-3 px-2 relative"
+      v-if="!smallScreenMenu"
+      class="w-full h-12 flex lg:hidden sticky top-0 items-center px-5 justify-between z-20 bg-gray-50"
     >
-      <h5>Saqsini</h5>
+      <div class="flex items-center">
+        <span
+          class="bg-gray-50 text-primary h-8 w-8 rounded-full flex items-center justify-center"
+          ><i class="fas fa-comments fa-fw"></i
+        ></span>
+        <h6
+          class="text-primary font-semibold text-xl pl-1 tracking-wide flex-1"
+        >
+          Saqsini
+        </h6>
+      </div>
       <button
-        class="relative text-white w-8 font-medium tracking-wider transform hover:scale-110 active:bg-white active:text-primary transition duration-300 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-primary-darker"
-        @click="showSubMenu = !showSubMenu"
+        class="text-gray-700 hover:text-primary transition duration-300"
+        @click="smallScreenMenu = true"
       >
         <i class="fas fa-bars fa-fw"></i>
       </button>
-      <div
-        v-if="showSubMenu"
-        class="fixed top-0 left-0 w-full h-full bg-primary flex-col p-4 text-2xl flex z-30"
-      >
-        <div class="flex justify-end">
-          <button
-            class="text-white transform hover:scale-110 transition duration-300"
-            @click="showSubMenu = false"
-          >
-            <i class="fas fa-times fa-fw"></i>
-          </button>
-        </div>
-        <button
-          v-for="(item, index) in menu"
-          :key="'menu' + index"
-          class="w-full flex items-center text-white justify-center my-3 hover:bg-white hover:text-primary py-1 transition duration-300 relative"
-          @click="gotoPage(item.link)"
+    </div>
+    <div
+      class="hidden lg:flex w-full h-12 fixed top-0 items-center px-5 justify-between z-20 bg-white"
+    >
+      <div class="flex flex-1 items-center">
+        <span
+          class="text-primary h-8 w-8 rounded-full flex items-center justify-center"
+          ><i class="fas fa-comments fa-fw"></i
+        ></span>
+        <h6
+          class="text-primary font-semibold text-xl pl-1 tracking-wide flex-1"
         >
-          <p>{{ item.text }}</p>
-          <span class="relative">
-            <i :class="item.icon" class="fa-fw ml-3 relative"> </i>
-            <span
-              v-if="item.link === 'notifications'"
-              class="absolute text-xs bg-white rounded text-primary px-1 font-semibold"
-              style="top: -3px; right: -3px"
-              >{{ unreadNotifications }}</span
-            ></span
+          Saqsini
+        </h6>
+      </div>
+
+      <div class="flex relative items-center">
+        <div
+          v-for="(item, index) in menuItems"
+          :key="index"
+          class="relative h-10 flex justify-center items-center py-2"
+          :class="item.text !== 'Account' ? 'w-28' : 'w-12'"
+          @click="showSubMenu(item.id)"
+        >
+          <span
+            v-if="item.text !== 'Account'"
+            class="text-gray-600 font-semibold cursor-pointer hover:text-primary transition duration-300 border-b-2 border-transparent hover:border-primary py-2 px-1"
+            >{{ item.text }}</span
           >
-        </button>
+          <span
+            v-else
+            class="text-gray-600 font-semibold cursor-pointer hover:text-primary flex items-center flex justify-center transition duration-300"
+          >
+            <div
+              v-if="!avatar"
+              class="w-7 h-7 rounded-full border-2 border-gray-600 hover:border-primary transition duration-300 flex justify-center items-center"
+            >
+              <i class="fas fa-user fa-fw"></i>
+            </div>
+            <img
+              v-else
+              :src="avatar"
+              class="w-7 h-7 rounded-full border-2 border-gray-100 hover:border-primary transition duration-300"
+            />
+          </span>
+
+          <div
+            :id="item.id"
+            class="absolute flex-col w-auto submenu invisible"
+            style="top: 2rem"
+            :style="
+              item.text !== 'Account' ? 'right: 2.3rem;' : 'right:0.25rem'
+            "
+          >
+            <div class="fixed top-0 left-0 w-full h-screen z-10"></div>
+
+            <div class="w-full flex justify-end pr-3 z-20 relative">
+              <div class="arrow-up" />
+            </div>
+
+            <div
+              class="bg-primary shadow-lg flex flex-col text-sm p-2 rounded z-20 relative"
+            >
+              <nuxt-link
+                v-for="(child, index) in item.children"
+                :key="index"
+                :to="{ name: child.link }"
+                class="flex flex-col hover:bg-white text-white hover:text-primary transition duration-300 p-3 rounded cursor-pointer"
+              >
+                <div class="flex items-center">
+                  <i :class="child.icon" class="w-5" />
+                  <p class="font-semibold pl-2">
+                    {{ child.header }}
+                  </p>
+                </div>
+                <div class="flex items-center mt-1">
+                  <div class="w-5" />
+                  <span class="text-left text-xs pl-3">{{ child.text }}</span>
+                </div>
+              </nuxt-link>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </span>
+  </div>
 </template>
 
 <script>
+import jsonMenu from '@/assets/settings/menuStructure.json'
 export default {
   name: 'NavBar',
-
-  props: {
-    isVisible: {
-      type: Boolean,
-      required: true,
-    },
-  },
   data() {
     return {
-      showSubMenu: false,
-      menu: [
-        { text: 'Surveys', link: 'surveys', icon: 'far fa-clipboard' },
-        {
-          text: 'Contact Book',
-          link: 'contactlist',
-          icon: 'far fa-address-book',
-        },
-        { text: 'Account', link: 'account', icon: 'far fa-user-circle' },
-        {
-          text: 'Notifications',
-          link: 'notifications',
-          icon: 'far fa-envelope',
-        },
-        { text: 'Logout', link: 'account-logout', icon: 'fas fa-sign-out-alt' },
-      ],
+      whichSubMenu: '',
+      menuItems: jsonMenu,
+      smallScreenMenu: false,
     }
   },
   computed: {
-    currentRoute() {
-      return this.$route.name
-    },
-    unreadNotifications() {
-      const x = this.$store.state.notifications.notificationStats.unreadCount
-      return x === 0 ? null : x
+    avatar() {
+      return this.$store.state.auth.authUserAvatar
     },
   },
   methods: {
-    gotoPage(page) {
-      this.showSubMenu = false
-      if (page !== 'account-logout') this.$router.push({ name: page })
-      else
-        this.$store.dispatch('auth/logout').then(() => {
-          this.$router.push({ name: 'login' })
-        })
+    showSubMenu(id) {
+      const thisMenu = document.getElementById(id)
+      const previousMenu = document.getElementById(this.whichSubMenu)
+
+      if (this.whichSubMenu !== '' && this.whichSubMenu !== id) {
+        previousMenu.classList.add('invisible')
+        previousMenu.style.opacity = 0
+      }
+
+      if (thisMenu.classList.contains('invisible')) {
+        thisMenu.classList.remove('invisible')
+        thisMenu.style.opacity = 1
+        this.whichSubMenu = id
+      } else {
+        thisMenu.style.opacity = 0
+        thisMenu.classList.add('invisible')
+        this.whichSubMenu = ''
+      }
     },
   },
 }
 </script>
 
 <style scoped>
-h5 {
-  @apply text-white uppercase tracking-wider text-xl text-center font-bold cursor-pointer transform hover:scale-110 transition duration-300;
-}
-@keyframes moveLeft {
-  0% {
-    transform: translateX(0px);
-  }
-  100% {
-    transform: translateX(-110px);
-  }
+.arrow-up {
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #2563eb;
 }
 
-@keyframes moveRight {
-  0% {
-    transform: translateX(-110px);
-  }
-  100% {
-    transform: translateX(0px);
-  }
-}
-
-.moveLeft {
-  animation: moveLeft 0.3s 1 forwards;
-}
-
-.moveRight {
-  animation: moveRight 0.3s 1 forwards;
+.submenu {
+  transition: visibility 0.3s linear, opacity 0.3s linear;
+  opacity: 1;
+  min-width: 14rem;
 }
 </style>

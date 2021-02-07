@@ -1,0 +1,86 @@
+[
+  {
+    "text": "Surveys",
+    "id": "navSurveys",
+    "role": [],
+    "children": [
+      {
+        "icon": "fas fa-clipboard fa-fw",
+        "header": "My Surveys",
+        "text": "Create and manage your surveys",
+        "role": [],
+        "link": "surveys"
+      }
+    ]
+  },
+  {
+    "text": "Contacts",
+    "role": [],
+    "id": "navContactBook",
+    "children": [
+      {
+        "icon": "fas fa-address-book fa-fw",
+        "header": "Contact List",
+        "text": "Manage your contact lists",
+        "role": [],
+        "link": "contactlist"
+      },
+      {
+        "icon": "fas fa-building fa-fw",
+        "header": "Companies",
+        "text": "Companies and their departments",
+        "role": [],
+        "link": "companies"
+      },
+      {
+        "icon": "fas fa-user-friends fa-fw",
+        "header": "Contacts",
+        "text": "Manage your contacts' details",
+        "role": [],
+        "link": "contacts"
+      },
+      {
+        "icon": "fas fa-briefcase fa-fw",
+        "header": "Roles",
+        "text": "Manage roles that can be applied to contacts",
+        "role": [],
+        "link": "companies-roles"
+      }
+    ]
+  },
+  {
+    "text": "Account",
+    "id": "navAccountSub",
+    "role": [],
+    "children": [
+      {
+        "icon": "fas fa-envelope fa-fw",
+        "header": "Messages",
+        "text": "Notifications across the app",
+        "role": [],
+        "link": "notifications"
+      },
+      {
+        "icon": "fas fa-user-circle fa-fw",
+        "header": "Account",
+        "text": "Manage your details",
+        "role": [],
+        "link": "account"
+      },
+      {
+        "icon": "fas fa-bug fa-fw",
+        "header": "Problem",
+        "text": "Report a problem with the app",
+        "role": [],
+        "link": "contact"
+      },
+      {
+        "icon": "fas fa-sign-out-alt fa-fw",
+        "header": "Sign out",
+        "text": "Sign out of your account",
+        "role": [],
+        "link": "logout"
+      }
+    ]
+  }
+]

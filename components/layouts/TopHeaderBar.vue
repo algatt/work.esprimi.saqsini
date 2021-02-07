@@ -1,48 +1,86 @@
 <template>
   <div
-    class="w-full flex-wrap justify-between items-center h-16 flex relative px-2"
+    class="w-full flex-wrap justify-between items-center flex relative h-auto lg:h-24"
   >
-    <h6
-      v-if="$slots.title"
-      class="hidden xl:flex xl:w-auto text-2xl font-semibold pl-2"
-    >
-      <slot name="title"> </slot>
-    </h6>
-    <div v-else class="w-full xl:w-auto">
-      <slot name="extraContent"> </slot>
-    </div>
+    <div class="flex">
+      <h6
+        v-if="$slots.title"
+        class="hidden xl:flex xl:w-auto text-lg font-semibold text-gray-700"
+      >
+        <slot name="title"> </slot>
+      </h6>
+      <h6
+        v-if="$slots.smallTitle"
+        class="flex xl:hidden w-full text-lg font-semibold text-gray-700"
+      >
+        <slot name="smallTitle"></slot>
+      </h6>
+      <div v-if="$slots.extraContent" class="w-full xl:w-auto">
+        <slot name="extraContent"> </slot>
+      </div>
 
-    <div
-      class="flex w-full xl:w-auto justify-end items-center space-x-2 fixed bottom-0 right-0 xl:relative z-10 p-3 xl:p-0"
-    >
-      <template v-if="selectedItems === 0">
-        <button
-          v-if="!hideSelectAll"
-          class="btn btn-primary"
-          @click="selectAll"
-        >
-          Select All
-        </button>
-      </template>
-      <template v-else>
-        <button
-          v-if="!hideDelete"
-          class="btn btn-danger"
-          @click="showModal = true"
-        >
-          Delete
-          <span v-if="selectedItems === 1">{{ selectedItems }} item</span>
-          <span v-else-if="selectedItems > 1">{{ selectedItems }} items</span>
-        </button>
-        <button
-          ref="clearAll"
-          class="btn btn-primary"
-          @click="emptySelectedItems"
-        >
-          Clear Selection
-        </button>
-      </template>
-      <slot name="button"></slot>
+      <div v-if="!$slots.title && !$slots.extraContent && !$slots.smallTitle">
+        &nbsp;
+      </div>
+    </div>
+    <div class="flex flex-1 justify-end">
+      <div
+        class="flex fixed bottom-0 right-0 pb-5 pr-5 lg:relative lg:p-0 items-center"
+      >
+        <div class="flex items-center">
+          <slot name="extraButtons"></slot>
+        </div>
+        <div v-if="!hideMenu">
+          <popup-menu class="ml-2">
+            <template v-slot:menuButton
+              ><button class="hidden lg:flex items-center btn btn-primary">
+                <span>Actions<i class="fas fa-caret-down fa-fw ml-1"></i></span>
+              </button>
+              <button class="flex lg:hidden btn btn-round-primary">
+                <span><i class="fas fa-ellipsis-v fa-fw"></i></span></button
+            ></template>
+            <template v-slot:menuItems>
+              <template v-if="selectedItems === 0">
+                <button v-if="!hideSelectAll" class="w-full" @click="selectAll">
+                  <span class="popup-menu-button"
+                    ><i class="fas fa-check-double fa-fw mr-1"></i>Select
+                    All</span
+                  >
+                </button>
+              </template>
+              <template v-else>
+                <button
+                  ref="clearAll"
+                  class="w-full"
+                  @click="emptySelectedItems"
+                >
+                  <span class="popup-menu-button"
+                    ><i class="fas fa-check-double fa-fw mr-1"></i> Clear
+                    Selection</span
+                  >
+                </button>
+                <button
+                  v-if="!hideDelete"
+                  class="w-full"
+                  @click="showModal = true"
+                >
+                  <span class="popup-menu-button"
+                    ><i class="fas fa-trash-alt fa-fw mr-1"></i>Delete&nbsp;
+                    <span v-if="selectedItems === 1"
+                      >{{ selectedItems }} item</span
+                    >
+                    <span v-else-if="selectedItems > 1"
+                      >{{ selectedItems }} items</span
+                    >
+                  </span>
+                </button>
+                <slot name="menuButtonIfSelected"></slot>
+              </template>
+              <slot name="menuButtonIfNotSelected"></slot>
+            </template>
+          </popup-menu>
+        </div>
+      </div>
     </div>
 
     <modal-confirm
@@ -84,6 +122,10 @@ export default {
     items: {
       type: Array,
       required: false,
+    },
+    hideMenu: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {

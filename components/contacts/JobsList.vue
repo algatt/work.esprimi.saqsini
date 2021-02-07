@@ -1,16 +1,22 @@
 <template>
   <div v-if="!loading" class="flex flex-wrap items-start">
     <top-header-bar which="jobs" :items="jobs" class="w-full">
-      <template v-slot:extraContent><top-links-bar></top-links-bar></template>
+      <template v-slot:title
+        >Job History for
+        {{
+          getValueFromObject(contacts, 'displayName', $route.params.id)
+        }}</template
+      >
 
-      <template v-slot:button>
-        <button
-          v-if="!disableNewButton && jobs.length !== 0"
-          class="btn btn-primary"
+      <template v-slot:extraButtons>
+        <button-icon
+          v-if="!disableNewButton"
+          colour="primary"
+          icon="fas fa-plus"
           @click="setCurrentItem({ code: -1 })"
         >
-          <i class="fas fa-plus fa-fw fa-sm"></i>New Job
-        </button>
+          <template v-slot:text>New Job</template>
+        </button-icon>
       </template></top-header-bar
     >
 
@@ -42,10 +48,6 @@
     >
 
     <div v-else class="flex flex-col w-full">
-      <h6 class="hidden xl:block pl-6 pt-5 pb-2">
-        Job History for
-        {{ getValueFromObject(contacts, 'displayName', $route.params.id) }}
-      </h6>
       <display-table-component
         :items="jobs"
         class="w-full"
@@ -56,7 +58,7 @@
           <p class="w-4/12">Company</p>
           <p class="w-3/12">Department</p>
           <p class="w-3/12">Role</p>
-          <p class="w-2/12">Active</p>
+          <p class="w-2/12">Status</p>
         </template>
         <template v-slot:titleContentSmall
           >Job Details for
@@ -73,8 +75,16 @@
             {{ slotProps.item.roleName }}
           </p>
           <p class="w-full xl:w-2/12">
-            <span v-if="slotProps.item.flags.includes('ONGOING')">Active</span>
-            <span v-else>Stopped</span>
+            <span
+              v-if="slotProps.item.flags.includes('ONGOING')"
+              class="bg-green-200 text-sm text-green-700 px-2 py-0.5 rounded border border-green-300"
+              >Active</span
+            >
+            <span
+              v-else
+              class="bg-red-200 text-sm text-red-700 px-2 py-0.5 rounded border border-red-300"
+              >Stopped</span
+            >
           </p>
         </template>
         <template v-slot:popup-menu="slotProps">
@@ -119,7 +129,6 @@ import EditObjectModal from '~/components/layouts/EditObjectModal'
 import NewJob from '~/components/contacts/NewJob'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
-import TopLinksBar from '~/components/contacts/TopLinksBar'
 
 export default {
   name: 'JobsList',
@@ -129,7 +138,6 @@ export default {
     EditObjectModal,
     NewJob,
     PopupMenuVue,
-    TopLinksBar,
   },
   props: {
     contacts: {

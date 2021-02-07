@@ -1,15 +1,16 @@
 <template>
   <div v-if="!loading" class="flex flex-wrap items-start">
     <top-header-bar which="companies" :items="companies" class="w-full"
-      ><template v-slot:extraContent><top-links-bar></top-links-bar></template>
-      <template v-slot:button>
-        <button
+      ><template v-slot:title>Companies</template>
+      <template v-slot:extraButtons>
+        <button-icon
           v-if="!disableNewButton && companies.length !== 0"
-          class="btn btn-primary"
+          colour="primary"
+          icon="fas fa-plus"
           @click="setCurrentItem({ code: -1 })"
         >
-          <i class="fas fa-plus fa-sm fa-fw mr-1"></i>New Company
-        </button></template
+          <template v-slot:text>New Company</template>
+        </button-icon></template
       ></top-header-bar
     >
 
@@ -88,7 +89,7 @@
 
         <p class="w-full xl:w-2/12 flex xl:justify-center">
           <nuxt-link
-            class="btn-link"
+            class="btn-table"
             :to="{
               name: 'companies-departments-id',
               params: { id: slotProps.item.code },
@@ -154,7 +155,6 @@ import NewIndustry from '~/components/contacts/NewIndustry'
 import NewSector from '~/components/contacts/NewSector'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
-import TopLinksBar from '~/components/contacts/TopLinksBar'
 
 export default {
   name: 'CompaniesList',
@@ -167,7 +167,6 @@ export default {
     DisplayTableComponent,
     EditObjectModal,
     PopupMenuVue,
-    TopLinksBar,
   },
   data() {
     return {

@@ -1,15 +1,15 @@
 <template>
   <div v-if="!loading" class="flex flex-wrap items-start">
-    <top-header-bar which="contacts" :items="contacts" class="w-full"
-      ><template v-slot:extraContent><top-links-bar></top-links-bar></template>
-      <template v-slot:button>
-        <button
-          v-if="contacts.length !== 0"
-          class="btn btn-primary"
+    <top-header-bar which="contacts" :items="contacts" class="w-full">
+      <template v-slot:title>Contacts</template>
+      <template v-slot:extraButtons>
+        <button-icon
+          colour="primary"
+          icon="fas fa-plus"
           @click="setCurrentItem({ code: -1 })"
         >
-          <i class="fas fa-plus fa-sm fa-fw mr-1"></i>New Contact
-        </button></template
+          <template v-slot:text>New Contact</template>
+        </button-icon></template
       ></top-header-bar
     >
 
@@ -113,7 +113,6 @@ import NewContact from '~/components/contacts/NewContact'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
-import TopLinksBar from '~/components/contacts/TopLinksBar'
 
 export default {
   name: 'ContactsList',
@@ -124,7 +123,6 @@ export default {
     PopupMenuVue,
     Spinner,
     TopHeaderBar,
-    TopLinksBar,
   },
   data() {
     return {

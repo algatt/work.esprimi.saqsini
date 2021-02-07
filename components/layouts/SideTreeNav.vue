@@ -1,9 +1,18 @@
 <template>
-  <div class="flex flex-col relative px-3">
-    <div class="flex items-center font-bold py-2 px-2">
+  <div class="flex flex-col relative mb-3">
+    <div class="flex items-center font-bold text-gray-700">
       <slot name="title"></slot>
+      <button
+        class="flex flex-1 justify-end pr-0 xl:pr-7 outline-none focus:outline-none"
+        @click="isCollapsed = !isCollapsed"
+      >
+        <i
+          class="fas"
+          :class="isCollapsed ? 'fa-caret-down' : 'fa-caret-up'"
+        ></i>
+      </button>
     </div>
-    <div>
+    <div v-if="!isCollapsed" class="pr-0 xl:pr-5">
       <button
         class="tree-view-parent-button"
         @click="selectParent({ code: -1 })"
@@ -188,7 +197,7 @@ export default {
 
 <style scoped>
 .tree-view-parent-button {
-  @apply w-full flex items-center justify-between font-medium hover:text-primary transition duration-300 focus:outline-none mb-1 px-2 text-gray-600;
+  @apply w-full flex items-center justify-between font-medium hover:text-primary transition duration-300 focus:outline-none my-1 text-gray-600;
 }
 
 .badge-gray-small {

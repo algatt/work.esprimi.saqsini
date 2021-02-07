@@ -1,20 +1,7 @@
 <template>
-  <div class="md:flex relative">
-    <aside
-      class="h-screen sticky top-0 bg-primary transition-all duration-300 hidden md:block"
-      :class="!menuShow ? 'w-12' : 'w-60'"
-    >
-      <nav-bar
-        :is-visible="menuShow"
-        @clickToggle="menuShow = !menuShow"
-      ></nav-bar>
-    </aside>
-    <nav-bar
-      class="flex w-full flex-wrap md:hidden"
-      :is-visible="menuShow"
-    ></nav-bar>
-
-    <div class="flex flex-col flex-1">
+  <div class="min-h-screen flex flex-col bg-white flex-1">
+    <nav-bar />
+    <div class="flex-1 px-5 pb-10" style="margin-top: 3rem">
       <Nuxt />
     </div>
   </div>

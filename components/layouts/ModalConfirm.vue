@@ -1,8 +1,10 @@
 <template>
   <div
-    class="fixed top-0 left-0 w-full h-full bg-opacity-75 bg-gray-200 flex items-center justify-center"
+    class="fixed top-0 left-0 w-full h-full frosted flex items-center justify-center"
   >
-    <div class="bg-white px-10 py-4 flex flex-col rounded shadow-lg">
+    <div
+      class="bg-white px-10 py-4 flex flex-col rounded shadow-lg border border-gray-200"
+    >
       <h5 class="self-start text-primary text-lg mb-3">
         <slot name="title"></slot>
       </h5>

@@ -1,17 +1,16 @@
 <template>
-  <div v-if="!loading" class="flex flex-wrap">
-    <top-header-bar which="" :hide-select-all="true" :hide-delete="true"
-      ><template v-slot:title>Your Account</template></top-header-bar
+  <div v-if="!loading" class="flex flex-wrap pt-5">
+    <div
+      class="flex flex-wrap w-full xl:w-6/12 bg-gray-50 mx-auto rounded shadow border border-gray-200"
     >
-
-    <div class="flex flex-wrap p-5 w-full xl:w-6/12">
-      <div class="flex flex-col p-5 w-full xl:w-8/12">
-        <label for="inputName" class="label">Display Name</label>
-        <input id="inputName" v-model="displayName" class="input mb-3" />
-        <label for="inputEmail" class="label">Email</label>
-        <input id="inputEmail" v-model="email" class="input mb-3" />
+      <div
+        class="w-full bg-primary mb-3 rounded-t border-b border-gray-200 p-3"
+      >
+        <h5 class="text-white">Your Account</h5>
       </div>
-      <div class="flex flex-col p-5 items-center w-full xl:w-4/12">
+      <div
+        class="flex flex-col p-5 items-center justify-center w-full xl:w-4/12"
+      >
         <input
           id="inputAvatar"
           type="file"
@@ -27,36 +26,48 @@
         />
         <span
           v-else
-          class="h-48 w-48 object-cover rounded-lg cursor-pointer shadow flex justify-center items-center"
+          class="h-36 w-36 object-cover rounded-full cursor-pointer shadow flex justify-center items-center text-gray-300 hover:text-primary transition duration-300"
           @click="activateInput"
         >
-          <i class="far fa-user-circle fa-fw fa-5x text-gray-300"></i>
+          <i class="fas fa-user fa-fw fa-5x bg-white"></i>
         </span>
-        <button class="btn-link my-2" @click="resetImage">Clear</button>
+        <button
+          v-if="avatarImage !== ''"
+          class="btn-link mt-2"
+          @click="resetImage"
+        >
+          Clear
+        </button>
+      </div>
+      <div class="flex flex-col p-5 w-full xl:w-8/12">
+        <label for="inputName" class="label">Display Name</label>
+        <input id="inputName" v-model="displayName" class="input mb-3" />
+        <label for="inputEmail" class="label">Email</label>
+        <input id="inputEmail" v-model="email" class="input mb-3" />
       </div>
 
-      <div class="flex px-5 w-full">
-        <div class="w-full xl:w-8/12 flex flex-col items-start py-5">
-          <button class="btn btn-danger px-3" @click="showConfirm = true">
-            <i class="fas fa-exclamation-triangle fa-sm fa-fw mr-2"></i>Delete
-            Account
-          </button>
-        </div>
-        <div class="flex flex-col py-5 pl-5 items-center w-full xl:w-4/12">
-          <button
-            class="btn btn-primary px-3"
-            :disabled="$v.$invalid"
-            @click="updateDetails"
-          >
-            Update Details
-          </button>
-        </div>
+      <div class="w-full flex p-3 justify-center mb-4">
+        <button-icon
+          :disabled="$v.$invalid"
+          icon="fas fa-save"
+          colour="primary"
+          @click="updateDetails"
+          ><template v-slot:text>Update Details</template></button-icon
+        >
+      </div>
+      <div class="w-full flex p-3 justify-center bg-red-100">
+        <button-icon
+          icon="fas fa-exclamation-triangle"
+          colour="danger"
+          @click="showConfirm = true"
+          ><template v-slot:text>Delete Account</template></button-icon
+        >
       </div>
     </div>
 
     <div
       v-if="showConfirm"
-      class="fixed top-0 left-0 w-full h-full bg-gray-200 bg-opacity-75 flex items-center justify-center"
+      class="fixed top-0 left-0 w-full h-full frosted flex items-center justify-center"
     >
       <div
         class="bg-white border border-gray-200 shadow-md flex flex-col p-5 space-y-5"
@@ -75,17 +86,19 @@
           placeholder="confirm your email"
         />
         <div class="flex justify-between w-full">
-          <button class="btn btn-primary px-3" @click="showConfirm = false">
-            Cancel
-          </button>
-          <button
-            class="btn btn-danger px-3"
+          <button-icon
+            colour="primary"
+            icon="fas fa-times"
+            @click="showConfirm = false"
+            ><template v-slot:text>Cancel</template></button-icon
+          >
+          <button-icon
+            colour="danger"
+            icon="fas fa-exclamation-triangle"
             :disabled="confirmEmail !== accountDetails.email"
             @click="logoutUser"
+            ><template v-slot:text>Delete Account</template></button-icon
           >
-            <i class="fas fa-exclamation-triangle fa-sm fa-fw mr-2"></i>Delete
-            Account
-          </button>
         </div>
       </div>
     </div>
@@ -97,10 +110,9 @@
 import { validationMixin } from 'vuelidate'
 import { required, email } from 'vuelidate/lib/validators'
 import Spinner from '~/components/layouts/Spinner'
-import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 export default {
   name: 'AccountDetails',
-  components: { TopHeaderBar, Spinner },
+  components: { Spinner },
   mixins: [validationMixin],
   data() {
     return {

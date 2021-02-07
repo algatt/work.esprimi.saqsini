@@ -1,84 +1,142 @@
 <template>
   <div v-if="!loading" class="flex flex-col flex-wrap">
-    <div class="flex xl:hidden items-baseline justify-between p-2">
-      <h6>{{ survey.name }}</h6>
-      <p>{{ survey.referenceDate }}</p>
-    </div>
-    <div class="w-full flex flex-wrap items-baseline justify-between bg-white">
-      <div
-        class="flex items-center md:space-x-3 justify-around md:justify-start w-full md:w-auto"
+    <top-header-bar
+      :which="selectedView === 'questions' ? 'questions' : 'invites'"
+      :items="selectedView === 'questions' ? [] : invites"
+      class="w-full"
+      :hide-select-all="selectedView === 'questions'"
+      :hide-delete="true"
+      ><template v-slot:title
+        >{{ survey.name }}
+        <small class="ml-2 self-baseline font-normal">{{
+          survey.referenceDate
+        }}</small></template
       >
+      <template v-slot:extraButtons>
         <button
-          v-for="menuOption in menu"
-          :key="menuOption.code"
-          class="items-center md:flex md:justify-center md:w-44 font-semibold hover:text-primary transition duration-300 focus:outline-none py-3"
+          class="items-center md:flex md:justify-center font-semibold hover:text-primary transition duration-300 focus:outline-none py-3 mr-6"
           :class="
-            selectedMenu === menuOption.code
+            selectedView === 'questions'
               ? 'text-primary border-b-2 border-primary'
               : 'text-gray-500'
           "
-          @click="selectMenu(menuOption.code)"
+          @click="selectedView = 'questions'"
         >
-          <i
-            class="xl:mr-2"
-            :class="menuOption.icon"
-            :title="menuOption.text"
-          ></i>
-          <span class="hidden md:block">{{ menuOption.text }}</span>
+          <i class="xl:pr-2 fas fa-question fa-fw" title="Questions"></i>
+          <span class="hidden md:block">Questions</span>
         </button>
-      </div>
-      <div class="hidden md:flex items-center space-x-2 p-2">
-        <h6>{{ survey.name }}</h6>
-        <p>{{ survey.referenceDate }}</p>
-      </div>
-    </div>
-    <div v-if="selectedMenu === 6">
-      <invites></invites>
-    </div>
-    <div v-else class="mt-5 w-full md:w-8/12 mx-auto flex flex-col">
-      <div v-for="question in questions" :key="question.code" class="relative">
-        <div
-          class="border border-gray-100 shadow rounded w-full mx-auto flex items-stretch"
+        <button
+          class="items-center md:flex md:justify-center font-semibold hover:text-primary transition duration-300 focus:outline-none py-3 mr-6"
+          :class="
+            selectedView === 'invites'
+              ? 'text-primary border-b-2 border-primary'
+              : 'text-gray-500'
+          "
+          @click="selectedView = 'invites'"
         >
-          <div
-            class="w-12 flex justify-center items-center p-5 text-white text-lg rounded-l bg-primary"
+          <i class="xl:pr-2 fas fa-paper-plane fa-fw" title="Invites"></i>
+          <span class="hidden md:block">Outreach</span>
+        </button>
+      </template>
+      <template
+        v-if="selectedView === 'questions'"
+        v-slot:menuButtonIfNotSelected
+      >
+        <button class="w-full" @click="selectMenu('settings')">
+          <span class="popup-menu-button">
+            <i class="fas fa-sliders-h fa-fw mr-1"></i>Settings</span
           >
-            {{ question.ordinalPosition }}
-          </div>
-          <div v-if="!showPreview" class="flex flex-col flex-grow p-3">
-            <span
-              class="mb-2"
-              :class="
-                question.flags.includes('SECTION')
-                  ? 'font-semibold'
-                  : 'font-medium'
-              "
-              >{{ question.name }}</span
+        </button>
+        <button class="w-full" @click="selectMenu('language')">
+          <span class="popup-menu-button">
+            <i class="fas fa-language fa-fw mr-1"></i>Language</span
+          >
+        </button>
+        <button class="w-full" @click="selectMenu('collaborators')">
+          <span class="popup-menu-button">
+            <i class="fas fa-users fa-fw mr-1"></i>Collaborators</span
+          >
+        </button>
+        <button class="w-full" @click="selectMenu('preview')">
+          <span class="popup-menu-button">
+            <i class="fas fa-eye fa-fw mr-1"></i>Preview</span
+          >
+        </button>
+        <button class="w-full" @click="showPreviewToggle">
+          <span class="popup-menu-button">
+            <template v-if="showPreview">
+              <i class="fas fa-question-circle fa-fw mr-1"></i>Show Title
+              Only</template
             >
-            <div class="flex">
-              <span
-                class="text-sm bg-gray-100 rounded border border-gray-200 px-2 text-gray-700 mr-2"
-                >{{ questionText(question).toLowerCase() }}</span
+            <template v-else
+              ><i
+                v-if="!showPreview"
+                class="fas fa-question-circle fa-fw mr-1"
+              ></i
+              >Show Question Content</template
+            >
+          </span>
+        </button>
+      </template>
+      <template v-else v-slot:menuButtonIfNotSelected>
+        <button class="w-full" @click="invite()">
+          <span class="popup-menu-button">
+            <i class="fas fa-paper-plane fa-fw mr-1"></i>Invite</span
+          >
+        </button>
+      </template></top-header-bar
+    >
+
+    <div v-if="selectedView === 'invites'">
+      <invites @contacts="checkContacts"></invites>
+    </div>
+    <div v-else class="flex flex-col">
+      <div
+        v-for="iteration in questionsNumberOfSections"
+        :key="'page' + iteration"
+        class="mt-5 w-full md:w-8/12 mx-auto flex flex-col border-2 border-gray-100 rounded shadow p-3"
+      >
+        <div
+          v-for="question in getQuestionsInPage(iteration)"
+          :key="question.code"
+          class="flex"
+        >
+          <div class="flex flex-1">
+            <div
+              v-if="question.flags.includes('SECTION')"
+              class="flex flex-col pb-4 mb-3"
+            >
+              <div class="flex items-baseline">
+                <h5>Page</h5>
+                <p class="ml-2">{{ question.name }}</p>
+              </div>
+              <div v-if="showPreview">
+                <p>{{ getQuestionContent(question) }}</p>
+              </div>
+            </div>
+            <div v-else class="flex flex-col mb-1 p-3 w-full">
+              <div class="flex">
+                <div
+                  class="w-12 text-primary text-2xl text-center font-semibold"
+                >
+                  {{ question.ordinalPosition }}
+                </div>
+
+                <div class="flex flex-1 items-center pl-1">
+                  {{ question.name }}
+                </div>
+              </div>
+              <display-question
+                v-if="showPreview"
+                :question="question"
+                class="p-3 w-full"
+                :default-style="true"
               >
-              <span
-                v-if="
-                  JSON.parse(question.surveyOptions).branching.rules.length !==
-                  0
-                "
-                title="Has Branching"
-                class="text-sm bg-gray-100 rounded border border-gray-200 px-2 text-gray-700 mr-2"
-                >branching</span
-              >
+              </display-question>
             </div>
           </div>
-          <display-question
-            v-else
-            :question="question"
-            class="p-8 w-full"
-            :default-style="true"
-          ></display-question>
-          <div class="w-12 flex justify-center items-center p-5">
-            <popup-menu direction="center">
+          <div class="flex w-32 justify-end items-center px-3">
+            <popup-menu direction="center" class="mr-2">
               <template v-slot:menuButton
                 ><button class="btn-link-rounded">
                   <i class="fas fa-ellipsis-v fa-fw"></i></button
@@ -109,76 +167,72 @@
                 </button>
               </template>
             </popup-menu>
-          </div>
-        </div>
-
-        <div class="flex justify-center my-2 p-2">
-          <popup-menu direction="center">
-            <template v-slot:menuButton
-              ><span class="btn-link-rounded"
-                ><i class="fas fa-plus fa-fw"></i></span
-            ></template>
-            <template v-slot:menuItems>
-              <button
-                v-for="questionType in questionTypes"
-                :key="questionType.code"
-                @click="
-                  newQuestion(questionType.flag, question.ordinalPosition + 1)
-                "
-              >
-                <span class="popup-menu-button">
-                  <i class="fa-fw fa-sm" :class="questionType.icon"></i
-                  >{{ questionType.text }}</span
+            <popup-menu direction="center">
+              <template v-slot:menuButton
+                ><span class="btn-link-rounded"
+                  ><i class="fas fa-plus fa-fw"></i></span
+              ></template>
+              <template v-slot:menuItems>
+                <button
+                  v-for="questionType in questionTypes"
+                  :key="questionType.code"
+                  @click="
+                    newQuestion(questionType.flag, question.ordinalPosition + 1)
+                  "
                 >
-              </button>
-            </template>
-          </popup-menu>
+                  <span class="popup-menu-button">
+                    <i class="fa-fw fa-sm" :class="questionType.icon"></i
+                    >{{ questionType.text }}</span
+                  >
+                </button>
+              </template>
+            </popup-menu>
+          </div>
         </div>
       </div>
     </div>
 
     <transition name="fade">
-      <template v-if="selectedMenu === 1">
-        <edit-object-modal v-if="currentItemToBeEdited">
+      <template
+        v-if="
+          selectedView === 'questions' &&
+          currentItemToBeEdited &&
+          currentItemToBeEdited.surveyCode
+        "
+      >
+        <edit-object-modal>
           <template v-slot:content>
             <new-question></new-question>
           </template>
         </edit-object-modal>
       </template>
-      <template v-else-if="selectedMenu === 2">
-        <edit-object-modal
-          v-if="currentItemToBeEdited"
-          @modalClosed="selectedMenu = 1"
-        >
+      <template v-if="selectedMenu === 'settings' && currentItemToBeEdited">
+        <edit-object-modal @modalClosed="selectedMenu = ''">
           <template v-slot:title>Survey Settings</template>
           <template v-slot:content>
             <survey-settings></survey-settings>
           </template>
         </edit-object-modal>
       </template>
-      <template v-else-if="selectedMenu === 3">
-        <edit-object-modal
-          v-if="currentItemToBeEdited"
-          @modalClosed="selectedMenu = 1"
-        >
+      <template v-if="selectedMenu === 'language' && currentItemToBeEdited">
+        <edit-object-modal @modalClosed="selectedMenu = ''">
           <template v-slot:title>Language Settings</template>
           <template v-slot:content>
             <survey-language-settings></survey-language-settings>
           </template>
         </edit-object-modal>
       </template>
-      <template v-else-if="selectedMenu === 4">
+      <template v-if="selectedMenu === 'preview' && currentItemToBeEdited">
         <preview-survey-modal
           :survey="survey"
           :questions="questions"
-          @modalClosed="selectedMenu = 1"
+          @modalClosed="selectedMenu = ''"
         ></preview-survey-modal>
       </template>
-      <template v-else-if="selectedMenu === 5">
-        <edit-object-modal
-          v-if="currentItemToBeEdited"
-          @modalClosed="selectedMenu = 1"
-        >
+      <template
+        v-if="selectedMenu === 'collaborators' && currentItemToBeEdited"
+      >
+        <edit-object-modal @modalClosed="selectedMenu = ''">
           <template v-slot:title>Collaborators</template>
           <template v-slot:content
             ><survey-collaborators></survey-collaborators>
@@ -193,16 +247,6 @@
       :questions="questions"
       @close="showMoveMenu = false"
     ></question-move-menu>
-
-    <div
-      v-if="selectedMenu !== 6"
-      class="fixed bottom-0 right-0 mr-5 mb-5 z-10"
-    >
-      <button class="btn-round-primary" @click="showPreviewToggle">
-        <i v-if="!showPreview" class="fas fa-eye fa-fw"></i>
-        <i v-else class="fas fa-eye-slash fa-fw"></i>
-      </button>
-    </div>
   </div>
   <spinner v-else></spinner>
 </template>
@@ -214,6 +258,7 @@ import DisplayQuestion from '~/components/surveys/DisplayQuestion'
 import {
   getQuestionType,
   parseSurveyToForm,
+  parseQuestionToForm,
 } from '~/helpers/parseSurveyObjects'
 import NewQuestion from '~/components/surveys/NewQuestion'
 import EditObjectModal from '~/components/layouts/EditObjectModal'
@@ -225,6 +270,7 @@ import SurveyCollaborators from '~/components/surveys/SurveyCollaborators'
 import { QUESTION_TYPES } from '~/helpers/constants'
 import PopupMenu from '~/components/layouts/PopupMenu'
 import Invites from '~/components/contacts/Invites'
+import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 
 export default {
   name: 'QuestionList',
@@ -240,21 +286,16 @@ export default {
     SurveyLanguageSettings,
     PopupMenu,
     Invites,
+    TopHeaderBar,
   },
   data() {
     return {
-      menu: [
-        { code: 1, text: 'Questions', icon: 'fas fa-question' },
-        { code: 2, text: 'Settings', icon: 'fas fa-sliders-h' },
-        { code: 3, text: 'Language', icon: 'fas fa-language' },
-        { code: 4, text: 'Preview', icon: 'far fa-eye' },
-        { code: 5, text: 'Collaborators', icon: 'fas fa-users' },
-        { code: 6, text: 'Invites', icon: 'far fa-paper-plane' },
-      ],
-      selectedMenu: 1,
+      selectedMenu: '',
+      selectedView: 'questions',
       showPreview: null,
       whichSubMenu: null,
       showMoveMenu: null,
+      invites: [],
     }
   },
   computed: {
@@ -265,6 +306,21 @@ export default {
       return this.$store.getters.getSortedItems('questions').sort((a, b) => {
         return a.ordinalPosition > b.ordinalPosition ? 1 : -1
       })
+    },
+    questionsWithSections() {
+      const x = JSON.parse(JSON.stringify(this.questions))
+      let page = 0
+      x.forEach((el) => {
+        if (el.flags.includes('SECTION')) page++
+        el.page = page
+      })
+      return x
+    },
+    questionsNumberOfSections() {
+      const x = this.questionsWithSections.map((el) => {
+        return el.page
+      })
+      return new Set(x).size
     },
     survey() {
       return parseSurveyToForm(this.$store.getters.getItems('surveys')[0])
@@ -316,8 +372,7 @@ export default {
       this.$store.dispatch('setCurrentItemToBeEdited', question)
     },
     selectMenu(code) {
-      if (code === 2 || code === 3 || code === 5)
-        this.$store.dispatch('setCurrentItemToBeEdited', this.survey)
+      this.$store.dispatch('setCurrentItemToBeEdited', this.survey)
       this.selectedMenu = code
     },
     changeSubMenu(code) {
@@ -326,9 +381,23 @@ export default {
     questionText(question) {
       return QUESTION_TYPES[getQuestionType(question)].text
     },
+    getQuestionContent(question) {
+      return parseQuestionToForm(question).text
+    },
     showPreviewToggle() {
       this.showPreview = !this.showPreview
       cookies.set('questionPreviewMode', this.showPreview)
+    },
+    invite() {
+      alert('todo')
+    },
+    checkContacts(result) {
+      this.invites = result
+    },
+    getQuestionsInPage(page) {
+      return this.questionsWithSections.filter((el) => {
+        return el.page === page
+      })
     },
   },
 }

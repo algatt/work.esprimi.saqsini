@@ -1,15 +1,17 @@
 <template>
-  <div class="flex flex-wrap w-full justify-between items-center py-8">
+  <div class="flex flex-wrap w-full justify-between items-center py-2">
     <div class="flex flex-wrap items-center w-6/12">
       <template v-if="showDelete && form.code !== -1">
-        <button
+        <button-icon
           v-if="form.ordinalPosition !== 1"
+          colour="danger"
+          icon="fas fa-trash-alt"
           class="btn btn-danger mr-2"
           :disabled="form.code === -1"
           @click="deleteItem"
         >
-          Delete
-        </button>
+          <template v-slot:text>Delete</template>
+        </button-icon>
       </template>
       <!--      <button-->
       <!--        v-if="false"-->
@@ -22,17 +24,22 @@
     </div>
 
     <div class="flex flex-wrap items-center w-6/12 justify-end">
-      <button class="btn btn-secondary" @click="cancelCurrentItem">
-        Cancel
-      </button>
-      <button
+      <button-icon
+        colour="secondary"
+        icon="fas fa-times"
+        @click="cancelCurrentItem"
+      >
+        <template v-slot:text>Cancel</template>
+      </button-icon>
+      <button-icon
         v-if="showSave"
-        class="btn btn-primary"
+        colour="primary"
+        icon="fas fa-save"
         :disabled="!isValid"
         @click="saveItem"
       >
-        Save
-      </button>
+        <template v-slot:text>Save</template>
+      </button-icon>
     </div>
   </div>
 </template>

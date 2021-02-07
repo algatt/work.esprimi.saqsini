@@ -2,14 +2,15 @@
   <div v-if="!loading" class="flex flex-wrap items-start">
     <top-header-bar which="surveys" :items="surveys" class="w-full"
       ><template v-slot:title>Surveys</template>
-      <template v-slot:button>
-        <button
-          v-if="!disableNewButton && surveys.length !== 0"
-          class="btn btn-primary"
+      <template v-slot:extraButtons>
+        <button-icon
+          v-if="!disableNewButton"
+          colour="primary"
+          icon="fas fa-plus"
           @click="setCurrentItem({ code: -1 })"
         >
-          <i class="fas fa-plus fa-sm fa-fw mr-1"></i>New Survey
-        </button></template
+          <template v-slot:text>New Survey</template>
+        </button-icon></template
       ></top-header-bar
     >
 
@@ -77,7 +78,7 @@
         </p>
 
         <p class="w-full xl:w-2/12 flex xl:justify-center">
-          <button class="btn-link">
+          <button class="btn-table">
             {{ slotProps.item.responses
             }}<span class="flex xl:hidden">&nbsp; Responses</span>
           </button>
@@ -90,7 +91,7 @@
             }"
             @click.stop.native
           >
-            <button class="btn-link">
+            <button class="btn-table">
               {{ slotProps.item.questions }}
               <span class="flex xl:hidden">&nbsp; Questions</span>
             </button>

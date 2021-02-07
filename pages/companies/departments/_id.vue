@@ -1,15 +1,15 @@
 <template>
   <div v-if="!loading" class="flex flex-wrap items-start">
-    <top-header-bar which="departments" :items="departments" class="w-full"
-      ><template v-slot:extraContent> <top-links-bar></top-links-bar></template>
-      <template v-slot:button>
-        <button
-          v-if="departments.length !== 0"
-          class="btn btn-primary"
+    <top-header-bar which="departments" :items="departments" class="w-full">
+      <template v-slot:title> Departments for {{ company.name }}</template>
+      <template v-slot:extraButtons>
+        <button-icon
+          colour="primary"
+          icon="fas fa-plus"
           @click="setCurrentItem({ code: -1 })"
         >
-          <i class="fas fa-plus fa-sm fa-fw mr-1"></i>New Department
-        </button></template
+          <template v-slot:text>New Department</template>
+        </button-icon></template
       ></top-header-bar
     >
 
@@ -26,11 +26,6 @@
     >
 
     <div v-else class="flex flex-col w-full">
-      <h6 class="hidden xl:block pl-6 pt-5 pb-2">
-        Departments for
-        {{ company.name }}
-      </h6>
-
       <display-table-component
         class="w-full"
         :items="departments"
@@ -91,7 +86,6 @@ import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
 import NewDepartment from '~/components/contacts/NewDepartment'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
-import TopLinksBar from '~/components/contacts/TopLinksBar'
 
 export default {
   name: 'ContactsList',
@@ -101,7 +95,6 @@ export default {
     DisplayTableComponent,
     EditObjectModal,
     PopupMenuVue,
-    TopLinksBar,
   },
   data() {
     return {
@@ -122,17 +115,18 @@ export default {
     },
     company() {
       return this.$store.getters.getItems('companies').find((el) => {
-        return el.code === this.$route.params.id
+        return Number(el.code) === Number(this.$route.params.id)
       })
     },
   },
   created() {
     this.$store.dispatch('setLoading', true)
-    this.$store
-      .dispatch('departments/getDepartments', this.$route.params.id)
-      .finally(() => {
-        this.$store.dispatch('setLoading', false)
-      })
+    Promise.all([
+      this.$store.dispatch('companies/getCompanies', { limit: 100, offset: 0 }),
+      this.$store.dispatch('departments/getDepartments', this.$route.params.id),
+    ]).then(() => {
+      this.$store.dispatch('setLoading', false)
+    })
   },
   methods: {
     setCurrentItem(item) {

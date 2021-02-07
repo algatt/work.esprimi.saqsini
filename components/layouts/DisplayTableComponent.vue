@@ -1,6 +1,6 @@
 <template>
   <div class="flex-col">
-    <div class="flex w-full flex-wrap p-5 items-start">
+    <div class="flex w-full flex-wrap items-start">
       <div class="flex flex-col pl-0 rounded-lg shadow w-full">
         <top-title-bar>
           <template v-slot:content> <slot name="titleContent"></slot></template

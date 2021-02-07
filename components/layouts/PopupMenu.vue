@@ -9,10 +9,10 @@
       <i v-if="!$slots.menuButton" class="fas fa-ellipsis-v fa-fw"></i>
     </button>
 
-    <button v-if="showMenu" class="absolute flex p-3">
+    <button v-if="showMenu" class="absolute flex p-3 mt-2">
       <div
         id="popupMenuContainer"
-        class="absolute flex flex-col z-20 bg-white border-gray-200 rounded shadow"
+        class="absolute flex flex-col z-20 bg-white border border-gray-200 rounded shadow"
         style="min-width: max-content; width: 150px"
         :style="styleForMenu"
         @click.stop="closeMenu"
