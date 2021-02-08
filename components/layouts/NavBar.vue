@@ -6,7 +6,10 @@
       @click="smallScreenMenu = false"
     >
       <div class="flex justify-between text-white pl-5 pr-5">
-        <div class="flex h-12 items-center">
+        <nuxt-link
+          :to="{ name: 'index' }"
+          class="flex h-12 items-center focus:outline-none"
+        >
           <span class="text-white h-8 w-8 flex items-center justify-center"
             ><i class="fas fa-comments fa-fw"></i
           ></span>
@@ -15,14 +18,14 @@
           >
             Saqsini
           </h6>
-        </div>
+        </nuxt-link>
         <button @click="smallScreenMenu = false">
           <i class="fas fa-times fa-fw fa-lg"></i>
         </button>
       </div>
       <div
-        v-for="(item, index) in menuItems"
-        :key="index"
+        v-for="(item, menuItemIndex) in menuItems"
+        :key="menuItemIndex"
         class="relative px-5"
       >
         <nuxt-link
@@ -37,18 +40,25 @@
               {{ child.header }}
             </span>
           </div>
-          <div class="text-xs flex mt-1">
-            <div class="w-8" />
-            <span class="pl-2">{{ child.text }}</span>
-          </div>
+          <!--          <div class="text-xs flex mt-1">-->
+          <!--            <div class="w-8" />-->
+          <!--            <span class="pl-2">{{ child.text }}</span>-->
+          <!--          </div>-->
         </nuxt-link>
+        <div
+          v-if="menuItemIndex !== menuItems.length - 1"
+          class="w-full border-b-2 border-white my-2"
+        ></div>
       </div>
     </div>
     <div
       v-if="!smallScreenMenu"
       class="w-full h-12 flex lg:hidden sticky top-0 items-center px-5 justify-between z-20 bg-gray-50"
     >
-      <div class="flex items-center">
+      <nuxt-link
+        :to="{ name: 'index' }"
+        class="flex items-center focus:outline-none"
+      >
         <span
           class="bg-gray-50 text-primary h-8 w-8 rounded-full flex items-center justify-center"
           ><i class="fas fa-comments fa-fw"></i
@@ -58,7 +68,7 @@
         >
           Saqsini
         </h6>
-      </div>
+      </nuxt-link>
       <button
         class="text-gray-700 hover:text-primary transition duration-300"
         @click="smallScreenMenu = true"
@@ -67,18 +77,23 @@
       </button>
     </div>
     <div
-      class="hidden lg:flex w-full h-12 fixed top-0 items-center px-5 justify-between z-20 bg-white"
+      class="hidden lg:flex w-full h-12 fixed top-0 items-center px-5 justify-between z-40 bg-white"
     >
       <div class="flex flex-1 items-center">
-        <span
-          class="text-primary h-8 w-8 rounded-full flex items-center justify-center"
-          ><i class="fas fa-comments fa-fw"></i
-        ></span>
-        <h6
-          class="text-primary font-semibold text-xl pl-1 tracking-wide flex-1"
+        <nuxt-link
+          :to="{ name: 'index' }"
+          class="flex items-center focus:outline-none"
         >
-          Saqsini
-        </h6>
+          <span
+            class="text-primary h-8 w-8 rounded-full flex items-center justify-center"
+            ><i class="fas fa-comments fa-fw"></i
+          ></span>
+          <h6
+            class="text-primary font-semibold text-xl pl-1 tracking-wide flex-1"
+          >
+            Saqsini
+          </h6>
+        </nuxt-link>
       </div>
 
       <div class="flex relative items-center">
@@ -91,7 +106,7 @@
         >
           <span
             v-if="item.text !== 'Account'"
-            class="text-gray-600 font-semibold cursor-pointer hover:text-primary transition duration-300 border-b-2 border-transparent hover:border-primary py-2 px-1"
+            class="text-gray-600 font-semibold cursor-pointer hover:text-primary transition duration-300 border-b-2 border-transparent hover:border-primary py-2 px-1 text-lg"
             >{{ item.text }}</span
           >
           <span
@@ -99,7 +114,7 @@
             class="text-gray-600 font-semibold cursor-pointer hover:text-primary flex items-center flex justify-center transition duration-300"
           >
             <div
-              v-if="!avatar"
+              v-if="!avatar || avatar.length < 100"
               class="w-7 h-7 rounded-full border-2 border-gray-600 hover:border-primary transition duration-300 flex justify-center items-center"
             >
               <i class="fas fa-user fa-fw"></i>

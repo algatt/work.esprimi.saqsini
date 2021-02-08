@@ -99,16 +99,26 @@
         <div
           v-for="question in getQuestionsInPage(iteration)"
           :key="question.code"
-          class="flex"
+          class="flex p-2"
         >
           <div class="flex flex-1">
             <div
               v-if="question.flags.includes('SECTION')"
-              class="flex flex-col pb-4 mb-3"
+              class="flex flex-col p-3"
             >
               <div class="flex items-baseline">
                 <h5>Page</h5>
                 <p class="ml-2">{{ question.name }}</p>
+              </div>
+              <div class="py-1 flex items-center">
+                <span
+                  v-if="
+                    JSON.parse(question.surveyOptions).branching.rules
+                      .length !== 0
+                  "
+                  class="text-sm bg-gray-100 rounded border border-gray-200 text-gray-600 px-1 py-0.5"
+                  >branching</span
+                >
               </div>
               <div v-if="showPreview">
                 <p>{{ getQuestionContent(question) }}</p>
@@ -122,9 +132,23 @@
                   {{ question.ordinalPosition }}
                 </div>
 
-                <div class="flex flex-1 items-center pl-1">
+                <div class="flex flex-1 items-end pb-0.5 pl-1">
                   {{ question.name }}
                 </div>
+              </div>
+              <div class="py-1 flex items-center px-3">
+                <span
+                  class="text-sm bg-gray-100 rounded border border-gray-200 text-gray-600 px-1 py-0.5 mr-1"
+                  >{{ questionTypeText(question) }}</span
+                >
+                <span
+                  v-if="
+                    JSON.parse(question.surveyOptions).branching.rules
+                      .length !== 0
+                  "
+                  class="text-sm bg-gray-100 rounded border border-gray-200 text-gray-600 px-1 py-0.5"
+                  >branching</span
+                >
               </div>
               <display-question
                 v-if="showPreview"
@@ -135,7 +159,7 @@
               </display-question>
             </div>
           </div>
-          <div class="flex w-32 justify-end items-center px-3">
+          <div class="flex w-32 justify-end items-start p-3">
             <popup-menu direction="center" class="mr-2">
               <template v-slot:menuButton
                 ><button class="btn-link-rounded">
@@ -378,7 +402,7 @@ export default {
     changeSubMenu(code) {
       this.whichSubMenu = code
     },
-    questionText(question) {
+    questionTypeText(question) {
       return QUESTION_TYPES[getQuestionType(question)].text
     },
     getQuestionContent(question) {

@@ -68,9 +68,9 @@
         "link": "account"
       },
       {
-        "icon": "fas fa-bug fa-fw",
-        "header": "Problem",
-        "text": "Report a problem with the app",
+        "icon": "fas fa-concierge-bell fa-fw",
+        "header": "Support",
+        "text": "We are here to help you",
         "role": [],
         "link": "contact"
       },

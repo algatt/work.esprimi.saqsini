@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div>something will be here</div>
 </template>
 
 <script>
