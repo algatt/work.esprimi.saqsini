@@ -13,6 +13,7 @@ const deleteCalls = {
   surveys: 'surveys/deleteSurvey',
   questions: 'questions/deleteQuestion',
   notifications: 'notifications/deleteNotification',
+  contactlist: 'contactlist/deleteContactList',
 }
 
 const newCalls = {
@@ -27,6 +28,7 @@ const newCalls = {
   subcategories: 'subcategories/newSubcategory',
   surveys: 'surveys/newSurvey',
   questions: 'questions/newQuestion',
+  contactlist: 'contactlist/newContactList',
 }
 
 const updateCalls = {
@@ -42,6 +44,7 @@ const updateCalls = {
   surveys: 'surveys/updateSurvey',
   questions: 'questions/updateQuestion',
   notifications: 'notifications/readNotification',
+  contactlist: 'contactlist/updateContactList',
 }
 
 export const state = () => ({

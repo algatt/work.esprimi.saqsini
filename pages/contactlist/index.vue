@@ -1,6 +1,6 @@
 <template>
   <div v-if="!loading" class="flex flex-wrap items-start">
-    <top-header-bar which="contacts" :items="contactlists" class="w-full">
+    <top-header-bar which="contactlist" :items="contactlists" class="w-full">
       <template v-slot:title> Contact Lists </template>
       <template v-slot:extraButtons>
         <button-icon
@@ -10,8 +10,15 @@
         >
           <template v-slot:text>New Contact List</template>
         </button-icon>
-      </template></top-header-bar
-    >
+      </template>
+      <template v-slot:menuButtonIfNotSelected>
+        <button class="w-full" @click="downloadTemplate">
+          <span class="popup-menu-button">
+            <i class="fas fa-download fa-fw mr-1"></i>Download Template</span
+          >
+        </button>
+      </template>
+    </top-header-bar>
 
     <display-table-component
       class="w-full"
@@ -22,15 +29,16 @@
       <template v-slot:title>Contact Lists</template>
 
       <template v-slot:titleContent>
-        <p class="w-5/12">List Name</p>
-        <p class="w-3/12 text-center">Total Contacts</p>
-        <p class="w-4/12">Validity</p>
+        <p class="w-6/12">List Name</p>
+        <p class="w-6/12 text-right pr-4">Validity</p>
       </template>
       <template v-slot:titleContentSmall>Contacts</template>
       <template v-slot:content="slotProps"
-        ><p class="w-full xl:w-5/12">Default {{ slotProps.items }}</p>
-        <p class="w-full xl:w-3/12 xl:justify-center flex">129</p>
-        <p class="w-full xl:w-4/12">Until 28/2/2020 (xx days)</p>
+        ><p class="w-6/12">{{ slotProps.item.name }}</p>
+        <p class="w-6/12 text-right pr-4">
+          {{ slotProps.item.deleteBy }}
+          {{ calculateRemainingTime(slotProps.item.deleteBy) }}
+        </p>
       </template>
       <template v-slot:popup-menu="slotProps">
         <span
@@ -46,6 +54,16 @@
               <button @click="setCurrentItem(slotProps.item)">
                 <span class="popup-menu-button">
                   <i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit</span
+                >
+              </button>
+              <button @click="exportContactBook(slotProps.item)">
+                <span class="popup-menu-button">
+                  <i class="fas fa-file-export fa-fw fa-sm"></i>Export</span
+                >
+              </button>
+              <button @click="flagForRemoval(slotProps.item)">
+                <span class="popup-menu-button">
+                  <i class="fas fa-flag fa-fw fa-sm"></i>Flag for Removal</span
                 >
               </button>
             </template>
@@ -66,7 +84,7 @@
 </template>
 
 <script>
-// import moment from 'moment'
+import moment from 'moment'
 import EditObjectModal from '~/components/layouts/EditObjectModal'
 import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
@@ -101,24 +119,33 @@ export default {
     },
   },
   created() {
-    this.$store.dispatch('contactlist/getContactLists', {
-      limit: 100,
-      offset: 0,
-    })
-    // this.$store.dispatch('setLoading', true)
-    // this.$store
-    //   .dispatch('contacts/getContacts', { limit: 100, offset: 0 })
-    //   .finally(() => {
-    //     this.$store.dispatch('setLoading', false)
-    //   })
+    this.$store.dispatch('setLoading', true)
+    this.$store
+      .dispatch('contactlist/getContactLists', {
+        limit: 100,
+        offset: 0,
+      })
+      .finally(() => {
+        this.$store.dispatch('setLoading', false)
+      })
   },
   methods: {
     setCurrentItem(item) {
       this.$store.dispatch('setCurrentItemToBeEdited', item)
     },
-    // calculateAge(dob) {
-    //   return moment().diff(moment(dob), 'y')
-    // },
+    calculateRemainingTime(dob) {
+      const days = moment(dob).diff(moment(), 'd')
+      return days === 0 ? 'Indefinite' : `(${days} days)`
+    },
+    flagForRemoval(contactList) {
+      this.$store.dispatch('contactlist/flagForRemoval', contactList)
+    },
+    downloadTemplate() {
+      this.$store.dispatch('contactlist/downloadTemplate')
+    },
+    exportContactBook(contactList) {
+      this.$store.dispatch('contactlist/exportContactBook', contactList)
+    },
   },
 }
 </script>

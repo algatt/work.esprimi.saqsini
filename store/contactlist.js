@@ -6,84 +6,131 @@ export const state = () => ({
 
 export const actions = {
   getContactLists({ commit }, { limit, offset }) {
-    const data = [
-      {
-        code: 1,
-        name: 'default',
-        validFrom: '2020-10-10',
-        validTo: '2020-11-12',
-        contacts: 100,
-      },
-    ]
-    commit(
-      'setItems',
-      {
-        which: 'contactlist',
-        items: data,
-      },
-      { root: true }
-    )
-    // return new Promise((resolve, reject) => {
-    //   this.$axios
-    //     .get(`/contact/contact/all?&limit=${limit}&offset=${offset}`)
-    //     .then((response) => {
-    //       commit(
-    //         'setItems',
-    //         {
-    //           which: 'contacts',
-    //           items: response.data,
-    //         },
-    //         { root: true }
-    //       )
-    //       resolve()
-    //     })
-    //     .catch((error) => {
-    //       reject(error)
-    //     })
-    // })
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .get(`/contact/contactbook/all?limit=${limit}&offset=${offset}`)
+        .then((response) => {
+          commit(
+            'setItems',
+            {
+              which: 'contactlist',
+              items: response.data,
+            },
+            { root: true }
+          )
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
   },
-  //
-  // deleteContact({ dispatch, commit }, code) {
-  //   return new Promise((resolve, reject) => {
-  //     this.$axios
-  //       .delete('/contact/contact/' + code)
-  //       .then(() => {
-  //         resolve()
-  //       })
-  //       .catch((error) => {
-  //         reject(error)
-  //       })
-  //   })
-  // },
-  //
-  // newContact({ commit, dispatch, state }, contact) {
-  //   delete contact.code
-  //   return new Promise((resolve, reject) => {
-  //     this.$axios
-  //       .post('contact/contact/', qs.stringify(contact))
-  //       .then((response) => {
-  //         resolve(response.data)
-  //       })
-  //       .catch((error) => {
-  //         reject(error)
-  //       })
-  //   })
-  // },
-  //
-  // updateContact({ commit }, contact) {
-  //   const code = contact.code
-  //   const jobCount = contact.jobCount
-  //   delete contact.code
-  //   return new Promise((resolve, reject) => {
-  //     this.$axios
-  //       .put('contact/contact/' + code, qs.stringify(contact))
-  //       .then((response) => {
-  //         response.data.jobCount = jobCount
-  //         resolve(response.data)
-  //       })
-  //       .catch((error) => {
-  //         reject(error)
-  //       })
-  //   })
-  // },
+
+  deleteContactList({ dispatch, commit }, code) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .delete('/contact/contactbook/' + code)
+        .then(() => {
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  newContactList({ commit, dispatch, state }, contactList) {
+    const data = new FormData()
+    data.append('name', contactList.name)
+    if (contactList.data) data.append('data', contactList.data)
+    if (contactList.deleteBy) data.append('deleteBy', contactList.deleteBy)
+
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post('contact/contactbook/', data, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then((response) => {
+          resolve(response.data)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  updateContactList({ commit, dispatch, state }, contactList) {
+    const data = new FormData()
+    data.append('name', contactList.name)
+    if (contactList.data) data.append('data', contactList.data)
+    if (contactList.deleteBy) data.append('deleteBy', contactList.deleteBy)
+
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .put(`contact/contactbook/${contactList.code}`, data, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then((response) => {
+          resolve(response.data)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  downloadTemplate() {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .get('/contact/contactbook/importTemplate')
+        .then((response) => {
+          resolve(response.data)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  flagForRemoval({ dispatch, commit }, contactList) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .patch(`/contact/contactbook/${contactList.code}/flagForRemoval`)
+        .then(() => {
+          contactList.flags = contactList.flags.filter((item) => {
+            return item !== 'ACTIVE'
+          })
+          contactList.flags.push('FLAGGED_FOR_REMOVAL')
+          commit(
+            'updateItem',
+            {
+              which: 'contactlist',
+              item: contactList,
+            },
+            { root: true }
+          )
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  exportContactBook({ commit }, contactList) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .patch(`/contact/contactbook/${contactList.code}/export`)
+        .then((response) => {
+          resolve(response.data)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
 }

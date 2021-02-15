@@ -18,23 +18,35 @@
       />
     </div>
 
-    <!--    <div class="flex flex-col">-->
-    <!--      <div class="flex items-center">-->
-    <!--        <label for="inputDob" class="label-optional">Birth Date</label>-->
-    <!--        <span v-if="$v.form.dob.$error">-->
-    <!--          <span v-if="!$v.form.dob.between" class="error"-->
-    <!--            >Date cannot be before 1900 or in the future.</span-->
-    <!--          ></span-->
-    <!--        >-->
-    <!--      </div>-->
-    <!--      <input-->
-    <!--        id="inputDob"-->
-    <!--        v-model="form.dob"-->
-    <!--        class="input"-->
-    <!--        type="date"-->
-    <!--        @change="$v.form.dob.$touch()"-->
-    <!--      />-->
-    <!--    </div>-->
+    <div class="flex flex-col">
+      <div class="flex items-center">
+        <label for="inputData" class="label-optional">List Data</label>
+      </div>
+      <input
+        id="inputData"
+        type="file"
+        placeholder="Upload a list template"
+        class="input"
+      />
+    </div>
+
+    <div class="flex flex-col">
+      <div class="flex items-center">
+        <label for="inputValidity" class="label-optional">Valid Until</label>
+        <span v-if="$v.form.deleteBy.$error">
+          <span v-if="!$v.form.deleteBy.check" class="error"
+            >Date cannot be in the past.</span
+          ></span
+        >
+      </div>
+      <input
+        id="inputValidity"
+        v-model="form.deleteBy"
+        class="input"
+        type="date"
+        @change="$v.form.deleteBy.$touch()"
+      />
+    </div>
 
     <edit-object-modal-bottom-part
       :form="form"
@@ -47,7 +59,7 @@
 <script>
 import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
-// import moment from 'moment'
+import moment from 'moment'
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
 
 export default {
@@ -58,6 +70,12 @@ export default {
     form: {
       name: {
         required,
+      },
+      deleteBy: {
+        check(value) {
+          if (value === '' || value === undefined) return true
+          return moment(value) > moment()
+        },
       },
     },
   },

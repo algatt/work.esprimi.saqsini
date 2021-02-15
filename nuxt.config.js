@@ -73,7 +73,7 @@ export default {
     },
     '/contact/': {
       // target: 'https://com-lobeslab-sdc-api-test.herokuapp.com/api/v0.3/',
-      target: 'https://com-lobeslab-sdc-api-test.herokuapp.com/',
+      target: 'https://com-lobeslab-sdc-api-test.herokuapp.com',
       pathRewrite: {
         '^/contact/': '/contactbook/v0.3/',
       },
