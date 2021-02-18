@@ -18,10 +18,12 @@ export const state = () => ({
 })
 
 export const actions = {
-  getCompanies({ commit }, { limit, offset }) {
+  getCompanies({ commit, rootState }, { limit, offset }) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .get(`/contact/company?&limit=${limit}&offset=${offset}`)
+        .get(
+          `/contact/company?&limit=${limit}&offset=${offset}&code=${rootState.selectedContactList.code}`
+        )
         .then((response) => {
           commit(
             'setItems',
@@ -90,7 +92,11 @@ export const actions = {
       this.$axios
         .delete('/contact/company/' + code)
         .then(async () => {
-          await dispatch('sectors/getSectors', null, { root: true })
+          await dispatch(
+            'sectors/getSectors',
+            { limit: 1000, offset: 0 },
+            { root: true }
+          )
           resolve()
         })
         .catch((error) => {
@@ -115,7 +121,11 @@ export const actions = {
           },
         })
         .then(async (response) => {
-          await dispatch('sectors/getSectors', null, { root: true })
+          await dispatch(
+            'sectors/getSectors',
+            { limit: 1000, offset: 0 },
+            { root: true }
+          )
           resolve(response.data)
         })
         .catch((error) => {

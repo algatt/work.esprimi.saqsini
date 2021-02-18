@@ -5,10 +5,10 @@ export const state = () => ({
 })
 
 export const actions = {
-  getIndustries({ commit }) {
+  getIndustries({ commit, rootState }) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .get(`/contact/industry/`)
+        .get(`/contact/industry/all?code=${rootState.selectedContactList.code}`)
         .then((response) => {
           commit(
             'setItems',

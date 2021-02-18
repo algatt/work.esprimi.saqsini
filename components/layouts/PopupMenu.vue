@@ -8,8 +8,7 @@
       <slot name="menuButton"></slot>
       <i v-if="!$slots.menuButton" class="fas fa-ellipsis-v fa-fw"></i>
     </button>
-
-    <button v-if="showMenu" class="absolute flex p-3 mt-2">
+    <button v-if="$slots.menuItems && showMenu" class="absolute flex p-3 mt-2">
       <div
         id="popupMenuContainer"
         class="absolute flex flex-col z-20 bg-white border border-gray-200 rounded shadow"
@@ -54,6 +53,7 @@ export default {
       this.$emit('closeMenu')
     },
     changeShowMenu() {
+      if (!this.$slots.menuItems) return
       this.showMenu = !this.showMenu
 
       this.$nextTick(() => {

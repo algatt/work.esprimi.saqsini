@@ -5,10 +5,12 @@ export const state = () => ({
 })
 
 export const actions = {
-  getContacts({ commit }, { limit, offset }) {
+  getContacts({ commit, rootState }, { limit, offset }) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .get(`/contact/contact/all?limit=${limit}&offset=${offset}`)
+        .get(
+          `/contact/contact/all?limit=${limit}&offset=${offset}&contactbookCode=${rootState.selectedContactList.code}`
+        )
         .then((response) => {
           commit(
             'setItems',
@@ -39,7 +41,8 @@ export const actions = {
     })
   },
 
-  newContact({ commit, dispatch, state }, contact) {
+  newContact({ commit, dispatch, state, rootState }, contact) {
+    contact.contactbookCode = rootState.selectedContactList.code
     delete contact.code
     return new Promise((resolve, reject) => {
       this.$axios

@@ -1,6 +1,11 @@
 <template>
   <div v-if="!loading" class="flex flex-wrap items-start">
-    <top-header-bar which="contactlist" :items="contactlists" class="w-full">
+    <top-header-bar
+      which="contactlist"
+      :items="contactlists"
+      class="w-full"
+      :hide-select-all="true"
+    >
       <template v-slot:title> Contact Lists </template>
       <template v-slot:extraButtons>
         <button-icon
@@ -20,57 +25,85 @@
       </template>
     </top-header-bar>
 
-    <display-table-component
-      class="w-full"
-      :items="contactlists"
-      @hovered="hovered = $event"
-      @clicked="setCurrentItem($event)"
-    >
-      <template v-slot:title>Contact Lists</template>
-
-      <template v-slot:titleContent>
-        <p class="w-6/12">List Name</p>
-        <p class="w-6/12 text-right pr-4">Validity</p>
-      </template>
-      <template v-slot:titleContentSmall>Contacts</template>
-      <template v-slot:content="slotProps"
-        ><p class="w-6/12">{{ slotProps.item.name }}</p>
-        <p class="w-6/12 text-right pr-4">
-          {{ slotProps.item.deleteBy }}
-          {{ calculateRemainingTime(slotProps.item.deleteBy) }}
-        </p>
-      </template>
-      <template v-slot:popup-menu="slotProps">
-        <span
-          :class="hovered === slotProps.item.code ? 'flex' : 'flex xl:hidden'"
-          class="items-center"
+    <template v-if="contactlists.length === 0">
+      <info-box type="info">
+        <template v-slot:title>No contact lists</template>
+        <template v-slot:content
+          >You do not have any contact lists. Make sure to create one.</template
         >
-          <popup-menu-vue
-            :object-code="slotProps.item.code"
-            direction="left"
-            @closeMenu="hovered = null"
+      </info-box>
+    </template>
+    <template v-else>
+      <display-table-component
+        class="w-full"
+        :items="contactlists"
+        @hovered="hovered = $event"
+        @clicked="setCurrentItem($event)"
+      >
+        <template v-slot:title>Contact Lists</template>
+
+        <template v-slot:titleContent>
+          <p class="w-6/12">List Name</p>
+          <p class="w-6/12 text-right pr-4">Validity</p>
+        </template>
+        <template v-slot:titleContentSmall>Contacts</template>
+        <template v-slot:content="slotProps"
+          ><p class="w-6/12">
+            <span>{{ slotProps.item.name }}</span
+            ><span
+              v-if="slotProps.item.flags.includes('FLAGGED_FOR_REMOVAL')"
+              class="text-gray-400 ml-3"
+              title="Flagged for Deletion"
+              ><i class="fas fa-trash-alt"></i
+            ></span>
+          </p>
+          <p class="w-6/12 text-right pr-4">
+            {{ slotProps.item.deleteBy }}
+            {{ calculateRemainingTime(slotProps.item.deleteBy) }}
+          </p>
+        </template>
+        <template v-slot:popup-menu="slotProps">
+          <span
+            :class="hovered === slotProps.item.code ? 'flex' : 'flex xl:hidden'"
+            class="items-center"
           >
-            <template v-slot:menuItems>
-              <button @click="setCurrentItem(slotProps.item)">
-                <span class="popup-menu-button">
-                  <i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit</span
+            <popup-menu-vue
+              :object-code="slotProps.item.code"
+              direction="left"
+              @closeMenu="hovered = null"
+            >
+              <template v-slot:menuItems>
+                <button @click="setCurrentItem(slotProps.item)">
+                  <span class="popup-menu-button">
+                    <i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit</span
+                  >
+                </button>
+                <button @click="exportContactBook(slotProps.item)">
+                  <span class="popup-menu-button">
+                    <i class="fas fa-file-export fa-fw fa-sm"></i>Export</span
+                  >
+                </button>
+                <button
+                  v-if="!slotProps.item.flags.includes('FLAGGED_FOR_REMOVAL')"
+                  @click="flagForRemoval(slotProps.item)"
                 >
-              </button>
-              <button @click="exportContactBook(slotProps.item)">
-                <span class="popup-menu-button">
-                  <i class="fas fa-file-export fa-fw fa-sm"></i>Export</span
-                >
-              </button>
-              <button @click="flagForRemoval(slotProps.item)">
-                <span class="popup-menu-button">
-                  <i class="fas fa-flag fa-fw fa-sm"></i>Flag for Removal</span
-                >
-              </button>
-            </template>
-          </popup-menu-vue>
-        </span>
-      </template>
-    </display-table-component>
+                  <span class="popup-menu-button">
+                    <i class="fas fa-flag fa-fw fa-sm"></i>Flag for
+                    Removal</span
+                  >
+                </button>
+                <button v-else @click="unflagForRemoval(slotProps.item)">
+                  <span class="popup-menu-button">
+                    <i class="far fa-flag fa-fw fa-sm"></i>Remove from
+                    Deletion</span
+                  >
+                </button>
+              </template>
+            </popup-menu-vue>
+          </span>
+        </template>
+      </display-table-component>
+    </template>
 
     <transition name="fade">
       <edit-object-modal v-if="currentItemToBeEdited">
@@ -139,6 +172,9 @@ export default {
     },
     flagForRemoval(contactList) {
       this.$store.dispatch('contactlist/flagForRemoval', contactList)
+    },
+    unflagForRemoval(contactList) {
+      this.$store.dispatch('contactlist/unflagForRemoval', contactList)
     },
     downloadTemplate() {
       this.$store.dispatch('contactlist/downloadTemplate')

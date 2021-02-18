@@ -2,7 +2,7 @@
   <div
     class="w-full flex-wrap justify-between items-center flex relative h-auto lg:h-24"
   >
-    <div class="flex">
+    <div class="flex h-10 items-center">
       <h6
         v-if="$slots.title"
         class="hidden xl:flex xl:w-auto text-lg font-semibold text-gray-700"
@@ -136,9 +136,9 @@ export default {
   computed: {
     selectedItems() {
       const x = this.$store.state.selectedItems.length
-      this.$nextTick(() => {
-        if (x > 0) this.$refs.clearAll.focus()
-      })
+      // this.$nextTick(() => {
+      //   if (x > 0) this.$refs.clearAll.focus()
+      // })
       return x
     },
   },

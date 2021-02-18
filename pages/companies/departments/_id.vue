@@ -1,6 +1,11 @@
 <template>
   <div v-if="!loading" class="flex flex-wrap items-start">
-    <top-header-bar which="departments" :items="departments" class="w-full">
+    <top-header-bar
+      which="departments"
+      :items="departments"
+      class="w-full"
+      :hide-menu="departments.length === 0"
+    >
       <template v-slot:title> Departments for {{ company.name }}</template>
       <template v-slot:extraButtons>
         <button-icon
@@ -13,10 +18,7 @@
       ></top-header-bar
     >
 
-    <info-box
-      v-if="departments.length === 0"
-      class="flex-grow mx-5 mt-2 md:mt-0"
-    >
+    <info-box v-if="departments.length === 0" class="flex-grow mt-2 md:mt-0">
       <template v-slot:title>No Departments here...</template>
       <template v-slot:content>
         <button class="btn-link" @click="setCurrentItem({ code: -1 })">

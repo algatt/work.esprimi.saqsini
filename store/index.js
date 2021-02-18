@@ -50,6 +50,7 @@ const updateCalls = {
 export const state = () => ({
   selectedItems: [],
   currentItemToBeEdited: null,
+  selectedContactList: null,
   loading: false,
 })
 
@@ -79,6 +80,10 @@ export const actions = {
         }
       }
     }
+  },
+
+  setContactList({ commit }, item) {
+    commit('setContactList', item)
   },
 
   setCurrentItemToBeEdited({ commit }, item) {
@@ -155,6 +160,10 @@ export const actions = {
 }
 
 export const mutations = {
+  setContactList(state, item) {
+    state.selectedContactList = item
+  },
+
   setCurrentItemToBeEdited(state, item) {
     state.currentItemToBeEdited = JSON.parse(JSON.stringify(item))
   },

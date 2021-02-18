@@ -5,10 +5,12 @@ export const state = () => ({
 })
 
 export const actions = {
-  getSectors({ commit }) {
+  getSectors({ commit, rootState }, { limit, offset }) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .get(`/contact/sector/`)
+        .get(
+          `/contact/sector/all?contactbookCode=${rootState.selectedContactList.code}&limit=${limit}&offset=${offset}`
+        )
         .then((response) => {
           commit(
             'setItems',
@@ -23,7 +25,9 @@ export const actions = {
     })
   },
 
-  newSector({ commit }, sector) {
+  newSector({ commit, rootState }, sector) {
+    sector.contactbookCode = rootState.selectedContactList.code
+    delete sector.code
     return new Promise((resolve, reject) => {
       this.$axios
         .post('/contact/sector/', qs.stringify(sector))

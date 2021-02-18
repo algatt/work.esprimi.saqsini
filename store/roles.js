@@ -5,10 +5,12 @@ export const state = () => ({
 })
 
 export const actions = {
-  getRoles({ commit }) {
+  getRoles({ commit, rootState }) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .get(`/contact/role?limit=100&offset=0`)
+        .get(
+          `/contact/role/all?limit=100&offset=0&contactbookCode=${rootState.selectedContactList.code}`
+        )
         .then((response) => {
           commit(
             'setItems',
@@ -23,7 +25,8 @@ export const actions = {
     })
   },
 
-  newRole({ commit }, role) {
+  newRole({ commit, rootState }, role) {
+    role.contactbookCode = rootState.selectedContactList.code
     return new Promise((resolve, reject) => {
       this.$axios
         .post('/contact/role/', qs.stringify(role))

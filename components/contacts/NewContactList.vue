@@ -27,6 +27,7 @@
         type="file"
         placeholder="Upload a list template"
         class="input"
+        @change="fileSelected"
       />
     </div>
 
@@ -98,6 +99,11 @@ export default {
   mounted() {
     // document.getElementById('inputName').focus()
   },
-  methods: {},
+  methods: {
+    fileSelected(event) {
+      const files = document.getElementById('inputData').files
+      this.form.dataFile = files[0]
+    },
+  },
 }
 </script>
