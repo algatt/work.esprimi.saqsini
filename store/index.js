@@ -213,4 +213,11 @@ export const getters = {
       return a > b ? -1 : 1
     })
   },
+
+  getSelectedContactList: (rootState) => {
+    if (rootState.selectedContactList) return rootState.selectedContactList
+    else if (rootState.contactlist.items.length !== 0)
+      return rootState.contactlist[0]
+    return null
+  },
 }

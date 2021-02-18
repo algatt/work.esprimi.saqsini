@@ -156,7 +156,6 @@ export default {
   },
   methods: {
     setCurrentItem(item) {
-      console.log(item)
       if (!item.flags.includes('READ'))
         this.$store.dispatch('updateItem', { which: 'notifications', item })
       this.$store.dispatch('setCurrentItemToBeEdited', item)

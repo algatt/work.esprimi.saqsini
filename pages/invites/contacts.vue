@@ -14,8 +14,14 @@
         >
           <i class="far fa-paper-plane fa-fw mr-1"></i>Invite
         </button>
-      </template></top-header-bar
-    >
+      </template>
+      <template v-slot:extraContent>
+        <div class="xl:ml-6 ml-0 flex items-center">
+          <contact-book-dropdown
+            @changedList="updateData"
+          ></contact-book-dropdown>
+        </div> </template
+    ></top-header-bar>
 
     <div class="w-full xl:w-3/12 pt-5">
       <multi-select
@@ -239,14 +245,28 @@ export default {
 
       return result
     },
+    contactlists() {
+      return this.$store.getters.getItems('contactlist')
+    },
   },
-  async created() {
-    await this.$store.dispatch('setLoading', true)
-    this.filters = await this.$store.dispatch('invitations/getFilters')
-    await this.$store.dispatch('jobs/getAllJobs', { limit: 1000, offset: 0 })
-    await this.$store.dispatch('setLoading', false)
+  created() {
+    this.$store.dispatch('setLoading', true)
+    this.$store
+      .dispatch('contactlist/getContactLists', { limit: 100, offset: 0 })
+      .then(() => {
+        if (this.contactlists.length !== 0) this.updateData()
+      })
+      .finally(() => {
+        this.$store.dispatch('setLoading', false)
+      })
   },
   methods: {
+    async updateData() {
+      await this.$store.dispatch('setLoading', true)
+      this.filters = await this.$store.dispatch('invitations/getFilters')
+      await this.$store.dispatch('jobs/getAllJobs', { limit: 1000, offset: 0 })
+      await this.$store.dispatch('setLoading', false)
+    },
     updateAll(list, newList) {
       this[list] = newList
       this.selectedIndustries = this.selectedIndustries.filter((el) => {

@@ -357,22 +357,29 @@ export default {
     },
   },
   created() {
-    this.$store.dispatch('setLoading', true)
-    Promise.all([
-      this.$store.dispatch('surveys/getSurveyByCode', this.$route.params.id),
-      this.$store.dispatch('questions/getQuestionsBySurvey', {
-        limit: 1000,
-        offset: 0,
-        code: this.$route.params.id,
-      }),
-    ]).then(() => {
-      this.$store.dispatch('setLoading', false)
-    })
+    this.updateData()
   },
   mounted() {
     this.showPreview = cookies.get('questionPreviewMode') === 'true'
   },
   methods: {
+    updateData() {
+      this.$store.dispatch('setLoading', true)
+      Promise.all([
+        this.$store.dispatch('contactlist/getContactLists', {
+          limit: 100,
+          offset: 0,
+        }),
+        this.$store.dispatch('surveys/getSurveyByCode', this.$route.params.id),
+        this.$store.dispatch('questions/getQuestionsBySurvey', {
+          limit: 1000,
+          offset: 0,
+          code: this.$route.params.id,
+        }),
+      ]).then(() => {
+        this.$store.dispatch('setLoading', false)
+      })
+    },
     newQuestion(flag, ordinalPosition) {
       this.$store.dispatch('setCurrentItemToBeEdited', {
         code: -1,

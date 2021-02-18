@@ -16,6 +16,7 @@
       </template>
       <template v-slot:extraButtons>
         <button-icon
+          v-if="contactlists.length !== 0"
           colour="primary"
           icon="fas fa-plus"
           @click="setCurrentItem({ code: -1 })"

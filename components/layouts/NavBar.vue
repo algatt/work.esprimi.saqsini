@@ -144,8 +144,8 @@
               class="bg-primary shadow-lg flex flex-col text-sm p-2 rounded z-20 relative"
             >
               <nuxt-link
-                v-for="(child, index) in item.children"
-                :key="index"
+                v-for="(child, index2) in item.children"
+                :key="index2"
                 :to="{ name: child.link }"
                 class="flex flex-col hover:bg-white text-white hover:text-primary transition duration-300 p-3 rounded cursor-pointer"
               >
@@ -186,8 +186,11 @@ export default {
   },
   methods: {
     showSubMenu(id) {
-      const thisMenu = document.getElementById(id)
-      const previousMenu = document.getElementById(this.whichSubMenu)
+      const thisMenu = id === '' ? '' : document.getElementById(id)
+      const previousMenu =
+        this.whichSubMenu === ''
+          ? ''
+          : document.getElementById(this.whichSubMenu)
 
       if (this.whichSubMenu !== '' && this.whichSubMenu !== id) {
         previousMenu.classList.add('invisible')

@@ -8,7 +8,7 @@ export const actions = {
   getAllJobs({ commit }, { limit, offset }) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .get(`/contact/job/?limit=${limit}&offset=${offset}`)
+        .get(`/contact/job?limit=${limit}&offset=${offset}`)
         .then((response) => {
           commit(
             'setItems',

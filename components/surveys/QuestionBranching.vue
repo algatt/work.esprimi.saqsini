@@ -157,12 +157,14 @@
         <div class="flex justify-between items-center">
           <div class="flex">
             <button
+              v-if="questions.length !== 0"
               class="btn-link ml-1 py-2"
               @click="addQuestion(condition.groupIndex)"
             >
               Add Question
             </button>
             <button
+              v-if="contactlists.length !== 0"
               class="btn-link ml-1 py-2"
               @click="addFilter(condition.groupIndex)"
             >
@@ -235,6 +237,9 @@ export default {
     filters() {
       return JSON.parse(JSON.stringify(this.loadedFilters))
     },
+    contactlists() {
+      return this.$store.getters.getItems('contactlist')
+    },
   },
   watch: {
     conditions(ev) {
@@ -244,14 +249,16 @@ export default {
   created() {
     this.isLoading = true
     this.conditions = this.existingConditions.rules
-    this.$store
-      .dispatch('invitations/getFilters')
-      .then((result) => {
-        this.loadedFilters = result
-      })
-      .finally(() => {
-        this.isLoading = false
-      })
+    if (this.contactlists.length !== 0)
+      this.$store
+        .dispatch('invitations/getFilters')
+        .then((result) => {
+          this.loadedFilters = result
+        })
+        .finally(() => {
+          this.isLoading = false
+        })
+    else this.isLoading = false
   },
   methods: {
     addGroup() {

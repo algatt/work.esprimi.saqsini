@@ -212,6 +212,7 @@ export default {
     },
     disableNewButton() {
       return (
+        this.contactlists.length === 0 ||
         this.sectors.length === 0 ||
         (this.sectors.length !== 0 && this.industries.length === 0)
       )

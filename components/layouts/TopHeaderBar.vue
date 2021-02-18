@@ -122,6 +122,9 @@ export default {
     items: {
       type: Array,
       required: false,
+      default: () => {
+        return []
+      },
     },
     hideMenu: {
       type: Boolean,

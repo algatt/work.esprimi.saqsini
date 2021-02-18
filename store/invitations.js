@@ -3,10 +3,12 @@ export const state = () => ({
 })
 
 export const actions = {
-  getFilters({ commit }) {
+  getFilters({ commit, rootGetters }) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .get('/contact/contactbook/filters')
+        .get(
+          `/contact/contactbook/filters?code=${rootGetters.getSelectedContactList.code}`
+        )
         .then((response) => {
           resolve(response.data)
         })

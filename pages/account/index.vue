@@ -168,7 +168,7 @@ export default {
     },
     updateAvatar() {
       const t = this
-      console.log(document.getElementById('inputAvatar').files[0])
+
       this.imageFile = document.getElementById('inputAvatar').files[0]
       const reader = new FileReader()
 

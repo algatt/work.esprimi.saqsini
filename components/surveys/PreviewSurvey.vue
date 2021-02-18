@@ -303,7 +303,7 @@ export default {
                 const temp = question.options.map((el) => {
                   return el.name
                 })
-                console.log(temp)
+
                 if (temp.includes(existingAnswers[i])) {
                   foundAnswer = true
                   break
@@ -328,10 +328,10 @@ export default {
             rulesOutcome[rule]
           )}${operator}`
         }
-        console.log(rulesOutcome)
-
-        console.log(finalOutcome)
-        console.log(this.evaluateBooleanExpression(finalOutcome))
+        // console.log(rulesOutcome)
+        //
+        // console.log(finalOutcome)
+        // console.log(this.evaluateBooleanExpression(finalOutcome))
         return this.evaluateBooleanExpression(finalOutcome)
       }
       return true

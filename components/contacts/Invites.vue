@@ -261,6 +261,7 @@ export default {
       })
     },
     contacts() {
+      if (!this.filters.contacts) return []
       if (!this.workEmail) return this.filters.contacts
       const temp = this.$store.getters.getItems('jobs')
       const whichCompanies = this.getAvailableCodes(
@@ -293,21 +294,33 @@ export default {
 
       return result
     },
+    contactlists() {
+      return this.$store.getters.getItems('contactlist')
+    },
   },
   watch: {
     contacts(val) {
       return this.$emit('contacts', val)
     },
   },
-  async created() {
-    // await this.$store.dispatch('setLoading', true)
+  created() {
     this.dataIsLoading = true
-    this.filters = await this.$store.dispatch('invitations/getFilters')
-    await this.$store.dispatch('jobs/getAllJobs', { limit: 1000, offset: 0 })
-    this.dataIsLoading = false
-    // await this.$store.dispatch('setLoading', false)
+    this.$store
+      .dispatch('contactlist/getContactLists', { limit: 100, offset: 0 })
+      .then(() => {
+        if (this.contactlists.length !== 0) this.updateData()
+      })
+      .finally(() => {
+        this.dataIsLoading = false
+      })
   },
   methods: {
+    async updateData() {
+      this.dataIsLoading = true
+      this.filters = await this.$store.dispatch('invitations/getFilters')
+      //  await this.$store.dispatch('jobs/getAllJobs', { limit: 1000, offset: 0 })
+      this.dataIsLoading = false
+    },
     changeView(state) {
       this.workEmail = state
       this.$store.dispatch('emptySelectedItems')

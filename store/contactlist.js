@@ -35,7 +35,10 @@ export const actions = {
       this.$axios
         .delete('/contact/contactbook/' + code)
         .then(() => {
-          if (rootState.selectedContactList.code === code) {
+          if (
+            rootState.selectedContactList &&
+            rootState.selectedContactList.code === code
+          ) {
             dispatch('setContactList', null, { root: true })
           }
           resolve()
