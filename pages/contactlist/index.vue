@@ -78,6 +78,11 @@
                     <i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit</span
                   >
                 </button>
+                <button @click="showCollaborators(slotProps.item)">
+                  <span class="popup-menu-button">
+                    <i class="fas fa-users fa-fw fa-sm"></i>Collaborators</span
+                  >
+                </button>
                 <button @click="exportContactBook(slotProps.item)">
                   <span class="popup-menu-button">
                     <i class="fas fa-file-export fa-fw fa-sm"></i>Export</span
@@ -111,6 +116,12 @@
           <new-contact-list></new-contact-list>
         </template>
       </edit-object-modal>
+
+      <contact-list-collaborators
+        v-if="showCollaboratorsModal"
+        :item="selectedContactListForCollaboration"
+        @cancel="showCollaboratorsModal = false"
+      ></contact-list-collaborators>
     </transition>
   </div>
   <spinner v-else></spinner>
@@ -123,6 +134,7 @@ import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
+import ContactListCollaborators from '~/components/contacts/ContactListCollaborators'
 
 export default {
   name: 'ContactLists',
@@ -132,12 +144,15 @@ export default {
     PopupMenuVue,
     Spinner,
     TopHeaderBar,
+    ContactListCollaborators,
   },
   data() {
     return {
       hovered: null,
       disableSave: true,
       startSaveItem: false,
+      selectedContactListForCollaboration: null,
+      showCollaboratorsModal: false,
     }
   },
   computed: {
@@ -163,6 +178,10 @@ export default {
       })
   },
   methods: {
+    showCollaborators(contactList) {
+      this.selectedContactListForCollaboration = contactList
+      this.showCollaboratorsModal = true
+    },
     setCurrentItem(item) {
       this.$store.dispatch('setCurrentItemToBeEdited', item)
     },
