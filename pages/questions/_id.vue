@@ -12,6 +12,13 @@
           survey.referenceDate
         }}</small></template
       >
+      <template v-slot:extraContent>
+        <div class="xl:ml-6 ml-0 flex items-center">
+          <contact-book-dropdown
+            @changedList="updateData"
+          ></contact-book-dropdown>
+        </div>
+      </template>
       <template v-slot:extraButtons>
         <button
           class="items-center md:flex md:justify-center font-semibold hover:text-primary transition duration-300 focus:outline-none py-3 mr-6"

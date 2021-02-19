@@ -200,12 +200,14 @@ export default {
       return this.$store.state.selectedItems.length
     },
     sectors() {
+      if (!this.filters.sectors) return []
       const temp = this.filters.sectors
       return temp.sort((a, b) => {
         return a.name > b.name ? 1 : -1
       })
     },
     industries() {
+      if (!this.filters.industries) return []
       const temp = this.filters.industries
       temp.sort((a, b) => {
         return a.name > b.name ? 1 : -1
@@ -219,6 +221,7 @@ export default {
       })
     },
     companies() {
+      if (!this.filters.companies) return []
       const temp = this.filters.companies
       return temp
         .filter((el) => {
@@ -237,6 +240,7 @@ export default {
         })
     },
     departments() {
+      if (!this.filters.departments) return []
       const temp = JSON.parse(JSON.stringify(this.filters.departments))
 
       temp.forEach((el) => {
@@ -255,6 +259,7 @@ export default {
         })
     },
     roles() {
+      if (!this.filters.roles) return []
       const temp = this.filters.roles
       return temp.sort((a, b) => {
         return a.name > b.name ? 1 : -1
