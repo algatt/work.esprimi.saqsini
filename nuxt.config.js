@@ -39,7 +39,6 @@ export default {
     { src: '@/plugins/refresh.js', ssr: false },
     '@/plugins/vuetelinput.js',
     { src: '~plugins/draggable.js', ssr: false },
-    '@/plugins/vtooltip.js',
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)

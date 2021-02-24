@@ -28,6 +28,33 @@
     <template v-if="selectedSection === 'details'">
       <div class="flex flex-col">
         <div class="flex items-center">
+          <label for="inputNumber" class="label">Question Number</label>
+          <span v-if="$v.form.questionNumber.$error">
+            <span v-if="!$v.form.questionNumber.required" class="error"
+              >required</span
+            >
+            <span v-if="!$v.form.questionNumber.duplicate" class="error"
+              >already used</span
+            >
+          </span>
+          <popup-info
+            ><template v-slot:text
+              >This is the question number used for internal purposes. The
+              respondent will not see this.
+            </template></popup-info
+          >
+        </div>
+        <input
+          id="inputNumber"
+          v-model="form.questionNumber"
+          placeholder="Enter question number"
+          class="input w-full md:w-10/12"
+          @change="$v.form.questionNumber.$touch()"
+        />
+      </div>
+
+      <div class="flex flex-col">
+        <div class="flex items-center">
           <label for="inputName" class="label">Name</label>
           <span v-if="$v.form.name.$error">
             <span v-if="!$v.form.name.required" class="error">required</span>
@@ -177,11 +204,27 @@ export default {
       text: {
         required,
       },
+      questionNumber: {
+        required,
+        duplicate(value) {
+          const questions = JSON.parse(JSON.stringify(this.questions))
+
+          return !questions
+            .map((el) => {
+              if (el.code !== this.form.code)
+                return String(el.questionNumber).toLowerCase()
+            })
+            .includes(String(value).toLowerCase().trim())
+        },
+      },
     },
   },
   computed: {
     question() {
       return this.$store.state.currentItemToBeEdited
+    },
+    questions() {
+      return this.$store.getters.getItems('questions')
     },
     questionType() {
       const x = this.question.flags

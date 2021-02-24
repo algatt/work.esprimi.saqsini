@@ -66,12 +66,14 @@
         class="mb-5"
       >
         <display-question
+          :key="question.code + ' ' + answers.length"
           class="rounded shadow-lg"
           :style="{ backgroundColor: survey.options.backgroundColour }"
           :language="currentLanguage"
           :question="question"
           :existing-answer="getAnswer(question.code)"
           @answers="processAnswers($event, question)"
+          @clearAnswers="clearAnswers(question)"
         ></display-question>
       </div>
 
@@ -339,6 +341,11 @@ export default {
     evaluateBooleanExpression(obj) {
       // eslint-disable-next-line no-new-func
       return Function('"use strict";return (' + obj + ')')()
+    },
+    clearAnswers(question) {
+      this.answers = this.answers.filter((el) => {
+        return el.code !== question.code
+      })
     },
     processAnswers(answers, question) {
       if (question.flags.includes('RANKING')) {

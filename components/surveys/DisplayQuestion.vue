@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-auto p-5">
+  <div class="mx-auto p-5 flex flex-col">
     <show-section
       v-if="questionType === 'SECTION'"
       :question="parsedQuestion"
@@ -40,6 +40,11 @@
       :existing-answer="existingAnswer"
       @answers="$emit('answers', $event)"
     ></show-ranking>
+    <div v-if="questionType !== 'SECTION'" class="flex justify-end mt-2 mb-1">
+      <button class="btn-link cursor-pointer" @click="$emit('clearAnswers')">
+        clear
+      </button>
+    </div>
   </div>
 </template>
 
