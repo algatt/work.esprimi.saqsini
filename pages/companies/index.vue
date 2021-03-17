@@ -177,6 +177,7 @@ import NewIndustry from '~/components/contacts/NewIndustry'
 import NewSector from '~/components/contacts/NewSector'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
+import viewMixin from '~/helpers/viewMixin'
 
 export default {
   name: 'CompaniesList',
@@ -190,20 +191,15 @@ export default {
     EditObjectModal,
     PopupMenuVue,
   },
+  mixins: [viewMixin],
   data() {
     return {
-      hovered: null,
-      disableSave: true,
-      startSaveItem: false,
       selectedParentCode: -1,
       selectedChildCode: null,
       objectToCreate: null,
     }
   },
   computed: {
-    loading() {
-      return this.$store.state.loading
-    },
     sectors() {
       return this.$store.getters.getItems('sectors')
     },
@@ -217,9 +213,7 @@ export default {
         (this.sectors.length !== 0 && this.industries.length === 0)
       )
     },
-    currentItemToBeEdited() {
-      return this.$store.state.currentItemToBeEdited
-    },
+
     companies() {
       let tempResults = this.$store.getters.getItems('companies')
 
@@ -266,9 +260,7 @@ export default {
         this.$store.dispatch('setLoading', false)
       })
     },
-    setCurrentItem(item) {
-      this.$store.dispatch('setCurrentItemToBeEdited', item)
-    },
+
     parentChanged(ev) {
       this.selectedParentCode = ev
       this.selectedChildCode = null

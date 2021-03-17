@@ -105,6 +105,7 @@ import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
 import NewRole from '~/components/contacts/NewRole'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
+import viewMixin from '~/helpers/viewMixin'
 
 export default {
   name: 'RolesList',
@@ -115,20 +116,11 @@ export default {
     EditObjectModal,
     PopupMenuVue,
   },
+  mixins: [viewMixin],
   data() {
-    return {
-      hovered: null,
-      disableSave: true,
-      startSaveItem: false,
-    }
+    return {}
   },
   computed: {
-    loading() {
-      return this.$store.state.loading
-    },
-    currentItemToBeEdited() {
-      return this.$store.state.currentItemToBeEdited
-    },
     roles() {
       return this.$store.getters.getItems('roles')
     },
@@ -155,9 +147,6 @@ export default {
       ]).then(() => {
         this.$store.dispatch('setLoading', false)
       })
-    },
-    setCurrentItem(item) {
-      this.$store.dispatch('setCurrentItemToBeEdited', item)
     },
   },
 }

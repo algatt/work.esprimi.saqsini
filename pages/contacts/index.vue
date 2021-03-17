@@ -140,6 +140,7 @@ import NewContact from '~/components/contacts/NewContact'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
+import viewMixin from '~/helpers/viewMixin'
 
 export default {
   name: 'ContactsList',
@@ -151,20 +152,8 @@ export default {
     Spinner,
     TopHeaderBar,
   },
-  data() {
-    return {
-      hovered: null,
-      disableSave: true,
-      startSaveItem: false,
-    }
-  },
+  mixins: [viewMixin],
   computed: {
-    loading() {
-      return this.$store.state.loading
-    },
-    currentItemToBeEdited() {
-      return this.$store.state.currentItemToBeEdited
-    },
     contacts() {
       return this.$store.getters.getItems('contacts')
     },
@@ -191,9 +180,6 @@ export default {
       ]).then(() => {
         this.$store.dispatch('setLoading', false)
       })
-    },
-    setCurrentItem(item) {
-      this.$store.dispatch('setCurrentItemToBeEdited', item)
     },
     calculateAge(dob) {
       return moment().diff(moment(dob), 'y')

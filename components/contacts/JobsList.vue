@@ -129,6 +129,7 @@ import EditObjectModal from '~/components/layouts/EditObjectModal'
 import NewJob from '~/components/contacts/NewJob'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
+import viewMixin from '~/helpers/viewMixin'
 
 export default {
   name: 'JobsList',
@@ -139,26 +140,15 @@ export default {
     NewJob,
     PopupMenuVue,
   },
+  mixins: [viewMixin],
   props: {
     contacts: {
       type: Array,
       required: true,
     },
   },
-  data() {
-    return {
-      hovered: null,
-      disableSave: true,
-      startSaveItem: false,
-    }
-  },
+
   computed: {
-    loading() {
-      return this.$store.state.loading
-    },
-    currentItemToBeEdited() {
-      return this.$store.state.currentItemToBeEdited
-    },
     jobs() {
       return this.$store.getters.getItems('jobs')
     },
@@ -193,9 +183,6 @@ export default {
     })
   },
   methods: {
-    setCurrentItem(item) {
-      this.$store.dispatch('setCurrentItemToBeEdited', item)
-    },
     getValueFromObject(whichObject, whichField, whichCode) {
       if (whichCode === undefined) return
       const temp = whichObject.find((el) => {

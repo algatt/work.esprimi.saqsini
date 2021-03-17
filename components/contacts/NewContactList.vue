@@ -18,7 +18,7 @@
       />
     </div>
 
-    <div class="flex flex-col">
+    <div v-if="form.code === -1" class="flex flex-col">
       <div class="flex items-center">
         <label for="inputData" class="label-optional">List Data</label>
       </div>
@@ -85,6 +85,7 @@ export default {
       form: null,
     }
   },
+
   computed: {
     isValid() {
       return !this.$v.$invalid

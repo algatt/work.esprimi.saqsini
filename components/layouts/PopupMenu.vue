@@ -12,7 +12,7 @@
       <div
         id="popupMenuContainer"
         class="absolute flex flex-col z-20 bg-white border border-gray-200 rounded shadow"
-        style="min-width: max-content; width: 150px"
+        style="min-width: max-content; width: auto"
         :style="styleForMenu"
         @click.stop="closeMenu"
       >
@@ -88,6 +88,6 @@ export default {
 
 <style scoped>
 #popupMenuContainer button {
-  @apply py-1 px-1 text-gray-700 hover:bg-gray-100 transition duration-300;
+  @apply text-gray-700 hover:bg-gray-100 transition duration-300;
 }
 </style>

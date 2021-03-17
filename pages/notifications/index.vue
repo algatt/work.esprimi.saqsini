@@ -106,6 +106,7 @@ import Spinner from '~/components/layouts/Spinner'
 import ShowNotifications from '~/components/layouts/ShowNotifications'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 import InfoBox from '~/components/layouts/InfoBox'
+import viewMixin from '~/helpers/viewMixin'
 
 export default {
   name: 'IndexVue',
@@ -116,18 +117,9 @@ export default {
     TopHeaderBar,
     InfoBox,
   },
-  data() {
-    return {
-      hovered: null,
-    }
-  },
+  mixins: [viewMixin],
+
   computed: {
-    loading() {
-      return this.$store.state.loading
-    },
-    currentItemToBeEdited() {
-      return this.$store.state.currentItemToBeEdited
-    },
     notifications() {
       const tempNotifications = JSON.parse(
         JSON.stringify(this.$store.getters.getItems('notifications'))

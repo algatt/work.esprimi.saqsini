@@ -39,6 +39,7 @@ export default {
     { src: '@/plugins/refresh.js', ssr: false },
     '@/plugins/vuetelinput.js',
     { src: '~plugins/draggable.js', ssr: false },
+    { src: '~plugins/google-charts.js', ssr: false },
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)

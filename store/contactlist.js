@@ -54,9 +54,8 @@ export const actions = {
   newContactList({ commit, dispatch, state }, contactList) {
     const data = new FormData()
     data.append('name', contactList.name)
-    if (contactList.data) data.append('data', contactList.data)
+    if (contactList.dataFile) data.append('data', contactList.dataFile)
     if (contactList.deleteBy) data.append('deleteBy', contactList.deleteBy)
-    if (contactList.dataFile) data.append('dataFile', contactList.dataFile)
 
     return new Promise((resolve, reject) => {
       this.$axios
@@ -96,12 +95,41 @@ export const actions = {
     })
   },
 
+  getExportData({ dispatch }, contactList) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .get(`/contact/contactbook/exportFile?code=${contactList.code}`, {
+          responseType: 'blob',
+        })
+        .then((response) => {
+          // resolve(response.data)
+          const fileName = response.headers['content-disposition'].replace(
+            'attachment; filename=',
+            ''
+          )
+
+          const fileDownload = require('js-file-download')
+          return fileDownload(response.data, fileName)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
   downloadTemplate() {
     return new Promise((resolve, reject) => {
       this.$axios
-        .get('/contact/contactbook/importTemplate')
+        .get('/contact/contactbook/importTemplate', { responseType: 'blob' })
         .then((response) => {
-          resolve(response.data)
+          // resolve(response.data)
+          const fileName = response.headers['content-disposition'].replace(
+            'attachment; filename=',
+            ''
+          )
+
+          const fileDownload = require('js-file-download')
+          return fileDownload(response.data, fileName)
         })
         .catch((error) => {
           reject(error)

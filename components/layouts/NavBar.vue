@@ -2,19 +2,19 @@
   <div>
     <div
       v-if="smallScreenMenu"
-      class="flex flex-col lg:hidden fixed top-0 left-0 w-full h-screen bg-primary z-50"
+      class="flex fixed top-0 left-0 z-50 flex-col w-full h-screen lg:hidden bg-primary"
       @click="smallScreenMenu = false"
     >
-      <div class="flex justify-between text-white pl-5 pr-5">
+      <div class="flex justify-between pr-5 pl-5 text-white">
         <nuxt-link
           :to="{ name: 'index' }"
-          class="flex h-12 items-center focus:outline-none"
+          class="flex items-center h-12 focus:outline-none"
         >
-          <span class="text-white h-8 w-8 flex items-center justify-center"
+          <span class="flex justify-center items-center w-8 h-8 text-white"
             ><i class="fas fa-comments fa-fw"></i
           ></span>
           <h6
-            class="text-white font-semibold text-xl pl-1 tracking-wide flex-1"
+            class="flex-1 pl-1 text-xl font-semibold tracking-wide text-white"
           >
             Saqsini
           </h6>
@@ -32,52 +32,48 @@
           v-for="(child, index) in item.children"
           :key="index"
           :to="{ name: child.link }"
-          class="flex flex-col text-white hover:text-primary hover:bg-gray-100 transition duration-300 rounded cursor-pointer my-2 p-2"
+          class="flex flex-col p-2 my-2 text-white rounded transition duration-300 cursor-pointer hover:text-primary hover:bg-gray-100"
         >
           <div class="flex items-center">
             <i class="w-8" :class="child.icon" />
-            <span class="font-semibold pl-2">
+            <span class="pl-2 font-semibold">
               {{ child.header }}
             </span>
           </div>
-          <!--          <div class="text-xs flex mt-1">-->
-          <!--            <div class="w-8" />-->
-          <!--            <span class="pl-2">{{ child.text }}</span>-->
-          <!--          </div>-->
         </nuxt-link>
         <div
           v-if="menuItemIndex !== menuItems.length - 1"
-          class="w-full border-b-2 border-white my-2"
+          class="my-6 w-full"
         ></div>
       </div>
     </div>
     <div
       v-if="!smallScreenMenu"
-      class="w-full h-12 flex lg:hidden sticky top-0 items-center px-5 justify-between z-20 bg-gray-50"
+      class="flex sticky top-0 z-20 justify-between items-center px-5 w-full h-12 bg-gray-50 lg:hidden"
     >
       <nuxt-link
         :to="{ name: 'index' }"
         class="flex items-center focus:outline-none"
       >
         <span
-          class="bg-gray-50 text-primary h-8 w-8 rounded-full flex items-center justify-center"
+          class="flex justify-center items-center w-8 h-8 bg-gray-50 rounded-full text-primary"
           ><i class="fas fa-comments fa-fw"></i
         ></span>
         <h6
-          class="text-primary font-semibold text-xl pl-1 tracking-wide flex-1"
+          class="flex-1 pl-1 text-xl font-semibold tracking-wide text-primary"
         >
           Saqsini
         </h6>
       </nuxt-link>
       <button
-        class="text-gray-700 hover:text-primary transition duration-300"
+        class="text-gray-700 transition duration-300 hover:text-primary"
         @click="smallScreenMenu = true"
       >
         <i class="fas fa-bars fa-fw"></i>
       </button>
     </div>
     <div
-      class="hidden lg:flex w-full h-12 fixed top-0 items-center px-5 justify-between z-40 bg-white"
+      class="hidden fixed top-0 z-40 justify-between items-center px-5 w-full h-12 bg-white lg:flex"
     >
       <div class="flex flex-1 items-center">
         <nuxt-link
@@ -85,11 +81,11 @@
           class="flex items-center focus:outline-none"
         >
           <span
-            class="text-primary h-8 w-8 rounded-full flex items-center justify-center"
+            class="flex justify-center items-center w-8 h-8 rounded-full text-primary"
             ><i class="fas fa-comments fa-fw"></i
           ></span>
           <h6
-            class="text-primary font-semibold text-xl pl-1 tracking-wide flex-1"
+            class="flex-1 pl-1 text-xl font-semibold tracking-wide text-primary"
           >
             Saqsini
           </h6>
@@ -100,64 +96,65 @@
         <div
           v-for="(item, index) in menuItems"
           :key="index"
-          class="relative h-10 flex justify-center items-center py-2"
+          class="flex relative justify-center items-center py-2 h-10"
           :class="item.text !== 'Account' ? 'w-28' : 'w-12'"
           @click="showSubMenu(item.id)"
         >
           <span
             v-if="item.text !== 'Account'"
-            class="text-gray-600 font-semibold cursor-pointer hover:text-primary transition duration-300 border-b-2 border-transparent hover:border-primary py-2 px-1 text-lg"
+            class="py-2 px-1 text-lg font-semibold text-gray-600 border-b-2 border-transparent transition duration-300 cursor-pointer hover:text-primary hover:border-primary"
             >{{ item.text }}</span
           >
           <span
             v-else
-            class="text-gray-600 font-semibold cursor-pointer hover:text-primary flex items-center flex justify-center transition duration-300"
+            class="flex justify-center items-center font-semibold text-gray-600 transition duration-300 cursor-pointer hover:text-primary"
           >
-            <div
+            <span
               v-if="!avatar || avatar.length < 100"
-              class="w-7 h-7 rounded-full border-2 border-gray-600 hover:border-primary transition duration-300 flex justify-center items-center"
+              class="flex justify-center items-center w-7 h-7 rounded-full border-2 border-gray-600 transition duration-300 hover:border-primary"
             >
               <i class="fas fa-user fa-fw"></i>
-            </div>
+            </span>
             <img
               v-else
+              alt="Avatar Image"
               :src="avatar"
-              class="w-7 h-7 rounded-full border-2 border-gray-100 hover:border-primary transition duration-300"
+              class="w-7 h-7 rounded-full border-2 border-gray-100 transition duration-300 hover:border-primary"
             />
           </span>
 
           <div
             :id="item.id"
-            class="absolute flex-col w-auto submenu invisible"
+            class="absolute invisible flex-col w-auto submenu"
             style="top: 2rem"
             :style="
               item.text !== 'Account' ? 'right: 2.3rem;' : 'right:0.25rem'
             "
           >
-            <div class="fixed top-0 left-0 w-full h-screen z-10"></div>
+            <div class="fixed top-0 left-0 z-10 w-full h-screen"></div>
 
-            <div class="w-full flex justify-end pr-3 z-20 relative">
+            <div class="flex relative z-20 justify-end pr-3 w-full">
               <div class="arrow-up" />
             </div>
 
             <div
-              class="bg-primary shadow-lg flex flex-col text-sm p-2 rounded z-20 relative"
+              class="flex relative z-20 flex-col p-2 text-sm rounded shadow-lg bg-primary"
             >
               <nuxt-link
                 v-for="(child, index2) in item.children"
                 :key="index2"
                 :to="{ name: child.link }"
-                class="flex flex-col hover:bg-white text-white hover:text-primary transition duration-300 p-3 rounded cursor-pointer"
+                class="flex flex-col p-3 text-white rounded transition duration-300 cursor-pointer hover:bg-white hover:text-primary"
               >
                 <div class="flex items-center">
                   <i :class="child.icon" class="w-5" />
-                  <p class="font-semibold pl-2">
+                  <p class="pl-2 font-semibold">
                     {{ child.header }}
                   </p>
                 </div>
                 <div class="flex items-center mt-1">
                   <div class="w-5" />
-                  <span class="text-left text-xs pl-3">{{ child.text }}</span>
+                  <span class="pl-3 text-xs text-left">{{ child.text }}</span>
                 </div>
               </nuxt-link>
             </div>
@@ -194,15 +191,15 @@ export default {
 
       if (this.whichSubMenu !== '' && this.whichSubMenu !== id) {
         previousMenu.classList.add('invisible')
-        previousMenu.style.opacity = 0
+        previousMenu.style.opacity = '0'
       }
 
       if (thisMenu.classList.contains('invisible')) {
         thisMenu.classList.remove('invisible')
-        thisMenu.style.opacity = 1
+        thisMenu.style.opacity = '1'
         this.whichSubMenu = id
       } else {
-        thisMenu.style.opacity = 0
+        thisMenu.style.opacity = '0'
         thisMenu.classList.add('invisible')
         this.whichSubMenu = ''
       }

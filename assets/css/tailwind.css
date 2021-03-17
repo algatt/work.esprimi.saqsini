@@ -38,7 +38,7 @@ h6 {
 }
 
 h6 {
-@apply font-semibold ;
+@apply text-lg font-semibold ;
 }
 
 h5 {
@@ -183,7 +183,7 @@ h1{
 
 
 .popup-menu-button {
-  @apply flex justify-start items-center mx-auto px-5 text-gray-600 font-medium py-1 transition-all duration-300;
+  @apply flex justify-start items-center mx-auto  text-gray-600 font-medium py-1 px-5 transition-all duration-300;
 }
 
 .popup-menu-button:hover {

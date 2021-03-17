@@ -9,7 +9,7 @@ export const actions = {
     return new Promise((resolve, reject) => {
       this.$axios
         .get(
-          `/contact/role/all?limit=100&offset=0&contactbookCode=${rootState.selectedContactList.code}`
+          `/contact/role/all?limit=100&offset=0&code=${rootState.selectedContactList.code}`
         )
         .then((response) => {
           commit(

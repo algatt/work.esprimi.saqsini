@@ -172,6 +172,7 @@ import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 import InfoBox from '~/components/layouts/InfoBox'
+import viewMixin from '~/helpers/viewMixin'
 
 export default {
   name: 'CompaniesList',
@@ -186,10 +187,9 @@ export default {
     TopHeaderBar,
     InfoBox,
   },
+  mixins: [viewMixin],
   data() {
     return {
-      hovered: null,
-      disableSave: true,
       selectedParentCode: -1,
       selectedChildCode: null,
       objectToCreate: null,
@@ -197,9 +197,6 @@ export default {
     }
   },
   computed: {
-    loading() {
-      return this.$store.state.loading
-    },
     categories() {
       return this.$store.getters.getItems('categories')
     },
@@ -212,9 +209,7 @@ export default {
         this.$store.getters.getItems('subcategories').length === 0
       )
     },
-    currentItemToBeEdited() {
-      return this.$store.state.currentItemToBeEdited
-    },
+
     surveys() {
       return this.$store.getters.getItems('surveys')
     },
@@ -229,9 +224,6 @@ export default {
     })
   },
   methods: {
-    setCurrentItem(item) {
-      this.$store.dispatch('setCurrentItemToBeEdited', item)
-    },
     parentChanged(ev) {
       this.selectedParentCode = ev
       this.selectedChildCode = null

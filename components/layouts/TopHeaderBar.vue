@@ -1,18 +1,12 @@
 <template>
   <div
-    class="w-full flex-wrap justify-between items-center flex relative h-auto lg:h-24"
+    class="flex relative flex-wrap justify-between items-center w-full h-auto lg:h-24"
   >
-    <div class="flex h-10 items-center">
-      <h6
-        v-if="$slots.title"
-        class="hidden xl:flex xl:w-auto text-lg font-semibold text-gray-700"
-      >
+    <div class="flex items-center h-10">
+      <h6 v-if="$slots.title" class="hidden xl:flex xl:w-auto">
         <slot name="title"> </slot>
       </h6>
-      <h6
-        v-if="$slots.smallTitle"
-        class="flex xl:hidden w-full text-lg font-semibold text-gray-700"
-      >
+      <h6 v-if="$slots.smallTitle" class="flex w-full xl:hidden">
         <slot name="smallTitle"></slot>
       </h6>
       <div v-if="$slots.extraContent" class="w-full xl:w-auto">
@@ -25,7 +19,7 @@
     </div>
     <div class="flex flex-1 justify-end">
       <div
-        class="flex fixed bottom-0 right-0 pb-5 pr-5 lg:relative lg:p-0 items-center"
+        class="flex fixed right-0 bottom-0 items-center pr-5 pb-5 lg:relative lg:p-0"
       >
         <div class="flex items-center">
           <slot name="extraButtons"></slot>
@@ -33,8 +27,8 @@
         <div v-if="!hideMenu">
           <popup-menu class="ml-2">
             <template v-slot:menuButton
-              ><button class="hidden lg:flex items-center btn btn-primary">
-                <span>Actions<i class="fas fa-caret-down fa-fw ml-1"></i></span>
+              ><button class="hidden items-center lg:flex btn btn-primary">
+                <span>Actions<i class="ml-1 fas fa-caret-down fa-fw"></i></span>
               </button>
               <button class="flex lg:hidden btn btn-round-primary">
                 <span><i class="fas fa-ellipsis-v fa-fw"></i></span></button
@@ -43,7 +37,7 @@
               <template v-if="selectedItems === 0">
                 <button v-if="!hideSelectAll" class="w-full" @click="selectAll">
                   <span class="popup-menu-button"
-                    ><i class="fas fa-check-double fa-fw mr-1"></i>Select
+                    ><i class="mr-1 fas fa-check-double fa-fw"></i>Select
                     All</span
                   >
                 </button>
@@ -55,7 +49,7 @@
                   @click="emptySelectedItems"
                 >
                   <span class="popup-menu-button"
-                    ><i class="fas fa-check-double fa-fw mr-1"></i> Clear
+                    ><i class="mr-1 fas fa-check-double fa-fw"></i> Clear
                     Selection</span
                   >
                 </button>
@@ -65,7 +59,7 @@
                   @click="showModal = true"
                 >
                   <span class="popup-menu-button"
-                    ><i class="fas fa-trash-alt fa-fw mr-1"></i>Delete&nbsp;
+                    ><i class="mr-1 fas fa-trash-alt fa-fw"></i>Delete&nbsp;
                     <span v-if="selectedItems === 1"
                       >{{ selectedItems }} item</span
                     >
@@ -138,11 +132,7 @@ export default {
   },
   computed: {
     selectedItems() {
-      const x = this.$store.state.selectedItems.length
-      // this.$nextTick(() => {
-      //   if (x > 0) this.$refs.clearAll.focus()
-      // })
-      return x
+      return this.$store.state.selectedItems.length
     },
   },
   methods: {
@@ -161,5 +151,3 @@ export default {
   },
 }
 </script>
-
-<style scoped></style>

@@ -88,6 +88,7 @@ import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
 import NewDepartment from '~/components/contacts/NewDepartment'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
+import viewMixin from '~/helpers/viewMixin'
 
 export default {
   name: 'ContactsList',
@@ -98,20 +99,8 @@ export default {
     EditObjectModal,
     PopupMenuVue,
   },
-  data() {
-    return {
-      hovered: null,
-      disableSave: true,
-      startSaveItem: false,
-    }
-  },
+  mixins: [viewMixin],
   computed: {
-    loading() {
-      return this.$store.state.loading
-    },
-    currentItemToBeEdited() {
-      return this.$store.state.currentItemToBeEdited
-    },
     departments() {
       return this.$store.getters.getItems('departments')
     },
@@ -129,11 +118,6 @@ export default {
     ]).then(() => {
       this.$store.dispatch('setLoading', false)
     })
-  },
-  methods: {
-    setCurrentItem(item) {
-      this.$store.dispatch('setCurrentItemToBeEdited', item)
-    },
   },
 }
 </script>

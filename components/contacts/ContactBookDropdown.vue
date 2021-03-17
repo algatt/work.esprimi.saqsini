@@ -18,7 +18,7 @@
             class="popup-menu-button w-full"
             @click="setSelectedContactList(item)"
           >
-            <span class="pl-4">{{ item.name }}</span>
+            <span>{{ item.name }}</span>
           </button>
         </template>
       </template>
