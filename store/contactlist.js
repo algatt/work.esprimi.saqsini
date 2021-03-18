@@ -1,5 +1,3 @@
-// import qs from 'qs'
-
 import qs from 'qs'
 
 export const state = () => ({
@@ -138,19 +136,20 @@ export const actions = {
   },
 
   flagForRemoval({ dispatch, commit }, contactList) {
+    const tempContactList = JSON.parse(JSON.stringify(contactList))
     return new Promise((resolve, reject) => {
       this.$axios
-        .patch(`/contact/contactbook/${contactList.code}/flagForRemoval`)
+        .patch(`/contact/contactbook/${tempContactList.code}/flagForRemoval`)
         .then(() => {
-          contactList.flags = contactList.flags.filter((item) => {
+          tempContactList.flags = tempContactList.flags.filter((item) => {
             return item !== 'ACTIVE'
           })
-          contactList.flags.push('FLAGGED_FOR_REMOVAL')
+          tempContactList.flags.push('FLAGGED_FOR_REMOVAL')
           commit(
             'updateItem',
             {
               which: 'contactlist',
-              item: contactList,
+              item: tempContactList,
             },
             { root: true }
           )
@@ -163,19 +162,20 @@ export const actions = {
   },
 
   unflagForRemoval({ dispatch, commit }, contactList) {
+    const tempContactList = JSON.parse(JSON.stringify(contactList))
     return new Promise((resolve, reject) => {
       this.$axios
-        .patch(`/contact/contactbook/${contactList.code}/unflagForRemoval`)
+        .patch(`/contact/contactbook/${tempContactList.code}/unflagForRemoval`)
         .then(() => {
-          contactList.flags = contactList.flags.filter((item) => {
+          tempContactList.flags = tempContactList.flags.filter((item) => {
             return item !== 'FLAGGED_FOR_REMOVAL'
           })
-          contactList.flags.push('ACTIVE')
+          tempContactList.flags.push('ACTIVE')
           commit(
             'updateItem',
             {
               which: 'contactlist',
-              item: contactList,
+              item: tempContactList,
             },
             { root: true }
           )
@@ -192,7 +192,15 @@ export const actions = {
       this.$axios
         .patch(`/contact/contactbook/${contactList.code}/export`)
         .then((response) => {
-          resolve(response.data)
+          commit(
+            'updateItem',
+            {
+              which: 'contactlist',
+              item: response.data,
+            },
+            { root: true }
+          )
+          resolve()
         })
         .catch((error) => {
           reject(error)

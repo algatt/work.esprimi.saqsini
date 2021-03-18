@@ -1,6 +1,10 @@
 <template>
   <div v-if="!loading" class="flex flex-wrap items-start">
-    <top-header-bar which="surveys" :items="surveys" class="w-full"
+    <top-header-bar
+      which="surveys"
+      :items="surveys"
+      class="w-full"
+      :hide-menu="disableNewButton || surveys.length === 0"
       ><template v-slot:title>Surveys</template>
       <template v-slot:extraButtons>
         <button-icon
@@ -260,13 +264,19 @@ export default {
       this.objectToCreate = null
     },
     flagForDeletion(survey) {
-      this.$store.dispatch('surveys/flagForRemoval', survey)
+      this.$store.dispatch('surveys/flagForRemoval', survey).then(() => {
+        this.$toasted.show(`${survey.name} marked for deletion`)
+      })
     },
     unflagFromDeletion(survey) {
-      this.$store.dispatch('surveys/unFlagForRemoval', survey)
+      this.$store.dispatch('surveys/unFlagForRemoval', survey).then(() => {
+        this.$toasted.show(`${survey.name} removed from deletion`)
+      })
     },
     duplicateSurvey(survey) {
-      this.$store.dispatch('surveys/duplicateSurvey', survey)
+      this.$store.dispatch('surveys/duplicateSurvey', survey).then(() => {
+        this.$toasted.show(`${survey.name} duplicated successfully`)
+      })
     },
   },
 }

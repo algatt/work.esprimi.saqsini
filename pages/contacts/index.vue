@@ -40,10 +40,10 @@
         v-if="contacts.length === 0"
         class="flex-grow mx-5 mt-2 md:mt-0"
       >
-        <template v-slot:title>No Contacts here...</template>
+        <template v-slot:title>No Contacts</template>
         <template v-slot:content>
           <button class="btn-link" @click="setCurrentItem({ code: -1 })">
-            Create Contact
+            Create a contact...
           </button>
         </template></info-box
       >

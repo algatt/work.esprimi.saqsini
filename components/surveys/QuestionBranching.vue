@@ -2,6 +2,7 @@
   <spinner v-if="isLoading"></spinner>
   <div v-else class="flex flex-col mt-2">
     {{ conditions }}
+
     <div v-for="condition in conditions" :key="condition.groupIndex">
       <div class="flex flex-col border border-gray-100 shadow rounded p-2 my-3">
         <div
@@ -240,6 +241,9 @@ export default {
     contactlists() {
       return this.$store.getters.getItems('contactlist')
     },
+    contactList() {
+      return this.$store.getters.getSelectedContactList
+    },
   },
   watch: {
     conditions(ev) {
@@ -264,6 +268,7 @@ export default {
     addGroup() {
       const len = this.conditions.length
       const obj = {
+        contactListCode: this.contactList.code,
         groupIndex: len,
         questions: [],
       }

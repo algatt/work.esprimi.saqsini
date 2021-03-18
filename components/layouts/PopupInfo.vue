@@ -6,11 +6,7 @@
       >
       </i>
 
-      <div
-        v-show="show"
-        slot="popover"
-        class="info absolute flex flex-1 flex-wrap"
-      >
+      <div v-show="show" slot="popover" class="info">
         <slot name="text"></slot>
       </div>
     </div>
@@ -30,7 +26,6 @@ export default {
 
 <style scoped>
 .info {
-  @apply border border-gray-100 shadow-sm rounded py-2 px-2 bg-gray-50 text-sm flex flex-1;
-  margin-left: 30px;
+  @apply absolute border border-gray-100 shadow-sm rounded py-2 px-2 bg-gray-50 text-sm flex flex-1 flex-wrap ml-10;
 }
 </style>

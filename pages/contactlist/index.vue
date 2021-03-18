@@ -26,9 +26,10 @@
     </top-header-bar>
 
     <info-box v-if="contactlists.length === 0" type="info">
-      <template v-slot:title>No contact lists</template>
+      <template v-slot:title>No Contact Lists</template>
       <template v-slot:content
-        >You do not have any contact lists. Make sure to create one.</template
+        >You do not have any contact lists you can create one, or a default one
+        will be created in a few moments.</template
       >
     </info-box>
 
@@ -112,7 +113,10 @@
                 >
               </button>
               <button
-                v-if="slotProps.item.flags.includes('HAS_EXPORT_DATA')"
+                v-if="
+                  slotProps.item.flags.includes('HAS_EXPORT_DATA') &&
+                  !slotProps.item.flags.includes('GENERATE_EXPORT_DATA')
+                "
                 @click="getExportData(slotProps.item)"
               >
                 <span class="popup-menu-button">
@@ -209,16 +213,34 @@ export default {
       return `${days} days left`
     },
     flagForRemoval(contactList) {
-      this.$store.dispatch('contactlist/flagForRemoval', contactList)
+      this.$store
+        .dispatch('contactlist/flagForRemoval', contactList)
+        .then(() => {
+          this.$toasted.show(
+            `${contactList.name} successfully flagged for removal`
+          )
+        })
     },
     unflagForRemoval(contactList) {
-      this.$store.dispatch('contactlist/unflagForRemoval', contactList)
+      this.$store
+        .dispatch('contactlist/unflagForRemoval', contactList)
+        .then(() => {
+          this.$toasted.show(
+            `${contactList.name} successfully removed from deletion`
+          )
+        })
     },
     downloadTemplate() {
       this.$store.dispatch('contactlist/downloadTemplate')
     },
     exportContactBook(contactList) {
-      this.$store.dispatch('contactlist/exportContactBook', contactList)
+      this.$store
+        .dispatch('contactlist/exportContactBook', contactList)
+        .then(() => {
+          this.$toasted.show(
+            `${contactList.name} export process started successfully`
+          )
+        })
     },
     getExportData(contactList) {
       this.$store.dispatch('contactlist/getExportData', contactList)

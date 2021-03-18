@@ -1,7 +1,11 @@
 <template>
-  <div v-if="selectedContactList" class="ml-2 flex items-center">
-    <span>Contact List</span
-    ><popup-menu class="mx-2">
+  <div v-if="selectedContactList" class="ml-2 flex items-center relative">
+    <span>Contact List</span>
+    <div
+      v-if="disabled"
+      class="bg-gray-50 bg-opacity-25 absolute left-0 top-0 w-full h-full z-10 cursor-not-allowed"
+    ></div>
+    <popup-menu class="mx-2">
       <template v-slot:menuButton
         ><span class="bg-gray-100 px-2 py-1 rounded"
           >{{ selectedContactList.name
@@ -10,7 +14,7 @@
             class="fas fa-caret-down fa-fw ml-4"
           ></i></span
       ></template>
-      <template v-slot:menuItems>
+      <template v-if="!disabled" v-slot:menuItems>
         <template v-for="item in contactLists">
           <button
             v-if="item.code !== selectedContactList.code"
@@ -23,6 +27,9 @@
         </template>
       </template>
     </popup-menu>
+    <button v-if="disabled" class="ml-2 z-20" @click="showMessage">
+      <i class="fas fa-info-circle fa-fw fa-sm text-gray-400"></i>
+    </button>
   </div>
 
   <span v-else></span>
@@ -33,6 +40,13 @@ import PopupMenu from '~/components/layouts/PopupMenu'
 export default {
   name: 'ContactBookDropdown',
   components: { PopupMenu },
+  props: {
+    disabled: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
+  },
   computed: {
     contactLists() {
       return this.$store.getters.getItems('contactlist')
@@ -56,6 +70,11 @@ export default {
     setSelectedContactList(item) {
       this.$store.dispatch('setContactList', item)
       this.$emit('changedList', item)
+    },
+    showMessage() {
+      this.$toasted.show(
+        `You cannot change the contact list right now, since it's being used for branching.`
+      )
     },
   },
 }

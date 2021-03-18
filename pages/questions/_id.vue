@@ -15,6 +15,7 @@
       <template v-slot:extraContent>
         <div class="xl:ml-6 ml-0 flex items-center">
           <contact-book-dropdown
+            :disabled="getBranchingContactBook().length > 0"
             @changedList="updateData"
           ></contact-book-dropdown>
         </div>
@@ -384,6 +385,15 @@ export default {
           code: this.$route.params.id,
         }),
       ]).then(() => {
+        if (this.getBranchingContactBook().length > 0) {
+          const tempLists = this.$store.getters.getItems('contactlist')
+          this.$store.dispatch(
+            'setContactList',
+            tempLists.find((el) => {
+              return el.code === this.getBranchingContactBook()[0]
+            })
+          )
+        }
         this.$store.dispatch('setLoading', false)
       })
     },
@@ -431,6 +441,19 @@ export default {
     },
     checkContacts(result) {
       this.invites = result
+    },
+    getBranchingContactBook() {
+      const code = []
+      for (const i in this.questions) {
+        const tempQuestion = JSON.parse(this.questions[i].surveyOptions)
+        if (tempQuestion.branching.rules.length > 0) {
+          tempQuestion.branching.rules.forEach((el) => {
+            if (!code.includes(el.contactListCode))
+              code.push(el.contactListCode)
+          })
+        }
+      }
+      return code
     },
     getQuestionsInPage(page) {
       return this.questionsWithSections.filter((el) => {

@@ -178,19 +178,20 @@ export const actions = {
   },
 
   flagForRemoval({ commit, dispatch }, survey) {
+    const tempSurvey = JSON.parse(JSON.stringify(survey))
     return new Promise((resolve, reject) => {
       this.$axios
-        .patch(`/builder/instance/${survey.code}/flagForRemoval`)
+        .patch(`/builder/instance/${tempSurvey.code}/flagForRemoval`)
         .then(() => {
-          survey.flags = survey.flags.filter((item) => {
+          tempSurvey.flags = tempSurvey.flags.filter((item) => {
             return item !== 'ACTIVE'
           })
-          survey.flags.push('FLAGGED_FOR_REMOVAL')
+          tempSurvey.flags.push('FLAGGED_FOR_REMOVAL')
           commit(
             'updateItem',
             {
               which: 'surveys',
-              item: survey,
+              item: tempSurvey,
             },
             { root: true }
           )
@@ -203,11 +204,12 @@ export const actions = {
   },
 
   unFlagForRemoval({ commit, dispatch }, survey) {
+    const tempSurvey = JSON.parse(JSON.stringify(survey))
     return new Promise((resolve, reject) => {
       this.$axios
-        .patch(`/builder/instance/${survey.code}/unflagForRemoval`)
+        .patch(`/builder/instance/${tempSurvey.code}/unflagForRemoval`)
         .then(() => {
-          survey.flags = survey.flags.filter((item) => {
+          tempSurvey.flags = tempSurvey.flags.filter((item) => {
             return item !== 'FLAGGED_FOR_REMOVAL'
           })
 
@@ -215,7 +217,7 @@ export const actions = {
             'updateItem',
             {
               which: 'surveys',
-              item: survey,
+              item: tempSurvey,
             },
             { root: true }
           )

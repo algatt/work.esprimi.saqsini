@@ -1,6 +1,10 @@
 <template>
   <div v-if="!loading">
-    <top-header-bar which="notifications" :items="notifications" class="w-full"
+    <top-header-bar
+      which="notifications"
+      :items="notifications"
+      class="w-full"
+      :hide-menu="notifications.length === 0"
       ><template v-slot:title>Notifications</template>
       <template v-slot:menuButtonIfSelected>
         <button class="w-full" @click="markAllAsRead">

@@ -19,10 +19,10 @@
     >
 
     <info-box v-if="departments.length === 0" class="flex-grow mt-2 md:mt-0">
-      <template v-slot:title>No Departments here...</template>
+      <template v-slot:title>No Departments</template>
       <template v-slot:content>
         <button class="btn-link" @click="setCurrentItem({ code: -1 })">
-          Create a Department
+          Create a department...
         </button>
       </template></info-box
     >

@@ -39,6 +39,11 @@
             <span class="pl-2 font-semibold">
               {{ child.header }}
             </span>
+            <span
+              v-if="child.header === 'Messages'"
+              class="ml-2 bg-white rounded text-xs text-primary py-0.5 px-1"
+              >{{ messageCount }}</span
+            >
           </div>
         </nuxt-link>
         <div
@@ -107,7 +112,7 @@
           >
           <span
             v-else
-            class="flex justify-center items-center font-semibold text-gray-600 transition duration-300 cursor-pointer hover:text-primary"
+            class="flex relative justify-center items-center font-semibold text-gray-600 transition duration-300 cursor-pointer hover:text-primary"
           >
             <span
               v-if="!avatar || avatar.length < 100"
@@ -121,6 +126,11 @@
               :src="avatar"
               class="w-7 h-7 rounded-full border-2 border-gray-100 transition duration-300 hover:border-primary"
             />
+            <span
+              v-if="messageCount > 0"
+              class="absolute right-0 top-0 text-xs bg-gray-100 border-1 border-gray-200 shadow-sm bg-opacity-100 rounded -my-2 -mx-1 px-1 flex"
+              >{{ messageCount }}</span
+            >
           </span>
 
           <div
@@ -179,6 +189,9 @@ export default {
   computed: {
     avatar() {
       return this.$store.state.auth.authUserAvatar
+    },
+    messageCount() {
+      return this.$store.state.notifications.notificationStats.unreadCount
     },
   },
   methods: {

@@ -1,6 +1,11 @@
 <template>
   <div v-if="!loading" class="flex flex-wrap items-start">
-    <top-header-bar which="jobs" :items="jobs" class="w-full">
+    <top-header-bar
+      which="jobs"
+      :items="jobs"
+      class="w-full"
+      :hide-menu="jobs.length === 0"
+    >
       <template v-slot:title
         >Job History for
         {{
@@ -39,7 +44,7 @@
     </info-box>
 
     <info-box v-else-if="jobs.length === 0" class="flex-grow mx-5 mt-2 md:mt-0">
-      <template v-slot:title>No Job History here...</template>
+      <template v-slot:title>No Job History</template>
       <template v-slot:content>
         <button class="btn-link" @click="setCurrentItem({ code: -1 })">
           Add a new one...

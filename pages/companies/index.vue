@@ -62,7 +62,7 @@
         v-else-if="companies.length === 0"
         class="flex-grow mx-5 mt-2 md:mt-0"
       >
-        <template v-slot:title>No Companies here...</template>
+        <template v-slot:title>No Companies</template>
         <template v-slot:content>
           <button class="btn-link" @click="setCurrentItem({ code: -1 })">
             Create one...
@@ -242,23 +242,22 @@ export default {
       .then(() => {
         if (this.contactlists.length !== 0) this.updateData()
       })
-      .finally(() => {
-        this.$store.dispatch('setLoading', false)
-      })
   },
   methods: {
-    updateData() {
-      this.$store.dispatch('setLoading', true)
-      Promise.all([
-        this.$store.dispatch('sectors/getSectors', { limit: 1000, offset: 0 }),
-        this.$store.dispatch('industries/getIndustries'),
-        this.$store.dispatch('companies/getCompanies', {
-          limit: 100,
-          offset: 0,
-        }),
-      ]).then(() => {
-        this.$store.dispatch('setLoading', false)
+    async updateData() {
+      await this.$store.dispatch('setLoading', true)
+
+      await this.$store.dispatch('sectors/getSectors', {
+        limit: 1000,
+        offset: 0,
       })
+      await this.$store.dispatch('industries/getIndustries')
+      await this.$store.dispatch('companies/getCompanies', {
+        limit: 100,
+        offset: 0,
+      })
+
+      await this.$store.dispatch('setLoading', false)
     },
 
     parentChanged(ev) {
