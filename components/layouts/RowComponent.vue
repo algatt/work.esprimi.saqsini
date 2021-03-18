@@ -38,7 +38,7 @@
       <slot name="content"></slot
     ></span>
     <span
-      class="hidden lg:flex w-12 justify-end xl:justify-center items-center self-stretch"
+      class="flex w-12 justify-end xl:justify-center items-center self-stretch"
       @click.stop
     >
       <slot name="popup-menu"></slot>
