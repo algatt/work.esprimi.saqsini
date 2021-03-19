@@ -12,35 +12,51 @@
             {{ response.question.number }}
           </p>
         </div>
-        <h6>{{ response.question.text }}</h6>
       </div>
       <div
         :key="response.question.code + ' ' + legend[response.question.code]"
-        class="flex"
+        class="flex flex-wrap"
       >
-        <div class="w-full md:w-3/12 flex py-5 items-start">
-          <select
-            v-model="legend[response.question.code]"
-            class="input select w-full"
-            @change="updateLegend(response)"
+        <div class="w-full md:w-3/12 flex py-5 items-start flex flex-col">
+          <multi-select
+            class="w-full"
+            :original-list="getAnswers(response)"
+            :selected-list="selectedValues[response.question.code]"
+            display-field="text"
+            @selectedItems="updatedSelectedValues(response, $event)"
+            ><template v-slot:title>Choose Answers</template></multi-select
           >
-            <option :value="null">all</option>
-            <option
-              v-for="(option, index) in legendContact"
-              :key="index"
-              :value="option"
+
+          <div class="flex flex-col px-3 py-1 w-full mt-3">
+            <label>Contacts' Details</label>
+            <select
+              v-model="legend[response.question.code]"
+              class="input select w-full"
+              @change="updateLegend(response)"
             >
-              {{ option }}
-            </option>
-          </select>
+              <option :value="null">all</option>
+              <option
+                v-for="(option, index) in legendContact"
+                :key="index"
+                :value="option"
+              >
+                {{ option }}
+              </option>
+            </select>
+          </div>
         </div>
-        <div class="w-full md:w-9/12">
+        <div class="w-full flex justify-center items-center md:w-9/12">
           <g-chart
+            v-if="responsesGrouped[response.question.code].length > 1"
             type="ColumnChart"
             :data="responsesGrouped[response.question.code]"
-            :options="getOptions(response.question.code)"
+            :options="getOptions(response.question)"
+            class="w-full"
             style="min-height: 400px"
           ></g-chart>
+          <div v-else class="p-5">
+            <p>Choose at least one value</p>
+          </div>
         </div>
       </div>
     </div>
@@ -51,14 +67,16 @@
 <script>
 import { GChart } from 'vue-google-charts'
 import viewMixin from '~/helpers/viewMixin'
+import multiSelect from '~/components/layouts/MultiSelect'
 
 export default {
   name: 'SurveyResponses',
-  components: { GChart },
+  components: { GChart, multiSelect },
   mixins: [viewMixin],
   data() {
     return {
       legend: {},
+      selectedValues: [],
       legendContact: [],
       responsesGrouped: {},
     }
@@ -75,6 +93,7 @@ export default {
   mounted() {
     this.responses.forEach((el) => {
       this.legend[el.question.code] = null
+      this.selectedValues[el.question.code] = this.getAnswers(el)
     })
     this.generateLegendItems()
     this.generateResponses(null)
@@ -88,6 +107,44 @@ export default {
       )
       await this.$store.dispatch('setLoading', false)
     },
+
+    getAnswers(question) {
+      let dataValues = []
+
+      if (question.question.availableOptions) {
+        question.question.availableOptions.forEach((el) => {
+          dataValues.push({ code: String(el.value), text: String(el.text) })
+        })
+      }
+
+      question.responses.forEach((response) => {
+        response.chosenOption.forEach((option) => {
+          const existingOnes = dataValues.map((el) => {
+            return el.code
+          })
+
+          if (!existingOnes.includes(String(option)))
+            dataValues.push({ code: String(option), text: String(option) })
+        })
+      })
+
+      dataValues = dataValues.sort((a, b) => {
+        return a > b ? 1 : -1
+      })
+
+      return dataValues
+    },
+
+    updatedSelectedValues(response, newSelection) {
+      this.selectedValues[response.question.code] = newSelection
+      this.responsesGrouped[response.question.code] = !this.legend[
+        response.question.code
+      ]
+        ? this.getDataAll(response)
+        : this.getDataSplit(response, this.legend[response.question.code])
+      this.$forceUpdate()
+    },
+
     getDataAll(question) {
       const data = {}
       question.question.availableOptions.forEach((el) => {
@@ -100,8 +157,14 @@ export default {
       })
       const dataForChart = [['Response', 'Count']]
       Object.keys(data).forEach((key) => {
-        dataForChart.push([key, data[key].count])
+        const chosenItems = this.selectedValues[question.question.code].map(
+          (el) => {
+            return el.code
+          }
+        )
+        if (chosenItems.includes(key)) dataForChart.push([key, data[key].count])
       })
+
       return dataForChart
     },
     getDataSplit(question, fieldName) {
@@ -109,7 +172,7 @@ export default {
       let options = []
 
       question.responses.forEach((el) => {
-        if (!options.includes(el.contact[fieldName]))
+        if (!options.includes(String(el.contact[fieldName])))
           options.push(String(el.contact[fieldName]))
       })
 
@@ -131,13 +194,23 @@ export default {
 
       let dataValues = []
 
+      const chosenItems = this.selectedValues[question.question.code].map(
+        (el) => {
+          return el.code
+        }
+      )
+
       Object.keys(differentValues).forEach((el) => {
-        dataValues.push([el, ...differentValues[el]])
+        if (chosenItems.includes(el))
+          dataValues.push([el, ...differentValues[el]])
       })
 
       if (question.question.availableOptions) {
         question.question.availableOptions.forEach((el) => {
-          if (!Object.keys(differentValues).includes(String(el.value)))
+          if (
+            !Object.keys(differentValues).includes(String(el.value)) &&
+            chosenItems.includes(el.value)
+          )
             dataValues.push([el.value, ...Array(options.length).fill(0)])
         })
       }
@@ -150,8 +223,9 @@ export default {
 
       return data
     },
-    getOptions(questionCode) {
+    getOptions(question) {
       return {
+        title: question.text,
         vAxis: {
           format: '###',
           viewWindow: { min: 0 },
@@ -162,7 +236,7 @@ export default {
           viewWindow: { min: 0 },
           gridlines: { color: 'transparent' },
         },
-        isStacked: !!this.legend[questionCode],
+        isStacked: !!this.legend[question.code],
       }
     },
     updateLegend(response) {

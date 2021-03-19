@@ -9,7 +9,18 @@ export const actions = {
       {
         which: 'responses',
         items: {
-          survey: {},
+          survey: {
+            name: 'Test Survey',
+            totalInvites: 20,
+            totalRespondents: 5,
+            submittedTime: [
+              '20200101',
+              '20200102',
+              '20200101',
+              '20200101',
+              '20200103',
+            ],
+          },
           questions: [
             {
               question: {
@@ -55,6 +66,26 @@ export const actions = {
                   },
                   chosenOption: ['Orange'],
                 },
+                {
+                  contact: {
+                    age: 45,
+                    gender: 'Female',
+                    role: 'Accountant',
+                    department: 'Accounts',
+                    company: 'Actavis',
+                  },
+                  chosenOption: ['Orange'],
+                },
+                {
+                  contact: {
+                    age: 32,
+                    gender: 'Male',
+                    role: 'Accountant',
+                    department: 'Accounts',
+                    company: 'Baxter',
+                  },
+                  chosenOption: ['Apple'],
+                },
               ],
             },
             {
@@ -97,6 +128,26 @@ export const actions = {
                     gender: 'Male',
                   },
                   chosenOption: [2],
+                },
+                {
+                  contact: {
+                    age: 45,
+                    gender: 'Female',
+                    role: 'Accountant',
+                    department: 'Accounts',
+                    company: 'Actavis',
+                  },
+                  chosenOption: [2],
+                },
+                {
+                  contact: {
+                    age: 32,
+                    gender: 'Male',
+                    role: 'Accountant',
+                    department: 'Accounts',
+                    company: 'Baxter',
+                  },
+                  chosenOption: [3],
                 },
               ],
             },
