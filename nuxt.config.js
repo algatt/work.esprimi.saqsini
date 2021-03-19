@@ -27,6 +27,8 @@ export default {
   env: {
     api_auth: '/api/v0.3/',
     api_path: 'https://com-lobeslab-sdc-api-test.herokuapp.com',
+    siteUrl: 'https://saqsini.herokuapp.com/',
+    siteUrlActivate: this.siteUrl + 'activate',
   },
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
@@ -52,6 +54,10 @@ export default {
     // https://go.nuxtjs.dev/tailwindcss
     '@nuxtjs/tailwindcss',
   ],
+
+  tailwindcss: {
+    jit: true,
+  },
 
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
@@ -87,6 +93,6 @@ export default {
     },
   },
 
-  // Build Configuration (https://go.nuxtjs.dev/config-build)
+  // Build Configuration (p)
   build: {},
 }

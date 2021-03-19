@@ -16,10 +16,7 @@
       </template></top-header-bar
     >
 
-    <info-box
-      v-if="notifications.length === 0"
-      class="flex-grow mx-5 mt-2 md:mt-0"
-    >
+    <info-box v-if="notifications.length === 0" class="flex-grow mt-2 md:mt-0">
       <template v-slot:title>No notifications!</template>
       <template v-slot:content> You're all caught up... </template></info-box
     >

@@ -4,6 +4,7 @@
     <div
       v-if="disabled"
       class="bg-gray-50 bg-opacity-25 absolute left-0 top-0 w-full h-full z-10 cursor-not-allowed"
+      @click="showMessage"
     ></div>
     <popup-menu class="mx-2">
       <template v-slot:menuButton
@@ -27,9 +28,6 @@
         </template>
       </template>
     </popup-menu>
-    <button v-if="disabled" class="ml-2 z-20" @click="showMessage">
-      <i class="fas fa-info-circle fa-fw fa-sm text-gray-400"></i>
-    </button>
   </div>
 
   <span v-else></span>

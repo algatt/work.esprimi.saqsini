@@ -1,20 +1,228 @@
 <template>
-  <jobs-list :contacts="contacts"></jobs-list>
+  <div v-if="!loading" class="flex flex-wrap items-start">
+    <template
+      v-if="getValueFromObject(contacts, 'displayName', $route.params.id)"
+    >
+      <top-header-bar
+        which="jobs"
+        :items="jobs"
+        class="w-full"
+        :hide-menu="jobs.length === 0"
+      >
+        <template v-slot:title
+          >Job History for
+          {{
+            getValueFromObject(contacts, 'displayName', $route.params.id)
+          }}</template
+        >
+
+        <template v-slot:extraButtons>
+          <button-icon
+            v-if="!disableNewButton"
+            colour="primary"
+            icon="fas fa-plus"
+            @click="setCurrentItem({ code: -1 })"
+          >
+            <template v-slot:text>New Job</template>
+          </button-icon>
+        </template></top-header-bar
+      >
+
+      <info-box v-if="disableNewButton" class="flex-grow mt-2 md:mt-0">
+        <template v-slot:title>We have a problem...</template>
+        <template v-slot:content>
+          <p v-if="companies.length === 0 && roles.length === 0">
+            You cannot create a job entry right now. Make sure to have at least
+            one company and one role.
+          </p>
+          <p v-else-if="companies.length === 0">
+            You cannot create a job entry right now. Make sure to have at least
+            one company.
+          </p>
+          <p v-else>
+            You cannot create a job entry right now. Make sure to have at least
+            one role.
+          </p>
+        </template>
+      </info-box>
+
+      <info-box v-else-if="jobs.length === 0" class="flex-grow mt-2 md:mt-0">
+        <template v-slot:title>No Job History</template>
+        <template v-slot:content>
+          <button class="btn-link" @click="setCurrentItem({ code: -1 })">
+            Add a new one...
+          </button>
+        </template></info-box
+      >
+
+      <div v-else class="flex flex-col w-full">
+        <display-table-component
+          :items="jobs"
+          class="w-full"
+          @hovered="hovered = $event"
+          @clicked="setCurrentItem($event)"
+        >
+          <template v-slot:titleContent>
+            <p class="w-4/12">Company</p>
+            <p class="w-3/12">Department</p>
+            <p class="w-3/12">Role</p>
+            <p class="w-2/12">Status</p>
+          </template>
+          <template v-slot:titleContentSmall
+            >Job Details for
+            {{ getValueFromObject(contacts, 'displayName', $route.params.id) }}
+          </template>
+          <template v-slot:content="slotProps"
+            ><p class="w-full xl:w-4/12">
+              {{ slotProps.item.companyName }}
+            </p>
+            <p class="w-full xl:w-3/12">
+              {{ slotProps.item.departmentName }}
+            </p>
+            <p class="w-full xl:w-3/12">
+              {{ slotProps.item.roleName }}
+            </p>
+            <p class="w-full xl:w-2/12">
+              <span
+                v-if="slotProps.item.flags.includes('ONGOING')"
+                class="bg-green-200 text-sm text-green-700 px-2 py-0.5 rounded border border-green-300"
+                >Active</span
+              >
+              <span
+                v-else
+                class="bg-red-200 text-sm text-red-700 px-2 py-0.5 rounded border border-red-300"
+                >Stopped</span
+              >
+            </p>
+          </template>
+          <template v-slot:popup-menu="slotProps">
+            <span
+              :class="
+                hovered === slotProps.item.code ? 'flex' : 'flex xl:hidden'
+              "
+              class="items-center"
+            >
+              <popup-menu-vue
+                :object-code="slotProps.item.code"
+                direction="left"
+                @closeMenu="hovered = null"
+              >
+                <template v-slot:menuItems>
+                  <button @click="setCurrentItem(slotProps.item)">
+                    <span class="popup-menu-button">
+                      <i class="fas fa-pencil-alt fa-fw fa-sm mr-1"></i
+                      >Edit</span
+                    >
+                  </button>
+                </template>
+              </popup-menu-vue>
+            </span>
+          </template>
+
+          <template v-if="disableNewButton" v-slot:extra> </template>
+        </display-table-component>
+      </div>
+
+      <transition name="fade">
+        <edit-object-modal v-if="currentItemToBeEdited">
+          <template v-slot:content>
+            <new-job></new-job>
+          </template>
+        </edit-object-modal>
+      </transition>
+    </template>
+    <template v-else>
+      <info-box class="mt-2"
+        ><template v-slot:title>We have a problem!</template
+        ><template v-slot:content
+          >You have landed on this page incorrectly, make sure you have a
+          contact list, and some contacts set up.</template
+        ></info-box
+      >
+    </template>
+  </div>
+  <spinner v-else></spinner>
 </template>
 
 <script>
-import JobsList from '~/components/contacts/JobsList'
+import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
+import EditObjectModal from '~/components/layouts/EditObjectModal'
+import NewJob from '~/components/contacts/NewJob'
+import PopupMenuVue from '~/components/layouts/PopupMenu'
+import Spinner from '~/components/layouts/Spinner'
+import viewMixin from '~/helpers/viewMixin'
 export default {
-  name: 'JobsContactsPage',
-  components: { JobsList },
+  name: 'JobsList',
+  components: {
+    Spinner,
+    DisplayTableComponent,
+    EditObjectModal,
+    NewJob,
+    PopupMenuVue,
+  },
 
+  mixins: [viewMixin],
   computed: {
     contacts() {
       return this.$store.getters.getItems('contacts')
     },
+    contactlists() {
+      return this.$store.getters.getItems('contactlist')
+    },
+    jobs() {
+      return this.$store.getters.getItems('jobs')
+    },
+    companies() {
+      return this.$store.getters.getItems('companies')
+    },
+    roles() {
+      return this.$store.getters.getItems('roles')
+    },
+    departments() {
+      return this.$store.getters.getItems('departments')
+    },
+    disableNewButton() {
+      return this.companies.length === 0 || this.roles.length === 0
+    },
   },
   created() {
-    this.$store.dispatch('jobs/getJobsByContact', this.$route.params.id)
+    this.$store.dispatch('setLoading', true)
+    this.$store
+      .dispatch('contactlist/getContactLists', { limit: 100, offset: 0 })
+      .then(() => {
+        if (this.contactlists.length !== 0) this.updateData()
+      })
+  },
+  methods: {
+    async updateData() {
+      await this.$store.dispatch('setLoading', true)
+      await this.$store.dispatch('contacts/getContacts', {
+        limit: 1000,
+        offset: 0,
+      })
+      await this.$store.dispatch('companies/getCompanies', {
+        limit: 1000,
+        offset: 0,
+      })
+      await this.$store.dispatch('roles/getRoles')
+      await this.$store.dispatch('departments/getAllDepartments', {
+        limit: 1000,
+        offset: 0,
+      })
+      await this.$store.dispatch('contacts/getContacts', {
+        limit: 1000,
+        offset: 0,
+      })
+      await this.$store.dispatch('jobs/getJobsByContact', this.$route.params.id)
+      await this.$store.dispatch('setLoading', false)
+    },
+    getValueFromObject(whichObject, whichField, whichCode) {
+      if (whichCode === undefined) return
+      const temp = whichObject.find((el) => {
+        return el.code === Number(whichCode)
+      })
+      return temp === undefined ? null : temp[whichField]
+    },
   },
 }
 </script>

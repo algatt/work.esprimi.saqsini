@@ -171,6 +171,44 @@ export const actions = {
     })
   },
 
+  resendToken({ dispatch }, { email }) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post(
+          '/auth/tokens/resendToken',
+          qs.stringify({
+            email,
+            siteUrl: process.env.siteUrlActivate,
+          })
+        )
+        .then(() => {
+          resolve('ok')
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  activateUser({ dispatch }, { email, token }) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .patch(
+          '/auth/tokens/activateUser',
+          qs.stringify({
+            email,
+            token,
+          })
+        )
+        .then(() => {
+          resolve('ok')
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
   cleanAfterLogout({ commit }) {
     commit('setAuthToken', null)
     commit('setAuthAvatar', null)

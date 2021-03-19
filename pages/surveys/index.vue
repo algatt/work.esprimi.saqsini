@@ -64,7 +64,7 @@
         <p class="w-4/12">Name</p>
         <p class="w-4/12">Date</p>
         <p class="w-2/12 text-center">Responses</p>
-        <p class="w-2/12 text-center">Questions</p>
+        <p class="w-2/12 text-center">Design</p>
       </template>
       <template v-slot:titleContentSmall>Surveys</template>
 
@@ -96,8 +96,7 @@
             @click.stop.native
           >
             <button class="btn-table">
-              {{ slotProps.item.questions }}
-              <span class="flex xl:hidden">&nbsp; Questions</span>
+              {{ slotProps.item.questions }} Questions
             </button>
           </nuxt-link>
         </p>

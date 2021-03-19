@@ -1,8 +1,6 @@
 <template>
   <spinner v-if="isLoading"></spinner>
   <div v-else class="flex flex-col mt-2">
-    {{ conditions }}
-
     <div v-for="condition in conditions" :key="condition.groupIndex">
       <div class="flex flex-col border border-gray-100 shadow rounded p-2 my-3">
         <div
@@ -70,42 +68,6 @@
             v-if="conditionQuestion.hasOwnProperty('code')"
             class="flex w-4/12 flex-col"
           >
-            <!--            <button-->
-            <!--              v-for="(option, optionIndex) in getCurrentQuestionOptions(-->
-            <!--                conditionQuestion.code-->
-            <!--              )"-->
-            <!--              :key="-->
-            <!--                condition.groupIndex +-->
-            <!--                ' ' +-->
-            <!--                conditionQuestionIndex +-->
-            <!--                ' ' +-->
-            <!--                optionIndex-->
-            <!--              "-->
-            <!--              class="flex items-center text-left mb-1"-->
-            <!--              @click="-->
-            <!--                addOptionToQuestion(-->
-            <!--                  condition.groupIndex,-->
-            <!--                  conditionQuestionIndex,-->
-            <!--                  option.value-->
-            <!--                )-->
-            <!--              "-->
-            <!--            >-->
-            <!--              <div-->
-            <!--                class="w-6 flex items-center justify-center pr-2"-->
-            <!--                :class="-->
-            <!--                  existsInOption(-->
-            <!--                    condition.groupIndex,-->
-            <!--                    conditionQuestionIndex,-->
-            <!--                    option.value-->
-            <!--                  )-->
-            <!--                    ? 'text-primary'-->
-            <!--                    : 'text-gray-500'-->
-            <!--                "-->
-            <!--              >-->
-            <!--                <i class="far fa-check-circle fa-fw"></i>-->
-            <!--              </div>-->
-            <!--              <div class="flex items-center">{{ option.value }}</div>-->
-            <!--            </button>-->
             <multi-select
               :key="
                 condition.groupIndex +
@@ -156,20 +118,24 @@
         </div>
 
         <div class="flex justify-between items-center">
-          <div class="flex">
+          <div class="flex items-center">
+            New filter by
             <button
               v-if="questions.length !== 0"
-              class="btn-link ml-1 py-2"
+              class="btn-link mx-1 py-2"
               @click="addQuestion(condition.groupIndex)"
             >
-              Add Question
+              Question
             </button>
+            <span v-if="questions.length !== 0 && contactlists.length !== 0"
+              >or</span
+            >
             <button
               v-if="contactlists.length !== 0"
-              class="btn-link ml-1 py-2"
+              class="btn-link mx-1 py-2"
               @click="addFilter(condition.groupIndex)"
             >
-              Add Filter
+              Contact List
             </button>
           </div>
           <button
@@ -191,7 +157,9 @@
     </div>
 
     <div class="flex w-full justify-between items-center">
-      <button class="btn-link ml-1 p-2" @click="addGroup">Add Group</button>
+      <button class="btn-link ml-1 p-2" @click="addGroup">
+        Add Condition Group
+      </button>
     </div>
   </div>
 </template>

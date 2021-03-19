@@ -40,11 +40,11 @@
       :existing-answer="existingAnswer"
       @answers="$emit('answers', $event)"
     ></show-ranking>
-    <div v-if="questionType !== 'SECTION'" class="flex justify-end mt-2 mb-1">
-      <button class="btn-link cursor-pointer" @click="$emit('clearAnswers')">
-        clear
-      </button>
-    </div>
+    <!--    <div v-if="questionType !== 'SECTION'" class="flex justify-end mt-2 mb-1">-->
+    <!--      <button class="btn-link cursor-pointer" @click="$emit('clearAnswers')">-->
+    <!--        clear-->
+    <!--      </button>-->
+    <!--    </div>-->
   </div>
 </template>
 
@@ -89,6 +89,7 @@ export default {
       default: null,
     },
   },
+
   computed: {
     parsedQuestion() {
       return parseQuestionToForm(this.question, this.language)
@@ -96,6 +97,9 @@ export default {
     questionType() {
       return getQuestionType(this.question)
     },
+  },
+  mounted() {
+    this.answer = JSON.parse(JSON.stringify(this.existingAnswer))
   },
 }
 </script>

@@ -76,6 +76,11 @@
         </div>
       </div>
     </div>
+    <div class="flex my-2">
+      <button class="btn-link cursor-pointer" @click="answers = []">
+        clear
+      </button>
+    </div>
   </div>
 </template>
 

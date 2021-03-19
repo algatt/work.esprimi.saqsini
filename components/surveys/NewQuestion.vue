@@ -87,7 +87,7 @@
             ></popup-info
           >
         </div>
-        <input
+        <textarea
           id="inputText"
           v-model="form.text"
           placeholder="Enter question text"
@@ -238,6 +238,9 @@ export default {
   },
   created() {
     this.form = parseQuestionToForm(this.question)
+  },
+  mounted() {
+    this.$v.form.questionNumber.$touch()
   },
   methods: {
     receiveConditions(ev) {
