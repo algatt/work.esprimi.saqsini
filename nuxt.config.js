@@ -94,5 +94,11 @@ export default {
   },
 
   // Build Configuration (p)
-  build: {},
+  build: {
+    loaders: {
+      vue: {
+        prettify: false,
+      },
+    },
+  },
 }

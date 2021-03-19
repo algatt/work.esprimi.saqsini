@@ -82,10 +82,15 @@
         </p>
 
         <p class="w-full xl:w-2/12 flex xl:justify-center">
-          <button class="btn-table">
-            {{ slotProps.item.responses
-            }}<span class="flex xl:hidden">&nbsp; Responses</span>
-          </button>
+          <nuxt-link
+            :to="{
+              name: 'surveys-responses-id',
+              params: { id: slotProps.item.code },
+            }"
+            @click.stop.native
+          >
+            <button class="btn-table">placeholder Responses</button>
+          </nuxt-link>
         </p>
         <p class="w-full xl:w-2/12 flex xl:justify-center">
           <nuxt-link
