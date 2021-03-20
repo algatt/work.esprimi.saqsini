@@ -49,9 +49,11 @@ import {
   parseSurveyToAPI,
   parseQuestionToApi,
 } from '~/helpers/parseSurveyObjects'
+import ButtonIcon from '~/components/layouts/ButtonIcon'
 
 export default {
   name: 'EditObjectModalBottomPart',
+  components: { ButtonIcon },
   props: {
     form: {
       required: true,

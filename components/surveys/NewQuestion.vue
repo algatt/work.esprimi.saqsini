@@ -175,6 +175,8 @@ import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBotto
 import { parseQuestionToForm } from '~/helpers/parseSurveyObjects'
 import QuestionBranching from '~/components/surveys/QuestionBranching'
 import questionMixin from '~/helpers/questionMixin'
+import PopupInfo from '~/components/layouts/PopupInfo'
+import ToggleSwitch from '~/components/layouts/ToggleSwitch'
 
 export default {
   name: 'NewQuestion',
@@ -187,6 +189,8 @@ export default {
     NewQuestionSection,
     NewQuestionLikert,
     NewQuestionMultipleChoice,
+    PopupInfo,
+    ToggleSwitch,
   },
   mixins: [validationMixin, questionMixin],
   data() {

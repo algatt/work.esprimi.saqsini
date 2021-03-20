@@ -64,10 +64,10 @@
 import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
 import PopupInfo from '~/components/layouts/PopupInfo'
-
+import ToggleSwitch from '~/components/layouts/ToggleSwitch'
 export default {
   name: 'NewQuestionDropDown',
-  components: { PopupInfo },
+  components: { PopupInfo, ToggleSwitch },
   mixins: [validationMixin],
   props: {
     form: {

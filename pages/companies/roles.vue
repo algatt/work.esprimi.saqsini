@@ -106,6 +106,10 @@ import NewRole from '~/components/contacts/NewRole'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
 import viewMixin from '~/helpers/viewMixin'
+import TopHeaderBar from '~/components/layouts/TopHeaderBar'
+import ContactBookDropdown from '~/components/contacts/ContactBookDropdown'
+import InfoBox from '~/components/layouts/InfoBox'
+import ButtonIcon from '~/components/layouts/ButtonIcon'
 
 export default {
   name: 'RolesList',
@@ -115,6 +119,10 @@ export default {
     DisplayTableComponent,
     EditObjectModal,
     PopupMenuVue,
+    TopHeaderBar,
+    ContactBookDropdown,
+    InfoBox,
+    ButtonIcon,
   },
   mixins: [viewMixin],
   data() {

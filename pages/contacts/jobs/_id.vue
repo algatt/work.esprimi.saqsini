@@ -151,6 +151,8 @@ import NewJob from '~/components/contacts/NewJob'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
 import viewMixin from '~/helpers/viewMixin'
+import TopHeaderBar from '~/components/layouts/TopHeaderBar'
+import InfoBox from '~/components/layouts/InfoBox'
 export default {
   name: 'JobsList',
   components: {
@@ -159,6 +161,8 @@ export default {
     EditObjectModal,
     NewJob,
     PopupMenuVue,
+    TopHeaderBar,
+    InfoBox,
   },
 
   mixins: [viewMixin],

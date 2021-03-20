@@ -296,6 +296,7 @@ import { QUESTION_TYPES } from '~/helpers/constants'
 import PopupMenu from '~/components/layouts/PopupMenu'
 import Invites from '~/components/contacts/Invites'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
+import ContactBookDropdown from '~/components/contacts/ContactBookDropdown'
 
 export default {
   name: 'QuestionList',
@@ -312,6 +313,7 @@ export default {
     PopupMenu,
     Invites,
     TopHeaderBar,
+    ContactBookDropdown,
   },
   data() {
     return {

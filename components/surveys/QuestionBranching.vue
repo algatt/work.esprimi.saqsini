@@ -166,10 +166,12 @@
 
 <script>
 import { parseQuestionToForm } from '~/helpers/parseSurveyObjects'
+import Spinner from '~/components/layouts/Spinner'
+import MultiSelect from '~/components/layouts/MultiSelect'
 
 export default {
   name: 'QuestionBranching',
-  components: {},
+  components: { Spinner, MultiSelect },
   props: {
     existingConditions: {
       type: Object,

@@ -111,7 +111,7 @@
           :class="hovered === slotProps.item.code ? 'flex' : 'flex xl:hidden'"
           class="items-center"
         >
-          <popup-menu-vue
+          <popup-menu
             :object-code="slotProps.item.code"
             @closeMenu="hovered = null"
           >
@@ -141,7 +141,7 @@
                 >
               </button>
             </template>
-          </popup-menu-vue>
+          </popup-menu>
         </span>
       </template>
     </display-table-component>
@@ -176,16 +176,17 @@ import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
 import SideTreeNav from '~/components/layouts/SideTreeNav'
 import NewCategory from '~/components/surveys/NewCategory'
 import NewSubcategory from '~/components/surveys/NewSubcategory'
-import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 import InfoBox from '~/components/layouts/InfoBox'
 import viewMixin from '~/helpers/viewMixin'
+import ButtonIcon from '~/components/layouts/ButtonIcon'
+import PopupMenu from '~/components/layouts/PopupMenu'
+import NewSurvey from '~/components/surveys/NewSurvey'
 
 export default {
-  name: 'CompaniesList',
+  name: 'SurveyList',
   components: {
-    PopupMenuVue,
     NewSubcategory,
     NewCategory,
     SideTreeNav,
@@ -194,6 +195,9 @@ export default {
     EditObjectModal,
     TopHeaderBar,
     InfoBox,
+    ButtonIcon,
+    PopupMenu,
+    NewSurvey,
   },
   mixins: [viewMixin],
   data() {

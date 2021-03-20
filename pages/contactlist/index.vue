@@ -169,6 +169,8 @@ import Spinner from '~/components/layouts/Spinner'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 import ContactListCollaborators from '~/components/contacts/ContactListCollaborators'
 import viewMixin from '~/helpers/viewMixin'
+import ButtonIcon from '~/components/layouts/ButtonIcon'
+import NewContactList from '~/components/contacts/NewContactList'
 
 export default {
   name: 'ContactLists',
@@ -179,6 +181,8 @@ export default {
     Spinner,
     TopHeaderBar,
     ContactListCollaborators,
+    ButtonIcon,
+    NewContactList,
   },
   mixins: [viewMixin],
   data() {

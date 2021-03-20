@@ -76,9 +76,11 @@
 <script>
 import { validationMixin } from 'vuelidate'
 import { required, email } from 'vuelidate/lib/validators'
+import ButtonIcon from '~/components/layouts/ButtonIcon'
 
 export default {
   name: 'ContactListCollaborators',
+  components: { ButtonIcon },
   mixins: [validationMixin],
   props: {
     item: {

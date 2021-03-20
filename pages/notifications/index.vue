@@ -108,6 +108,7 @@ import ShowNotifications from '~/components/layouts/ShowNotifications'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 import InfoBox from '~/components/layouts/InfoBox'
 import viewMixin from '~/helpers/viewMixin'
+import EditObjectModal from '~/components/layouts/EditObjectModal'
 
 export default {
   name: 'IndexVue',
@@ -117,6 +118,7 @@ export default {
     DisplayTableComponent,
     TopHeaderBar,
     InfoBox,
+    EditObjectModal,
   },
   mixins: [viewMixin],
 

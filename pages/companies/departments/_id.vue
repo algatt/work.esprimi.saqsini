@@ -102,7 +102,9 @@ import NewDepartment from '~/components/contacts/NewDepartment'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
 import viewMixin from '~/helpers/viewMixin'
-
+import TopHeaderBar from '~/components/layouts/TopHeaderBar'
+import InfoBox from '~/components/layouts/InfoBox'
+import ButtonIcon from '~/components/layouts/ButtonIcon'
 export default {
   name: 'ContactsList',
   components: {
@@ -111,6 +113,9 @@ export default {
     DisplayTableComponent,
     EditObjectModal,
     PopupMenuVue,
+    TopHeaderBar,
+    InfoBox,
+    ButtonIcon,
   },
   mixins: [viewMixin],
   computed: {

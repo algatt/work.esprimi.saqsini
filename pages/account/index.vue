@@ -110,9 +110,10 @@
 import { validationMixin } from 'vuelidate'
 import { required, email } from 'vuelidate/lib/validators'
 import Spinner from '~/components/layouts/Spinner'
+import ButtonIcon from '~/components/layouts/ButtonIcon'
 export default {
   name: 'AccountDetails',
-  components: { Spinner },
+  components: { Spinner, ButtonIcon },
   mixins: [validationMixin],
   data() {
     return {

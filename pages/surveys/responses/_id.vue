@@ -1,7 +1,7 @@
 <template>
   <div v-if="!loading" class="w-11/12 mx-auto pt-5">
     <div
-      v-for="response in responses"
+      v-for="response in responses.questions"
       :key="response.question.code"
       class="flex flex-col mb-10"
     >
@@ -28,7 +28,7 @@
           >
 
           <div class="flex flex-col px-3 py-1 w-full mt-3">
-            <label>Contacts' Details</label>
+            <label>Contacts' Details </label>
             <select
               v-model="legend[response.question.code]"
               class="input select w-full"
@@ -68,10 +68,11 @@
 import { GChart } from 'vue-google-charts'
 import viewMixin from '~/helpers/viewMixin'
 import multiSelect from '~/components/layouts/MultiSelect'
+import Spinner from '~/components/layouts/Spinner'
 
 export default {
   name: 'SurveyResponses',
-  components: { GChart, multiSelect },
+  components: { GChart, multiSelect, Spinner },
   mixins: [viewMixin],
   data() {
     return {
@@ -79,35 +80,32 @@ export default {
       selectedValues: [],
       legendContact: [],
       responsesGrouped: {},
+      responses: [],
     }
   },
 
   computed: {
-    responses() {
-      return this.$store.getters.getItems('responses').questions
-    },
+    // responses() {
+    //   return this.$store.getters.getItems('responses').questions
+    // },
   },
-  created() {
-    this.updateData()
-  },
-  mounted() {
-    this.responses.forEach((el) => {
-      this.legend[el.question.code] = null
-      this.selectedValues[el.question.code] = this.getAnswers(el)
-    })
-    this.generateLegendItems()
-    this.generateResponses(null)
+
+  async mounted() {
+    await this.$store.dispatch('setLoading', true)
+    this.$store
+      .dispatch('responses/getResponses', this.$route.params.id)
+      .then((response) => {
+        this.responses = response
+        this.responses.questions.forEach((el) => {
+          this.legend[el.question.code] = null
+          this.selectedValues[el.question.code] = this.getAnswers(el)
+        })
+        this.generateLegendItems()
+        this.generateResponses()
+        this.$store.dispatch('setLoading', false)
+      })
   },
   methods: {
-    async updateData() {
-      await this.$store.dispatch('setLoading', true)
-      await this.$store.dispatch(
-        'responses/getResponses',
-        this.$route.params.id
-      )
-      await this.$store.dispatch('setLoading', false)
-    },
-
     getAnswers(question) {
       let dataValues = []
 
@@ -246,7 +244,7 @@ export default {
     generateResponses(response) {
       if (!response) {
         this.responsesGrouped = {}
-        this.responses.forEach((el) => {
+        this.responses.questions.forEach((el) => {
           if (!this.legend[el.question.code])
             this.responsesGrouped[el.question.code] = this.getDataAll(el)
           else
@@ -267,7 +265,7 @@ export default {
     },
     generateLegendItems() {
       this.legendContact = []
-      this.responses.forEach((el) => {
+      this.responses.questions.forEach((el) => {
         el.responses.forEach((subEl) => {
           if (subEl.contact) {
             Object.keys(subEl.contact).forEach((item) => {

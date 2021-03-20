@@ -141,6 +141,9 @@ import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 import viewMixin from '~/helpers/viewMixin'
+import ContactBookDropdown from '~/components/contacts/ContactBookDropdown'
+import ButtonIcon from '~/components/layouts/ButtonIcon'
+import InfoBox from '~/components/layouts/InfoBox'
 
 export default {
   name: 'ContactsList',
@@ -151,6 +154,9 @@ export default {
     PopupMenuVue,
     Spinner,
     TopHeaderBar,
+    ContactBookDropdown,
+    ButtonIcon,
+    InfoBox,
   },
   mixins: [viewMixin],
   computed: {

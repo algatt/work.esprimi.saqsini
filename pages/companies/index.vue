@@ -178,7 +178,10 @@ import NewSector from '~/components/contacts/NewSector'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
 import viewMixin from '~/helpers/viewMixin'
-
+import TopHeaderBar from '~/components/layouts/TopHeaderBar'
+import ContactBookDropdown from '~/components/contacts/ContactBookDropdown'
+import ButtonIcon from '~/components/layouts/ButtonIcon'
+import InfoBox from '~/components/layouts/InfoBox'
 export default {
   name: 'CompaniesList',
   components: {
@@ -190,6 +193,10 @@ export default {
     DisplayTableComponent,
     EditObjectModal,
     PopupMenuVue,
+    TopHeaderBar,
+    ContactBookDropdown,
+    ButtonIcon,
+    InfoBox,
   },
   mixins: [viewMixin],
   data() {

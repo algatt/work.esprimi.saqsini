@@ -97,9 +97,10 @@
 
 <script>
 import ModalConfirm from '~/components/layouts/ModalConfirm'
+import PopupMenu from '~/components/layouts/PopupMenu'
 export default {
   name: 'TopHeaderBar',
-  components: { ModalConfirm },
+  components: { ModalConfirm, PopupMenu },
   props: {
     which: {
       type: String,

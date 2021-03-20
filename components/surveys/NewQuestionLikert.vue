@@ -70,10 +70,11 @@ import { validationMixin } from 'vuelidate'
 import { required, numeric } from 'vuelidate/lib/validators'
 import questionMixin from '~/helpers/questionMixin'
 import PopupInfo from '~/components/layouts/PopupInfo'
+import ToggleSwitch from '~/components/layouts/ToggleSwitch'
 
 export default {
   name: 'NewQuestionLikert',
-  components: { PopupInfo },
+  components: { PopupInfo, ToggleSwitch },
   mixins: [validationMixin, questionMixin],
   props: {
     form: {

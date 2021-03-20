@@ -58,6 +58,7 @@ import ShowSection from '~/components/surveys/ShowSection'
 import ShowDropdown from '~/components/surveys/ShowDropdown'
 import ShowTypeIn from '~/components/surveys/ShowTypeIn'
 import ShowRanking from '~/components/surveys/ShowRanking'
+import ShowLikert from '~/components/surveys/ShowLikert'
 
 export default {
   name: 'DisplayQuestion',
@@ -67,6 +68,7 @@ export default {
     ShowDropdown,
     ShowSection,
     ShowMultipleChoice,
+    ShowLikert,
   },
   props: {
     question: {
