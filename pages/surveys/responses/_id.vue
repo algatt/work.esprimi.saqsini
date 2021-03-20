@@ -25,56 +25,53 @@
       </div>
     </div>
     <div
-      v-for="response in responses.questions"
-      :key="response.question.code"
+      v-for="question in responses.questions"
+      :key="question.question.code"
       class="flex flex-col mb-10"
     >
       <div class="flex flex-col items-center">
         <div class="flex items-center justify-center">
-          <h5>{{ response.question.name }}</h5>
+          <h5>{{ question.question.name }}</h5>
           <p class="bg-primary text-white rounded px-1.5 py-0.5 ml-2">
-            {{ response.question.number }}
+            {{ question.question.number }}
           </p>
         </div>
       </div>
-      <div
-        :key="response.question.code + ' ' + legend[response.question.code]"
-        class="flex flex-wrap"
-      >
+      <div class="flex flex-wrap">
         <div class="w-full md:w-3/12 flex py-5 items-start flex flex-col">
           <multi-select
             class="w-full"
-            :original-list="getAnswers(response)"
-            :selected-list="selectedValues[response.question.code]"
+            :original-list="getDifferentAnswers(question)"
+            :selected-list="selectedAnswers[question.question.code]"
             display-field="text"
-            @selectedItems="updatedSelectedValues(response, $event)"
+            @selectedItems="updateSelectedAnswers(question, $event)"
             ><template v-slot:title>Choose Answers</template></multi-select
           >
 
           <div class="flex flex-col px-3 py-1 w-full mt-3">
             <label>Contacts' Details </label>
             <select
-              v-model="legend[response.question.code]"
+              v-model="selectedDemographics[question.question.code]"
               class="input select w-full"
-              @change="updateLegend(response)"
+              @change="updateDemographics(question)"
             >
-              <option :value="null">all</option>
+              <option :value="null">All</option>
               <option
-                v-for="(option, index) in legendContact"
+                v-for="(option, index) in getDifferentDemographics(question)"
                 :key="index"
-                :value="option"
+                :value="option.code"
               >
-                {{ option }}
+                {{ option.text }}
               </option>
             </select>
           </div>
         </div>
         <div class="w-full flex justify-center items-center md:w-9/12">
           <g-chart
-            v-if="responsesGrouped[response.question.code].length > 1"
+            v-if="aggregateData[question.question.code].length > 1"
             type="ColumnChart"
-            :data="responsesGrouped[response.question.code]"
-            :options="getOptions(response.question)"
+            :data="aggregateData[question.question.code]"
+            :options="getOptions(question.question)"
             class="w-full"
             style="min-height: 400px"
           ></g-chart>
@@ -89,29 +86,22 @@
 </template>
 
 <script>
-import { GChart } from 'vue-google-charts'
+// import { GChart } from 'vue-google-charts'
 import multiSelect from '~/components/layouts/MultiSelect'
 import Spinner from '~/components/layouts/Spinner'
 
 export default {
   name: 'SurveyResponses',
-  components: { GChart, multiSelect, Spinner },
+  components: { Spinner, multiSelect },
 
   data() {
     return {
-      legend: {},
-      selectedValues: [],
-      legendContact: [],
-      responsesGrouped: {},
       responses: [],
       loading: true,
+      selectedAnswers: [],
+      selectedDemographics: [],
+      aggregateData: [],
     }
-  },
-
-  computed: {
-    // responses() {
-    //   return this.$store.getters.getItems('responses').questions
-    // },
   },
 
   mounted() {
@@ -121,16 +111,138 @@ export default {
       .then((response) => {
         this.responses = response
         this.responses.questions.forEach((el) => {
-          this.legend[el.question.code] = null
-          this.selectedValues[el.question.code] = this.getAnswers(el)
+          this.selectedAnswers[el.question.code] = this.getDifferentAnswers(el)
+          this.selectedDemographics[el.question.code] = null
+          this.aggregateData[el.question.code] = this.getAggregateData(el)
         })
-        this.generateLegendItems()
-        this.generateResponses()
+
         this.loading = false
       })
       .finally(() => {})
   },
   methods: {
+    getDifferentAnswers(question) {
+      let data = []
+      data.push(
+        ...question.question.availableOptions.map((el) => {
+          return { text: el.text, code: el.value }
+        })
+      )
+      question.responses.forEach((eachResponse) => {
+        eachResponse.chosenOption.forEach((option) => {
+          if (
+            !data
+              .map((el) => {
+                return el.code
+              })
+              .includes(option)
+          )
+            data.push({ text: option, code: option })
+        })
+      })
+
+      data = data.sort((a, b) => {
+        return a.text > b.text ? 1 : -1
+      })
+
+      return data
+    },
+    getDifferentDemographics(question) {
+      let data = []
+
+      question.responses.forEach((el) => {
+        data.push(...Object.keys(el.contact))
+      })
+
+      const setValues = new Set(data)
+      data = []
+
+      setValues.forEach((el) => {
+        data.push({
+          text: `${el.substring(0, 1).toUpperCase()}${el.substring(1, el.len)}`,
+          code: el,
+        })
+      })
+
+      data = data.sort((a, b) => {
+        return a.text > b.text ? 1 : -1
+      })
+
+      return data
+    },
+
+    updateSelectedAnswers(question, newList) {
+      this.selectedAnswers[question.question.code] = newList
+      this.aggregateData[question.question.code] = this.getAggregateData(
+        question
+      )
+      this.$forceUpdate()
+    },
+
+    updateDemographics(question) {
+      this.aggregateData[question.question.code] = this.getAggregateData(
+        question
+      )
+      this.$forceUpdate()
+    },
+
+    getAggregateData(question) {
+      const data = []
+
+      const answers = this.selectedAnswers[question.question.code].map((el) => {
+        return el.code
+      })
+      const demographic = this.selectedDemographics[question.question.code]
+
+      if (!demographic) {
+        data.push(['Answer', 'Total'])
+        answers.forEach((el) => {
+          data.push([el, 0])
+        })
+
+        question.responses.forEach((response) => {
+          response.chosenOption.forEach((option) => {
+            const foundObj = data.find((el) => {
+              return el[0] === option
+            })
+            if (foundObj) foundObj[1] += 1
+          })
+        })
+      } else {
+        data.push([demographic, ...answers])
+
+        let availableDemographics = new Set()
+        const initialValues = new Array(answers.length).fill(0)
+        question.responses.forEach((response) => {
+          if (response.contact[demographic])
+            availableDemographics.add(response.contact[demographic])
+        })
+
+        availableDemographics = Array.from(availableDemographics).sort(
+          (a, b) => {
+            return a > b ? 1 : -1
+          }
+        )
+
+        availableDemographics.forEach((el) => {
+          data.push([el, ...initialValues])
+        })
+
+        question.responses.forEach((response) => {
+          if (response.contact[demographic]) {
+            response.chosenOption.forEach((option) => {
+              const foundObj = data.find((el) => {
+                return el[0] === response.contact[demographic]
+              })
+              foundObj[data[0].indexOf(option)] += 1
+            })
+          }
+        })
+      }
+
+      return data
+    },
+
     getResponseRate() {
       const data = [['Type', 'Total']]
       data.push(['Replied', this.responses.survey.totalRespondents])
@@ -161,121 +273,7 @@ export default {
       data.push(...tempData)
       return data
     },
-    getAnswers(question) {
-      let dataValues = []
 
-      if (question.question.availableOptions) {
-        question.question.availableOptions.forEach((el) => {
-          dataValues.push({ code: String(el.value), text: String(el.text) })
-        })
-      }
-
-      question.responses.forEach((response) => {
-        response.chosenOption.forEach((option) => {
-          const existingOnes = dataValues.map((el) => {
-            return el.code
-          })
-
-          if (!existingOnes.includes(String(option)))
-            dataValues.push({ code: String(option), text: String(option) })
-        })
-      })
-
-      dataValues = dataValues.sort((a, b) => {
-        return a > b ? 1 : -1
-      })
-
-      return dataValues
-    },
-
-    updatedSelectedValues(response, newSelection) {
-      this.selectedValues[response.question.code] = newSelection
-      this.responsesGrouped[response.question.code] = !this.legend[
-        response.question.code
-      ]
-        ? this.getDataAll(response)
-        : this.getDataSplit(response, this.legend[response.question.code])
-      this.$forceUpdate()
-    },
-
-    getDataAll(question) {
-      const data = {}
-      question.question.availableOptions.forEach((el) => {
-        data[el.value] = { text: el.text, count: 0 }
-      })
-      question.responses.forEach((el) => {
-        el.chosenOption.forEach((answer) => {
-          data[answer].count += 1
-        })
-      })
-      const dataForChart = [['Response', 'Count']]
-      Object.keys(data).forEach((key) => {
-        const chosenItems = this.selectedValues[question.question.code].map(
-          (el) => {
-            return el.code
-          }
-        )
-        if (chosenItems.includes(key)) dataForChart.push([key, data[key].count])
-      })
-
-      return dataForChart
-    },
-    getDataSplit(question, fieldName) {
-      const data = []
-      let options = []
-
-      question.responses.forEach((el) => {
-        if (!options.includes(String(el.contact[fieldName])))
-          options.push(String(el.contact[fieldName]))
-      })
-
-      options = options.sort((a, b) => {
-        return a > b ? -1 : 1
-      })
-
-      data.push([fieldName, ...options])
-
-      const differentValues = {}
-      question.responses.forEach((el) => {
-        const whichColumn = String(el.contact[fieldName])
-        el.chosenOption.forEach((subEl) => {
-          if (!differentValues[subEl])
-            differentValues[subEl] = Array(options.length).fill(0)
-          differentValues[subEl][options.indexOf(whichColumn)] += 1
-        })
-      })
-
-      let dataValues = []
-
-      const chosenItems = this.selectedValues[question.question.code].map(
-        (el) => {
-          return el.code
-        }
-      )
-
-      Object.keys(differentValues).forEach((el) => {
-        if (chosenItems.includes(el))
-          dataValues.push([el, ...differentValues[el]])
-      })
-
-      if (question.question.availableOptions) {
-        question.question.availableOptions.forEach((el) => {
-          if (
-            !Object.keys(differentValues).includes(String(el.value)) &&
-            chosenItems.includes(el.value)
-          )
-            dataValues.push([el.value, ...Array(options.length).fill(0)])
-        })
-      }
-
-      dataValues = dataValues.sort((a, b) => {
-        return a[0] > b[0] ? 1 : -1
-      })
-
-      data.push(...dataValues)
-
-      return data
-    },
     getOptions(question) {
       return {
         title: question.text,
@@ -289,53 +287,8 @@ export default {
           viewWindow: { min: 0 },
           gridlines: { color: 'transparent' },
         },
-        isStacked: !!this.legend[question.code],
+        isStacked: !!this.selectedDemographics[question.code],
       }
-    },
-    updateLegend(response) {
-      this.generateResponses(response)
-      this.$forceUpdate()
-    },
-    generateResponses(response) {
-      if (!response) {
-        this.responsesGrouped = {}
-        this.responses.questions.forEach((el) => {
-          if (!this.legend[el.question.code])
-            this.responsesGrouped[el.question.code] = this.getDataAll(el)
-          else
-            this.responsesGrouped[el.question.code] = this.getDataSplit(
-              el,
-              this.legend[el.question.code]
-            )
-        })
-      } else if (!this.legend[response.question.code])
-        this.responsesGrouped[response.question.code] = this.getDataAll(
-          response
-        )
-      else
-        this.responsesGrouped[response.question.code] = this.getDataSplit(
-          response,
-          this.legend[response.question.code]
-        )
-    },
-    generateLegendItems() {
-      this.legendContact = []
-      this.responses.questions.forEach((el) => {
-        el.responses.forEach((subEl) => {
-          if (subEl.contact) {
-            Object.keys(subEl.contact).forEach((item) => {
-              if (!this.legendContact.includes(item))
-                this.legendContact.push(item)
-            })
-          }
-          if (subEl.contactList) {
-            Object.keys(subEl.contactList).forEach((item) => {
-              if (!this.legendContact.includes(item))
-                this.legendContact.push(item)
-            })
-          }
-        })
-      })
     },
   },
 }

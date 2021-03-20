@@ -75,7 +75,7 @@ export const actions = {
                       department: 'Accounts',
                       company: 'Actavis',
                     },
-                    chosenOption: ['Orange'],
+                    chosenOption: ['Lettuce'],
                   },
                   {
                     contact: {
@@ -97,9 +97,9 @@ export const actions = {
                   type: 'LIKERT_SCALE',
                   number: 2,
                   availableOptions: [
-                    { text: 'I like it a lot', value: 3 },
-                    { text: 'Indifferent', value: 2 },
-                    { text: 'I do not like it', value: 1 },
+                    { text: 'I like it a lot', value: '3' },
+                    { text: 'Indifferent', value: '2' },
+                    { text: 'I do not like it', value: '1 ' },
                   ],
                 },
                 responses: [
@@ -111,7 +111,7 @@ export const actions = {
                       department: 'Marketing',
                       company: 'Actavis',
                     },
-                    chosenOption: [3],
+                    chosenOption: ['3'],
                   },
                   {
                     contact: {
@@ -121,14 +121,14 @@ export const actions = {
                       department: 'Accounts',
                       company: 'Actavis',
                     },
-                    chosenOption: [2],
+                    chosenOption: ['2'],
                   },
                   {
                     contact: {
                       age: 22,
                       gender: 'Male',
                     },
-                    chosenOption: [2],
+                    chosenOption: ['2'],
                   },
                   {
                     contact: {
@@ -138,7 +138,7 @@ export const actions = {
                       department: 'Accounts',
                       company: 'Actavis',
                     },
-                    chosenOption: [2],
+                    chosenOption: ['2'],
                   },
                   {
                     contact: {
@@ -148,7 +148,7 @@ export const actions = {
                       department: 'Accounts',
                       company: 'Baxter',
                     },
-                    chosenOption: [3],
+                    chosenOption: ['3'],
                   },
                 ],
               },
