@@ -1,5 +1,29 @@
 <template>
   <div v-if="!loading" class="w-11/12 mx-auto pt-5">
+    <div class="flex flex-col">
+      <h3 class="mb-10">
+        {{ responses.survey.name }}
+      </h3>
+      <div class="flex w-full flex-wrap">
+        <div class="w-full md:w-4/12 flex flex-col items-center justify-center">
+          <h6>Response Rate</h6>
+          <g-chart
+            type="PieChart"
+            :data="getResponseRate()"
+            style="min-height: 400px"
+          ></g-chart>
+        </div>
+        <div class="w-full md:w-8/12 flex flex-col items-center justify-center">
+          <h6>Responses By Date</h6>
+          <g-chart
+            type="Calendar"
+            :settings="{ packages: ['calendar'] }"
+            :data="getResponseRateByDate()"
+            style="min-height: 400px; width: 100%"
+          ></g-chart>
+        </div>
+      </div>
+    </div>
     <div
       v-for="response in responses.questions"
       :key="response.question.code"
@@ -66,14 +90,13 @@
 
 <script>
 import { GChart } from 'vue-google-charts'
-import viewMixin from '~/helpers/viewMixin'
 import multiSelect from '~/components/layouts/MultiSelect'
 import Spinner from '~/components/layouts/Spinner'
 
 export default {
   name: 'SurveyResponses',
   components: { GChart, multiSelect, Spinner },
-  mixins: [viewMixin],
+
   data() {
     return {
       legend: {},
@@ -81,6 +104,7 @@ export default {
       legendContact: [],
       responsesGrouped: {},
       responses: [],
+      loading: true,
     }
   },
 
@@ -90,8 +114,8 @@ export default {
     // },
   },
 
-  async mounted() {
-    await this.$store.dispatch('setLoading', true)
+  mounted() {
+    this.loading = true
     this.$store
       .dispatch('responses/getResponses', this.$route.params.id)
       .then((response) => {
@@ -102,10 +126,41 @@ export default {
         })
         this.generateLegendItems()
         this.generateResponses()
-        this.$store.dispatch('setLoading', false)
+        this.loading = false
       })
+      .finally(() => {})
   },
   methods: {
+    getResponseRate() {
+      const data = [['Type', 'Total']]
+      data.push(['Replied', this.responses.survey.totalRespondents])
+      data.push([
+        'Did Not Reply',
+        this.responses.survey.totalInvites -
+          this.responses.survey.totalRespondents,
+      ])
+      return data
+    },
+    getResponseRateByDate() {
+      const data = [['Date', 'Count']]
+      const dateCounts = {}
+      this.responses.survey.submittedTime.forEach((el) => {
+        if (!dateCounts[el]) dateCounts[el] = 0
+        dateCounts[el] += 1
+      })
+      let tempData = []
+      Object.keys(dateCounts).forEach((el) => {
+        tempData.push([
+          new Date(el.substring(0, 4), el.substring(4, 6), el.substring(6, 8)),
+          dateCounts[el],
+        ])
+      })
+      tempData = tempData.sort((a, b) => {
+        return a[0] > b[0] ? 1 : -1
+      })
+      data.push(...tempData)
+      return data
+    },
     getAnswers(question) {
       let dataValues = []
 
