@@ -42,6 +42,7 @@ export const actions = {
                 responses: [
                   {
                     contact: {
+                      code: 1,
                       age: 32,
                       gender: 'Female',
                       role: 'CEO',
@@ -52,6 +53,7 @@ export const actions = {
                   },
                   {
                     contact: {
+                      code: 2,
                       age: 42,
                       gender: 'Male',
                       role: 'Accountant',
@@ -62,6 +64,7 @@ export const actions = {
                   },
                   {
                     contact: {
+                      code: 3,
                       age: 22,
                       gender: 'Male',
                     },
@@ -69,6 +72,7 @@ export const actions = {
                   },
                   {
                     contact: {
+                      code: 4,
                       age: 45,
                       gender: 'Female',
                       role: 'Accountant',
@@ -79,13 +83,14 @@ export const actions = {
                   },
                   {
                     contact: {
+                      code: 5,
                       age: 32,
                       gender: 'Male',
                       role: 'Accountant',
                       department: 'Accounts',
                       company: 'Baxter',
                     },
-                    chosenOption: ['Apple'],
+                    chosenOption: ['Apple', 'Orange'],
                   },
                 ],
               },
@@ -105,6 +110,7 @@ export const actions = {
                 responses: [
                   {
                     contact: {
+                      code: 1,
                       age: 32,
                       gender: 'Female',
                       role: 'CEO',
@@ -115,6 +121,7 @@ export const actions = {
                   },
                   {
                     contact: {
+                      code: 2,
                       age: 42,
                       gender: 'Male',
                       role: 'Accountant',
@@ -125,6 +132,7 @@ export const actions = {
                   },
                   {
                     contact: {
+                      code: 3,
                       age: 22,
                       gender: 'Male',
                     },
@@ -132,6 +140,7 @@ export const actions = {
                   },
                   {
                     contact: {
+                      code: 4,
                       age: 45,
                       gender: 'Female',
                       role: 'Accountant',
@@ -142,6 +151,7 @@ export const actions = {
                   },
                   {
                     contact: {
+                      code: 5,
                       age: 32,
                       gender: 'Male',
                       role: 'Accountant',
