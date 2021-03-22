@@ -1,143 +1,194 @@
 <template>
-  <div v-if="!loading" class="w-11/12 mx-auto pt-5">
-    <div class="flex flex-col mb-10">
-      <h2 class="mb-5 text-center">
-        {{ responses.survey.name }}
-      </h2>
-      <div class="flex w-full flex-wrap">
-        <div class="w-full md:w-4/12 flex flex-col items-center justify-center">
-          <h6>Response Rate</h6>
-          <g-chart
-            type="PieChart"
-            :data="getResponseRate()"
-            style="min-height: 400px"
-          ></g-chart>
-        </div>
-        <div class="w-full md:w-8/12 flex flex-col items-center justify-center">
-          <h6>Responses By Date</h6>
-          <g-chart
-            type="Calendar"
-            :settings="{ packages: ['calendar'] }"
-            :data="getResponseRateByDate()"
-            style="min-height: 400px; width: 100%"
-          ></g-chart>
-        </div>
-      </div>
-    </div>
-    <div class="flex flex-col mb-10">
-      <h5 class="mb-5 text-center">Cross Tab Evaluation</h5>
-      <div class="flex flex-wrap w-full">
-        <div class="flex flex-col w-full md:w-3/12">
-          <p class="font-semibold mb-5">Questions</p>
+  <div v-if="!loading" class="w-full flex flex-col">
+    <!--    <div class="flex flex-col mb-10">-->
+    <!--      <h2 class="mb-5 text-center">-->
+    <!--        {{ responses.survey.name }}-->
+    <!--      </h2>-->
+    <!--      <div class="flex w-full flex-wrap">-->
+    <!--        <div class="w-full md:w-4/12 flex flex-col items-center justify-center">-->
+    <!--          <h6>Response Rate</h6>-->
+    <!--          <g-chart-->
+    <!--            type="PieChart"-->
+    <!--            :data="getResponseRate()"-->
+    <!--            style="min-height: 400px"-->
+    <!--          ></g-chart>-->
+    <!--        </div>-->
+    <!--        <div class="w-full md:w-8/12 flex flex-col items-center justify-center">-->
+    <!--          <h6>Responses By Date</h6>-->
+    <!--          <g-chart-->
+    <!--            type="Calendar"-->
+    <!--            :settings="{ packages: ['calendar'] }"-->
+    <!--            :data="getResponseRateByDate()"-->
+    <!--            style="min-height: 400px; width: 100%"-->
+    <!--          ></g-chart>-->
+    <!--        </div>-->
+    <!--      </div>-->
+    <!--    </div>-->
+    <!--    <div class="flex flex-col mb-10">-->
+    <!--      <h5 class="mb-5 text-center">Cross Tab Evaluation</h5>-->
+    <!--      <div class="flex flex-wrap w-full">-->
+    <!--        <div class="flex flex-col w-full md:w-3/12">-->
+    <!--          <p class="font-semibold mb-5">Questions</p>-->
 
-          <select v-model="crossTabX" class="input select w-full mb-5">
-            <option :value="null">Choose question for X axis</option>
-            <option
-              v-for="question in responses.questions"
-              :key="question.code"
-              :value="question"
-            >
-              {{ question.text }}
-            </option>
-          </select>
+    <!--          <select v-model="crossTabX" class="input select w-full mb-5">-->
+    <!--            <option :value="null">Choose question for X axis</option>-->
+    <!--            <option-->
+    <!--              v-for="question in responses.questions"-->
+    <!--              :key="question.code"-->
+    <!--              :value="question"-->
+    <!--            >-->
+    <!--              {{ question.text }}-->
+    <!--            </option>-->
+    <!--          </select>-->
 
-          <select v-model="crossTabY" class="input select w-full mb-5">
-            <option :value="null">Choose question for Y axis</option>
-            <option
-              v-for="question in responses.questions"
-              :key="question.code"
-              :value="question"
-            >
-              {{ question.text }}
-            </option>
-          </select>
-        </div>
-        <div class="flex w-full md:w-9/12">
-          <div v-if="!crossTabX || !crossTabY">
-            <p>To display a cross tab you need to select two questions.</p>
-          </div>
-          <div v-else-if="crossTabX.code === crossTabY.code">
-            <p>You need to select different questions</p>
-          </div>
-          <div v-else>
-            <CrossTable :data="getCrossTabData()"></CrossTable>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="flex flex-col mb-10">
-      <h5 class="mb-5 text-center">Question Visualisation</h5>
-      <div
-        v-for="question in responses.questions"
-        :key="question.code"
-        class="flex flex-col mb-10"
-      >
-        <div class="flex flex-col items-center">
-          <div class="flex items-center justify-center">
-            <h6>{{ question.name }}</h6>
-            <p class="bg-primary text-white rounded px-1.5 py-0.5 ml-2">
-              {{ question.number }}
-            </p>
-          </div>
-        </div>
-        <div class="flex flex-wrap">
-          <div class="w-full md:w-3/12 flex py-5 items-start flex flex-col">
-            <multi-select
-              class="w-full"
-              :original-list="getDifferentAnswers(question)"
-              :selected-list="selectedAnswers[question.code]"
-              display-field="text"
-              @selectedItems="updateSelectedAnswers(question, $event)"
-              ><template v-slot:title>Choose Answers</template></multi-select
-            >
+    <!--          <select v-model="crossTabY" class="input select w-full mb-5">-->
+    <!--            <option :value="null">Choose question for Y axis</option>-->
+    <!--            <option-->
+    <!--              v-for="question in responses.questions"-->
+    <!--              :key="question.code"-->
+    <!--              :value="question"-->
+    <!--            >-->
+    <!--              {{ question.text }}-->
+    <!--            </option>-->
+    <!--          </select>-->
+    <!--        </div>-->
+    <!--        <div class="flex w-full md:w-9/12">-->
+    <!--          <div v-if="!crossTabX || !crossTabY">-->
+    <!--            <p>To display a cross tab you need to select two questions.</p>-->
+    <!--          </div>-->
+    <!--          <div v-else-if="crossTabX.code === crossTabY.code">-->
+    <!--            <p>You need to select different questions</p>-->
+    <!--          </div>-->
+    <!--          <div v-else>-->
+    <!--            <CrossTable :data="getCrossTabData()"></CrossTable>-->
+    <!--          </div>-->
+    <!--        </div>-->
+    <!--      </div>-->
+    <!--    </div>-->
+    <!--    <div class="flex flex-col mb-10">-->
+    <!--      <h5 class="mb-5 text-center">Question Visualisation</h5>-->
+    <!--      <div-->
+    <!--        v-for="question in responses.questions"-->
+    <!--        :key="question.code"-->
+    <!--        class="flex flex-col mb-10"-->
+    <!--      >-->
+    <!--        <div class="flex flex-col items-center">-->
+    <!--          <div class="flex items-center justify-center">-->
+    <!--            <h6>{{ question.name }}</h6>-->
+    <!--            <p class="bg-primary text-white rounded px-1.5 py-0.5 ml-2">-->
+    <!--              {{ question.number }}-->
+    <!--            </p>-->
+    <!--          </div>-->
+    <!--        </div>-->
+    <!--        <div class="flex flex-wrap">-->
+    <!--          <div class="w-full md:w-3/12 flex py-5 items-start flex flex-col">-->
+    <!--            <multi-select-->
+    <!--              class="w-full"-->
+    <!--              :original-list="getDifferentAnswers(question)"-->
+    <!--              :selected-list="selectedAnswers[question.code]"-->
+    <!--              display-field="text"-->
+    <!--              @selectedItems="updateSelectedAnswers(question, $event)"-->
+    <!--              ><template v-slot:title>Choose Answers</template></multi-select-->
+    <!--            >-->
 
-            <div class="flex flex-col px-3 py-1 w-full mt-3">
-              <label>Contacts' Details </label>
-              <select
-                v-model="selectedDemographics[question.code]"
-                class="input select w-full"
-                @change="updateDemographics(question)"
-              >
-                <option :value="null">All</option>
-                <option
-                  v-for="(option, index) in getDifferentDemographics(question)"
-                  :key="index"
-                  :value="option.code"
-                >
-                  {{ option.text }}
-                </option>
-              </select>
-            </div>
-          </div>
-          <div class="w-full flex justify-center items-center md:w-9/12">
-            <g-chart
-              v-if="aggregateData[question.code].length > 1"
-              type="ColumnChart"
-              :data="aggregateData[question.code]"
-              :options="getOptions(question)"
-              class="w-full"
-              style="min-height: 400px"
-            ></g-chart>
-            <div v-else class="p-5">
-              <p>Choose at least one value</p>
-            </div>
-          </div>
-        </div>
-      </div>
+    <!--            <div class="flex flex-col px-3 py-1 w-full mt-3">-->
+    <!--              <label>Contacts' Details </label>-->
+    <!--              <select-->
+    <!--                v-model="selectedDemographics[question.code]"-->
+    <!--                class="input select w-full"-->
+    <!--                @change="updateDemographics(question)"-->
+    <!--              >-->
+    <!--                <option :value="null">All</option>-->
+    <!--                <option-->
+    <!--                  v-for="(option, index) in getDifferentDemographics(question)"-->
+    <!--                  :key="index"-->
+    <!--                  :value="option.code"-->
+    <!--                >-->
+    <!--                  {{ option.text }}-->
+    <!--                </option>-->
+    <!--              </select>-->
+    <!--            </div>-->
+    <!--          </div>-->
+    <!--          <div class="w-full flex justify-center items-center md:w-9/12">-->
+    <!--            <g-chart-->
+    <!--              v-if="aggregateData[question.code].length > 1"-->
+    <!--              type="ColumnChart"-->
+    <!--              :data="aggregateData[question.code]"-->
+    <!--              :options="getOptions(question)"-->
+    <!--              class="w-full"-->
+    <!--              style="min-height: 400px"-->
+    <!--            ></g-chart>-->
+    <!--            <div v-else class="p-5">-->
+    <!--              <p>Choose at least one value</p>-->
+    <!--            </div>-->
+    <!--          </div>-->
+    <!--        </div>-->
+    <!--      </div>-->
+    <!--    </div>-->
+    <top-header-bar :hide-menu="true" which="">
+      <template v-slot:title>{{ responses.survey.name }}</template>
+      <template v-slot:extraButtons>
+        <button
+          class="items-center md:flex md:justify-center font-semibold hover:text-primary transition duration-300 focus:outline-none py-3 mr-6 border-b-2 border-transparent"
+          :class="
+            selectedView === 'overall'
+              ? 'text-primary border-b-2 border-primary'
+              : 'text-gray-500'
+          "
+          @click="selectedView = 'overall'"
+        >
+          <i class="xl:pr-2 fas fa-poll fa-fw" title="Overall"></i>
+          <span class="hidden md:block">Overall</span>
+        </button>
+        <button
+          class="items-center md:flex md:justify-center font-semibold hover:text-primary transition duration-300 focus:outline-none py-3 mr-6 border-b-2 border-transparent"
+          :class="
+            selectedView === 'questions'
+              ? 'text-primary border-b-2 border-primary'
+              : 'text-gray-500'
+          "
+          @click="selectedView = 'questions'"
+        >
+          <i class="xl:pr-2 fas fa-question-circle fa-fw" title="Questions"></i>
+          <span class="hidden md:block">Questions</span>
+        </button>
+        <button
+          class="items-center md:flex md:justify-center font-semibold hover:text-primary transition duration-300 focus:outline-none py-3 mr-6 border-b-2 border-transparent"
+          :class="
+            selectedView === 'cross'
+              ? 'text-primary border-b-2 border-primary'
+              : 'text-gray-500'
+          "
+          @click="selectedView = 'cross'"
+        >
+          <i class="xl:pr-2 fas fa-table fa-fw" title="Crosstab"></i>
+          <span class="hidden md:block">Crosstab</span>
+        </button>
+      </template>
+    </top-header-bar>
+    <div v-if="selectedView === 'overall'">
+      <survey-details :details="dataForSurveyOverall"></survey-details>
     </div>
+    <div v-else-if="selected - view === 'questions'">
+      <question-details></question-details>
+    </div>
+    <div v-else-if="selectedView === 'cross'">table</div>
   </div>
   <spinner v-else></spinner>
 </template>
 
 <script>
-import { GChart } from 'vue-google-charts'
-import MultiSelect from '~/components/layouts/MultiSelect'
+// import { GChart } from 'vue-google-charts'
+// import MultiSelect from '~/components/layouts/MultiSelect'
 import Spinner from '~/components/layouts/Spinner'
-import CrossTable from '~/components/charts/CrossTable'
+import TopHeaderBar from '~/components/layouts/TopHeaderBar'
+import SurveyDetails from '~/components/charts/SurveyDetails'
+import QuestionDetails from '~/components/charts/QuestionDetails'
+// import CrossTable from '~/components/charts/CrossTable'
 
 export default {
   name: 'SurveyResponses',
-  components: { Spinner, CrossTable, MultiSelect, GChart },
+  components: { QuestionDetails, SurveyDetails, TopHeaderBar, Spinner },
 
   data() {
     return {
@@ -148,7 +199,17 @@ export default {
       aggregateData: [],
       crossTabX: null,
       crossTabY: null,
+      selectedView: 'overall',
     }
+  },
+  computed: {
+    dataForSurveyOverall() {
+      const data = {}
+      data.survey = this.responses.survey
+      data.invitees = this.responses.invitees
+      data.sessions = this.responses.sessions
+      return data
+    },
   },
 
   mounted() {
