@@ -34,10 +34,10 @@
             <option :value="null">Choose question for X axis</option>
             <option
               v-for="question in responses.questions"
-              :key="question.question.code"
+              :key="question.code"
               :value="question"
             >
-              {{ question.question.text }}
+              {{ question.text }}
             </option>
           </select>
 
@@ -45,10 +45,10 @@
             <option :value="null">Choose question for Y axis</option>
             <option
               v-for="question in responses.questions"
-              :key="question.question.code"
+              :key="question.code"
               :value="question"
             >
-              {{ question.question.text }}
+              {{ question.text }}
             </option>
           </select>
         </div>
@@ -56,7 +56,7 @@
           <div v-if="!crossTabX || !crossTabY">
             <p>To display a cross tab you need to select two questions.</p>
           </div>
-          <div v-else-if="crossTabX.question.code === crossTabY.question.code">
+          <div v-else-if="crossTabX.code === crossTabY.code">
             <p>You need to select different questions</p>
           </div>
           <div v-else>
@@ -69,14 +69,14 @@
       <h5 class="mb-5 text-center">Question Visualisation</h5>
       <div
         v-for="question in responses.questions"
-        :key="question.question.code"
+        :key="question.code"
         class="flex flex-col mb-10"
       >
         <div class="flex flex-col items-center">
           <div class="flex items-center justify-center">
-            <h6>{{ question.question.name }}</h6>
+            <h6>{{ question.name }}</h6>
             <p class="bg-primary text-white rounded px-1.5 py-0.5 ml-2">
-              {{ question.question.number }}
+              {{ question.number }}
             </p>
           </div>
         </div>
@@ -85,7 +85,7 @@
             <multi-select
               class="w-full"
               :original-list="getDifferentAnswers(question)"
-              :selected-list="selectedAnswers[question.question.code]"
+              :selected-list="selectedAnswers[question.code]"
               display-field="text"
               @selectedItems="updateSelectedAnswers(question, $event)"
               ><template v-slot:title>Choose Answers</template></multi-select
@@ -94,7 +94,7 @@
             <div class="flex flex-col px-3 py-1 w-full mt-3">
               <label>Contacts' Details </label>
               <select
-                v-model="selectedDemographics[question.question.code]"
+                v-model="selectedDemographics[question.code]"
                 class="input select w-full"
                 @change="updateDemographics(question)"
               >
@@ -111,10 +111,10 @@
           </div>
           <div class="w-full flex justify-center items-center md:w-9/12">
             <g-chart
-              v-if="aggregateData[question.question.code].length > 1"
+              v-if="aggregateData[question.code].length > 1"
               type="ColumnChart"
-              :data="aggregateData[question.question.code]"
-              :options="getOptions(question.question)"
+              :data="aggregateData[question.code]"
+              :options="getOptions(question)"
               class="w-full"
               style="min-height: 400px"
             ></g-chart>
@@ -130,14 +130,14 @@
 </template>
 
 <script>
-// import { GChart } from 'vue-google-charts'
-import multiSelect from '~/components/layouts/MultiSelect'
+import { GChart } from 'vue-google-charts'
+import MultiSelect from '~/components/layouts/MultiSelect'
 import Spinner from '~/components/layouts/Spinner'
 import CrossTable from '~/components/charts/CrossTable'
 
 export default {
   name: 'SurveyResponses',
-  components: { CrossTable, Spinner, multiSelect },
+  components: { Spinner, CrossTable, MultiSelect, GChart },
 
   data() {
     return {
@@ -158,9 +158,9 @@ export default {
       .then((response) => {
         this.responses = response
         this.responses.questions.forEach((el) => {
-          this.selectedAnswers[el.question.code] = this.getDifferentAnswers(el)
-          this.selectedDemographics[el.question.code] = null
-          this.aggregateData[el.question.code] = this.getAggregateData(el)
+          this.selectedAnswers[el.code] = this.getDifferentAnswers(el)
+          this.selectedDemographics[el.code] = null
+          this.aggregateData[el.code] = this.getAggregateData(el)
         })
 
         this.loading = false
@@ -171,12 +171,17 @@ export default {
     getDifferentAnswers(question) {
       let data = []
       data.push(
-        ...question.question.availableOptions.map((el) => {
+        ...question.availableOptions.map((el) => {
           return { text: el.text, code: el.value }
         })
       )
-      question.responses.forEach((eachResponse) => {
-        eachResponse.chosenOption.forEach((option) => {
+
+      const responses = this.responses.responses.filter((el) => {
+        return el.question === question.code
+      })
+
+      responses.forEach((eachResponse) => {
+        eachResponse.value.forEach((option) => {
           if (
             !data
               .map((el) => {
@@ -197,18 +202,34 @@ export default {
     getDifferentDemographics(question) {
       let data = []
 
-      question.responses.forEach((el) => {
-        data.push(...Object.keys(el.contact))
+      const actuallyResponded = this.responses.responses
+        .filter((el) => {
+          return el.question === question.code
+        })
+        .map((el) => {
+          return el.invitee
+        })
+
+      const respondents = this.responses.invitees.filter((el) => {
+        return actuallyResponded.includes(el.code)
+      })
+
+      respondents.forEach((el) => {
+        data.push(...Object.keys(el))
       })
 
       const setValues = new Set(data)
       data = []
 
       setValues.forEach((el) => {
-        data.push({
-          text: `${el.substring(0, 1).toUpperCase()}${el.substring(1, el.len)}`,
-          code: el,
-        })
+        if (el !== 'code')
+          data.push({
+            text: `${el.substring(0, 1).toUpperCase()}${el.substring(
+              1,
+              el.len
+            )}`,
+            code: el,
+          })
       })
 
       data = data.sort((a, b) => {
@@ -219,27 +240,27 @@ export default {
     },
 
     updateSelectedAnswers(question, newList) {
-      this.selectedAnswers[question.question.code] = newList
-      this.aggregateData[question.question.code] = this.getAggregateData(
-        question
-      )
+      this.selectedAnswers[question.code] = newList
+      this.aggregateData[question.code] = this.getAggregateData(question)
       this.$forceUpdate()
     },
 
     updateDemographics(question) {
-      this.aggregateData[question.question.code] = this.getAggregateData(
-        question
-      )
+      this.aggregateData[question.code] = this.getAggregateData(question)
       this.$forceUpdate()
     },
 
     getAggregateData(question) {
       const data = []
 
-      const answers = this.selectedAnswers[question.question.code].map((el) => {
+      let answers = this.selectedAnswers[question.code].map((el) => {
         return el.code
       })
-      const demographic = this.selectedDemographics[question.question.code]
+      const demographic = this.selectedDemographics[question.code]
+
+      const responses = this.responses.responses.filter((el) => {
+        return el.question === question.code
+      })
 
       if (!demographic) {
         data.push(['Answer', 'Total'])
@@ -247,8 +268,8 @@ export default {
           data.push([el, 0])
         })
 
-        question.responses.forEach((response) => {
-          response.chosenOption.forEach((option) => {
+        responses.forEach((response) => {
+          response.value.forEach((option) => {
             const foundObj = data.find((el) => {
               return el[0] === option
             })
@@ -256,13 +277,29 @@ export default {
           })
         })
       } else {
+        answers = answers.map((el) => {
+          return String(el)
+        })
         data.push([demographic, ...answers])
+
+        const whichContacts = this.responses.responses
+          .filter((el) => {
+            return el.question === question.code
+          })
+          .map((el) => {
+            return el.invitee
+          })
+
+        const contacts = this.responses.invitees.filter((el) => {
+          return whichContacts.includes(el.code)
+        })
 
         let availableDemographics = new Set()
         const initialValues = new Array(answers.length).fill(0)
-        question.responses.forEach((response) => {
-          if (response.contact[demographic])
-            availableDemographics.add(response.contact[demographic])
+
+        contacts.forEach((contact) => {
+          if (contact[demographic])
+            availableDemographics.add(contact[demographic])
         })
 
         availableDemographics = Array.from(availableDemographics).sort(
@@ -275,13 +312,16 @@ export default {
           data.push([el, ...initialValues])
         })
 
-        question.responses.forEach((response) => {
-          if (response.contact[demographic]) {
-            response.chosenOption.forEach((option) => {
+        responses.forEach((response) => {
+          const contact = contacts.find((el) => {
+            return el.code === response.invitee
+          })
+          if (contact[demographic]) {
+            response.value.forEach((option) => {
               const foundObj = data.find((el) => {
-                return el[0] === response.contact[demographic]
+                return el[0] === contact[demographic]
               })
-              foundObj[data[0].indexOf(option)] += 1
+              foundObj[data[0].indexOf(String(option))] += 1
             })
           }
         })
@@ -303,9 +343,9 @@ export default {
     getResponseRateByDate() {
       const data = [['Date', 'Count']]
       const dateCounts = {}
-      this.responses.survey.submittedTime.forEach((el) => {
-        if (!dateCounts[el]) dateCounts[el] = 0
-        dateCounts[el] += 1
+      this.responses.sessions.forEach((el) => {
+        if (!dateCounts[el.finishedAt]) dateCounts[el.finishedAt] = 0
+        dateCounts[el.finishedAt] += 1
       })
       let tempData = []
       Object.keys(dateCounts).forEach((el) => {
@@ -345,6 +385,7 @@ export default {
       const yAxis = this.getDifferentAnswers(this.crossTabY).map((el) => {
         return el.code
       })
+
       const data = []
       data.push(['', ...xAxis])
       yAxis.forEach((el) => {
@@ -353,17 +394,25 @@ export default {
 
       const xAnswers = []
 
-      this.crossTabX.responses.forEach((response) => {
-        response.chosenOption.forEach((el) => {
-          xAnswers.push([response.contact.code, el])
+      const xResponses = this.responses.responses.filter((el) => {
+        return el.question === this.crossTabX.code
+      })
+
+      xResponses.forEach((response) => {
+        response.value.forEach((el) => {
+          xAnswers.push([response.invitee, el])
         })
       })
 
       const yAnswers = []
 
-      this.crossTabY.responses.forEach((response) => {
-        response.chosenOption.forEach((el) => {
-          yAnswers.push([response.contact.code, el])
+      const yResponses = this.responses.responses.filter((el) => {
+        return el.question === this.crossTabY.code
+      })
+
+      yResponses.forEach((response) => {
+        response.value.forEach((el) => {
+          yAnswers.push([response.invitee, el])
         })
       })
 
