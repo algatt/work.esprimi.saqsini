@@ -7,20 +7,17 @@
     ></button>
 
     <div class="px-3 py-1 flex flex-col">
-      <div
-        class="flex bg-gray-100 py-1 rounded border border-gray-200 mb-2 cursor-pointer"
-        @click="toggleMenu"
-      >
-        <span class="flex flex-grow font-semibold text-gray-600 mb-1 pl-3"
+      <div class="input select" @click="toggleMenu">
+        <span class="flex flex-grow text-gray-800 mb-1"
           ><slot name="title"></slot
         ></span>
-        <div class="flex w-12 justify-end pr-3 items-center">
-          <i
-            v-if="isSubMenuVisible"
-            class="fas fa-times fa-fw text-gray-600"
-          ></i>
-          <i v-else class="fas fa-angle-down fa-fw text-gray-600"></i>
-        </div>
+        <!--        <div class="flex w-12 justify-end pr-3 items-center">-->
+        <!--          <i-->
+        <!--            v-if="isSubMenuVisible"-->
+        <!--            class="fas fa-times fa-fw text-gray-600"-->
+        <!--          ></i>-->
+        <!--          <i v-else class="fas fa-angle-down fa-fw text-gray-600"></i>-->
+        <!--        </div>-->
       </div>
 
       <div class="flex relative">
@@ -59,13 +56,16 @@
             </div>
           </transition>
         </div>
-        <div class="flex flex-col relative">
+        <div
+          class="flex-col relative py-2 px-2 w-full border-b border-l border-r border-gray-200"
+          :class="list.length > 0 ? 'flex' : 'hidden'"
+        >
           <transition name="fade">
             <div class="flex flex-wrap">
               <span
                 v-for="(selectedItem, index) in list"
                 :key="index"
-                class="bg-white border border-white rounded hover:bg-gray-100 hover:border-gray-200 transition duration-300 px-2 my-1 mr-1"
+                class="bg-gray-100 border border-gray-200 rounded hover:bg-gray-200 hover:border-gray-300 transition duration-300 px-2 my-1 mr-1"
               >
                 {{ selectedItem[displayField] }}
                 <button @click="removeItem(selectedItem)">
