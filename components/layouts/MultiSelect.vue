@@ -57,7 +57,7 @@
           </transition>
         </div>
         <div
-          class="flex-col relative py-2 px-2 w-full border-b border-l border-r border-gray-200"
+          class="flex-col relative py-2 px-2 w-full"
           :class="list.length > 0 ? 'flex' : 'hidden'"
         >
           <transition name="fade">

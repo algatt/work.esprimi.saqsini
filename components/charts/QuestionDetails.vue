@@ -3,10 +3,10 @@
     <div
       v-for="question in data.questions"
       :key="question.code"
-      class="flex flex-col mb-10"
+      class="flex flex-col mb-16"
     >
       <div class="flex flex-col items-center">
-        <div class="flex items-center justify-center">
+        <div class="flex">
           <h6>{{ question.name }}</h6>
           <p class="bg-primary text-white rounded px-1.5 py-0.5 ml-2">
             {{ question.number }}
@@ -15,6 +15,15 @@
       </div>
       <div class="flex flex-wrap">
         <div class="w-full md:w-3/12 flex py-5 items-start flex flex-col">
+          <span class="p-4">
+            <span class="text-gray-700 font-semibold"
+              >{{ getQuestionType(question.type).text }}
+              <i
+                :class="getQuestionType(question.type).icon"
+                class="text-gray-400 ml-2"
+              ></i>
+            </span>
+          </span>
           <multi-select
             class="w-full"
             :original-list="getDifferentAnswers(question)"
@@ -62,6 +71,7 @@ import { getDifferentAnswers } from '~/helpers/chartHelpers'
 import MultiSelect from '~/components/layouts/MultiSelect'
 import Spinner from '~/components/layouts/Spinner'
 import QuestionChartElement from '~/components/charts/QuestionChartElement'
+import { QUESTION_TYPES } from '~/helpers/constants'
 
 export default {
   name: 'QuestionDetails',
@@ -93,6 +103,9 @@ export default {
     })
   },
   methods: {
+    getQuestionType(type) {
+      return QUESTION_TYPES[type]
+    },
     getDifferentAnswers(question) {
       return getDifferentAnswers(question, this.data.responses)
     },
@@ -105,7 +118,7 @@ export default {
     getAggregateData(question) {
       const data = []
 
-      let answers = this.selectedAnswers[question.code].map((el) => {
+      const answers = this.selectedAnswers[question.code].map((el) => {
         return el.code
       })
       const demographic = this.selectedDemographics[question.code]
@@ -115,9 +128,9 @@ export default {
       })
 
       if (!demographic) {
-        data.push(['Answer', 'Total'])
+        data.push(['Answer', 'Total', { type: 'string', role: 'annotation' }])
         answers.forEach((el) => {
-          data.push([el, 0])
+          data.push([el, 0, ''])
         })
 
         responses.forEach((response) => {
@@ -125,14 +138,21 @@ export default {
             const foundObj = data.find((el) => {
               return el[0] === option
             })
-            if (foundObj) foundObj[1] += 1
+            if (foundObj) {
+              foundObj[1] += 1
+              foundObj[2] = Number(foundObj[2]) + 1
+            }
           })
         })
       } else {
-        answers = answers.map((el) => {
-          return String(el)
-        })
-        data.push([demographic, ...answers])
+        if (answers.length < 1) return null
+        data.push([demographic])
+
+        for (let i = 0; i < answers.length; i++)
+          data[0].push(String(answers[i]), {
+            role: 'annotation',
+            type: 'string',
+          })
 
         const whichContacts = this.data.responses
           .filter((el) => {
@@ -147,7 +167,7 @@ export default {
         })
 
         let availableDemographics = new Set()
-        const initialValues = new Array(answers.length).fill(0)
+        const initialValues = new Array(data[0].length - 1).fill(0)
 
         contacts.forEach((contact) => {
           if (contact[demographic])
@@ -173,10 +193,22 @@ export default {
               const foundObj = data.find((el) => {
                 return el[0] === contact[demographic]
               })
-              foundObj[data[0].indexOf(String(option))] += 1
+
+              const index = data[0].indexOf(String(option))
+
+              if (index !== -1) {
+                foundObj[index] += 1
+                foundObj[index + 1] = foundObj[index]
+              }
             })
           }
         })
+
+        for (let i = 1; i < data.length; i++) {
+          for (let j = 2; j < data[i].length; j += 2) {
+            if (data[i][j] === 0) data[i][j] = null
+          }
+        }
       }
 
       return data

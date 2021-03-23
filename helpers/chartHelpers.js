@@ -1,5 +1,6 @@
 export function getDifferentAnswers(question, allResponses) {
   let data = []
+
   data.push(
     ...question.availableOptions.map((el) => {
       return { text: el.text, code: el.value }
