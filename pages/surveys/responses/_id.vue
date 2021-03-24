@@ -42,11 +42,7 @@
       </template>
     </top-header-bar>
     <div v-if="selectedView === 'overall'">
-      <survey-details
-        v-if="false"
-        :details="dataForSurveyOverall"
-      ></survey-details>
-      work in progess
+      <survey-details :details="dataForSurveyOverall"></survey-details>
     </div>
     <div v-else-if="selectedView === 'questions'">
       <question-details :data="responses"></question-details>

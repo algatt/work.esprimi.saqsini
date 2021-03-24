@@ -1,75 +1,166 @@
 <template>
-  <div class="flex w-full flex-col">
-    <div class="flex flex-wrap">
-      <div class="w-full md:w-4/12">
-        <g-chart
-          type="PieChart"
-          :data="responseRates"
-          :options="{
-            title: 'Response Rate',
-            legend: { position: 'bottom' },
-            titleTextStyle: {
-              fontSize: 16,
-              fontName: 'Poppins',
-            },
-          }"
-          style="min-height: 400px"
-        ></g-chart>
-      </div>
-      <div
-        v-for="(item, index) in differentKeys"
-        :key="index"
-        class="w-full md:w-4/12"
-      >
-        <g-chart
-          :type="getTotalForKey(item).length > 4 ? 'BarChart' : 'PieChart'"
-          :data="getTotalForKey(item)"
-          :options="{
-            title: item,
-            titleTextStyle: {
-              fontSize: 16,
-              fontName: 'Poppins',
-            },
-            legend: { position: 'bottom' },
-          }"
-          style="min-height: 400px"
-        ></g-chart>
-      </div>
+  <div class="flex flex-wrap w-full">
+    <div class="w-full md:w-4/12 flex justify-center items-center mb-20">
+      <pie-chart
+        style="max-height: 300px"
+        :chart-data="responseRates"
+        :options="{
+          title: {
+            display: true,
+            text: 'Response Rate',
+            fontSize: 16,
+            fontFamily: 'Poppins',
+          },
+          legend: {
+            position: 'bottom',
+            labels: { fontFamily: 'Poppins' },
+          },
+          maintainAspectRatio: false,
+          responsive: true,
+        }"
+      ></pie-chart>
     </div>
-    <div class="flex w-full">
-      <div class="flex w-full md:w-8/12">
-        <g-chart
-          type="LineChart"
-          :data="sessionStats"
-          :options="{
-            title: 'Response by Date',
-            titleTextStyle: {
-              fontSize: 16,
-              fontName: 'Poppins',
-            },
-            hAxis: {
-              format: 'MMM d, y',
-              ticks: ticks,
-            },
-            vAxis: {
-              format: '###',
-            },
-            legend: { position: 'bottom' },
-          }"
-          class="w-full md:w-6/12"
-          style="min-height: 400px; width: 100%"
-        >
-        </g-chart>
-      </div>
+    <div
+      v-for="(item, index) in differentKeys"
+      :key="index"
+      class="w-full md:w-4/12 flex justify-center items-center mb-20"
+    >
+      <pie-chart
+        v-if="getTotalForKey(item).datasets[0].data.length < 4"
+        style="max-height: 300px"
+        :chart-data="getTotalForKey(item)"
+        :options="{
+          title: {
+            display: true,
+            text: item,
+            fontSize: 16,
+            fontFamily: 'Poppins',
+          },
+          legend: {
+            position: 'bottom',
+            labels: { fontFamily: 'Poppins' },
+          },
+          maintainAspectRatio: false,
+          responsive: true,
+        }"
+      ></pie-chart>
+      <bar-chart
+        v-else
+        style="max-height: 300px"
+        :chart-data="getTotalForKey(item)"
+        :options="{
+          title: {
+            display: true,
+            text: item,
+            fontSize: 16,
+            fontFamily: 'Poppins',
+          },
+          legend: {
+            display: false,
+          },
+          maintainAspectRatio: false,
+          responsive: true,
+          scales: {
+            xAxes: [
+              {
+                display: true,
+                gridLines: {
+                  display: true,
+                  drawBorder: true,
+                  drawOnChartArea: false,
+                },
+                scaleLabel: {
+                  display: false,
+                },
+              },
+            ],
+            yAxes: [
+              {
+                display: true,
+                gridLines: {
+                  display: true,
+                  drawBorder: true,
+                  drawOnChartArea: false,
+                },
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Count',
+                },
+                ticks: {
+                  beginAtZero: true,
+                },
+              },
+            ],
+          },
+        }"
+      ></bar-chart>
+    </div>
+    <div class="w-full md:w-4/12 flex justify-center items-center mb-20">
+      <line-chart
+        :chart-data="sessionStats"
+        :options="{
+          title: {
+            display: true,
+            text: 'Response by Date',
+            fontSize: 16,
+            fontFamily: 'Poppins',
+          },
+          legend: {
+            display: false,
+          },
+          maintainAspectRatio: false,
+          responsive: true,
+          scales: {
+            xAxes: [
+              {
+                display: true,
+                gridLines: {
+                  display: true,
+                  drawBorder: true,
+                  drawOnChartArea: false,
+                },
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Date',
+                },
+              },
+            ],
+            yAxes: [
+              {
+                display: true,
+                gridLines: {
+                  display: true,
+                  drawBorder: true,
+                  drawOnChartArea: false,
+                },
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Count',
+                },
+                ticks: {
+                  beginAtZero: true,
+                },
+              },
+            ],
+          },
+        }"
+      ></line-chart>
     </div>
   </div>
 </template>
 
 <script>
 // import { GChart } from 'vue-google-charts'
+import PieChart from '~/components/charts/PieChart'
+import colours from '~/assets/settings/colours.json'
+import LineChart from '~/components/charts/LineChart'
+import BarChart from '~/components/charts/BarChart'
 export default {
   name: 'SurveyDetails',
   components: {
+    BarChart,
+    LineChart,
+    PieChart,
     // GChart,
   },
   props: {
@@ -79,44 +170,54 @@ export default {
     },
   },
   computed: {
-    ticks() {
-      let temp = this.sessionStats.map((el) => {
-        if (el[0] !== 'Date') return el[0]
-      })
-      temp = temp.filter((el) => {
-        return el
-      })
-      return temp
-    },
     sessionStats() {
       const totals = this.details.sessions.reduce(function (sums, entry) {
         sums[entry.finishedAt] = (sums[entry.finishedAt] || 0) + 1
         return sums
       }, {})
 
-      const data = [['Date', 'Count']]
-      let tempData = []
+      const data = {
+        datasets: [
+          {
+            data: [],
+            fill: false,
+            borderColor: colours[0],
+          },
+        ],
+        labels: [],
+      }
 
+      let tempData = []
+      // new Date(el.substring(0, 4), el.substring(4, 6), el.substring(6, 8))
       Object.keys(totals).forEach((el) => {
-        tempData.push([
-          new Date(el.substring(0, 4), el.substring(4, 6), el.substring(6, 8)),
-          totals[el],
-        ])
+        tempData.push([el, totals[el]])
       })
       tempData = tempData.sort((a, b) => {
         return a[0] > b[0] ? 1 : -1
       })
-      data.push(...tempData)
+
+      tempData.forEach((el) => {
+        data.labels.push(el[0])
+        data.datasets[0].data.push(el[1])
+      })
       return data
     },
 
     responseRates() {
-      const data = [['Type', 'Total']]
-      data.push(['Replied', this.details.survey.totalRespondents])
-      data.push([
-        'Did Not Reply',
-        this.details.survey.totalInvites - this.details.survey.totalRespondents,
-      ])
+      const data = {
+        datasets: [
+          {
+            data: [
+              this.details.survey.totalRespondents,
+              this.details.survey.totalInvites -
+                this.details.survey.totalRespondents,
+            ],
+            backgroundColor: colours,
+          },
+        ],
+        labels: ['Replied', 'Did Not Reply'],
+      }
+
       return data
     },
     differentKeys() {
@@ -135,15 +236,26 @@ export default {
   },
   methods: {
     getTotalForKey(key) {
-      const data = [[key, 'Total']]
+      const data = {
+        datasets: [
+          {
+            data: [],
+            backgroundColor: colours,
+          },
+        ],
+        labels: [],
+      }
+
       const totals = this.details.invitees.reduce(function (sums, entry) {
         sums[entry[key.toLowerCase()]] =
           (sums[entry[key.toLowerCase()]] || 0) + 1
         return sums
       }, {})
       Object.keys(totals).forEach((el) => {
-        data.push([el, totals[el]])
+        data.datasets[0].data.push(totals[el])
       })
+      data.labels = Object.keys(totals)
+
       return data
     },
   },

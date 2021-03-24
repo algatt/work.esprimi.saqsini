@@ -4,8 +4,8 @@ import ChartDataLabels from 'chartjs-plugin-datalabels'
 Chart.plugins.register(ChartDataLabels)
 
 Chart.helpers.merge(Chart.defaults.global.plugins.datalabels, {
-  anchor: 'end',
-  align: 'bottom',
+  anchor: 'center',
+  align: 'center',
   backgroundColor: 'rgba(255, 255, 255, 0.6)',
   borderRadius: 5,
   color: '#333333',
