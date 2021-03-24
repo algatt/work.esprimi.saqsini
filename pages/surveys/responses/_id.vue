@@ -42,13 +42,21 @@
       </template>
     </top-header-bar>
     <div v-if="selectedView === 'overall'">
-      <survey-details :details="dataForSurveyOverall"></survey-details>
+      <survey-details
+        v-if="false"
+        :details="dataForSurveyOverall"
+      ></survey-details>
+      work in progess
     </div>
     <div v-else-if="selectedView === 'questions'">
       <question-details :data="responses"></question-details>
     </div>
     <div v-else-if="selectedView === 'cross'">
-      <cross-table-details :data="dataForCrossTab"></cross-table-details>
+      <cross-table-details
+        v-if="false"
+        :data="dataForCrossTab"
+      ></cross-table-details
+      >work in progress
     </div>
   </div>
   <spinner v-else></spinner>
@@ -58,7 +66,7 @@
 import Spinner from '~/components/layouts/Spinner'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 import SurveyDetails from '~/components/charts/SurveyDetails'
-import QuestionDetails from '~/components/charts/QuestionDetails'
+import QuestionDetails from '~/components/charts/QuestionList'
 import CrossTableDetails from '~/components/charts/CrossTableDetails'
 
 export default {

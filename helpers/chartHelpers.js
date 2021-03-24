@@ -1,32 +1,67 @@
-export function getDifferentAnswers(question, allResponses) {
-  let data = []
+import colours from '~/assets/settings/colours.json'
 
-  data.push(
-    ...question.availableOptions.map((el) => {
-      return { text: el.text, code: el.value }
-    })
-  )
+export function getDataAggregateByDemographic(
+  selectedList,
+  selectedDemographic,
+  originalData
+) {
+  const datasets = {
+    labels: selectedList,
+    datasets: [],
+  }
 
-  const responses = allResponses.filter((el) => {
-    return el.question === question.code
-  })
-
-  responses.forEach((eachResponse) => {
-    eachResponse.value.forEach((option) => {
-      if (
-        !data
+  let idx = 0
+  originalData.demographics[selectedDemographic].forEach((demo) => {
+    const dataset = {
+      label: demo,
+      data: Array(selectedList.length).fill(0),
+      backgroundColor: colours[idx++],
+    }
+    selectedList.forEach((value) => {
+      originalData.responses.forEach((response) => {
+        const respondents = originalData.invitees
+          .filter((el) => {
+            return el[selectedDemographic] && el[selectedDemographic] === demo
+          })
           .map((el) => {
             return el.code
           })
-          .includes(option)
-      )
-        data.push({ text: option, code: option })
+        if (respondents.includes(response.invitee)) {
+          response.value.forEach((el) => {
+            if (value === el) {
+              dataset.data[datasets.labels.indexOf(el)] += 1
+            }
+          })
+        }
+      })
+    })
+    datasets.datasets.push(dataset)
+  })
+  return datasets
+}
+
+export function getDataAggregate(legendData, selectedList, originalData) {
+  let data = {}
+  legendData.forEach((el) => {
+    if (selectedList.includes(el)) data[el] = 0
+  })
+
+  originalData.responses.forEach((response) => {
+    response.value.forEach((value) => {
+      if (selectedList.includes(value)) data[value] += 1
     })
   })
+  data = Object.values(data)
 
-  data = data.sort((a, b) => {
-    return a.code > b.code ? 1 : -1
-  })
-
-  return data
+  return {
+    labels: selectedList.map((el) => {
+      return el.code
+    }),
+    datasets: [
+      {
+        data,
+        backgroundColor: colours,
+      },
+    ],
+  }
 }

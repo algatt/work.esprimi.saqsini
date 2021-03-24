@@ -14,6 +14,7 @@ export const actions = {
               name: 'Test Survey',
               totalInvites: 20,
               totalRespondents: 5,
+              referenceDate: '2020-01-01',
             },
             questions: [
               {

@@ -1,109 +1,109 @@
 <template>
   <div class="flex flex-col w-full">
     {{ chartData }}
-    <g-chart
-      :type="chartTypes[question.type]"
-      :data="chartData"
-      :options="getOptions(question)"
-      class="w-full"
-      style="min-height: 400px"
-    ></g-chart>
-    <div
-      v-if="question.type === 'LIKERT'"
-      class="flex flex-col justify-center items-center"
-    >
-      <div class="flex flex-wrap items-center">
-        <h6>Average Score</h6>
-        <span
-          class="ml-2 text-lg font-semibold bg-primary text-white rounded px-2"
-          ><template v-if="chartData[0].length <= 3">{{
-            calculateAverageScoreNoAggregation(chartData)
-          }}</template
-          ><template v-else>{{
-            calculateAverageScoreWithAggregation(chartData)
-          }}</template></span
-        >
-      </div>
-      <div
-        v-if="checkIfNPS(question)"
-        class="flex justify-center mt-4 space-x-4"
-      >
-        <span
-          class="flex flex-col items-center rounded"
-          style="min-width: 100px"
-        >
-          <p
-            class="font-semibold bg-gray-100 px-2 py-2 border border-gray-200 rounded-t text-center"
-          >
-            Detractors
-          </p>
-          <span
-            class="bg-white p-3 bg-white border-l border-r border-b border-gray-200 w-full text-center rounded-b text-lg"
-            >{{ calculateNPS(chartData).detractors }}</span
-          >
-        </span>
-        <span
-          class="flex flex-col items-center rounded"
-          style="min-width: 100px"
-        >
-          <p
-            class="font-semibold bg-gray-100 px-2 py-2 border border-gray-200 rounded-t text-center"
-            style="min-width: 100px"
-          >
-            Passive
-          </p>
-          <span
-            class="bg-white p-3 bg-white border-l border-r border-b border-gray-200 w-full text-center rounded-b text-lg"
-            >{{ calculateNPS(chartData).passive }}</span
-          >
-        </span>
-        <span
-          class="flex flex-col items-center rounded"
-          style="min-width: 100px"
-        >
-          <p
-            class="font-semibold bg-gray-100 px-2 py-2 border border-gray-200 rounded-t text-center"
-            style="min-width: 100px"
-          >
-            Promoters
-          </p>
-          <span
-            class="bg-white p-3 bg-white border-l border-r border-b border-gray-200 w-full text-center rounded-b text-lg"
-            >{{ calculateNPS(chartData).promoters }}</span
-          >
-        </span>
-        <span
-          class="flex flex-col items-center rounded"
-          style="min-width: 100px"
-        >
-          <p
-            class="font-semibold bg-gray-100 px-2 py-2 border border-gray-200 rounded-t text-center"
-            style="min-width: 100px"
-          >
-            NPS
-          </p>
-          <span
-            class="bg-white p-3 bg-white border-l border-r border-b border-gray-200 w-full text-center rounded-b text-lg"
-            :class="
-              calculateNPS(chartData).nps < 0
-                ? 'text-red-600'
-                : calculateNPS(chartData).nps > 0
-                ? 'text-green-600'
-                : 'text-gray-800'
-            "
-            >{{ calculateNPS(chartData).nps }}</span
-          >
-        </span>
-      </div>
-    </div>
+    <!--    <g-chart-->
+    <!--      :type="chartTypes[question.type]"-->
+    <!--      :data="chartData"-->
+    <!--      :options="getOptions(question)"-->
+    <!--      class="w-full"-->
+    <!--      style="min-height: 400px"-->
+    <!--    ></g-chart>-->
+    <!--    <div-->
+    <!--      v-if="question.type === 'LIKERT'"-->
+    <!--      class="flex flex-col justify-center items-center"-->
+    <!--    >-->
+    <!--      <div class="flex flex-wrap items-center">-->
+    <!--        <h6>Average Score</h6>-->
+    <!--        <span-->
+    <!--          class="ml-2 text-lg font-semibold bg-primary text-white rounded px-2"-->
+    <!--          ><template v-if="chartData[0].length <= 3">{{-->
+    <!--            calculateAverageScoreNoAggregation(chartData)-->
+    <!--          }}</template-->
+    <!--          ><template v-else>{{-->
+    <!--            calculateAverageScoreWithAggregation(chartData)-->
+    <!--          }}</template></span-->
+    <!--        >-->
+    <!--      </div>-->
+    <!--      <div-->
+    <!--        v-if="checkIfNPS(question)"-->
+    <!--        class="flex justify-center mt-4 space-x-4"-->
+    <!--      >-->
+    <!--        <span-->
+    <!--          class="flex flex-col items-center rounded"-->
+    <!--          style="min-width: 100px"-->
+    <!--        >-->
+    <!--          <p-->
+    <!--            class="font-semibold bg-gray-100 px-2 py-2 border border-gray-200 rounded-t text-center"-->
+    <!--          >-->
+    <!--            Detractors-->
+    <!--          </p>-->
+    <!--          <span-->
+    <!--            class="bg-white p-3 bg-white border-l border-r border-b border-gray-200 w-full text-center rounded-b text-lg"-->
+    <!--            >{{ calculateNPS(chartData).detractors }}</span-->
+    <!--          >-->
+    <!--        </span>-->
+    <!--        <span-->
+    <!--          class="flex flex-col items-center rounded"-->
+    <!--          style="min-width: 100px"-->
+    <!--        >-->
+    <!--          <p-->
+    <!--            class="font-semibold bg-gray-100 px-2 py-2 border border-gray-200 rounded-t text-center"-->
+    <!--            style="min-width: 100px"-->
+    <!--          >-->
+    <!--            Passive-->
+    <!--          </p>-->
+    <!--          <span-->
+    <!--            class="bg-white p-3 bg-white border-l border-r border-b border-gray-200 w-full text-center rounded-b text-lg"-->
+    <!--            >{{ calculateNPS(chartData).passive }}</span-->
+    <!--          >-->
+    <!--        </span>-->
+    <!--        <span-->
+    <!--          class="flex flex-col items-center rounded"-->
+    <!--          style="min-width: 100px"-->
+    <!--        >-->
+    <!--          <p-->
+    <!--            class="font-semibold bg-gray-100 px-2 py-2 border border-gray-200 rounded-t text-center"-->
+    <!--            style="min-width: 100px"-->
+    <!--          >-->
+    <!--            Promoters-->
+    <!--          </p>-->
+    <!--          <span-->
+    <!--            class="bg-white p-3 bg-white border-l border-r border-b border-gray-200 w-full text-center rounded-b text-lg"-->
+    <!--            >{{ calculateNPS(chartData).promoters }}</span-->
+    <!--          >-->
+    <!--        </span>-->
+    <!--        <span-->
+    <!--          class="flex flex-col items-center rounded"-->
+    <!--          style="min-width: 100px"-->
+    <!--        >-->
+    <!--          <p-->
+    <!--            class="font-semibold bg-gray-100 px-2 py-2 border border-gray-200 rounded-t text-center"-->
+    <!--            style="min-width: 100px"-->
+    <!--          >-->
+    <!--            NPS-->
+    <!--          </p>-->
+    <!--          <span-->
+    <!--            class="bg-white p-3 bg-white border-l border-r border-b border-gray-200 w-full text-center rounded-b text-lg"-->
+    <!--            :class="-->
+    <!--              calculateNPS(chartData).nps < 0-->
+    <!--                ? 'text-red-600'-->
+    <!--                : calculateNPS(chartData).nps > 0-->
+    <!--                ? 'text-green-600'-->
+    <!--                : 'text-gray-800'-->
+    <!--            "-->
+    <!--            >{{ calculateNPS(chartData).nps }}</span-->
+    <!--          >-->
+    <!--        </span>-->
+    <!--      </div>-->
+    <!--    </div>-->
   </div>
 </template>
 
 <script>
-import { GChart } from 'vue-google-charts'
+// import { GChart } from 'vue-google-charts'
 export default {
   name: 'QuestionChartElement',
-  components: { GChart },
+  components: {},
   props: {
     chartData: {
       required: true,
