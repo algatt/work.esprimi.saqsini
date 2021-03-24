@@ -55,7 +55,7 @@ export function getDataAggregate(legendData, selectedList, originalData) {
 
   return {
     labels: selectedList.map((el) => {
-      return el.code
+      return el
     }),
     datasets: [
       {
