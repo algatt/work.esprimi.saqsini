@@ -6,9 +6,9 @@
       @click="hideSubMenu"
     ></button>
 
-    <div class="px-3 py-1 flex flex-col">
+    <div class="py-1 flex flex-col">
       <div class="input select" @click="toggleMenu">
-        <span class="flex flex-grow text-gray-800 mb-1"
+        <span class="flex flex-grow text-gray-800 mb-1 px-1"
           ><slot name="title"></slot
         ></span>
         <!--        <div class="flex w-12 justify-end pr-3 items-center">-->

@@ -91,3 +91,69 @@ export function getDifferentAnswers(question, responses) {
 
   return data
 }
+
+export function getDataAggregateRanking(
+  legendData,
+  selectedList,
+  originalData,
+  selectedDemographic
+) {
+  let answers = getDifferentAnswers(
+    originalData.question,
+    originalData.responses
+  )
+
+  answers = answers.map((el) => {
+    return el.code
+  })
+
+  const dataToReturn = {
+    labels: [],
+    datasets: [],
+  }
+
+  for (let i = 0; i < answers.length; i++) {
+    dataToReturn.labels.push(i + 1)
+    dataToReturn.datasets.push({
+      label: answers[i],
+      data: new Array(answers.length).fill(0),
+      backgroundColor: colours[i],
+    })
+  }
+
+  const whichResponses = originalData.responses
+  let invitees = []
+
+  if (selectedDemographic.length !== 0) {
+    const demographicValues = selectedDemographic.map((el) => {
+      return el.name
+    })
+    const whichDemographic = selectedDemographic[0].type
+    invitees = originalData.invitees
+      .filter((el) => {
+        return (
+          el[whichDemographic] &&
+          demographicValues.includes(el[whichDemographic])
+        )
+      })
+      .map((el) => {
+        return el.code
+      })
+  }
+
+  whichResponses.forEach((response) => {
+    for (let i = 0; i < response.value.length; i++) {
+      const x = dataToReturn.datasets.find((el) => {
+        return (
+          (selectedDemographic.length === 0 &&
+            el.label === response.value[i]) ||
+          (selectedDemographic.length !== 0 &&
+            invitees.includes(response.invitee) &&
+            el.label === response.value[i])
+        )
+      })
+      if (x) x.data[i] += 1
+    }
+  })
+  return dataToReturn
+}

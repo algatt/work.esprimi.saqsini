@@ -146,7 +146,7 @@ h1{
 }
 
 .input {
-  @apply border-b border-gray-200 px-1 py-2 focus:border-primary transition duration-500 ease-in focus:outline-none;
+  @apply border-b border-gray-200 px-3 py-2 focus:border-primary transition duration-500 ease-in focus:outline-none;
 }
 
 .select {
