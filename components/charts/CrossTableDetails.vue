@@ -21,6 +21,7 @@
           {{ question.text }}
         </option>
       </select>
+      <p class="text-red-700">Ranking has issues</p>
     </div>
     <div class="flex w-full md:w-8/12 justify-center items-center">
       <div v-if="!crossTabX || !crossTabY">
@@ -57,18 +58,25 @@ export default {
   },
   methods: {
     getCrossTabData() {
-      const xAxis = getDifferentAnswers(
-        this.crossTabX,
-        this.data.responses
-      ).map((el) => {
-        return el.code
+      const xResponses = this.data.responses.filter((el) => {
+        return el.question === this.crossTabX.code
       })
-      const yAxis = getDifferentAnswers(
-        this.crossTabY,
-        this.data.responses
-      ).map((el) => {
-        return el.code
+
+      const yResponses = this.data.responses.filter((el) => {
+        return el.question === this.crossTabY.code
       })
+
+      const xAxis = getDifferentAnswers(this.crossTabX, xResponses).map(
+        (el) => {
+          return el.code
+        }
+      )
+
+      const yAxis = getDifferentAnswers(this.crossTabY, yResponses).map(
+        (el) => {
+          return el.code
+        }
+      )
 
       const data = []
       data.push(['', ...xAxis])
@@ -78,10 +86,6 @@ export default {
 
       const xAnswers = []
 
-      const xResponses = this.data.responses.filter((el) => {
-        return el.question === this.crossTabX.code
-      })
-
       xResponses.forEach((response) => {
         response.value.forEach((el) => {
           xAnswers.push([response.invitee, el])
@@ -89,10 +93,6 @@ export default {
       })
 
       const yAnswers = []
-
-      const yResponses = this.data.responses.filter((el) => {
-        return el.question === this.crossTabY.code
-      })
 
       yResponses.forEach((response) => {
         response.value.forEach((el) => {

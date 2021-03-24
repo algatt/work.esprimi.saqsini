@@ -48,11 +48,7 @@
       <question-details :data="responses"></question-details>
     </div>
     <div v-else-if="selectedView === 'cross'">
-      <cross-table-details
-        v-if="false"
-        :data="dataForCrossTab"
-      ></cross-table-details
-      >work in progress
+      <cross-table-details :data="dataForCrossTab"></cross-table-details>
     </div>
   </div>
   <spinner v-else></spinner>

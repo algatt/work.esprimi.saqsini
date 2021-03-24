@@ -30,6 +30,7 @@
 import Spinner from '~/components/layouts/Spinner'
 import { QUESTION_TYPES } from '~/helpers/constants'
 import QuestionElement from '~/components/charts/QuestionElement'
+import { getDifferentAnswers } from '~/helpers/chartHelpers'
 
 export default {
   name: 'QuestionList',
@@ -85,28 +86,29 @@ export default {
       return data
     },
     getDifferentAnswers(question, responses) {
-      let data = []
-      if (question.availableOptions) {
-        question.availableOptions.forEach((el) => {
-          data.push({ text: el.text, code: el.value })
-        })
-      }
-      responses.forEach((response) => {
-        response.value.forEach((value) => {
-          if (
-            !data.find((el) => {
-              return el.code === value
-            })
-          )
-            data.push({ text: value, code: value })
-        })
-      })
-
-      data = data.sort((a, b) => {
-        return a.code > b.code ? 1 : -1
-      })
-
-      return data
+      return getDifferentAnswers(question, responses)
+      // let data = []
+      // if (question.availableOptions) {
+      //   question.availableOptions.forEach((el) => {
+      //     data.push({ text: el.text, code: el.value })
+      //   })
+      // }
+      // responses.forEach((response) => {
+      //   response.value.forEach((value) => {
+      //     if (
+      //       !data.find((el) => {
+      //         return el.code === value
+      //       })
+      //     )
+      //       data.push({ text: value, code: value })
+      //   })
+      // })
+      //
+      // data = data.sort((a, b) => {
+      //   return a.code > b.code ? 1 : -1
+      // })
+      //
+      // return data
     },
     getDifferentDemographicLabels(invitees) {
       let data = []
