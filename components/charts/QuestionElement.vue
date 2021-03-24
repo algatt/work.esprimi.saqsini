@@ -33,6 +33,12 @@
         :selected-list="selectedList"
         :selected-demographic="selectedDemographic"
       ></chart-multiple-choice>
+      <chart-likert
+        v-else-if="data.question.type === 'LIKERT'"
+        :data="data"
+        :selected-list="selectedList"
+        :selected-demographic="selectedDemographic"
+      ></chart-likert>
       <span v-else>work in progress</span>
     </div>
   </div>
@@ -41,9 +47,10 @@
 <script>
 import MultiSelect from '~/components/layouts/MultiSelect'
 import ChartMultipleChoice from '~/components/charts/ChartMultipleChoice'
+import ChartLikert from '~/components/charts/ChartLikert'
 export default {
   name: 'QuestionElementVue',
-  components: { MultiSelect, ChartMultipleChoice },
+  components: { ChartLikert, MultiSelect, ChartMultipleChoice },
   props: {
     data: {
       required: true,
