@@ -1,5 +1,5 @@
 import qs from 'qs'
-import moment from 'moment'
+// import moment from 'moment'
 export const state = () => ({
   items: [],
 })
@@ -230,20 +230,9 @@ export const actions = {
   },
 
   duplicateSurvey({ commit }, survey) {
-    survey = JSON.parse(JSON.stringify(survey))
-    survey.name = survey.name + '_Copy_' + moment().format('YYYY_MM_DD')
     return new Promise((resolve, reject) => {
       this.$axios
-        .post(
-          '/builder/instance/' + survey.code,
-
-          survey,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        )
+        .post('/builder/instance/' + survey.code)
         .then((response) => {
           commit(
             'newItem',
@@ -357,6 +346,40 @@ export const actions = {
         .get(`auth/group?gCode=${code}`)
         .then((response) => {
           resolve(response.data)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  clearKioskMode({ commit }, survey) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .patch(`/builder/instance/${survey.code}/clearKioskMode`)
+        .then(() => {
+          const temp = JSON.parse(JSON.stringify(survey))
+          temp.flags = temp.flags.filter((el) => {
+            return el !== 'KIOSK'
+          })
+          commit('updateItem', { which: 'surveys', item: temp }, { root: true })
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  setKioskMode({ commit }, survey) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .patch(`/builder/instance/${survey.code}/setKioskMode`)
+        .then(() => {
+          const temp = JSON.parse(JSON.stringify(survey))
+          temp.flags.push('KIOSK')
+          commit('updateItem', { which: 'surveys', item: temp }, { root: true })
+          resolve()
         })
         .catch((error) => {
           reject(error)

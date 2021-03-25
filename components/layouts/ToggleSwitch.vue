@@ -14,7 +14,7 @@
             ? 'bg-gray-300'
             : 'bg-primary'
         "
-        @click="
+        @click.stop="
           toggleActive = !toggleActive
           $emit('clicked', toggleActive)
         "

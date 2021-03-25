@@ -62,7 +62,8 @@
     >
       <template v-slot:titleContent>
         <p class="w-4/12">Name</p>
-        <p class="w-4/12">Date</p>
+        <p class="w-3/12">Date</p>
+        <p class="w-1/12">Kiosk</p>
         <p class="w-2/12 text-center">Responses</p>
         <p class="w-2/12 text-center">Design</p>
       </template>
@@ -77,8 +78,15 @@
           ></i>
         </p>
 
-        <p class="w-full xl:w-4/12 flex">
+        <p class="w-full xl:w-3/12 flex">
           {{ slotProps.item.referenceDate }}
+        </p>
+
+        <p class="w-full xl:w-1/12 flex">
+          <toggle-switch
+            :checked="slotProps.item.flags.includes('KIOSK')"
+            @clicked="setKioskMode($event, slotProps.item)"
+          ></toggle-switch>
         </p>
 
         <p class="w-full xl:w-2/12 flex xl:justify-center">
@@ -183,10 +191,12 @@ import viewMixin from '~/helpers/viewMixin'
 import ButtonIcon from '~/components/layouts/ButtonIcon'
 import PopupMenu from '~/components/layouts/PopupMenu'
 import NewSurvey from '~/components/surveys/NewSurvey'
+import ToggleSwitch from '~/components/layouts/ToggleSwitch'
 
 export default {
   name: 'SurveyList',
   components: {
+    ToggleSwitch,
     NewSubcategory,
     NewCategory,
     SideTreeNav,
@@ -285,6 +295,17 @@ export default {
       this.$store.dispatch('surveys/duplicateSurvey', survey).then(() => {
         this.$toasted.show(`${survey.name} duplicated successfully`)
       })
+    },
+    setKioskMode(state, survey) {
+      if (state) {
+        this.$store.dispatch('surveys/setKioskMode', survey).then(() => {
+          this.$toasted.show(`${survey.name} is in Kiosk mode`)
+        })
+      } else {
+        this.$store.dispatch('surveys/clearKioskMode', survey).then(() => {
+          this.$toasted.show(`${survey.name} is not in Kiosk mode`)
+        })
+      }
     },
   },
 }
