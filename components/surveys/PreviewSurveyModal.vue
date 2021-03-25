@@ -5,7 +5,7 @@
       @click.stop
     >
       <preview-survey
-        :survey="survey"
+        :survey-prop="survey"
         :questions="questions"
         @finishSurvey="$emit('modalClosed')"
       ></preview-survey>

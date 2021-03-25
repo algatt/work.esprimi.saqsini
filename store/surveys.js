@@ -40,7 +40,7 @@ export const actions = {
             },
             { root: true }
           )
-          resolve()
+          resolve(response.data)
         })
         .catch((error) => {
           reject(error)

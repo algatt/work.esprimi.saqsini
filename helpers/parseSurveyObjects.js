@@ -5,10 +5,10 @@ import {
   SURVEY_OPTIONS,
 } from '~/helpers/constants'
 
-export function parseSurveyToForm(survey) {
+export function parseSurveyToForm(survey, language = PREFERRED_LANGUAGE) {
   const temp = JSON.parse(JSON.stringify(survey))
 
-  if (!temp.defaultLanguage) temp.defaultLanguage = PREFERRED_LANGUAGE
+  if (!temp.defaultLanguage) temp.defaultLanguage = language
   if (!temp.referenceDate) temp.referenceDate = moment().format('YYYY-MM-DD')
   if (!temp.validFromTimestamp) {
     temp.validFromDate = moment().format('YYYY-MM-DD')
@@ -30,9 +30,11 @@ export function parseSurveyToForm(survey) {
     )
   }
 
+  console.log(language)
+  console.log(temp.text)
   if (temp.text) {
     const text = temp.text.find((el) => {
-      return el.language === PREFERRED_LANGUAGE
+      return el.language === language
     })
     temp.text = text.text
   }

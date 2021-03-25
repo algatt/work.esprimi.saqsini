@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="!loading"
     ref="surveyModal"
     :style="{ backgroundColor: survey.options.accentColour }"
     class="flex flex-col p-5 h-full w-full rounded overflow-y-auto"
@@ -52,7 +53,7 @@
               <button
                 v-if="language !== currentLanguage"
                 :style="{ backgroundColor: survey.options.backgroundColour }"
-                @click="currentLanguage = language"
+                @click="changeLanguage(language)"
               >
                 <language-flag :iso="language" :squared="false"></language-flag>
               </button></div></template
@@ -169,11 +170,13 @@
 import DisplayQuestion from '~/components/surveys/DisplayQuestion'
 import LanguageFlag from '~/components/layouts/LanguageFlag'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
+import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
+
 export default {
   name: 'PreviewSurvey',
   components: { PopupMenuVue, DisplayQuestion, LanguageFlag },
   props: {
-    survey: {
+    surveyProp: {
       type: Object,
       required: true,
     },
@@ -188,6 +191,9 @@ export default {
       answers: [],
       currentPage: 1,
       currentLanguage: 'en',
+      originalSurvey: null,
+      survey: null,
+      loading: true,
     }
   },
   computed: {
@@ -236,7 +242,15 @@ export default {
       return finalResult
     },
   },
-  created() {},
+  mounted() {
+    this.$store
+      .dispatch('surveys/getSurveyByCode', this.surveyProp.code)
+      .then((response) => {
+        this.originalSurvey = response
+        this.survey = parseSurveyToForm(this.originalSurvey)
+        this.loading = false
+      })
+  },
   methods: {
     getConditionState2(surveyOptions) {
       let branching = JSON.parse(surveyOptions)
@@ -401,6 +415,10 @@ export default {
         return el.code === code
       })
       return x && x.answers ? x.answers : []
+    },
+    changeLanguage(language) {
+      this.currentLanguage = language
+      this.survey = parseSurveyToForm(this.originalSurvey, language)
     },
   },
 }
