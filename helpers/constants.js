@@ -101,6 +101,6 @@ export const SURVEY_LANGUAGE_GENERIC_TERMS = {
   finish: 4,
   not_selected: 5,
   ranking_instructions: 6,
-  required: 7,
-  position: 8,
+  // required: 7,
+  // position: 8
 }
