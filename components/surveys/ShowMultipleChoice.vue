@@ -5,8 +5,8 @@
       :style="defaultStyle ? null : { color: survey.options.textColour }"
     >
       {{ question.text }}
-      <span v-if="question.isMandatory" class="ml-1 text-xs font-medium italic"
-        >required</span
+      <span v-if="question.isMandatory" class="ml-1 text-xs font-medium italic">
+        {{ languageText['required'] }}</span
       >
     </div>
     <div class="flex flex-col mt-2">
@@ -113,7 +113,7 @@
     </div>
     <div class="flex my-2">
       <button class="btn-link cursor-pointer" @click="answers = []">
-        clear
+        {{ languageText['clear'] }}
       </button>
     </div>
   </div>
@@ -138,6 +138,10 @@ export default {
       required: false,
       type: Array,
       default: null,
+    },
+    languageText: {
+      type: Object,
+      required: true,
     },
   },
   data() {

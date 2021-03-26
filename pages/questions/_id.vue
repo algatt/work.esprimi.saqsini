@@ -199,6 +199,7 @@
             <display-question
               v-if="showPreview"
               :question="question"
+              :language-text="languageText"
               class="p-3 w-full"
               :default-style="true"
             >
@@ -215,7 +216,7 @@
             currentItemToBeEdited.surveyCode
           "
         >
-          <edit-object-modal>
+          <edit-object-modal width="w-11/12">
             <template v-slot:content>
               <new-question></new-question>
             </template>
@@ -292,7 +293,10 @@ import PreviewSurveyModal from '~/components/surveys/PreviewSurveyModal'
 import SurveyLanguageSettings from '~/components/surveys/SurveyLanguageSettings'
 import QuestionMoveMenu from '~/components/surveys/QuestionMoveMenu'
 import SurveyCollaborators from '~/components/surveys/SurveyCollaborators'
-import { QUESTION_TYPES } from '~/helpers/constants'
+import {
+  QUESTION_TYPES,
+  SURVEY_LANGUAGE_GENERIC_TERMS,
+} from '~/helpers/constants'
 import PopupMenu from '~/components/layouts/PopupMenu'
 import Invites from '~/components/contacts/Invites'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
@@ -329,6 +333,15 @@ export default {
   computed: {
     loading() {
       return this.$store.state.loading
+    },
+    languageText() {
+      const data = {}
+      Object.keys(SURVEY_LANGUAGE_GENERIC_TERMS).forEach((el) => {
+        data[el] = this.survey.translatedText[
+          SURVEY_LANGUAGE_GENERIC_TERMS[el]
+        ].text
+      })
+      return data
     },
     questions() {
       return this.$store.getters.getSortedItems('questions').sort((a, b) => {

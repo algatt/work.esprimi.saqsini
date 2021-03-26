@@ -1,7 +1,8 @@
 <template>
   <div class="frosted p-0 md:p-8">
     <div
-      class="check-height w-full self-start h-screen md:h-auto md:w-6/12 mx-auto flex flex-col bg-white relative rounded-none md:rounded-lg md:border md:border-gray-100 shadow-md"
+      class="check-height w-full self-start h-screen md:h-auto mx-auto flex flex-col bg-white relative rounded-none md:rounded-lg md:border md:border-gray-100 shadow-md"
+      :class="`md:${width}`"
       @click.stop
     >
       <div
@@ -27,6 +28,13 @@
 <script>
 export default {
   name: 'EditObjectModal',
+  props: {
+    width: {
+      type: String,
+      required: false,
+      default: 'w-6/12',
+    },
+  },
   computed: {
     currentItemToBeEdited() {
       return this.$store.state.currentItemToBeEdited

@@ -28,7 +28,7 @@
                 : survey.options.backgroundColour,
           }"
         >
-          {{ survey.name }}
+          {{ languageText['survey_title'] }}
         </h3>
 
         <popup-menu-vue
@@ -71,6 +71,7 @@
           class="rounded shadow-lg"
           :style="{ backgroundColor: survey.options.backgroundColour }"
           :language="currentLanguage"
+          :language-text="languageText"
           :question="question"
           :existing-answer="getAnswer(question.code)"
           @answers="processAnswers($event, question)"
@@ -101,7 +102,7 @@
           "
           @click="showPreviousPage"
         >
-          Previous
+          {{ languageText['previous'] }}
         </button>
 
         <button
@@ -126,7 +127,7 @@
           "
           @click="showNextPage"
         >
-          Next
+          {{ languageText['next'] }}
         </button>
 
         <button
@@ -151,7 +152,7 @@
           "
           @click="finishSurvey"
         >
-          Finish
+          {{ languageText['finish'] }}
         </button>
       </div>
     </div>
@@ -171,6 +172,7 @@ import DisplayQuestion from '~/components/surveys/DisplayQuestion'
 import LanguageFlag from '~/components/layouts/LanguageFlag'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
 import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
+import { SURVEY_LANGUAGE_GENERIC_TERMS } from '~/helpers/constants'
 
 export default {
   name: 'PreviewSurvey',
@@ -197,6 +199,15 @@ export default {
     }
   },
   computed: {
+    languageText() {
+      const data = {}
+      Object.keys(SURVEY_LANGUAGE_GENERIC_TERMS).forEach((el) => {
+        data[el] = this.survey.translatedText[
+          SURVEY_LANGUAGE_GENERIC_TERMS[el]
+        ].text
+      })
+      return data
+    },
     enableNext() {
       for (const cnt of this.questionsWithSectionsFiltered) {
         if (

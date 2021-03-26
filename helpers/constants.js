@@ -75,12 +75,13 @@ export const QUESTION_TYPES = {
     icon: 'fas fa-trophy',
     options: [],
   },
-  // RADIO_GRID: {
-  //   code: 6,
-  //   text: 'Radio Grid',
-  //   flag: 'RADIO_GRID',
-  //   icon: 'fas fa-grip-horizontal',
-  // },
+  RADIO_GRID: {
+    code: 6,
+    text: 'Radio Grid',
+    flag: 'RADIO_GRID',
+    icon: 'fas fa-grip-horizontal',
+    options: [],
+  },
 }
 
 export const QUESTION_HELP = {
@@ -90,4 +91,16 @@ export const QUESTION_HELP = {
     'This is an internal name for the question that can be used for reference.',
   REQUIRED:
     'If set to required the respondent must answer the question before progressing.',
+}
+
+export const SURVEY_LANGUAGE_GENERIC_TERMS = {
+  survey_title: 0,
+  clear: 1,
+  next: 2,
+  previous: 3,
+  finish: 4,
+  not_selected: 5,
+  ranking_instructions: 6,
+  // required: 7,
+  // position: 8
 }

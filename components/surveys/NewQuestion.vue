@@ -146,6 +146,12 @@
         @updatedOptions="form.options = $event"
         @isValid="isRemainderOfFormValid = $event"
       ></new-question-ranking>
+      <new-question-radio-grid
+        v-else-if="questionType === 'RADIO_GRID'"
+        :form="form"
+        @updatedOptions="form.options = $event"
+        @isValid="isRemainderOfFormValid = $event"
+      ></new-question-radio-grid>
     </template>
 
     <question-branching
@@ -177,10 +183,12 @@ import QuestionBranching from '~/components/surveys/QuestionBranching'
 import questionMixin from '~/helpers/questionMixin'
 import PopupInfo from '~/components/layouts/PopupInfo'
 import ToggleSwitch from '~/components/layouts/ToggleSwitch'
+import NewQuestionRadioGrid from '~/components/surveys/NewQuestionRadioGrid'
 
 export default {
   name: 'NewQuestion',
   components: {
+    NewQuestionRadioGrid,
     EditObjectModalBottomPart,
     QuestionBranching,
     NewQuestionRanking,

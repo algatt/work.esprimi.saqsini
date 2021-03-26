@@ -8,7 +8,8 @@
       }}<span
         v-if="question.isMandatory"
         class="ml-1 text-xs font-medium italic"
-        >required</span
+      >
+        {{ languageText['required'] }}</span
       >
     </div>
     <div class="flex flex-col flex-wrap md:flex-row mt-2">
@@ -37,7 +38,7 @@
     </div>
     <div class="flex my-2">
       <button class="btn-link cursor-pointer" @click="answers = []">
-        clear
+        {{ languageText['clear'] }}
       </button>
     </div>
   </div>
@@ -64,6 +65,10 @@ export default {
       type: Array,
       default: null,
     },
+    languageText: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -75,7 +80,7 @@ export default {
       const x = JSON.parse(JSON.stringify(this.question.options))
       x.unshift({
         ordinalPosition: 0,
-        text: 'Not Selected',
+        text: this.languageText.not_selected,
         value: null,
       })
       return x
@@ -94,9 +99,11 @@ export default {
     },
   },
   created() {
-    if (this.existingAnswer) {
+    if (this.existingAnswer && this.existingAnswer.length !== 0) {
       this.answers = JSON.parse(JSON.stringify(this.existingAnswer))
-    } else this.answers = [null]
+    } else {
+      this.answers.push(null)
+    }
   },
 }
 </script>

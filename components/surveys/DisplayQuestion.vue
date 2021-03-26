@@ -10,6 +10,7 @@
       :question="parsedQuestion"
       :default-style="defaultStyle"
       :existing-answer="existingAnswer"
+      :language-text="languageText"
       @answers="$emit('answers', $event)"
     ></show-multiple-choice>
     <show-likert
@@ -17,6 +18,7 @@
       :question="parsedQuestion"
       :default-style="defaultStyle"
       :existing-answer="existingAnswer"
+      :language-text="languageText"
       @answers="$emit('answers', $event)"
     ></show-likert>
     <show-dropdown
@@ -24,6 +26,7 @@
       :question="parsedQuestion"
       :default-style="defaultStyle"
       :existing-answer="existingAnswer"
+      :language-text="languageText"
       @answers="$emit('answers', $event)"
     ></show-dropdown>
     <show-type-in
@@ -31,6 +34,7 @@
       :question="parsedQuestion"
       :default-style="defaultStyle"
       :existing-answer="existingAnswer"
+      :language-text="languageText"
       @answers="$emit('answers', $event)"
     ></show-type-in>
     <show-ranking
@@ -38,13 +42,9 @@
       :question="parsedQuestion"
       :default-style="defaultStyle"
       :existing-answer="existingAnswer"
+      :language-text="languageText"
       @answers="$emit('answers', $event)"
     ></show-ranking>
-    <!--    <div v-if="questionType !== 'SECTION'" class="flex justify-end mt-2 mb-1">-->
-    <!--      <button class="btn-link cursor-pointer" @click="$emit('clearAnswers')">-->
-    <!--        clear-->
-    <!--      </button>-->
-    <!--    </div>-->
   </div>
 </template>
 
@@ -89,6 +89,10 @@ export default {
       type: Array,
       required: false,
       default: null,
+    },
+    languageText: {
+      type: Object,
+      required: false,
     },
   },
 

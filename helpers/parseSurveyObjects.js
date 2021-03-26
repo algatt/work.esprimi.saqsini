@@ -30,8 +30,6 @@ export function parseSurveyToForm(survey, language = PREFERRED_LANGUAGE) {
     )
   }
 
-  console.log(language)
-  console.log(temp.text)
   if (temp.text) {
     const text = temp.text.find((el) => {
       return el.language === language
@@ -43,6 +41,17 @@ export function parseSurveyToForm(survey, language = PREFERRED_LANGUAGE) {
     temp.options = JSON.parse(temp.options)
   } else {
     temp.options = SURVEY_OPTIONS
+  }
+
+  temp.translatedText = {}
+
+  if (temp.standardText) {
+    temp.standardText.forEach((el) => {
+      const value = el.languages.find((langs) => {
+        return langs.language === language
+      })
+      temp.translatedText[el.code] = value
+    })
   }
 
   return temp

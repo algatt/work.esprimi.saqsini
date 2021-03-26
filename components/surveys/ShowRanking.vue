@@ -8,17 +8,15 @@
       }}<span
         v-if="question.isMandatory"
         class="ml-1 text-xs font-medium italic"
-        >required</span
+      >
+        {{ languageText['required'] }}</span
       >
     </div>
     <div
       class="flex w-full"
       :style="defaultStyle ? null : { color: survey.options.textColour }"
     >
-      <i
-        >Click on the following elements. First element to be clicked will be
-        placed first.</i
-      >
+      <i>{{ languageText['ranking_instructions'] }}</i>
     </div>
     <div class="flex w-full mt-2">
       <div class="w-6/12 flex flex-col">
@@ -78,7 +76,7 @@
     </div>
     <div class="flex my-2">
       <button class="btn-link cursor-pointer" @click="answers = []">
-        clear
+        {{ languageText['clear'] }}
       </button>
     </div>
   </div>
@@ -103,6 +101,10 @@ export default {
       required: false,
       type: Array,
       default: null,
+    },
+    languageText: {
+      type: Object,
+      required: true,
     },
   },
   data() {
@@ -144,7 +146,7 @@ export default {
     for (let i = 1; i <= this.options.length; i++)
       this.dummies.push({
         code: Math.random(),
-        text: 'Position ' + i,
+        text: this.languageText.position + ' ' + i,
       })
   },
   methods: {
@@ -154,7 +156,10 @@ export default {
       this.dummies = []
       let rank = this.answers.length + 1
       this.options.forEach(() => {
-        this.dummies.push({ code: Math.random(), text: 'Position ' + rank++ })
+        this.dummies.push({
+          code: Math.random(),
+          text: this.languageText.position + ' ' + rank++,
+        })
       })
     },
     moveAnswerToOptions(option, index) {
@@ -163,7 +168,10 @@ export default {
       this.dummies = []
       let rank = this.answers.length + 1
       this.options.forEach(() => {
-        this.dummies.push({ code: Math.random(), text: 'Position ' + rank++ })
+        this.dummies.push({
+          code: Math.random(),
+          text: this.languageText.position + ' ' + rank++,
+        })
       })
     },
   },
