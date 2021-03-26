@@ -30,6 +30,8 @@ export const actions = {
   newQuestion({ dispatch, commit, state }, question) {
     delete question.code
 
+    console.log(question)
+
     const questions = JSON.parse(JSON.stringify(state.items))
     const newPositions = questions.map((el) => {
       return { question: el.code, position: el.ordinalPosition }

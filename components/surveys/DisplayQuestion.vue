@@ -46,6 +46,15 @@
       :language-text="languageText"
       @answers="$emit('answers', $event)"
     ></show-ranking>
+    <show-radio-grid
+      v-else-if="questionType === 'RADIO_GRID'"
+      :key="question.code + ' ' + language"
+      :question="parsedQuestion"
+      :default-style="defaultStyle"
+      :existing-answer="existingAnswer"
+      :language-text="languageText"
+      @answers="$emit('answers', $event)"
+    ></show-radio-grid>
   </div>
 </template>
 
@@ -60,10 +69,12 @@ import ShowDropdown from '~/components/surveys/ShowDropdown'
 import ShowTypeIn from '~/components/surveys/ShowTypeIn'
 import ShowRanking from '~/components/surveys/ShowRanking'
 import ShowLikert from '~/components/surveys/ShowLikert'
+import ShowRadioGrid from '~/components/surveys/ShowRadioGrid'
 
 export default {
   name: 'DisplayQuestion',
   components: {
+    ShowRadioGrid,
     ShowRanking,
     ShowTypeIn,
     ShowDropdown,

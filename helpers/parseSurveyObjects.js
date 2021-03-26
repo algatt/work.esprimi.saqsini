@@ -114,11 +114,14 @@ export function parseQuestionToForm(question, language = PREFERRED_LANGUAGE) {
       const text = el.text.find((el2) => {
         return el2.language === language
       }).text
-      temp.options.push({
+      const obj = {
         ordinalPosition: el.ordinalPosition,
         text,
         value: el.value,
-      })
+      }
+      if (el.flags) obj.flags = el.flags
+
+      temp.options.push(obj)
     })
   }
 
@@ -155,12 +158,15 @@ export function parseQuestionToApi(question) {
     const formOptions = temp.options
     temp.options = []
     formOptions.forEach((el) => {
-      temp.options.push({
+      const obj = {
         ordinalPosition: el.ordinalPosition,
         text: [{ language: PREFERRED_LANGUAGE, text: el.text }],
         value: el.value,
         surveyOptions: null,
-      })
+      }
+      if (el.mask) obj.mask = el.mask
+      if (el.flags) obj.flags = el.flags
+      temp.options.push(obj)
     })
   }
 

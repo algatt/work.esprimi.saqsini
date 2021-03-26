@@ -382,6 +382,18 @@ export default {
         }
       }
 
+      if (question.flags.includes('RADIO_GRID')) {
+        const totalAnswersRequired = question.options.filter((el) => {
+          return el.flags.includes('ROW')
+        }).length
+        if (answers.length !== totalAnswersRequired) {
+          this.answers = this.answers.filter((el) => {
+            return el.code !== question.code
+          })
+          return
+        }
+      }
+
       if (answers[0] === '' || answers.length === 0) {
         this.answers = this.answers.filter((el) => {
           return el.code !== question.code
