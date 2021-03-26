@@ -39,6 +39,7 @@
     ></show-type-in>
     <show-ranking
       v-else-if="questionType === 'RANKING'"
+      :key="question.code + ' ' + language"
       :question="parsedQuestion"
       :default-style="defaultStyle"
       :existing-answer="existingAnswer"
