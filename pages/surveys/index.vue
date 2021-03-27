@@ -62,45 +62,105 @@
     >
       <template v-slot:titleContent>
         <p class="w-4/12">Name</p>
-        <p class="w-3/12">Date</p>
-        <p class="w-1/12">Kiosk</p>
+        <p class="w-2/12">Kiosk</p>
+        <p class="w-2/12">Availability</p>
         <p class="w-2/12 text-center">Responses</p>
-        <p class="w-2/12 text-center">Design</p>
+        <p class="w-2/12 text-center"></p>
       </template>
       <template v-slot:titleContentSmall>Surveys</template>
 
       <template v-slot:content="slotProps">
-        <p class="w-full xl:w-4/12 flex items-center">
-          {{ slotProps.item.name }}
-          <i
-            v-if="slotProps.item.flags.includes('FLAGGED_FOR_REMOVAL')"
-            class="fas fa-trash fa-fw text-gray-300 ml-2"
-          ></i>
-        </p>
+        <div class="w-full xl:w-4/12 flex flex-col mb-2 xl:mb-0">
+          <p class="mb-2 md:mb-0">
+            {{ slotProps.item.name }}
+            <i
+              v-if="slotProps.item.flags.includes('FLAGGED_FOR_REMOVAL')"
+              class="fas fa-trash fa-fw text-gray-300 ml-2"
+            ></i>
+          </p>
+          <p class="text-sm py-1">
+            {{ slotProps.item.referenceDate }}
+          </p>
+        </div>
 
-        <p class="w-full xl:w-3/12 flex">
-          {{ slotProps.item.referenceDate }}
-        </p>
-
-        <p class="w-full xl:w-1/12 flex">
+        <p class="w-full xl:w-2/12 flex mb-2 xl:mb-0">
           <toggle-switch
+            class="block xl:hidden"
             :checked="slotProps.item.flags.includes('KIOSK')"
             @clicked="setKioskMode($event, slotProps.item)"
-          ></toggle-switch>
+          >
+            <template v-slot:leftLabel>No Kiosk</template>
+            <template v-slot:rightLabel>Enable Kiosk</template>
+          </toggle-switch>
+          <toggle-switch
+            class="hidden xl:block"
+            :checked="slotProps.item.flags.includes('KIOSK')"
+            @clicked="setKioskMode($event, slotProps.item)"
+          >
+          </toggle-switch>
         </p>
 
-        <p class="w-full xl:w-2/12 flex xl:justify-center">
-          <nuxt-link
-            :to="{
-              name: 'surveys-responses-id',
-              params: { id: slotProps.item.code },
-            }"
-            @click.stop.native
+        <p class="w-full xl:w-2/12 flex mb-2 xl:mb-0">
+          <toggle-switch
+            class="block xl:hidden"
+            :checked="slotProps.item.flags.includes('ACTIVE')"
+            @clicked="changeAvailability($event, slotProps.item)"
           >
-            <button class="btn-table">placeholder Responses</button>
-          </nuxt-link>
+            <template v-slot:leftLabel>Disabled</template>
+            <template v-slot:rightLabel>Accepting Responses</template>
+          </toggle-switch>
+          <toggle-switch
+            class="hidden xl:block"
+            :checked="slotProps.item.flags.includes('ACTIVE')"
+            @clicked="changeAvailability($event, slotProps.item)"
+          >
+          </toggle-switch>
         </p>
-        <p class="w-full xl:w-2/12 flex xl:justify-center">
+
+        <p class="w-full xl:w-2/12 flex xl:justify-center mb-2 xl:mb-0 xl:px-5">
+          <span class="block xl:hidden mr-2">Response Rate</span>
+          <span class="flex flex-1">
+            <nuxt-link
+              :to="{
+                name: 'surveys-responses-id',
+                params: { id: slotProps.item.code },
+              }"
+              class="w-full bg-gray-100 border rounded relative"
+              @click.stop.native
+            >
+              <button class="w-full">
+                <span
+                  class="absolute left-0 top-0 rounded"
+                  :class="
+                    slotProps.item.responses === slotProps.item.invitees
+                      ? 'bg-primary'
+                      : 'bg-gray-300'
+                  "
+                  :style="{
+                    width: `${calculateWidth(
+                      slotProps.item.responses,
+                      slotProps.item.invitees
+                    )}%`,
+                  }"
+                  >&nbsp;</span
+                ><span
+                  class="absolute font-semibold top-0 left-0 w-full flex justify-center items-center h-full"
+                  ><span
+                    class="bg-white bg-opacity-50 text-gray-800 rounded-xl px-1 text-sm"
+                    >{{
+                      calculateWidth(
+                        slotProps.item.responses,
+                        slotProps.item.invitees
+                      )
+                    }}%</span
+                  ></span
+                >
+              </button>
+            </nuxt-link>
+          </span>
+          <!--          <span v-if="slotProps.item.responses === 0">No responses</span>-->
+        </p>
+        <p class="w-full xl:w-2/12 flex xl:justify-center mb-2 md:mb-0">
           <nuxt-link
             :to="{
               name: 'questions-id',
@@ -108,9 +168,7 @@
             }"
             @click.stop.native
           >
-            <button class="btn-table">
-              {{ slotProps.item.questions }} Questions
-            </button>
+            <button class="btn-link">Manage Survey</button>
           </nuxt-link>
         </p>
       </template>
@@ -306,6 +364,21 @@ export default {
           this.$toasted.show(`${survey.name} is not in Kiosk mode`)
         })
       }
+    },
+    changeAvailability(state, survey) {
+      if (state) {
+        this.$store.dispatch('surveys/reopenSurvey', survey).then(() => {
+          this.$toasted.show(`${survey.name} is accepting responses`)
+        })
+      } else {
+        this.$store.dispatch('surveys/closeSurvey', survey).then(() => {
+          this.$toasted.show(`${survey.name} is not accepting responses`)
+        })
+      }
+    },
+    calculateWidth(responses, invitees) {
+      const x = Math.round(responses / invitees)
+      return isNaN(x) ? 0 : x * 100
     },
   },
 }

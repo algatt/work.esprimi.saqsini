@@ -386,6 +386,44 @@ export const actions = {
         })
     })
   },
+
+  closeSurvey({ commit }, survey) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .patch(`/builder/instance/${survey.code}/close`)
+        .then((response) => {
+          const temp = JSON.parse(JSON.stringify(survey))
+          temp.flags = temp.flags.filter((el) => {
+            return el !== 'ACTIVE'
+          })
+          temp.flags.push('EXPIRED')
+          commit('updateItem', { which: 'surveys', item: temp }, { root: true })
+          resolve(response.data)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  reopenSurvey({ commit }, survey) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .patch(`/builder/instance/${survey.code}/reopen`)
+        .then(() => {
+          const temp = JSON.parse(JSON.stringify(survey))
+          temp.flags = temp.flags.filter((el) => {
+            return el !== 'EXPIRED'
+          })
+          temp.flags.push('ACTIVE')
+          commit('updateItem', { which: 'surveys', item: temp }, { root: true })
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
 }
 
 // export const getters = {
