@@ -36,6 +36,11 @@ export default {
       required: false,
       default: null,
     },
+    direction: {
+      type: String,
+      required: false,
+      default: 'right',
+    },
   },
   data() {
     return {
@@ -69,6 +74,9 @@ export default {
 
           if (right > windowWidth) {
             this.styleForMenu = `left : -${right - windowWidth + 25}px`
+          } else if (this.direction === 'right') {
+            console.log(rect)
+            this.styleForMenu = `left : -${rect.width - 25}px`
           } else {
             this.styleForMenu = `left: 0px`
           }

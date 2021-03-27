@@ -1,42 +1,56 @@
 <template>
   <div>
     <div v-if="!survey.flags.includes('HAS_LANGUAGE_PACK_FILE')">
-      <p>
+      <p class="mb-3">
         This survey only has the default language. You can generate a file that
         allows you to translate your survey in other languages.
       </p>
-      <button class="btn btn-primary my-2 w-32" @click="generateLanguagePack">
-        Generate
+      <button class="btn btn-primary my-2" @click="generateLanguagePack">
+        Generate Language Pack
       </button>
     </div>
-    <div v-else>
-      <p class="mt-3 mb-1">
+    <div v-else class="flex flex-col">
+      <div
+        v-if="survey.flags.includes('OUTDATED_LANGUAGE_PACK')"
+        class="bg-red-50 p-5 border border-red-300 rounded text-gray-700 space-y-5"
+      >
+        <p>
+          The language pack is outdated since changes were made to the survey
+          after the languages were uploaded. You need to generate the language
+          pack again, and re-upload.
+        </p>
+        <p>
+          Make sure to download the existing language pack to preserve previous
+          translations.
+        </p>
+      </div>
+      <p class="mt-3 mb-2">
         This survey is available in the following languages.
       </p>
       <div class="flex flex-wrap">
         <span
           v-for="item in survey.languages"
           :key="item"
-          class="bg-gray-200 px-2 mr-2 rounded"
+          class="bg-gray-100 border border-gray-200 px-2 py-1 mr-2 rounded"
         >
-          <language-flag :iso="item" :squared="false"></language-flag>
-          <span>{{ item }}</span>
+          <span>{{ getCountryFromLanguage(item) }}</span>
         </span>
       </div>
-      <p class="mt-3">This survey has a generated language pack.</p>
-      <button class="btn btn-primary my-3 w-32" @click="downloadLanguagePack">
-        Download
-      </button>
-      <p class="mt-3">You can also re-generate the language pack.</p>
-      <button class="btn btn-primary my-3 w-32" @click="generateLanguagePack">
-        Generate
-      </button>
+      <h6 class="mt-5">Language Pack Options</h6>
+      <div class="flex justify-start space-x-5">
+        <button class="btn btn-primary my-3" @click="downloadLanguagePack">
+          Download Existing
+        </button>
 
-      <p class="mt-3">You can upload your language pack here.</p>
-      <input id="inputFile" type="file" hidden @change="uploadFile" />
-      <button class="btn btn-primary my-3 w-32" @click="activateInputFile">
-        Upload
-      </button>
+        <button class="btn btn-primary my-3" @click="generateLanguagePack">
+          Generate New
+        </button>
+
+        <input id="inputFile" type="file" hidden @change="uploadFile" />
+        <button class="btn btn-primary my-3" @click="activateInputFile">
+          Upload New
+        </button>
+      </div>
     </div>
     <edit-object-modal-bottom-part
       :form="{}"
@@ -50,11 +64,10 @@
 
 <script>
 import moment from 'moment'
-import LanguageFlag from '~/components/layouts/LanguageFlag'
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
 export default {
   name: 'SurveyLanguageSettings',
-  components: { EditObjectModalBottomPart, LanguageFlag },
+  components: { EditObjectModalBottomPart },
   computed: {
     survey() {
       return this.$store.state.currentItemToBeEdited
@@ -109,6 +122,12 @@ export default {
 
           fileLink.click()
         })
+    },
+    getCountryFromLanguage(code) {
+      const CountryLanguage = require('country-language')
+
+      const x = CountryLanguage.getLanguage(code).nativeName[0]
+      return x.substring(0, 1).toUpperCase() + x.substring(1, x.length)
     },
   },
 }

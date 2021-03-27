@@ -16,6 +16,7 @@
     "chartjs-plugin-datalabels": "^0.7.0",
     "cookie": "^0.4.1",
     "core-js": "^3.6.5",
+    "country-language": "^0.1.7",
     "js-cookie": "^2.2.1",
     "js-file-download": "^0.4.12",
     "moment": "^2.29.1",

@@ -32,32 +32,41 @@
         </h3>
 
         <popup-menu-vue
+          v-if="
+            !survey.flags.includes('OUTDATED_LANGUAGE_PACK') &&
+            survey.flags.includes('HAS_LANGUAGE_PACK')
+          "
           class="px-5 py-3"
           :class="survey.options.headerImage === '' ? null : 'frosted-area'"
           :style="{
             color: survey.options.textColour,
           }"
-          ><template v-slot:menuButton
-            ><span class="px-1"
-              ><language-flag
-                :iso="currentLanguage"
-                :squared="false"
-              ></language-flag></span
+        >
+          <template v-slot:menuButton
+            ><span class="px-1"><i class="fas fa-globe fa-fw fa-lg"></i></span
           ></template>
 
-          <template v-slot:menuItems
-            ><div
+          <template v-slot:menuItems>
+            <div
               v-for="(language, index) in survey.languages"
               :key="language + index"
             >
               <button
                 v-if="language !== currentLanguage"
                 :style="{ backgroundColor: survey.options.backgroundColour }"
+                class="px-5 py-2"
                 @click="changeLanguage(language)"
               >
-                <language-flag :iso="language" :squared="false"></language-flag>
-              </button></div></template
-        ></popup-menu-vue>
+                <language-flag
+                  v-if="false"
+                  :iso="language"
+                  :squared="false"
+                ></language-flag>
+                {{ getCountryFromLanguage(language) }}
+              </button>
+            </div>
+          </template></popup-menu-vue
+        >
       </div>
     </div>
     <div ref="questionsSection" class="w-full">
@@ -442,6 +451,12 @@ export default {
     changeLanguage(language) {
       this.currentLanguage = language
       this.survey = parseSurveyToForm(this.originalSurvey, language)
+    },
+    getCountryFromLanguage(code) {
+      const CountryLanguage = require('country-language')
+
+      const x = CountryLanguage.getLanguage(code).nativeName[0]
+      return x.substring(0, 1).toUpperCase() + x.substring(1, x.length)
     },
   },
 }

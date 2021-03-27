@@ -125,7 +125,7 @@
                 >
               </div>
               <div class="w-16 flex items-center justify-around">
-                <popup-menu direction="center" class="mr-2">
+                <popup-menu class="mr-2">
                   <template v-slot:menuButton
                     ><button class="btn-link-rounded">
                       <i class="fas fa-ellipsis-v fa-fw"></i></button
@@ -328,12 +328,10 @@ export default {
       showMoveMenu: null,
       invites: [],
       error: false,
+      loading: true,
     }
   },
   computed: {
-    loading() {
-      return this.$store.state.loading
-    },
     languageText() {
       const data = {}
       Object.keys(SURVEY_LANGUAGE_GENERIC_TERMS).forEach((el) => {
@@ -373,25 +371,31 @@ export default {
       return QUESTION_TYPES
     },
   },
-  created() {
-    this.updateData()
-  },
-  mounted() {
+  async mounted() {
+    await this.updateData()
     this.showPreview = cookies.get('questionPreviewMode') === 'true'
+    if (this.survey.flags.includes('OUTDATED_LANGUAGE_PACK'))
+      this.$toasted.show(
+        'This survey has changed from last language generation. You need to re-generate the languages.'
+      )
   },
+
   methods: {
     async updateData() {
       this.error = false
-      await this.$store.dispatch('setLoading', true)
+      this.loading = true
+
       try {
         await this.$store.dispatch('contactlist/getContactLists', {
           limit: 100,
           offset: 0,
         })
+        console.log('contact list')
         await this.$store.dispatch(
           'surveys/getSurveyByCode',
           this.$route.params.id
         )
+        console.log('survey')
         await this.$store.dispatch('questions/getQuestionsBySurvey', {
           limit: 1000,
           offset: 0,
@@ -410,7 +414,7 @@ export default {
       } catch {
         this.error = true
       } finally {
-        await this.$store.dispatch('setLoading', false)
+        this.loading = false
       }
     },
     newQuestion(flag, ordinalPosition) {
