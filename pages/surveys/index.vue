@@ -206,6 +206,18 @@
                   <i class="fas fa-flag fa-fw fa-sm"></i>Mark for Deletion</span
                 >
               </button>
+              <button>
+                <nuxt-link
+                  class="popup-menu-button"
+                  :to="{
+                    name: 'survey',
+                    query: { id: slotProps.item.publicIdentifier },
+                  }"
+                >
+                  <i class="fas fa-globe-europe fa-sm fa-fw"></i>Public
+                  URL</nuxt-link
+                >
+              </button>
             </template>
           </popup-menu>
         </span>

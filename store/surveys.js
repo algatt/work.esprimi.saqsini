@@ -424,6 +424,19 @@ export const actions = {
         })
     })
   },
+
+  getSession({ commit }, id) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .get(`/builder/sessions?publicIdentifier=${id}`)
+        .then((response) => {
+          resolve(response.data)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
 }
 
 // export const getters = {

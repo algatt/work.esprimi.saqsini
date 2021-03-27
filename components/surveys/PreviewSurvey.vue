@@ -1,15 +1,5 @@
 <template>
-  <div
-    v-if="!loading"
-    ref="surveyModal"
-    :style="{ backgroundColor: survey.options.accentColour }"
-    class="flex flex-col p-5 h-full w-full rounded overflow-y-auto"
-  >
-    <div class="absolute" style="top: 5px; right: 5px">
-      <button class="btn-link-rounded" @click="finishSurvey">
-        <i class="fas fa-times fa-fw fa-3xl text-gray-800"></i>
-      </button>
-    </div>
+  <div v-if="!loading" ref="surveyModal" class="flex flex-col p-5 h-full">
     <div
       class="h-32 bg-cover flex flex-wrap items-center rounded w-full mb-5"
       :style="{
@@ -33,7 +23,7 @@
 
         <popup-menu-vue
           v-if="
-            !survey.flags.includes('OUTDATED_LANGUAGE_PACK') &&
+            !survey.flags.includes('OUTDATED_LANGUAGE_PACK') ||
             survey.flags.includes('HAS_LANGUAGE_PACK')
           "
           class="px-5 py-3"
@@ -241,7 +231,10 @@ export default {
       return this.totalPages === this.currentPage
     },
     questionsWithSections() {
-      const x = JSON.parse(JSON.stringify(this.questions))
+      let x = JSON.parse(JSON.stringify(this.questions))
+      x = x.sort((a, b) => {
+        return a.ordinalPosition > b.ordinalPosition ? 1 : -1
+      })
       let page = 0
       x.forEach((el) => {
         if (el.flags.includes('SECTION')) page++
@@ -260,6 +253,14 @@ export default {
       })
 
       return finalResult
+    },
+  },
+  watch: {
+    answers: {
+      handler() {
+        this.$emit('answers', this.answers)
+      },
+      deep: true,
     },
   },
   mounted() {
@@ -415,6 +416,7 @@ export default {
       })
       this.answers.push({
         code: question.code,
+        questionType: question.flags,
         answers,
         page: this.currentPage,
       })

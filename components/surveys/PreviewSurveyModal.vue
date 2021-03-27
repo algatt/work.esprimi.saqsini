@@ -1,7 +1,8 @@
 <template>
   <div class="frosted p-0 md:p-8 z-20" @click="$emit('modalClosed')">
     <div
-      class="w-full h-screen md:h-auto md:w-6/12 mx-auto flex flex-col relative rounded-none md:rounded-lg md:border md:border-gray-100 shadow-md"
+      class="w-full md:w-6/12 mx-auto flex flex-col relative shadow-md overflow-y-auto"
+      :style="{ backgroundColor: survey.options.accentColour }"
       @click.stop
     >
       <preview-survey
@@ -9,6 +10,11 @@
         :questions="questions"
         @finishSurvey="$emit('modalClosed')"
       ></preview-survey>
+      <div class="absolute" style="top: 5px; right: 5px">
+        <button class="btn-link-rounded" @click="$emit('modalClosed')">
+          <i class="fas fa-times fa-fw fa-3xl text-gray-800"></i>
+        </button>
+      </div>
     </div>
   </div>
 </template>
