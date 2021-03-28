@@ -1,85 +1,87 @@
 <template>
-  <div class="flex flex-col w-full space-y-5">
-    <div class="flex flex-col">
-      <div class="flex items-center">
-        <label for="inputName" class="label">Full Name</label>
-        <span v-if="$v.form.displayName.$error">
-          <span v-if="!$v.form.displayName.required" class="error"
-            >required</span
-          ></span
-        >
+  <div class="flex flex-col justify-between w-full">
+    <div class="flex flex-col w-full space-y-5">
+      <div class="flex flex-col">
+        <div class="flex items-center">
+          <label for="inputName" class="label">Full Name</label>
+          <span v-if="$v.form.displayName.$error">
+            <span v-if="!$v.form.displayName.required" class="error"
+              >required</span
+            ></span
+          >
+        </div>
+        <input
+          id="inputName"
+          v-model="form.displayName"
+          placeholder="Enter full name"
+          class="input"
+          @change="$v.form.displayName.$touch()"
+        />
       </div>
-      <input
-        id="inputName"
-        v-model="form.displayName"
-        placeholder="Enter full name"
-        class="input"
-        @change="$v.form.displayName.$touch()"
-      />
-    </div>
 
-    <div class="flex flex-col">
-      <label for="inputGender" class="label-optional">Gender</label>
-      <select id="inputGender" v-model="form.gender" class="input select">
-        <option
-          v-for="genderItem in gender"
-          :key="genderItem.value"
-          :value="genderItem.value"
-        >
-          {{ genderItem.text }}
-        </option>
-      </select>
-    </div>
-
-    <div class="flex flex-col">
-      <div class="flex items-center">
-        <label for="inputDob" class="label-optional">Birth Date</label>
-        <span v-if="$v.form.dob.$error">
-          <span v-if="!$v.form.dob.between" class="error"
-            >Date cannot be before 1900 or in the future.</span
-          ></span
-        >
+      <div class="flex flex-col">
+        <label for="inputGender" class="label-optional">Gender</label>
+        <select id="inputGender" v-model="form.gender" class="input select">
+          <option
+            v-for="genderItem in gender"
+            :key="genderItem.value"
+            :value="genderItem.value"
+          >
+            {{ genderItem.text }}
+          </option>
+        </select>
       </div>
-      <input
-        id="inputDob"
-        v-model="form.dob"
-        class="input"
-        type="date"
-        @change="$v.form.dob.$touch()"
-      />
-    </div>
 
-    <div class="flex flex-col">
-      <div class="flex items-center">
-        <label for="inputEmail" class="label-optional">Email</label>
-        <span v-if="$v.form.email.$error">
-          <span v-if="!$v.form.email.email" class="error"
-            >Invalid email format.</span
-          ></span
-        >
+      <div class="flex flex-col">
+        <div class="flex items-center">
+          <label for="inputDob" class="label-optional">Birth Date</label>
+          <span v-if="$v.form.dob.$error">
+            <span v-if="!$v.form.dob.between" class="error"
+              >Date cannot be before 1900 or in the future.</span
+            ></span
+          >
+        </div>
+        <input
+          id="inputDob"
+          v-model="form.dob"
+          class="input"
+          type="date"
+          @change="$v.form.dob.$touch()"
+        />
       </div>
-      <input
-        id="inputEmail"
-        v-model="form.email"
-        placeholder="Enter email address"
-        class="input"
-        @change="$v.form.email.$touch()"
-      />
-    </div>
 
-    <div class="flex flex-col">
-      <div class="flex items-center">
-        <label for="inputPhone" class="label-optional">Phone</label>
-        <span v-if="!isPhoneValid" class="error">invalid phone</span>
+      <div class="flex flex-col">
+        <div class="flex items-center">
+          <label for="inputEmail" class="label-optional">Email</label>
+          <span v-if="$v.form.email.$error">
+            <span v-if="!$v.form.email.email" class="error"
+              >Invalid email format.</span
+            ></span
+          >
+        </div>
+        <input
+          id="inputEmail"
+          v-model="form.email"
+          placeholder="Enter email address"
+          class="input"
+          @change="$v.form.email.$touch()"
+        />
       </div>
-      <vue-tel-input
-        id="inputPhone"
-        v-model="phoneNumber"
-        @validate="validatePhone"
-      />
-    </div>
 
+      <div class="flex flex-col">
+        <div class="flex items-center">
+          <label for="inputPhone" class="label-optional">Phone</label>
+          <span v-if="!isPhoneValid" class="error">invalid phone</span>
+        </div>
+        <vue-tel-input
+          id="inputPhone"
+          v-model="phoneNumber"
+          @validate="validatePhone"
+        />
+      </div>
+    </div>
     <edit-object-modal-bottom-part
+      class="pt-10 pb-5"
       :form="form"
       which="contacts"
       :is-valid="isValid"

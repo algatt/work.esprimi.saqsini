@@ -12,7 +12,8 @@
 
       <div class="flex w-full">
         <select
-          v-if="['MULTIPLE_CHOICE', 'LIKERT'].includes(data.question.type)"
+          v-show="false"
+          v-if="['MULTIPLE_CHOICE', 'LIKERT'].includes(data.question.type.flag)"
           class="select input w-full"
           @change="updateSelectedDemographic"
         >
@@ -60,24 +61,23 @@
     </div>
     <div class="w-full md:w-9/12 flex flex-col p-5">
       <chart-multiple-choice
-        v-if="data.question.type === 'MULTIPLE_CHOICE'"
+        v-if="data.question.type.flag === 'MULTIPLE_CHOICE'"
         :data="data"
         :selected-list="selectedList"
         :selected-demographic="selectedDemographic"
       ></chart-multiple-choice>
       <chart-likert
-        v-else-if="data.question.type === 'LIKERT'"
+        v-else-if="data.question.type.flag === 'LIKERT'"
         :data="data"
         :selected-list="selectedList"
         :selected-demographic="selectedDemographic"
       ></chart-likert>
       <chart-ranking
-        v-else-if="data.question.type === 'RANKING'"
+        v-else-if="data.question.type.flag === 'RANKING'"
         :data="data"
         :selected-list="selectedList"
         :selected-demographic="selectedListForRanking"
       ></chart-ranking>
-      <span v-else>{{ data }}</span>
     </div>
   </div>
 </template>

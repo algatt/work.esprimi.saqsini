@@ -1,57 +1,59 @@
 <template>
-  <div class="flex flex-col w-full space-y-5">
-    <div class="flex flex-col">
-      <label for="inputSector" class="label">Sector</label>
-      <select id="inputSector" v-model="form.sectorCode" class="input select">
-        <option
-          v-for="sector in sectors"
-          :key="sector.code"
-          :value="sector.code"
-        >
-          {{ sector.name }}
-        </option>
-      </select>
-    </div>
-
-    <div class="flex flex-col">
-      <div class="flex items-center">
-        <label for="inputName" class="label">Industry</label>
-        <span v-if="$v.form.name.$error">
-          <span v-if="!$v.form.name.required" class="error">required</span
-          ><span v-else-if="!$v.form.name.uniqueNames" class="error"
-            >this industry already exists</span
-          ></span
-        >
+  <div class="flex flex-col justify-between w-full">
+    <div class="flex flex-col w-full space-y-5">
+      <div class="flex flex-col">
+        <label for="inputSector" class="label">Sector</label>
+        <select id="inputSector" v-model="form.sectorCode" class="input select">
+          <option
+            v-for="sector in sectors"
+            :key="sector.code"
+            :value="sector.code"
+          >
+            {{ sector.name }}
+          </option>
+        </select>
       </div>
-      <input
-        id="inputName"
-        v-model="form.name"
-        placeholder="Enter industry name"
-        class="input"
-        @change="$v.form.name.$touch()"
-      />
-    </div>
 
-    <div class="flex flex-col">
-      <div class="flex items-center">
-        <label for="inputAbbr" class="label">Abbreviation</label>
-        <span v-if="$v.form.abbr.$error">
-          <span v-if="!$v.form.abbr.required" class="error">required</span>
-          <span v-else-if="!$v.form.abbr.uniqueAbbr" class="error"
-            >this abbreviation already exists</span
-          ></span
-        >
+      <div class="flex flex-col">
+        <div class="flex items-center">
+          <label for="inputName" class="label">Industry</label>
+          <span v-if="$v.form.name.$error">
+            <span v-if="!$v.form.name.required" class="error">required</span
+            ><span v-else-if="!$v.form.name.uniqueNames" class="error"
+              >this industry already exists</span
+            ></span
+          >
+        </div>
+        <input
+          id="inputName"
+          v-model="form.name"
+          placeholder="Enter industry name"
+          class="input"
+          @change="$v.form.name.$touch()"
+        />
       </div>
-      <input
-        id="inputAbbr"
-        v-model="form.abbr"
-        placeholder="Enter abbreviation"
-        class="input"
-        @change="$v.form.abbr.$touch()"
-      />
-    </div>
 
+      <div class="flex flex-col">
+        <div class="flex items-center">
+          <label for="inputAbbr" class="label">Abbreviation</label>
+          <span v-if="$v.form.abbr.$error">
+            <span v-if="!$v.form.abbr.required" class="error">required</span>
+            <span v-else-if="!$v.form.abbr.uniqueAbbr" class="error"
+              >this abbreviation already exists</span
+            ></span
+          >
+        </div>
+        <input
+          id="inputAbbr"
+          v-model="form.abbr"
+          placeholder="Enter abbreviation"
+          class="input"
+          @change="$v.form.abbr.$touch()"
+        />
+      </div>
+    </div>
     <edit-object-modal-bottom-part
+      class="pt-10 pb-5"
       :form="form"
       which="industries"
       :is-valid="isValid"

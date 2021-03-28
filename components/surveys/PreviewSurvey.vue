@@ -66,7 +66,7 @@
         class="mb-5"
       >
         <display-question
-          :key="question.code + ' ' + answers.length"
+          :key="question.code"
           class="rounded shadow-lg"
           :style="{ backgroundColor: survey.options.backgroundColour }"
           :language="currentLanguage"
@@ -338,10 +338,10 @@ export default {
               let foundAnswer = false
               for (const i in existingAnswers) {
                 const temp = question.options.map((el) => {
-                  return el.name
+                  return el.code
                 })
 
-                if (temp.includes(existingAnswers[i])) {
+                if (temp.includes(existingAnswers[i].code)) {
                   foundAnswer = true
                   break
                 }

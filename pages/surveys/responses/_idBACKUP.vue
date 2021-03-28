@@ -48,10 +48,7 @@
       <question-details :data="responses"></question-details>
     </div>
     <div v-else-if="selectedView === 'cross'">
-      <cross-table-details
-        v-if="false"
-        :data="dataForCrossTab"
-      ></cross-table-details>
+      <cross-table-details :data="dataForCrossTab"></cross-table-details>
     </div>
   </div>
   <spinner v-else></spinner>
@@ -76,8 +73,8 @@ export default {
 
   data() {
     return {
-      responses2: [],
       responses: [],
+      responses2: [],
       loading: true,
       selectedView: 'overall',
     }
@@ -86,8 +83,8 @@ export default {
     dataForSurveyOverall() {
       const data = {}
       data.survey = this.responses.survey
-      data.invitees = this.responses.invitations
-      // data.sessions = this.responses.sessions
+      data.invitees = this.responses.invitees
+      data.sessions = this.responses.sessions
       return data
     },
     dataForCrossTab() {
@@ -100,11 +97,11 @@ export default {
 
   async mounted() {
     this.loading = true
-    this.response2 = await this.$store.dispatch(
+    this.responses = await this.$store.dispatch(
       'responses/getResponses',
       this.$route.params.id
     )
-    this.responses = await this.$store.dispatch(
+    this.responses2 = await this.$store.dispatch(
       'surveys/getSurveyData',
       this.$route.params.id
     )

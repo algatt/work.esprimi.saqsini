@@ -20,19 +20,14 @@
         }"
       ></pie-chart>
     </div>
-    <div
-      v-for="(item, index) in differentKeys"
-      :key="index"
-      class="w-full md:w-4/12 flex justify-center items-center mb-20"
-    >
+    <div class="w-full md:w-4/12 flex justify-center items-center mb-20">
       <pie-chart
-        v-if="getTotalForKey(item).datasets[0].data.length < 4"
         style="max-height: 300px"
-        :chart-data="getTotalForKey(item)"
+        :chart-data="kioskResponse"
         :options="{
           title: {
             display: true,
-            text: item,
+            text: 'Kiosk vs Invites',
             fontSize: 16,
             fontFamily: 'Poppins',
           },
@@ -44,57 +39,84 @@
           responsive: true,
         }"
       ></pie-chart>
-      <bar-chart
-        v-else
-        style="max-height: 300px"
-        :chart-data="getTotalForKey(item)"
-        :options="{
-          title: {
-            display: true,
-            text: item,
-            fontSize: 16,
-            fontFamily: 'Poppins',
-          },
-          legend: {
-            display: false,
-          },
-          maintainAspectRatio: false,
-          responsive: true,
-          scales: {
-            xAxes: [
-              {
-                display: true,
-                gridLines: {
-                  display: true,
-                  drawBorder: true,
-                  drawOnChartArea: false,
-                },
-                scaleLabel: {
-                  display: false,
-                },
-              },
-            ],
-            yAxes: [
-              {
-                display: true,
-                gridLines: {
-                  display: true,
-                  drawBorder: true,
-                  drawOnChartArea: false,
-                },
-                scaleLabel: {
-                  display: true,
-                  labelString: 'Count',
-                },
-                ticks: {
-                  beginAtZero: true,
-                },
-              },
-            ],
-          },
-        }"
-      ></bar-chart>
     </div>
+    <template v-if="false">
+      <div
+        v-for="(item, index) in differentKeys"
+        :key="index"
+        class="w-full md:w-4/12 flex justify-center items-center mb-20"
+      >
+        <pie-chart
+          v-if="getTotalForKey(item).datasets[0].data.length < 4"
+          style="max-height: 300px"
+          :chart-data="getTotalForKey(item)"
+          :options="{
+            title: {
+              display: true,
+              text: item,
+              fontSize: 16,
+              fontFamily: 'Poppins',
+            },
+            legend: {
+              position: 'bottom',
+              labels: { fontFamily: 'Poppins' },
+            },
+            maintainAspectRatio: false,
+            responsive: true,
+          }"
+        ></pie-chart>
+        <bar-chart
+          v-else
+          style="max-height: 300px"
+          :chart-data="getTotalForKey(item)"
+          :options="{
+            title: {
+              display: true,
+              text: item,
+              fontSize: 16,
+              fontFamily: 'Poppins',
+            },
+            legend: {
+              display: false,
+            },
+            maintainAspectRatio: false,
+            responsive: true,
+            scales: {
+              xAxes: [
+                {
+                  display: true,
+                  gridLines: {
+                    display: true,
+                    drawBorder: true,
+                    drawOnChartArea: false,
+                  },
+                  scaleLabel: {
+                    display: false,
+                  },
+                },
+              ],
+              yAxes: [
+                {
+                  display: true,
+                  gridLines: {
+                    display: true,
+                    drawBorder: true,
+                    drawOnChartArea: false,
+                  },
+                  scaleLabel: {
+                    display: true,
+                    labelString: 'Count',
+                  },
+                  ticks: {
+                    beginAtZero: true,
+                  },
+                },
+              ],
+            },
+          }"
+        ></bar-chart>
+      </div>
+    </template>
     <div class="w-full md:w-4/12 flex justify-center items-center mb-20">
       <line-chart
         :chart-data="sessionStats"
@@ -171,8 +193,9 @@ export default {
   },
   computed: {
     sessionStats() {
-      const totals = this.details.sessions.reduce(function (sums, entry) {
-        sums[entry.finishedAt] = (sums[entry.finishedAt] || 0) + 1
+      const totals = this.details.invitees.reduce(function (sums, entry) {
+        sums[entry.lastModified.substring(0, 10)] =
+          (sums[entry.lastModified.substring(0, 10)] || 0) + 1
         return sums
       }, {})
 
@@ -208,9 +231,8 @@ export default {
         datasets: [
           {
             data: [
-              this.details.survey.totalRespondents,
-              this.details.survey.totalInvites -
-                this.details.survey.totalRespondents,
+              this.details.survey.responses,
+              this.details.survey.invitees - this.details.survey.responses,
             ],
             backgroundColor: colours,
           },
@@ -218,6 +240,24 @@ export default {
         labels: ['Replied', 'Did Not Reply'],
       }
 
+      return data
+    },
+    kioskResponse() {
+      const kioskCount = this.details.invitees.filter((el) => {
+        return el.flags.includes('KIOSK')
+      }).length
+      const inviteeCount = this.details.invitees.filter((el) => {
+        return !el.flags.includes('KIOSK')
+      }).length
+      const data = {
+        datasets: [
+          {
+            data: [kioskCount, inviteeCount],
+            backgroundColor: colours,
+          },
+        ],
+        labels: ['Kiosk', 'Invited'],
+      }
       return data
     },
     differentKeys() {

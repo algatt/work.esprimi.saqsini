@@ -24,12 +24,13 @@ export function getDataAggregateByDemographic(
             return el[selectedDemographic] && el[selectedDemographic] === demo
           })
           .map((el) => {
-            return el.code
+            return el.token
           })
-        if (respondents.includes(response.invitee)) {
-          response.value.forEach((el) => {
-            if (value === el) {
-              dataset.data[datasets.labels.indexOf(el)] += 1
+        if (respondents.includes(response.token)) {
+          const parsedValue = JSON.parse(response.value)
+          parsedValue.forEach((el) => {
+            if (value === el.value) {
+              dataset.data[datasets.labels.indexOf(el.value)] += 1
             }
           })
         }
@@ -47,8 +48,9 @@ export function getDataAggregate(legendData, selectedList, originalData) {
   })
 
   originalData.responses.forEach((response) => {
-    response.value.forEach((value) => {
-      if (selectedList.includes(value)) data[value] += 1
+    const parsedValues = JSON.parse(response.value)
+    parsedValues.forEach((value) => {
+      if (selectedList.includes(value.value)) data[value.value] += 1
     })
   })
   data = Object.values(data)
@@ -69,19 +71,23 @@ export function getDataAggregate(legendData, selectedList, originalData) {
 export function getDifferentAnswers(question, responses) {
   let data = []
 
-  if (question.availableOptions) {
-    question.availableOptions.forEach((el) => {
-      data.push({ text: el.text, code: el.value })
+  if (question.options) {
+    question.options.forEach((el) => {
+      data.push({ text: el.value, code: el.value })
     })
   }
   responses.forEach((response) => {
-    response.value.forEach((value) => {
+    const parsedValue = JSON.parse(response.value)
+    parsedValue.forEach((value) => {
       if (
         !data.find((el) => {
-          return el.code === value
+          return el.code === value.value ? value.value : value
         })
       )
-        data.push({ text: value, code: value })
+        data.push({
+          text: value.value ? value.value : value,
+          code: value.value ? value.value : value,
+        })
     })
   })
 
@@ -103,9 +109,13 @@ export function getDataAggregateRanking(
     originalData.responses
   )
 
-  answers = answers.map((el) => {
-    return el.code
-  })
+  answers = answers
+    .map((el) => {
+      return el.code
+    })
+    .filter((el) => {
+      return selectedList.includes(el)
+    })
 
   const dataToReturn = {
     labels: [],
@@ -114,6 +124,7 @@ export function getDataAggregateRanking(
 
   for (let i = 0; i < answers.length; i++) {
     dataToReturn.labels.push(i + 1)
+
     dataToReturn.datasets.push({
       label: answers[i],
       data: new Array(answers.length).fill(0),
@@ -122,34 +133,35 @@ export function getDataAggregateRanking(
   }
 
   const whichResponses = originalData.responses
-  let invitees = []
+  const invitees = []
 
-  if (selectedDemographic.length !== 0) {
-    const demographicValues = selectedDemographic.map((el) => {
-      return el.name
-    })
-    const whichDemographic = selectedDemographic[0].type
-    invitees = originalData.invitees
-      .filter((el) => {
-        return (
-          el[whichDemographic] &&
-          demographicValues.includes(el[whichDemographic])
-        )
-      })
-      .map((el) => {
-        return el.code
-      })
-  }
+  // if (selectedDemographic.length !== 0) {
+  //   const demographicValues = selectedDemographic.map((el) => {
+  //     return el.name
+  //   })
+  //   const whichDemographic = selectedDemographic[0].type
+  //   invitees = originalData.invitees
+  //     .filter((el) => {
+  //       return (
+  //         el[whichDemographic] &&
+  //         demographicValues.includes(el[whichDemographic])
+  //       )
+  //     })
+  //     .map((el) => {
+  //       return el.token
+  //     })
+  // }
 
   whichResponses.forEach((response) => {
-    for (let i = 0; i < response.value.length; i++) {
+    const parsedValues = JSON.parse(response.value)
+    for (let i = 0; i < parsedValues.length; i++) {
       const x = dataToReturn.datasets.find((el) => {
         return (
           (selectedDemographic.length === 0 &&
-            el.label === response.value[i]) ||
+            el.label === parsedValues[i].value) ||
           (selectedDemographic.length !== 0 &&
-            invitees.includes(response.invitee) &&
-            el.label === response.value[i])
+            invitees.includes(response.token) &&
+            el.label === parsedValues[i].value)
         )
       })
       if (x) x.data[i] += 1

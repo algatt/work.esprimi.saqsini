@@ -1,12 +1,13 @@
 <template>
   <div class="frosted p-0 md:p-8">
     <div
-      class="check-height w-full self-start h-screen md:h-auto mx-auto flex flex-col bg-white relative rounded-none md:rounded-lg md:border md:border-gray-100 shadow-md"
+      class="check-height mx-auto bg-white rounded-none md:border md:border-gray-100 shadow-md overflow-y-auto relative"
       :class="`md:${width}`"
       @click.stop
     >
       <div
-        class="bg-primary p-3 text-white text-lg rounded-none md:rounded-t-lg"
+        class="bg-primary p-3 text-white text-lg sticky top-0 left-0 z-30"
+        style="height: 50px"
       >
         <h5 class="pl-2">
           <slot name="title"></slot>
@@ -18,7 +19,7 @@
           >
         </h5>
       </div>
-      <div class="flex flex-col p-5 overflow-y-auto">
+      <div class="flex p-5" style="height: calc(100% - 50px)">
         <slot name="content"></slot>
       </div>
     </div>

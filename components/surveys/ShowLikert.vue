@@ -28,7 +28,7 @@
           class="card-likert"
           :class="
             defaultStyle
-              ? answers.includes(option.value)
+              ? answers.length > 0 && answers[0].value === option.value
                 ? 'border-primary bg-primary text-white'
                 : 'border-primary'
               : null
@@ -36,7 +36,7 @@
           :style="
             defaultStyle
               ? null
-              : answers.includes(option.value)
+              : answers.length > 0 && answers[0].value === option.value
               ? {
                   borderColor: survey.options.accentColour,
                   color: survey.options.backgroundColour,
@@ -47,7 +47,7 @@
                   color: survey.options.textColour,
                 }
           "
-          @click="answers = [option.value]"
+          @click="addAnswer(option)"
         >
           <span v-if="!question.showWeights" class="flex justify-center">{{
             option.text
@@ -115,6 +115,12 @@ export default {
     if (this.existingAnswer) {
       this.answers = JSON.parse(JSON.stringify(this.existingAnswer))
     }
+  },
+  methods: {
+    addAnswer(option) {
+      option.code = option.value
+      this.answers = [option]
+    },
   },
 }
 </script>

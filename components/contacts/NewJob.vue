@@ -1,104 +1,109 @@
 <template>
-  <div class="flex flex-col w-full space-y-5">
-    <div class="flex flex-col">
-      <label for="inputCompany" class="label">Company</label>
-      <select
-        id="inputCompany"
-        v-model="form.companyCode"
-        class="input select"
-        @change="
-          updateDepartments()
-          form.departmentCode = null
-        "
-      >
-        <option
-          v-for="company in companies"
-          :key="company.code"
-          :value="company.code"
-          @click="form.companyName = company.name"
+  <div class="flex flex-col justify-between w-full">
+    <div class="flex flex-col w-full space-y-5">
+      <div class="flex flex-col">
+        <label for="inputCompany" class="label">Company</label>
+        <select
+          id="inputCompany"
+          v-model="form.companyCode"
+          class="input select"
+          @change="
+            updateDepartments()
+            form.departmentCode = null
+          "
         >
-          {{ company.name }}
-        </option>
-      </select>
-    </div>
+          <option
+            v-for="company in companies"
+            :key="company.code"
+            :value="company.code"
+            @click="form.companyName = company.name"
+          >
+            {{ company.name }}
+          </option>
+        </select>
+      </div>
 
-    <div class="flex flex-col">
-      <label for="inputDepartment" class="label">Department</label>
-      <select
-        id="inputDepartment"
-        v-model="form.departmentCode"
-        class="input select"
-      >
-        <option
-          v-for="department in departments"
-          :key="department.code"
-          :value="department.code"
-          @click="form.departmentName = department.name"
+      <div class="flex flex-col">
+        <label for="inputDepartment" class="label">Department</label>
+        <select
+          id="inputDepartment"
+          v-model="form.departmentCode"
+          class="input select"
         >
-          {{ department.name }}
-        </option>
-      </select>
-    </div>
+          <option
+            v-for="department in departments"
+            :key="department.code"
+            :value="department.code"
+            @click="form.departmentName = department.name"
+          >
+            {{ department.name }}
+          </option>
+        </select>
+      </div>
 
-    <div class="flex flex-col">
-      <label for="inputRole" class="label">Role</label>
-      <select id="inputRole" v-model="form.roleCode" class="input select">
-        <option
-          v-for="role in roles"
-          :key="role.code"
-          :value="role.code"
-          @click="form.roleName = role.name"
-        >
-          {{ role.name }}
-        </option>
-      </select>
-    </div>
+      <div class="flex flex-col">
+        <label for="inputRole" class="label">Role</label>
+        <select id="inputRole" v-model="form.roleCode" class="input select">
+          <option
+            v-for="role in roles"
+            :key="role.code"
+            :value="role.code"
+            @click="form.roleName = role.name"
+          >
+            {{ role.name }}
+          </option>
+        </select>
+      </div>
 
-    <div class="flex flex-col">
+      <div class="flex flex-col">
+        <div class="flex items-center">
+          <label for="inputEmail" class="label">Email</label>
+          <span v-if="$v.form.email.$error">
+            <span v-if="!$v.form.email.email" class="error"
+              >Invalid email format.</span
+            ></span
+          >
+        </div>
+        <input
+          id="inputEmail"
+          v-model="form.email"
+          placeholder="Enter email address"
+          class="input"
+          @change="$v.form.email.$touch()"
+        />
+      </div>
+
+      <div class="flex flex-col">
+        <div class="flex items-center">
+          <label for="inputPhone" class="label">Phone</label>
+          <span v-if="!isPhoneValid" class="error">invalid phone</span>
+        </div>
+        <vue-tel-input
+          id="inputPhone"
+          v-model="phoneNumber"
+          class="border-2 border-gray-300 rounded-sm py-1 focus:bg-gray-100 focus:border-primary transition duration-500 ring-offset-2 focus:outline-none"
+          @validate="validatePhone"
+        />
+      </div>
+
       <div class="flex items-center">
-        <label for="inputEmail" class="label">Email</label>
-        <span v-if="$v.form.email.$error">
-          <span v-if="!$v.form.email.email" class="error"
-            >Invalid email format.</span
-          ></span
+        <toggle-switch
+          :checked="form.isActive"
+          @clicked="form.isActive = $event"
+        >
+          <template v-slot:leftLabel>Not Active</template>
+          <template v-slot:rightLabel>Active</template>
+        </toggle-switch>
+        <popup-info
+          ><template v-slot:text
+            >Determines if employee is still active in this position or
+            not.</template
+          ></popup-info
         >
       </div>
-      <input
-        id="inputEmail"
-        v-model="form.email"
-        placeholder="Enter email address"
-        class="input"
-        @change="$v.form.email.$touch()"
-      />
     </div>
-
-    <div class="flex flex-col">
-      <div class="flex items-center">
-        <label for="inputPhone" class="label">Phone</label>
-        <span v-if="!isPhoneValid" class="error">invalid phone</span>
-      </div>
-      <vue-tel-input
-        id="inputPhone"
-        v-model="phoneNumber"
-        class="border-2 border-gray-300 rounded-sm py-1 focus:bg-gray-100 focus:border-primary transition duration-500 ring-offset-2 focus:outline-none"
-        @validate="validatePhone"
-      />
-    </div>
-
-    <div class="flex items-center">
-      <toggle-switch :checked="form.isActive" @clicked="form.isActive = $event">
-        <template v-slot:leftLabel>Not Active</template>
-        <template v-slot:rightLabel>Active</template>
-      </toggle-switch>
-      <popup-info
-        ><template v-slot:text
-          >Determines if employee is still active in this position or
-          not.</template
-        ></popup-info
-      >
-    </div>
-
     <edit-object-modal-bottom-part
+      class="pt-10 pb-5"
       :form="form"
       which="jobs"
       :is-valid="true"

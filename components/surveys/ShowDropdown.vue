@@ -14,7 +14,7 @@
     </div>
     <div class="flex flex-col flex-wrap md:flex-row mt-2">
       <select
-        v-model="answers[0]"
+        v-model="answers"
         class="dropdown-input dropdown-select md:w-6/12 w-full"
         :class="defaultStyle ? 'focus:border-primary' : null"
         :style="
@@ -27,6 +27,7 @@
               }
         "
       >
+        <option value="" disabled selected>{{ getNotSelected() }}</option>
         <option
           v-for="(option, index) in options"
           :key="index"
@@ -37,7 +38,7 @@
       </select>
     </div>
     <div class="flex my-2">
-      <button class="btn-link cursor-pointer" @click="answers = []">
+      <button class="btn-link cursor-pointer" @click="answers = ''">
         {{ languageText['clear'] }}
       </button>
     </div>
@@ -45,7 +46,6 @@
 </template>
 
 <script>
-// @click="answers = option.value ? [option.value] : []"
 import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
 
 export default {
@@ -72,18 +72,12 @@ export default {
   },
   data() {
     return {
-      answers: [],
+      answers: '',
     }
   },
   computed: {
     options() {
-      const x = JSON.parse(JSON.stringify(this.question.options))
-      x.unshift({
-        ordinalPosition: 0,
-        text: this.languageText.not_selected,
-        value: null,
-      })
-      return x
+      return JSON.parse(JSON.stringify(this.question.options))
     },
     survey() {
       return parseSurveyToForm(
@@ -95,15 +89,27 @@ export default {
   },
   watch: {
     answers() {
-      this.$emit('answers', this.answers)
+      if (this.answers === '') {
+        this.$emit('answers', [])
+      } else {
+        const whichOption = this.options.find((el) => {
+          return el.value === this.answers
+        })
+
+        whichOption.code = whichOption.value
+        this.$emit('answers', [whichOption])
+      }
     },
   },
   created() {
-    if (this.existingAnswer && this.existingAnswer.length !== 0) {
-      this.answers = JSON.parse(JSON.stringify(this.existingAnswer))
-    } else {
-      this.answers.push(null)
+    if (this.existingAnswer && this.existingAnswer.length > 0) {
+      this.answers = this.existingAnswer[0].value
     }
+  },
+  methods: {
+    getNotSelected() {
+      return this.languageText.not_selected
+    },
   },
 }
 </script>

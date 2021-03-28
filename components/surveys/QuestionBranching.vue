@@ -332,11 +332,38 @@ export default {
         return el.code === questionCode
       })
 
-      return x
-        ? x.options.map((el) => {
-            return { code: el.value, name: el.value }
+      if (x.flags.includes('RANKING')) {
+        const data = []
+        x.options.forEach((el) => {
+          for (let i = 1; i <= x.options.length; i++) {
+            const value = `${el.value} (${i})`
+            data.push({ code: value, name: value })
+          }
+        })
+        return data
+      } else if (x.flags.includes('RADIO_GRID')) {
+        const data = []
+        const rows = x.options.filter((el) => {
+          return el.flags.includes('ROW')
+        })
+        const columns = x.options.filter((el) => {
+          return el.flags.includes('COLUMN')
+        })
+        rows.forEach((row) => {
+          columns.forEach((column) => {
+            const value = `${row.value}#${column.value}`
+            const name = `${row.value} (${column.value})`
+            data.push({ code: value, name })
           })
-        : []
+        })
+        return data
+      } else {
+        return x
+          ? x.options.map((el) => {
+              return { code: el.value, name: el.value }
+            })
+          : []
+      }
     },
     getCurrentFilterOptions(filterName) {
       const x = this.filters[filterName]
@@ -350,24 +377,24 @@ export default {
         })
         .questions[questionIndex].options.includes(value)
     },
-    addOptionToQuestion(groupIndex, questionIndex, value) {
-      for (const i in this.conditions) {
-        if (this.conditions[i].groupIndex === groupIndex) {
-          if (
-            this.conditions[i].questions[questionIndex].options.includes(value)
-          )
-            this.conditions[i].questions[
-              questionIndex
-            ].options = this.conditions[i].questions[
-              questionIndex
-            ].options.filter((el) => {
-              return el !== value
-            })
-          else this.conditions[i].questions[questionIndex].options.push(value)
-        }
-      }
-      this.$forceUpdate()
-    },
+    // addOptionToQuestion(groupIndex, questionIndex, value) {
+    //   for (const i in this.conditions) {
+    //     if (this.conditions[i].groupIndex === groupIndex) {
+    //       if (
+    //         this.conditions[i].questions[questionIndex].options.includes(value)
+    //       )
+    //         this.conditions[i].questions[
+    //           questionIndex
+    //         ].options = this.conditions[i].questions[
+    //           questionIndex
+    //         ].options.filter((el) => {
+    //           return el !== value
+    //         })
+    //       else this.conditions[i].questions[questionIndex].options.push(value)
+    //     }
+    //   }
+    //   this.$forceUpdate()
+    // },
     manageOptions(groupIndex, questionIndex, newList) {
       for (const i in this.conditions) {
         if (this.conditions[i].groupIndex === groupIndex) {

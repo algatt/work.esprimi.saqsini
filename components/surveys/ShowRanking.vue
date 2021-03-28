@@ -152,9 +152,11 @@ export default {
   methods: {
     moveOptionToAnswers(option, index) {
       this.options.splice(index, 1)
+      let rank = this.answers.length + 1
+      option.code = `${option.value} (${rank})`
       this.answers.push(option)
       this.dummies = []
-      let rank = this.answers.length + 1
+
       this.options.forEach(() => {
         this.dummies.push({
           code: Math.random(),

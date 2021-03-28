@@ -29,6 +29,7 @@ export default {
     api_path: 'https://com-lobeslab-sdc-api-test.herokuapp.com',
     siteUrl: 'https://saqsini.herokuapp.com/',
     siteUrlActivate: this.siteUrl + 'activate',
+    authorization: '2c276e30-b685-493e-a660-559feae22f8d',
   },
 
   // Global CSS (https://go.nuxtjs.dev/config-css)

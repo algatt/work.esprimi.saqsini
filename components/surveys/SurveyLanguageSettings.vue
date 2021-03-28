@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="flex flex-col justify-between w-full">
     <div v-if="!survey.flags.includes('HAS_LANGUAGE_PACK_FILE')">
       <p class="mb-3">
         This survey only has the default language. You can generate a file that
@@ -52,6 +52,7 @@
         </button>
       </div>
     </div>
+
     <edit-object-modal-bottom-part
       :form="{}"
       which="surveys"

@@ -70,7 +70,7 @@ export const actions = {
             {
               headers: {
                 token: cookies['x-access-token'],
-                Authorization: '2c276e30-b685-493e-a660-559feae22f8d',
+                Authorization: process.env.authorization,
               },
             }
           )

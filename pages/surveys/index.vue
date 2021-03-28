@@ -125,12 +125,12 @@
                 name: 'surveys-responses-id',
                 params: { id: slotProps.item.code },
               }"
-              class="w-full bg-gray-100 border rounded relative"
+              class="w-full"
               @click.stop.native
             >
-              <button class="w-full">
+              <button class="w-full bg-gray-100 relative h-7">
                 <span
-                  class="absolute left-0 top-0 rounded"
+                  class="absolute left-0 top-0 h-7"
                   :class="
                     slotProps.item.responses === slotProps.item.invitees
                       ? 'bg-primary'
@@ -206,7 +206,7 @@
                   <i class="fas fa-flag fa-fw fa-sm"></i>Mark for Deletion</span
                 >
               </button>
-              <button>
+              <button v-if="slotProps.item.flags.includes('KIOSK')">
                 <nuxt-link
                   class="popup-menu-button"
                   :to="{
@@ -389,8 +389,8 @@ export default {
       }
     },
     calculateWidth(responses, invitees) {
-      const x = Math.round(responses / invitees)
-      return isNaN(x) ? 0 : x * 100
+      const x = responses / invitees
+      return isNaN(x) ? 0 : Math.round(x * 100)
     },
   },
 }

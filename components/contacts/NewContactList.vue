@@ -1,54 +1,55 @@
 <template>
-  <div class="flex flex-col w-full space-y-5">
-    <div class="flex flex-col">
-      <div class="flex items-center">
-        <label for="inputName" class="label">List Name</label>
-        <span v-if="$v.form.name.$error">
-          <span v-if="!$v.form.name.required" class="error"
-            >required</span
-          ></span
-        >
+  <div class="flex flex-col justify-between w-full">
+    <div class="flex flex-col w-full space-y-5">
+      <div class="flex flex-col">
+        <div class="flex items-center">
+          <label for="inputName" class="label">List Name</label>
+          <span v-if="$v.form.name.$error">
+            <span v-if="!$v.form.name.required" class="error"
+              >required</span
+            ></span
+          >
+        </div>
+        <input
+          id="inputName"
+          v-model="form.name"
+          placeholder="Enter list reference name"
+          class="input"
+          @change="$v.form.name.$touch()"
+        />
       </div>
-      <input
-        id="inputName"
-        v-model="form.name"
-        placeholder="Enter list reference name"
-        class="input"
-        @change="$v.form.name.$touch()"
-      />
-    </div>
 
-    <div v-if="form.code === -1" class="flex flex-col">
-      <div class="flex items-center">
-        <label for="inputData" class="label-optional">List Data</label>
+      <div v-if="form.code === -1" class="flex flex-col">
+        <div class="flex items-center">
+          <label for="inputData" class="label-optional">List Data</label>
+        </div>
+        <input
+          id="inputData"
+          type="file"
+          placeholder="Upload a list template"
+          class="input"
+          @change="fileSelected"
+        />
       </div>
-      <input
-        id="inputData"
-        type="file"
-        placeholder="Upload a list template"
-        class="input"
-        @change="fileSelected"
-      />
-    </div>
 
-    <div class="flex flex-col">
-      <div class="flex items-center">
-        <label for="inputValidity" class="label-optional">Valid Until</label>
-        <span v-if="$v.form.deleteBy.$error">
-          <span v-if="!$v.form.deleteBy.check" class="error"
-            >Date cannot be in the past.</span
-          ></span
-        >
+      <div class="flex flex-col">
+        <div class="flex items-center">
+          <label for="inputValidity" class="label-optional">Valid Until</label>
+          <span v-if="$v.form.deleteBy.$error">
+            <span v-if="!$v.form.deleteBy.check" class="error"
+              >Date cannot be in the past.</span
+            ></span
+          >
+        </div>
+        <input
+          id="inputValidity"
+          v-model="form.deleteBy"
+          class="input"
+          type="date"
+          @change="$v.form.deleteBy.$touch()"
+        />
       </div>
-      <input
-        id="inputValidity"
-        v-model="form.deleteBy"
-        class="input"
-        type="date"
-        @change="$v.form.deleteBy.$touch()"
-      />
     </div>
-
     <edit-object-modal-bottom-part
       :form="form"
       which="contactlist"

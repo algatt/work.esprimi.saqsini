@@ -8,16 +8,16 @@
       <div class="flex justify-center items-center w-full space-x-2">
         <h6>{{ item.question.name }}</h6>
         <p class="bg-gray-100 rounded-xl px-2 py-0.5 text-gray-700">
-          {{ item.question.number }}
+          {{ item.question.questionNumber }}
         </p>
 
         <span class="text-gray-700 font-semibold"
-          >{{ getQuestionType(item.question.type).text }}
+          >{{ item.question.type.text }}
         </span>
       </div>
       <div class="flex flex-wrap w-full">
         <question-element
-          :key="item.question.code"
+          :key="item.question.questionCode"
           :data="item"
         ></question-element>
       </div>
@@ -51,30 +51,46 @@ export default {
   mounted() {
     this.workingData = JSON.parse(JSON.stringify(this.data))
 
-    this.data.questions.forEach((el) => {
+    let questions = JSON.parse(JSON.stringify(this.data.questions))
+    questions = questions
+      .sort((a, b) => {
+        return a.ordinalPosition > b.ordinalPosition ? 1 : -1
+      })
+      .filter((el) => {
+        return !el.flags.includes('SECTION')
+      })
+
+    questions.forEach((el) => {
       this.processedQuestions.push(this.processQuestion(el))
     })
 
     this.loading = false
   },
   methods: {
-    getQuestionType(type) {
-      return QUESTION_TYPES[type]
+    getQuestionType(question) {
+      let result = ''
+      question.flags.forEach((el) => {
+        if (Object.keys(QUESTION_TYPES).includes(el))
+          result = QUESTION_TYPES[el]
+      })
+      return result
     },
     processQuestion(question) {
       const data = {}
       const surveyYear = this.workingData.survey.referenceDate.substring(0, 4)
       const responses = this.workingData.responses.filter((el) => {
-        return el.question === question.code
+        return el.questionCode === question.code
       })
       const availableInvitees = responses.map((el) => {
-        return el.invitee
+        return el.token
       })
-      const invitees = this.workingData.invitees.filter((el) => {
-        return availableInvitees.includes(el.code)
+      const invitees = this.workingData.invitations.filter((el) => {
+        return availableInvitees.includes(el.token)
       })
+
       data.surveyYear = surveyYear
       data.question = question
+      data.question.type = this.getQuestionType(question)
       data.responses = responses
       data.invitees = invitees
       data.availableAnswers = this.getDifferentAnswers(question, responses)

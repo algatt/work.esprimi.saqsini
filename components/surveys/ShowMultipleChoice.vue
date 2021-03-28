@@ -16,7 +16,9 @@
         class="card-multiple-choice"
         :class="
           defaultStyle
-            ? answers.includes(option.value)
+            ? answers.find((el) => {
+                return option.value === el.value
+              })
               ? 'border-primary bg-primary text-white'
               : 'border-primary'
             : null
@@ -24,7 +26,9 @@
         :style="
           defaultStyle
             ? null
-            : answers.includes(option.value)
+            : answers.find((el) => {
+                return option.value === el.value
+              })
             ? {
                 borderColor: survey.options.accentColour,
                 backgroundColor: survey.options.accentColour,
@@ -35,12 +39,16 @@
                 color: survey.options.textColour,
               }
         "
-        @click="addToAnswer(option.value)"
+        @click="addToAnswer(option)"
       >
         <span class="w-8">
           <transition name="fade">
             <i
-              v-if="answers.includes(option.value)"
+              v-if="
+                answers.find((el) => {
+                  return option.value === el.value
+                })
+              "
               class="fas fa-check-circle"
               :style="
                 defaultStyle ? null : { color: survey.options.backgroundColour }
@@ -160,7 +168,7 @@ export default {
     },
     availableAnswers() {
       return this.question.options.map((el) => {
-        return el.text.toLowerCase()
+        return el.value.toLowerCase()
       })
     },
   },
@@ -172,28 +180,29 @@ export default {
   created() {
     if (this.existingAnswer) {
       this.answers = JSON.parse(JSON.stringify(this.existingAnswer))
-      let checkOtherAnswer = ''
-      const availableAnswers = this.question.options.map((el) => {
-        return el.value
+      const foundOtherAnswer = this.answers.find((el) => {
+        return el.otherAnswer
       })
-      this.answers.forEach((el) => {
-        if (!availableAnswers.includes(el)) checkOtherAnswer = el
-      })
-
-      this.otherAnswer = checkOtherAnswer || ''
+      if (foundOtherAnswer) {
+        this.otherAnswer = foundOtherAnswer.value
+      }
     }
   },
   methods: {
-    addToAnswer(value) {
-      if (this.question.allowMultiple === true) {
-        if (!this.answers.includes(value)) this.answers.push(value)
-        else
-          this.answers = this.answers.filter((el) => {
-            return el !== value
-          })
+    addToAnswer(option) {
+      option.code = option.value
+      const foundAnswer = this.answers.find((el) => {
+        return el.value === option.value
+      })
+      if (foundAnswer) {
+        this.answers = this.answers.filter((el) => {
+          return el.value !== option.value
+        })
       } else {
-        this.answers = [value]
-        this.otherAnswer = ''
+        if (!this.question.allowMultiple) {
+          this.answers = []
+        }
+        this.answers.push(option)
       }
     },
     checkOtherAnswer() {
@@ -201,17 +210,17 @@ export default {
         this.availableAnswers.includes(this.otherAnswer.toLowerCase().trim())
       ) {
         this.otherAnswer = ''
-      } else if (this.question.allowMultiple === true) {
-        const previousAnswers = []
-        this.answers.forEach((el) => {
-          if (this.availableAnswers.includes(el.toLowerCase().trim())) {
-            previousAnswers.push(el)
-          }
+      } else if (this.otherAnswer === '') {
+        this.answers = this.answers.filter((el) => {
+          return !el.otherAnswer
         })
-
-        this.answers = previousAnswers
-        if (this.otherAnswer !== '') this.answers.push(this.otherAnswer)
-      } else if (this.otherAnswer !== '') this.answers = [this.otherAnswer]
+      } else {
+        this.addToAnswer({
+          text: this.otherAnswer,
+          value: this.otherAnswer,
+          otherAnswer: true,
+        })
+      }
     },
   },
 }

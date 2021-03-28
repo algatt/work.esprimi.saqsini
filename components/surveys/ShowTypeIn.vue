@@ -14,7 +14,7 @@
     </div>
     <div class="flex flex-col flex-wrap md:flex-row mt-2">
       <textarea
-        v-model="answers[0]"
+        v-model="answer"
         class="input w-full"
         :style="
           defaultStyle
@@ -28,7 +28,7 @@
       ></textarea>
     </div>
     <div class="flex my-2">
-      <button class="btn-link cursor-pointer" @click="answers = []">
+      <button class="btn-link cursor-pointer" @click="answer = ''">
         {{ languageText['clear'] }}
       </button>
     </div>
@@ -62,7 +62,7 @@ export default {
   },
   data() {
     return {
-      answers: [],
+      answer: '',
     }
   },
   computed: {
@@ -75,13 +75,17 @@ export default {
     },
   },
   watch: {
-    answers() {
-      this.$emit('answers', this.answers)
+    answer() {
+      this.$emit('answers', [{ code: this.answer, value: this.answer }])
     },
   },
   created() {
-    if (this.existingAnswer) {
-      this.answers = JSON.parse(JSON.stringify(this.existingAnswer))
+    if (
+      this.existingAnswer &&
+      this.existingAnswer.length > 0 &&
+      this.existingAnswer[0].value
+    ) {
+      this.answer = JSON.parse(JSON.stringify(this.existingAnswer)).value
     }
   },
 }

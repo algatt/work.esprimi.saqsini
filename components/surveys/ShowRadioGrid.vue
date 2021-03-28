@@ -170,9 +170,9 @@ export default {
         this.answers = this.answers.filter((el) => {
           return el.row !== row
         })
-        this.answers.push({ row, column })
+        this.answers.push({ row, column, code: `${row}#${column}` })
       } else {
-        this.answers.push({ row, column })
+        this.answers.push({ row, column, code: `${row}#${column}` })
       }
     },
   },

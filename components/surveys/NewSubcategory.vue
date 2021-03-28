@@ -1,42 +1,45 @@
 <template>
-  <div class="flex flex-col w-full space-y-5">
-    <div class="flex flex-col">
-      <label for="inputCategory" class="label">Category</label>
-      <select
-        id="inputCategory"
-        v-model="form.categoryCode"
-        class="input select"
-      >
-        <option
-          v-for="category in categories"
-          :key="category.code"
-          :value="category.code"
+  <div class="flex flex-col justify-between w-full">
+    <div class="flex flex-col w-full space-y-5">
+      <div class="flex flex-col">
+        <label for="inputCategory" class="label">Category</label>
+        <select
+          id="inputCategory"
+          v-model="form.categoryCode"
+          class="input select"
         >
-          {{ category.name }}
-        </option>
-      </select>
-    </div>
-
-    <div class="flex flex-col">
-      <div class="flex items-center">
-        <label for="inputName" class="label">Subcategory</label>
-        <span v-if="$v.form.name.$error">
-          <span v-if="!$v.form.name.required" class="error">required</span
-          ><span v-else-if="!$v.form.name.uniqueNames" class="error"
-            >this subcategory already exists</span
-          ></span
-        >
+          <option
+            v-for="category in categories"
+            :key="category.code"
+            :value="category.code"
+          >
+            {{ category.name }}
+          </option>
+        </select>
       </div>
-      <input
-        id="inputName"
-        v-model="form.name"
-        placeholder="Enter subcategory name"
-        class="input"
-        @change="$v.form.name.$touch()"
-      />
+
+      <div class="flex flex-col">
+        <div class="flex items-center">
+          <label for="inputName" class="label">Subcategory</label>
+          <span v-if="$v.form.name.$error">
+            <span v-if="!$v.form.name.required" class="error">required</span
+            ><span v-else-if="!$v.form.name.uniqueNames" class="error"
+              >this subcategory already exists</span
+            ></span
+          >
+        </div>
+        <input
+          id="inputName"
+          v-model="form.name"
+          placeholder="Enter subcategory name"
+          class="input"
+          @change="$v.form.name.$touch()"
+        />
+      </div>
     </div>
 
     <edit-object-modal-bottom-part
+      class="pt-10 pb-5"
       :form="form"
       which="subcategories"
       :is-valid="isValid"
