@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!loading" ref="surveyModal" class="flex flex-col p-5 h-full">
+  <div v-if="survey" ref="surveyModal" class="flex flex-col p-5 h-full">
     <div
       class="h-32 bg-cover flex flex-wrap items-center rounded w-full mb-5"
       :style="{
@@ -68,7 +68,7 @@
         <display-question
           :key="question.code"
           class="rounded shadow-lg"
-          :style="{ backgroundColor: survey.options.backgroundColour }"
+          :display-style="survey.options"
           :language="currentLanguage"
           :language-text="languageText"
           :question="question"
@@ -164,6 +164,10 @@
       }"
     ></div>
   </div>
+  <div v-else>
+    <div class="bg-red-50">{{ originalSurvey }}</div>
+    <div class="bg-pink-100">{{ survey }}</div>
+  </div>
 </template>
 
 <script>
@@ -177,7 +181,7 @@ export default {
   name: 'PreviewSurvey',
   components: { PopupMenuVue, DisplayQuestion, LanguageFlag },
   props: {
-    surveyProp: {
+    originalSurvey: {
       type: Object,
       required: true,
     },
@@ -192,7 +196,7 @@ export default {
       answers: [],
       currentPage: 1,
       currentLanguage: 'en',
-      originalSurvey: null,
+      // originalSurvey: null,
       survey: null,
       loading: true,
     }
@@ -264,13 +268,9 @@ export default {
     },
   },
   mounted() {
-    this.$store
-      .dispatch('surveys/getSurveyByCode', this.surveyProp.code)
-      .then((response) => {
-        this.originalSurvey = response
-        this.survey = parseSurveyToForm(this.originalSurvey)
-        this.loading = false
-      })
+    this.survey = parseSurveyToForm(
+      JSON.parse(JSON.stringify(this.originalSurvey))
+    )
   },
   methods: {
     getConditionState2(surveyOptions) {

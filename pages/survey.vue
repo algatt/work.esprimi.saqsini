@@ -2,11 +2,11 @@
   <div
     v-if="!loading"
     class="min-h-screen"
-    :style="{ backgroundColor: survey.options.accentColour }"
+    :style="{ backgroundColor: parsedSurvey.options.accentColour }"
   >
     <PreviewSurvey
       class="w-11/12 md:w-8/12 mx-auto"
-      :survey-prop="survey"
+      :original-survey="survey.survey"
       :questions="surveyData.questions"
       @finishSurvey="finishSurvey"
       @answers="processAnswers"
@@ -14,7 +14,7 @@
     <modal-generic
       v-if="finished"
       width="w-64"
-      :style="{ color: survey.options.accentColour }"
+      :style="{ color: parsedSurvey.options.accentColour }"
     >
       <template v-slot:title
         ><span class="w-full flex justify-center py-10"
@@ -28,12 +28,12 @@
 <script>
 import Spinner from '~/components/layouts/Spinner'
 import PreviewSurvey from '~/components/surveys/PreviewSurvey'
-import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
 import ModalGeneric from '~/components/layouts/ModalGeneric'
+import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
 
 export default {
   name: 'SurveyVue',
-  components: { ModalGeneric, PreviewSurvey, Spinner },
+  components: { ModalGeneric, Spinner, PreviewSurvey },
   layout: 'surveyParticipation',
   data() {
     return {
@@ -45,7 +45,10 @@ export default {
   },
   computed: {
     survey() {
-      return parseSurveyToForm(this.surveyData.survey)
+      return this.surveyData
+    },
+    parsedSurvey() {
+      return parseSurveyToForm(JSON.parse(JSON.stringify(this.survey.survey)))
     },
   },
   mounted() {

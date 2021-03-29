@@ -1,14 +1,17 @@
 <template>
-  <div class="mx-auto p-5 flex flex-col">
+  <div
+    class="mx-auto p-5 flex flex-col"
+    :style="{ backgroundColor: displayStyle.backgroundColour }"
+  >
     <show-section
       v-if="questionType === 'SECTION'"
       :question="parsedQuestion"
-      :default-style="defaultStyle"
+      :display-style="displayStyle"
     ></show-section>
     <show-multiple-choice
       v-else-if="questionType === 'MULTIPLE_CHOICE'"
       :question="parsedQuestion"
-      :default-style="defaultStyle"
+      :display-style="displayStyle"
       :existing-answer="existingAnswer"
       :language-text="languageText"
       @answers="$emit('answers', $event)"
@@ -16,7 +19,7 @@
     <show-likert
       v-else-if="questionType === 'LIKERT'"
       :question="parsedQuestion"
-      :default-style="defaultStyle"
+      :display-style="displayStyle"
       :existing-answer="existingAnswer"
       :language-text="languageText"
       @answers="$emit('answers', $event)"
@@ -24,7 +27,7 @@
     <show-dropdown
       v-else-if="questionType === 'DROPDOWN'"
       :question="parsedQuestion"
-      :default-style="defaultStyle"
+      :display-style="displayStyle"
       :existing-answer="existingAnswer"
       :language-text="languageText"
       @answers="$emit('answers', $event)"
@@ -32,7 +35,7 @@
     <show-type-in
       v-else-if="questionType === 'TYPE_IN'"
       :question="parsedQuestion"
-      :default-style="defaultStyle"
+      :display-style="displayStyle"
       :existing-answer="existingAnswer"
       :language-text="languageText"
       @answers="$emit('answers', $event)"
@@ -41,7 +44,7 @@
       v-else-if="questionType === 'RANKING'"
       :key="question.code + ' ' + language"
       :question="parsedQuestion"
-      :default-style="defaultStyle"
+      :display-style="displayStyle"
       :existing-answer="existingAnswer"
       :language-text="languageText"
       @answers="$emit('answers', $event)"
@@ -50,7 +53,7 @@
       v-else-if="questionType === 'RADIO_GRID'"
       :key="question.code + ' ' + language"
       :question="parsedQuestion"
-      :default-style="defaultStyle"
+      :display-style="displayStyle"
       :existing-answer="existingAnswer"
       :language-text="languageText"
       @answers="$emit('answers', $event)"
@@ -87,10 +90,12 @@ export default {
       type: Object,
       required: true,
     },
-    defaultStyle: {
-      type: Boolean,
+    displayStyle: {
+      type: Object,
       required: false,
-      default: false,
+      default: () => {
+        return {}
+      },
     },
     language: {
       type: String,

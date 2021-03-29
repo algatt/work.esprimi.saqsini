@@ -2,7 +2,9 @@
   <div class="flex flex-col">
     <div
       class="flex font-semibold mb-2 items-center"
-      :style="defaultStyle ? null : { color: survey.options.textColour }"
+      :style="
+        displayStyle.textColour ? null : { color: displayStyle.textColour }
+      "
     >
       {{ question.text
       }}<span
@@ -27,24 +29,24 @@
           :key="index"
           class="card-likert"
           :class="
-            defaultStyle
+            displayStyle.accentColour
               ? answers.length > 0 && answers[0].value === option.value
                 ? 'border-primary bg-primary text-white'
                 : 'border-primary'
               : null
           "
           :style="
-            defaultStyle
+            displayStyle.accentColour
               ? null
               : answers.length > 0 && answers[0].value === option.value
               ? {
-                  borderColor: survey.options.accentColour,
-                  color: survey.options.backgroundColour,
-                  backgroundColor: survey.options.accentColour,
+                  borderColor: displayStyle.accentColour,
+                  color: displayStyle.backgroundColour,
+                  backgroundColor: displayStyle.accentColour,
                 }
               : {
-                  borderColor: survey.options.accentColour,
-                  color: survey.options.textColour,
+                  borderColor: displayStyle.accentColour,
+                  color: displayStyle.textColour,
                 }
           "
           @click="addAnswer(option)"
@@ -68,8 +70,6 @@
 </template>
 
 <script>
-import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
-
 export default {
   name: 'ShowLikert',
   props: {
@@ -77,10 +77,12 @@ export default {
       required: true,
       type: Object,
     },
-    defaultStyle: {
-      required: false,
-      type: Boolean,
-      default: false,
+    displayStyle: {
+      required: true,
+      type: Object,
+      default: () => {
+        return {}
+      },
     },
     existingAnswer: {
       required: false,
@@ -97,15 +99,7 @@ export default {
       answers: [],
     }
   },
-  computed: {
-    survey() {
-      return parseSurveyToForm(
-        this.$store.getters.getItems('surveys').find((el) => {
-          return el.code === this.question.surveyCode
-        })
-      )
-    },
-  },
+
   watch: {
     answers() {
       this.$emit('answers', this.answers)

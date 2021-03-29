@@ -2,7 +2,9 @@
   <div class="flex flex-col">
     <div
       class="flex font-semibold mb-2 items-center"
-      :style="defaultStyle ? null : { color: survey.options.textColour }"
+      :style="
+        displayStyle.textColour ? null : { color: displayStyle.textColour }
+      "
     >
       {{ question.text
       }}<span
@@ -23,7 +25,11 @@
         >
           <p
             class="text-center w-full"
-            :style="defaultStyle ? null : { color: survey.options.textColour }"
+            :style="
+              displayStyle.textColour
+                ? null
+                : { color: displayStyle.textColour }
+            "
           >
             {{ options.scale[index].text }}
           </p>
@@ -44,7 +50,9 @@
             <p
               class="text-center w-full"
               :style="
-                defaultStyle ? null : { color: survey.options.textColour }
+                displayStyle.textColour
+                  ? null
+                  : { color: displayStyle.textColour }
               "
             >
               {{ options.rows[index] }}
@@ -58,7 +66,9 @@
           >
             <button
               :style="
-                defaultStyle ? null : { color: survey.options.textColour }
+                displayStyle.textColour
+                  ? null
+                  : { color: displayStyle.textColour }
               "
               @click="setAnswer(item, i)"
             >
@@ -82,8 +92,6 @@
 </template>
 
 <script>
-import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
-
 export default {
   name: 'ShowRadioGrid',
   props: {
@@ -91,10 +99,12 @@ export default {
       required: true,
       type: Object,
     },
-    defaultStyle: {
-      required: false,
-      type: Boolean,
-      default: false,
+    displayStyle: {
+      required: true,
+      type: Object,
+      default: () => {
+        return {}
+      },
     },
     existingAnswer: {
       required: false,
@@ -115,15 +125,7 @@ export default {
       },
     }
   },
-  computed: {
-    survey() {
-      return parseSurveyToForm(
-        this.$store.getters.getItems('surveys').find((el) => {
-          return el.code === this.question.surveyCode
-        })
-      )
-    },
-  },
+
   watch: {
     answers() {
       this.$emit('answers', this.answers)

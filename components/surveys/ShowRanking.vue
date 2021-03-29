@@ -2,7 +2,9 @@
   <div class="flex flex-col">
     <div
       class="flex font-semibold mb-2 items-center"
-      :style="defaultStyle ? null : { color: survey.options.textColour }"
+      :style="
+        displayStyle.textColour ? null : { color: displayStyle.textColour }
+      "
     >
       {{ question.text
       }}<span
@@ -14,7 +16,9 @@
     </div>
     <div
       class="flex w-full"
-      :style="defaultStyle ? null : { color: survey.options.textColour }"
+      :style="
+        displayStyle.textColour ? null : { color: displayStyle.textColour }
+      "
     >
       <i>{{ languageText['ranking_instructions'] }}</i>
     </div>
@@ -24,13 +28,13 @@
           v-for="(option, index) in options"
           :key="'options' + index"
           class="md:w-7/12 w-11/12 p-3 my-2 rounded shadow-sm cursor-pointer mx-auto border-2 border-transparent"
-          :class="defaultStyle ? 'bg-primary' : null"
+          :class="displayStyle.accentColour ? 'bg-primary' : null"
           :style="
-            defaultStyle
+            displayStyle.accentColour
               ? { color: '#FFFFFF' }
               : {
-                  backgroundColor: survey.options.accentColour,
-                  color: survey.options.backgroundColour,
+                  backgroundColor: displayStyle.accentColour,
+                  color: displayStyle.backgroundColour,
                 }
           "
           @click="moveOptionToAnswers(option, index)"
@@ -44,13 +48,13 @@
           v-for="(option, index) in answers"
           :key="'answers' + index"
           class="w-11/12 md:w-7/12 p-3 my-2 rounded shadow-sm cursor-pointer mx-auto border-2 border-transparent"
-          :class="defaultStyle ? 'bg-primary text-white' : null"
+          :class="displayStyle.accentColour ? 'bg-primary text-white' : null"
           :style="
-            defaultStyle
+            displayStyle.accentColour
               ? null
               : {
-                  backgroundColor: survey.options.accentColour,
-                  color: survey.options.backgroundColour,
+                  backgroundColor: displayStyle.accentColour,
+                  color: displayStyle.backgroundColour,
                 }
           "
           @click="moveAnswerToOptions(option, index)"
@@ -62,13 +66,15 @@
           :key="index"
           class="w-11/12 md:w-7/12 p-3 my-2 rounded shadow-sm mx-auto border-2 border-dashed cursor-default"
           :class="
-            defaultStyle
+            displayStyle.accentColour
               ? 'bg-gray-100 border-gray-200'
-              : survey.options.backgroundColour === '#000000'
+              : displayStyle.backgroundColour === '#000000'
               ? 'bg-gray-700 border-gray-800'
               : 'bg-gray-100 border-gray-200'
           "
-          :style="defaultStyle ? null : { color: survey.options.textColour }"
+          :style="
+            displayStyle.textColour ? null : { color: displayStyle.textColour }
+          "
         >
           <span class="flex flex-grow">{{ option.text }}</span>
         </div>
@@ -83,8 +89,6 @@
 </template>
 
 <script>
-import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
-
 export default {
   name: 'ShowRanking',
   props: {
@@ -92,10 +96,12 @@ export default {
       required: true,
       type: Object,
     },
-    defaultStyle: {
-      required: false,
-      default: false,
-      type: Boolean,
+    displayStyle: {
+      required: true,
+      default: () => {
+        return {}
+      },
+      type: Object,
     },
     existingAnswer: {
       required: false,
@@ -114,15 +120,7 @@ export default {
       options: [],
     }
   },
-  computed: {
-    survey() {
-      return parseSurveyToForm(
-        this.$store.getters.getItems('surveys').find((el) => {
-          return el.code === this.question.surveyCode
-        })
-      )
-    },
-  },
+
   watch: {
     answers() {
       this.$emit('answers', this.answers)

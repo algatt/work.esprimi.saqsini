@@ -2,7 +2,9 @@
   <div class="flex flex-col">
     <div
       class="flex font-semibold mb-2 items-center"
-      :style="defaultStyle ? null : { color: survey.options.textColour }"
+      :style="
+        displayStyle.textColour ? null : { color: displayStyle.textColour }
+      "
     >
       {{ question.text
       }}<span
@@ -16,14 +18,14 @@
       <select
         v-model="answers"
         class="dropdown-input dropdown-select md:w-6/12 w-full"
-        :class="defaultStyle ? 'focus:border-primary' : null"
+        :class="displayStyle.accentColour ? 'focus:border-primary' : null"
         :style="
-          defaultStyle
+          displayStyle.accentColour
             ? null
             : {
-                borderColor: survey.options.accentColour,
-                backgroundColor: survey.options.backgroundColour,
-                color: survey.options.textColour,
+                borderColor: displayStyle.accentColour,
+                backgroundColor: displayStyle.backgroundColour,
+                color: displayStyle.textColour,
               }
         "
       >
@@ -46,8 +48,6 @@
 </template>
 
 <script>
-import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
-
 export default {
   name: 'ShowDropdown',
   props: {
@@ -55,10 +55,12 @@ export default {
       required: true,
       type: Object,
     },
-    defaultStyle: {
+    displayStyle: {
       required: true,
-      type: Boolean,
-      default: false,
+      type: Object,
+      default: () => {
+        return {}
+      },
     },
     existingAnswer: {
       required: false,
@@ -78,13 +80,6 @@ export default {
   computed: {
     options() {
       return JSON.parse(JSON.stringify(this.question.options))
-    },
-    survey() {
-      return parseSurveyToForm(
-        this.$store.getters.getItems('surveys').find((el) => {
-          return el.code === this.question.surveyCode
-        })
-      )
     },
   },
   watch: {
@@ -109,6 +104,8 @@ export default {
   methods: {
     getNotSelected() {
       return this.languageText.not_selected
+        ? this.languageText.not_selected
+        : 'Not Selected'
     },
   },
 }

@@ -2,7 +2,9 @@
   <div class="flex flex-col">
     <div
       class="flex font-semibold mb-2 items-center"
-      :style="defaultStyle ? null : { color: survey.options.textColour }"
+      :style="
+        displayStyle.textColour ? null : { color: displayStyle.textColour }
+      "
     >
       {{ question.text
       }}<span
@@ -17,12 +19,12 @@
         v-model="answer"
         class="input w-full"
         :style="
-          defaultStyle
+          displayStyle.backgroundColour
             ? null
             : {
-                backgroundColor: survey.options.backgroundColour,
-                color: survey.options.textColour,
-                borderColor: survey.options.accentColour,
+                backgroundColor: displayStyle.backgroundColour,
+                color: displayStyle.textColour,
+                borderColor: displayStyle.accentColour,
               }
         "
       ></textarea>
@@ -36,8 +38,6 @@
 </template>
 
 <script>
-import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
-
 export default {
   name: 'ShowTypeIn',
   props: {
@@ -45,10 +45,12 @@ export default {
       required: true,
       type: Object,
     },
-    defaultStyle: {
-      type: Boolean,
-      required: false,
-      default: false,
+    displayStyle: {
+      type: Object,
+      required: true,
+      default: () => {
+        return {}
+      },
     },
     existingAnswer: {
       required: false,
@@ -65,15 +67,7 @@ export default {
       answer: '',
     }
   },
-  computed: {
-    survey() {
-      return parseSurveyToForm(
-        this.$store.getters.getItems('surveys').find((el) => {
-          return el.code === this.question.surveyCode
-        })
-      )
-    },
-  },
+
   watch: {
     answer() {
       this.$emit('answers', [{ code: this.answer, value: this.answer }])

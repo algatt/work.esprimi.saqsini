@@ -2,7 +2,7 @@
   <div class="flex flex-col">
     <div
       class="flex font-semibold mb-2 items-center"
-      :style="defaultStyle ? null : { color: survey.options.textColour }"
+      :style="{ color: displayStyle.textColour }"
     >
       {{ question.text }}
       <span v-if="question.isMandatory" class="ml-1 text-xs font-medium italic">
@@ -15,7 +15,7 @@
         :key="index"
         class="card-multiple-choice"
         :class="
-          defaultStyle
+          displayStyle.accentColour
             ? answers.find((el) => {
                 return option.value === el.value
               })
@@ -24,19 +24,19 @@
             : null
         "
         :style="
-          defaultStyle
+          displayStyle.accentColour
             ? null
             : answers.find((el) => {
                 return option.value === el.value
               })
             ? {
-                borderColor: survey.options.accentColour,
-                backgroundColor: survey.options.accentColour,
-                color: survey.options.backgroundColour,
+                borderColor: displayStyle.accentColour,
+                backgroundColor: displayStyle.accentColour,
+                color: displayStyle.backgroundColour,
               }
             : {
-                borderColor: survey.options.accentColour,
-                color: survey.options.textColour,
+                borderColor: displayStyle.accentColour,
+                color: displayStyle.textColour,
               }
         "
         @click="addToAnswer(option)"
@@ -51,7 +51,9 @@
               "
               class="fas fa-check-circle"
               :style="
-                defaultStyle ? null : { color: survey.options.backgroundColour }
+                displayStyle.backgroundColour
+                  ? null
+                  : { color: displayStyle.backgroundColour }
               "
             ></i></transition
         ></span>
@@ -62,25 +64,25 @@
         v-if="question.allowOther"
         class="card-multiple-choice"
         :class="
-          defaultStyle
+          displayStyle.accentColour
             ? otherAnswer !== ''
               ? 'border-primary bg-primary text-white'
               : 'border-primary'
             : null
         "
         :style="
-          defaultStyle
+          displayStyle.accentColour
             ? null
             : otherAnswer !== ''
             ? {
-                borderColor: survey.options.accentColour,
-                backgroundColor: survey.options.accentColour,
-                color: survey.options.textColour,
+                borderColor: displayStyle.accentColour,
+                backgroundColor: displayStyle.accentColour,
+                color: displayStyle.textColour,
               }
             : {
-                borderColor: survey.options.accentColour,
-                color: survey.options.textColour,
-                backgroundColor: survey.options.backgroundColour,
+                borderColor: displayStyle.accentColour,
+                color: displayStyle.textColour,
+                backgroundColor: displayStyle.backgroundColour,
               }
         "
       >
@@ -90,7 +92,9 @@
               v-if="otherAnswer !== ''"
               class="fas fa-check-circle"
               :style="
-                defaultStyle ? null : { color: survey.options.backgroundColour }
+                displayStyle.backgroundColour
+                  ? null
+                  : { color: displayStyle.backgroundColour }
               "
             ></i></transition
         ></span>
@@ -98,21 +102,21 @@
           v-model="otherAnswer"
           class="flex flex-grow font-semibold transition duration-300"
           :class="
-            defaultStyle
+            displayStyle.accentColour
               ? otherAnswer !== ''
                 ? 'bg-primary text-white'
                 : null
               : null
           "
           :style="
-            defaultStyle
+            displayStyle.accentColour
               ? null
               : otherAnswer !== ''
               ? {
-                  color: survey.options.backgroundColour,
-                  backgroundColor: survey.options.accentColour,
+                  color: displayStyle.backgroundColour,
+                  backgroundColor: displayStyle.accentColour,
                 }
-              : { backgroundColor: survey.options.backgroundColour }
+              : { backgroundColor: displayStyle.backgroundColour }
           "
           placeholder="Other answer..."
           @blur="checkOtherAnswer"
@@ -128,8 +132,6 @@
 </template>
 
 <script>
-import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
-
 export default {
   name: 'ShowMultipleChoiceVue',
   props: {
@@ -137,10 +139,12 @@ export default {
       required: true,
       type: Object,
     },
-    defaultStyle: {
-      required: false,
-      type: Boolean,
-      default: false,
+    displayStyle: {
+      required: true,
+      type: Object,
+      default: () => {
+        return {}
+      },
     },
     existingAnswer: {
       required: false,
@@ -159,13 +163,6 @@ export default {
     }
   },
   computed: {
-    survey() {
-      return parseSurveyToForm(
-        this.$store.getters.getItems('surveys').find((el) => {
-          return el.code === this.question.surveyCode
-        })
-      )
-    },
     availableAnswers() {
       return this.question.options.map((el) => {
         return el.value.toLowerCase()
