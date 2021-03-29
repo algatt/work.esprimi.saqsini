@@ -206,17 +206,22 @@
                   <i class="fas fa-flag fa-fw fa-sm"></i>Mark for Deletion</span
                 >
               </button>
-              <button v-if="slotProps.item.flags.includes('KIOSK')">
-                <nuxt-link
-                  class="popup-menu-button"
-                  :to="{
-                    name: 'survey',
-                    query: { id: slotProps.item.publicIdentifier },
-                  }"
-                >
-                  <i class="fas fa-globe-europe fa-sm fa-fw"></i>Public
-                  URL</nuxt-link
-                >
+              <button
+                v-if="slotProps.item.flags.includes('KIOSK')"
+                @click="copyUrl(slotProps.item.publicIdentifier)"
+              >
+                <span class="popup-menu-button">
+                  <i class="fas fa-globe-europe fa-sm fa-fw"></i>Public URL
+                </span>
+                <!--                <nuxt-link-->
+                <!--                  class="popup-menu-button"-->
+                <!--                  :to="{-->
+                <!--                    name: 'survey',-->
+                <!--                    query: { id: slotProps.item.publicIdentifier },-->
+                <!--                  }"-->
+                <!--                >-->
+                <!--                  <i class="fas fa-globe-europe fa-sm fa-fw"></i>Public-->
+                <!--                  URL</nuxt-link-->
               </button>
             </template>
           </popup-menu>
@@ -391,6 +396,14 @@ export default {
     calculateWidth(responses, invitees) {
       const x = responses / invitees
       return isNaN(x) ? 0 : Math.round(x * 100)
+    },
+    copyUrl(url) {
+      url = `${process.env.siteUrl}survey?id=${url}`
+      navigator.clipboard.writeText(url).then(() => {
+        this.$toasted.show('URL copied to clipboard', {
+          action: { text: 'GO', href: url, target: '_blank' },
+        })
+      })
     },
   },
 }
