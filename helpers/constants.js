@@ -104,3 +104,20 @@ export const SURVEY_LANGUAGE_GENERIC_TERMS = {
   required: 7,
   position: 8,
 }
+
+export const USER_META_DATA = {
+  navigator: [
+    'appCodeName',
+    'appVersion',
+    'buildId',
+    'cookieEnabled',
+    'doNotTrack',
+    'language',
+    'languages',
+    'maxTouchPoints',
+    'oscpu',
+    'platform',
+    'userAgent',
+  ],
+  window: ['fullScreen', 'innerHeight', 'innerWidth'],
+}
