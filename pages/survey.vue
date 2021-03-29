@@ -70,15 +70,16 @@ export default {
           tempAnswers.push({
             token: this.surveyData.invitations[0].token,
             questionCode: el.code,
-            value: JSON.stringify(el.answers),
+            value: el.answers,
             surveyOptions: null,
           })
         })
-      this.finished = true
-      this.$store.dispatch('surveys/saveSession', tempAnswers)
-      setTimeout(() => {
-        window.location.reload()
-      }, 3000)
+      console.log(tempAnswers)
+      // this.finished = true
+      // this.$store.dispatch('surveys/saveSession', tempAnswers)
+      // setTimeout(() => {
+      //  window.location.reload()
+      // }, 3000)
     },
     processAnswers(answers) {
       this.answers = answers

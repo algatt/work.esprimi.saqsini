@@ -6,7 +6,7 @@
       @click.stop
     >
       <preview-survey
-        :survey-prop="survey"
+        :original-survey="originalSurvey"
         :questions="questions"
         @finishSurvey="$emit('modalClosed')"
       ></preview-survey>
@@ -21,17 +21,24 @@
 
 <script>
 import PreviewSurvey from '~/components/surveys/PreviewSurvey'
+import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
+
 export default {
   name: 'PreviewSurveyModal',
   components: { PreviewSurvey },
   props: {
-    survey: {
+    originalSurvey: {
       type: Object,
       required: true,
     },
     questions: {
       type: Array,
       required: true,
+    },
+  },
+  computed: {
+    survey() {
+      return parseSurveyToForm(this.originalSurvey)
     },
   },
   mounted() {

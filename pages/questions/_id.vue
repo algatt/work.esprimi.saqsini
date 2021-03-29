@@ -240,7 +240,7 @@
         </template>
         <template v-if="selectedMenu === 'preview' && currentItemToBeEdited">
           <preview-survey-modal
-            :survey="survey"
+            :original-survey="unparsedSurvey"
             :questions="questions"
             @modalClosed="selectedMenu = ''"
           ></preview-survey-modal>
@@ -361,9 +361,13 @@ export default {
       })
       return new Set(x).size
     },
-    survey() {
-      return parseSurveyToForm(this.$store.getters.getItems('surveys')[0])
+    unparsedSurvey() {
+      return this.$store.getters.getItems('surveys')[0]
     },
+    survey() {
+      return parseSurveyToForm(this.unparsedSurvey)
+    },
+
     currentItemToBeEdited() {
       return this.$store.state.currentItemToBeEdited
     },

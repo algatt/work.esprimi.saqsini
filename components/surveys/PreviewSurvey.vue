@@ -164,10 +164,6 @@
       }"
     ></div>
   </div>
-  <div v-else>
-    <div class="bg-red-50">{{ originalSurvey }}</div>
-    <div class="bg-pink-100">{{ survey }}</div>
-  </div>
 </template>
 
 <script>
