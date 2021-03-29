@@ -2,7 +2,7 @@
   <div class="frosted p-0 md:p-8">
     <div
       class="check-height mx-auto bg-white rounded-none md:border md:border-gray-100 shadow-md overflow-y-auto relative"
-      :class="`md:${width}`"
+      :class="width"
       @click.stop
     >
       <div
@@ -33,7 +33,7 @@ export default {
     width: {
       type: String,
       required: false,
-      default: 'w-6/12',
+      default: 'md:w-6/12',
     },
   },
   computed: {
