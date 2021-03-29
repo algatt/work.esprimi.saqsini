@@ -2,15 +2,10 @@
   <div class="flex flex-col">
     <div
       class="flex font-semibold mb-2 items-center"
-      :style="
-        displayStyle.textColour ? null : { color: displayStyle.textColour }
-      "
+      :style="{ color: displayStyle.textColour }"
     >
-      {{ question.text
-      }}<span
-        v-if="question.isMandatory"
-        class="ml-1 text-xs font-medium italic"
-      >
+      {{ question.text }}
+      <span v-if="question.isMandatory" class="ml-1 text-xs font-medium italic">
         {{ languageText['required'] }}</span
       >
     </div>
@@ -18,20 +13,15 @@
       <select
         v-model="answers"
         class="dropdown-input dropdown-select md:w-6/12 w-full"
-        :class="displayStyle.accentColour ? 'focus:border-primary' : null"
-        :style="
-          displayStyle.accentColour
-            ? null
-            : {
-                borderColor: displayStyle.accentColour,
-                backgroundColor: displayStyle.backgroundColour,
-                color: displayStyle.textColour,
-              }
-        "
+        :style="{
+          borderColor: displayStyle.accentColour,
+          backgroundColor: displayStyle.backgroundColour,
+          color: displayStyle.textColour,
+        }"
       >
         <option value="" disabled selected>{{ getNotSelected() }}</option>
         <option
-          v-for="(option, index) in options"
+          v-for="(option, index) in convertedQuestion.options"
           :key="index"
           :value="option.value"
         >
@@ -40,7 +30,11 @@
       </select>
     </div>
     <div class="flex my-2">
-      <button class="btn-link cursor-pointer" @click="answers = ''">
+      <button
+        class="cursor-pointer font-semibold"
+        :style="{ color: displayStyle.accentColour }"
+        @click="answers = ''"
+      >
         {{ languageText['clear'] }}
       </button>
     </div>
@@ -58,9 +52,6 @@ export default {
     displayStyle: {
       required: true,
       type: Object,
-      default: () => {
-        return {}
-      },
     },
     existingAnswer: {
       required: false,
@@ -78,8 +69,14 @@ export default {
     }
   },
   computed: {
-    options() {
-      return JSON.parse(JSON.stringify(this.question.options))
+    convertedQuestion() {
+      const temp = JSON.parse(JSON.stringify(this.question))
+
+      temp.options.forEach((option) => {
+        option.questionOption = option.value
+      })
+
+      return temp
     },
   },
   watch: {
@@ -87,11 +84,10 @@ export default {
       if (this.answers === '') {
         this.$emit('answers', [])
       } else {
-        const whichOption = this.options.find((el) => {
+        const whichOption = this.convertedQuestion.options.find((el) => {
           return el.value === this.answers
         })
 
-        whichOption.code = whichOption.value
         this.$emit('answers', [whichOption])
       }
     },
@@ -113,7 +109,7 @@ export default {
 
 <style scoped>
 .dropdown-input {
-  @apply border-2 rounded-sm px-3 py-2 transition duration-500 ring-offset-2 focus:outline-none;
+  @apply border-2 rounded-sm px-3 py-2 transition duration-500 ring-offset-2 focus:outline-none font-medium;
 }
 
 .dropdown-select {

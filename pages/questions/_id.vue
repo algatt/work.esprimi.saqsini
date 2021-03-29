@@ -111,7 +111,7 @@
             class="flex flex-col w-full p-2 mb-3"
           >
             <div class="flex w-full">
-              <div class="flex flex-1 items-baseline">
+              <div class="flex flex-1 items-center">
                 <span
                   class="font-semibold text-gray-800"
                   :class="
@@ -201,7 +201,6 @@
               :question="question"
               :language-text="languageText"
               class="p-3 w-full"
-              :default-style="true"
             >
             </display-question>
           </div>

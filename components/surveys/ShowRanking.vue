@@ -2,24 +2,14 @@
   <div class="flex flex-col">
     <div
       class="flex font-semibold mb-2 items-center"
-      :style="
-        displayStyle.textColour ? null : { color: displayStyle.textColour }
-      "
+      :style="{ color: displayStyle.textColour }"
     >
-      {{ question.text
-      }}<span
-        v-if="question.isMandatory"
-        class="ml-1 text-xs font-medium italic"
-      >
+      {{ question.text }}
+      <span v-if="question.isMandatory" class="ml-1 text-xs font-medium italic">
         {{ languageText['required'] }}</span
       >
     </div>
-    <div
-      class="flex w-full"
-      :style="
-        displayStyle.textColour ? null : { color: displayStyle.textColour }
-      "
-    >
+    <div class="flex w-full" :style="{ color: displayStyle.textColour }">
       <i>{{ languageText['ranking_instructions'] }}</i>
     </div>
     <div class="flex w-full mt-2">
@@ -28,15 +18,10 @@
           v-for="(option, index) in options"
           :key="'options' + index"
           class="md:w-7/12 w-11/12 p-3 my-2 rounded shadow-sm cursor-pointer mx-auto border-2 border-transparent"
-          :class="displayStyle.accentColour ? 'bg-primary' : null"
-          :style="
-            displayStyle.accentColour
-              ? { color: '#FFFFFF' }
-              : {
-                  backgroundColor: displayStyle.accentColour,
-                  color: displayStyle.backgroundColour,
-                }
-          "
+          :style="{
+            backgroundColor: displayStyle.accentColour,
+            color: displayStyle.backgroundColour,
+          }"
           @click="moveOptionToAnswers(option, index)"
         >
           <span class="flex flex-grow">{{ option.text }}</span>
@@ -46,42 +31,37 @@
       <div class="w-6/12 flex flex-col">
         <div
           v-for="(option, index) in answers"
-          :key="'answers' + index"
+          :key="`${index} ${languageText.title}`"
           class="w-11/12 md:w-7/12 p-3 my-2 rounded shadow-sm cursor-pointer mx-auto border-2 border-transparent"
-          :class="displayStyle.accentColour ? 'bg-primary text-white' : null"
-          :style="
-            displayStyle.accentColour
-              ? null
-              : {
-                  backgroundColor: displayStyle.accentColour,
-                  color: displayStyle.backgroundColour,
-                }
-          "
+          :style="{
+            backgroundColor: displayStyle.accentColour,
+            color: displayStyle.backgroundColour,
+          }"
           @click="moveAnswerToOptions(option, index)"
         >
-          <span class="flex flex-grow">{{ option.text }}</span>
+          <span class="flex flex-grow">{{ getOptionText(option) }}</span>
         </div>
         <div
           v-for="(option, index) in dummies"
           :key="index"
           class="w-11/12 md:w-7/12 p-3 my-2 rounded shadow-sm mx-auto border-2 border-dashed cursor-default"
           :class="
-            displayStyle.accentColour
-              ? 'bg-gray-100 border-gray-200'
-              : displayStyle.backgroundColour === '#000000'
+            displayStyle.backgroundColour === '#000000'
               ? 'bg-gray-700 border-gray-800'
               : 'bg-gray-100 border-gray-200'
           "
-          :style="
-            displayStyle.textColour ? null : { color: displayStyle.textColour }
-          "
+          :style="{ color: displayStyle.textColour }"
         >
           <span class="flex flex-grow">{{ option.text }}</span>
         </div>
       </div>
     </div>
     <div class="flex my-2">
-      <button class="btn-link cursor-pointer" @click="answers = []">
+      <button
+        class="cursor-pointer font-semibold"
+        :style="{ color: displayStyle.accentColour }"
+        @click="clearAnswers"
+      >
         {{ languageText['clear'] }}
       </button>
     </div>
@@ -98,9 +78,6 @@ export default {
     },
     displayStyle: {
       required: true,
-      default: () => {
-        return {}
-      },
       type: Object,
     },
     existingAnswer: {
@@ -120,14 +97,24 @@ export default {
       options: [],
     }
   },
+  computed: {
+    convertedQuestion() {
+      const temp = JSON.parse(JSON.stringify(this.question))
 
+      temp.options.forEach((option) => {
+        option.questionOption = option.value
+      })
+
+      return temp
+    },
+  },
   watch: {
     answers() {
       this.$emit('answers', this.answers)
     },
   },
   created() {
-    this.options = JSON.parse(JSON.stringify(this.question.options))
+    this.options = JSON.parse(JSON.stringify(this.convertedQuestion.options))
 
     if (this.existingAnswer) {
       this.answers = JSON.parse(JSON.stringify(this.existingAnswer))
@@ -137,11 +124,14 @@ export default {
 
     this.answers.forEach((elAnswer) => {
       this.options = this.options.filter((elOption) => {
-        return elAnswer.value !== elOption.value
+        return (
+          elOption.questionOption !== elAnswer.questionOption &&
+          elAnswer.value !== elOption.value
+        )
       })
     })
 
-    for (let i = 1; i <= this.options.length; i++)
+    for (let i = this.answers.length + 1; i <= this.options.length; i++)
       this.dummies.push({
         code: Math.random(),
         text: this.languageText.position + ' ' + i,
@@ -151,14 +141,14 @@ export default {
     moveOptionToAnswers(option, index) {
       this.options.splice(index, 1)
       let rank = this.answers.length + 1
-      option.code = `${option.value} (${rank})`
+      option.value = rank
       this.answers.push(option)
       this.dummies = []
 
       this.options.forEach(() => {
         this.dummies.push({
           code: Math.random(),
-          text: this.languageText.position + ' ' + rank++,
+          text: this.languageText.position + ' ' + ++rank,
         })
       })
     },
@@ -173,6 +163,21 @@ export default {
           text: this.languageText.position + ' ' + rank++,
         })
       })
+    },
+    clearAnswers() {
+      this.answers = []
+      this.options = JSON.parse(JSON.stringify(this.convertedQuestion.options))
+      this.dummies = []
+      for (let i = 1; i <= this.options.length; i++)
+        this.dummies.push({
+          code: Math.random(),
+          text: this.languageText.position + ' ' + i,
+        })
+    },
+    getOptionText(option) {
+      return this.convertedQuestion.options.find((el) => {
+        return el.questionOption === option.questionOption
+      }).text
     },
   },
 }

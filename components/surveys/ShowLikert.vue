@@ -2,53 +2,36 @@
   <div class="flex flex-col">
     <div
       class="flex font-semibold mb-2 items-center"
-      :style="
-        displayStyle.textColour ? null : { color: displayStyle.textColour }
-      "
+      :style="{ color: displayStyle.textColour }"
     >
-      {{ question.text
-      }}<span
-        v-if="question.isMandatory"
-        class="ml-1 text-xs font-medium italic"
-      >
-        {{ languageText['required'] }}</span
-      >
+      {{ question.text }}
+      <span v-if="question.isMandatory" class="ml-1 text-xs font-medium italic">
+        {{ languageText['required'] }}
+      </span>
     </div>
     <div
       id="divButtons"
       class="flex flex-col md:flex-row md:flex-wrap items-center w-full justify-between mt-2"
     >
-      <span v-if="question.showWeights" class="flex pr-3">{{
-        question.options[0].text
-      }}</span>
+      <span v-if="question.showWeights" class="flex pr-3">
+        {{ question.options[0].text }}
+      </span>
       <span
         class="flex w-full md:flex-1 flex-col flex-wrap md:flex-row md:flex-grow"
       >
         <button
-          v-for="(option, index) in question.options"
+          v-for="(option, index) in convertedQuestion.options"
           :key="index"
           class="card-likert"
-          :class="
-            displayStyle.accentColour
-              ? answers.length > 0 && answers[0].value === option.value
-                ? 'border-primary bg-primary text-white'
-                : 'border-primary'
-              : null
-          "
-          :style="
-            displayStyle.accentColour
-              ? null
-              : answers.length > 0 && answers[0].value === option.value
-              ? {
-                  borderColor: displayStyle.accentColour,
-                  color: displayStyle.backgroundColour,
-                  backgroundColor: displayStyle.accentColour,
-                }
-              : {
-                  borderColor: displayStyle.accentColour,
-                  color: displayStyle.textColour,
-                }
-          "
+          :style="{
+            borderColor: displayStyle.accentColour,
+            backgroundColor: answerPresent(option.value)
+              ? displayStyle.accentColour
+              : displayStyle.backgroundColour,
+            color: answerPresent(option.value)
+              ? displayStyle.backgroundColour
+              : displayStyle.textColour,
+          }"
           @click="addAnswer(option)"
         >
           <span v-if="!question.showWeights" class="flex justify-center">{{
@@ -62,7 +45,11 @@
       }}</span>
     </div>
     <div class="flex my-2">
-      <button class="btn-link cursor-pointer" @click="answers = []">
+      <button
+        class="cursor-pointer font-semibold"
+        :style="{ color: displayStyle.accentColour }"
+        @click="answers = []"
+      >
         {{ languageText['clear'] }}
       </button>
     </div>
@@ -80,9 +67,6 @@ export default {
     displayStyle: {
       required: true,
       type: Object,
-      default: () => {
-        return {}
-      },
     },
     existingAnswer: {
       required: false,
@@ -99,7 +83,17 @@ export default {
       answers: [],
     }
   },
+  computed: {
+    convertedQuestion() {
+      const temp = JSON.parse(JSON.stringify(this.question))
 
+      temp.options.forEach((option) => {
+        option.questionOption = option.value
+      })
+
+      return temp
+    },
+  },
   watch: {
     answers() {
       this.$emit('answers', this.answers)
@@ -114,6 +108,12 @@ export default {
     addAnswer(option) {
       option.code = option.value
       this.answers = [option]
+    },
+    answerPresent(value) {
+      return (
+        this.answers.length > 0 &&
+        String(this.answers[0].value) === String(value)
+      )
     },
   },
 }

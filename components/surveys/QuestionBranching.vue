@@ -336,8 +336,10 @@ export default {
         const data = []
         x.options.forEach((el) => {
           for (let i = 1; i <= x.options.length; i++) {
-            const value = `${el.value} (${i})`
-            data.push({ code: value, name: value })
+            data.push({
+              code: `${el.value} (${i})`,
+              name: `${el.value} (${i})`,
+            })
           }
         })
         return data
@@ -351,9 +353,11 @@ export default {
         })
         rows.forEach((row) => {
           columns.forEach((column) => {
-            const value = `${row.value}#${column.value}`
-            const name = `${row.value} (${column.value})`
-            data.push({ code: value, name })
+            console.log(column)
+            data.push({
+              code: `${row.value} (${column.value})`,
+              name: `${row.value} (${column.value})`,
+            })
           })
         })
         return data

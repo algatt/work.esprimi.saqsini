@@ -73,6 +73,7 @@ import ShowTypeIn from '~/components/surveys/ShowTypeIn'
 import ShowRanking from '~/components/surveys/ShowRanking'
 import ShowLikert from '~/components/surveys/ShowLikert'
 import ShowRadioGrid from '~/components/surveys/ShowRadioGrid'
+import { SURVEY_OPTIONS } from '~/helpers/constants'
 
 export default {
   name: 'DisplayQuestion',
@@ -94,7 +95,7 @@ export default {
       type: Object,
       required: false,
       default: () => {
-        return {}
+        return SURVEY_OPTIONS
       },
     },
     language: {

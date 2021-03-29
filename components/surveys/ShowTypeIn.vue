@@ -2,35 +2,30 @@
   <div class="flex flex-col">
     <div
       class="flex font-semibold mb-2 items-center"
-      :style="
-        displayStyle.textColour ? null : { color: displayStyle.textColour }
-      "
+      :style="{ color: displayStyle.textColour }"
     >
-      {{ question.text
-      }}<span
-        v-if="question.isMandatory"
-        class="ml-1 text-xs font-medium italic"
-      >
+      {{ question.text }}
+      <span v-if="question.isMandatory" class="ml-1 text-xs font-medium italic">
         {{ languageText['required'] }}</span
       >
     </div>
     <div class="flex flex-col flex-wrap md:flex-row mt-2">
       <textarea
         v-model="answer"
-        class="input w-full"
-        :style="
-          displayStyle.backgroundColour
-            ? null
-            : {
-                backgroundColor: displayStyle.backgroundColour,
-                color: displayStyle.textColour,
-                borderColor: displayStyle.accentColour,
-              }
-        "
+        class="w-full border-2 rounded-sm p-5"
+        :style="{
+          backgroundColor: displayStyle.backgroundColour,
+          color: displayStyle.textColour,
+          borderColor: displayStyle.accentColour,
+        }"
       ></textarea>
     </div>
     <div class="flex my-2">
-      <button class="btn-link cursor-pointer" @click="answer = ''">
+      <button
+        class="cursor-pointer font-semibold"
+        :style="{ color: displayStyle.accentColour }"
+        @click="answer = ''"
+      >
         {{ languageText['clear'] }}
       </button>
     </div>
@@ -48,9 +43,6 @@ export default {
     displayStyle: {
       type: Object,
       required: true,
-      default: () => {
-        return {}
-      },
     },
     existingAnswer: {
       required: false,
@@ -70,7 +62,7 @@ export default {
 
   watch: {
     answer() {
-      this.$emit('answers', [{ code: this.answer, value: this.answer }])
+      this.$emit('answers', [{ questionOption: 'Type In', value: this.answer }])
     },
   },
   created() {
@@ -84,5 +76,3 @@ export default {
   },
 }
 </script>
-
-<style scoped></style>

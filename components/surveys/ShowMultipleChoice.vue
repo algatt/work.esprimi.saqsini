@@ -11,50 +11,25 @@
     </div>
     <div class="flex flex-col mt-2">
       <button
-        v-for="(option, index) in question.options"
+        v-for="(option, index) in convertedQuestion.options"
         :key="index"
+        :style="{
+          borderColor: displayStyle.accentColour,
+          backgroundColor: answerPresent(option.value)
+            ? displayStyle.accentColour
+            : displayStyle.backgroundColour,
+          color: answerPresent(option.value)
+            ? displayStyle.backgroundColour
+            : displayStyle.textColour,
+        }"
         class="card-multiple-choice"
-        :class="
-          displayStyle.accentColour
-            ? answers.find((el) => {
-                return option.value === el.value
-              })
-              ? 'border-primary bg-primary text-white'
-              : 'border-primary'
-            : null
-        "
-        :style="
-          displayStyle.accentColour
-            ? null
-            : answers.find((el) => {
-                return option.value === el.value
-              })
-            ? {
-                borderColor: displayStyle.accentColour,
-                backgroundColor: displayStyle.accentColour,
-                color: displayStyle.backgroundColour,
-              }
-            : {
-                borderColor: displayStyle.accentColour,
-                color: displayStyle.textColour,
-              }
-        "
         @click="addToAnswer(option)"
       >
         <span class="w-8">
           <transition name="fade">
             <i
-              v-if="
-                answers.find((el) => {
-                  return option.value === el.value
-                })
-              "
+              v-if="answerPresent(option.value)"
               class="fas fa-check-circle"
-              :style="
-                displayStyle.backgroundColour
-                  ? null
-                  : { color: displayStyle.backgroundColour }
-              "
             ></i></transition
         ></span>
         <span class="flex flex-grow">{{ option.text }}</span>
@@ -63,68 +38,56 @@
       <div
         v-if="question.allowOther"
         class="card-multiple-choice"
-        :class="
-          displayStyle.accentColour
-            ? otherAnswer !== ''
-              ? 'border-primary bg-primary text-white'
-              : 'border-primary'
-            : null
-        "
-        :style="
-          displayStyle.accentColour
-            ? null
-            : otherAnswer !== ''
-            ? {
-                borderColor: displayStyle.accentColour,
-                backgroundColor: displayStyle.accentColour,
-                color: displayStyle.textColour,
-              }
-            : {
-                borderColor: displayStyle.accentColour,
-                color: displayStyle.textColour,
-                backgroundColor: displayStyle.backgroundColour,
-              }
-        "
+        :style="{
+          borderColor: displayStyle.accentColour,
+          backgroundColor:
+            otherAnswer !== ''
+              ? displayStyle.accentColour
+              : displayStyle.backgroundColour,
+          color:
+            otherAnswer !== ''
+              ? displayStyle.backgroundColour
+              : displayStyle.textColour,
+        }"
       >
-        <span class="w-8 flex justify-center items-center">
+        <span
+          class="w-8 flex justify-center items-center cursor-pointer"
+          @click="removeOther"
+        >
           <transition name="fade">
             <i
               v-if="otherAnswer !== ''"
               class="fas fa-check-circle"
-              :style="
-                displayStyle.backgroundColour
-                  ? null
-                  : { color: displayStyle.backgroundColour }
-              "
             ></i></transition
         ></span>
         <input
           v-model="otherAnswer"
-          class="flex flex-grow font-semibold transition duration-300"
-          :class="
-            displayStyle.accentColour
-              ? otherAnswer !== ''
-                ? 'bg-primary text-white'
-                : null
-              : null
-          "
-          :style="
-            displayStyle.accentColour
-              ? null
-              : otherAnswer !== ''
-              ? {
-                  color: displayStyle.backgroundColour,
-                  backgroundColor: displayStyle.accentColour,
-                }
-              : { backgroundColor: displayStyle.backgroundColour }
-          "
+          class="flex flex-grow font-semibold transition duration-300 otherInput"
+          :style="{
+            borderColor: displayStyle.accentColour,
+            backgroundColor:
+              otherAnswer !== ''
+                ? displayStyle.accentColour
+                : displayStyle.backgroundColour,
+            color:
+              otherAnswer !== ''
+                ? displayStyle.backgroundColour
+                : displayStyle.textColour,
+          }"
           placeholder="Other answer..."
           @blur="checkOtherAnswer"
         />
       </div>
     </div>
     <div class="flex my-2">
-      <button class="btn-link cursor-pointer" @click="answers = []">
+      <button
+        class="cursor-pointer font-semibold"
+        :style="{ color: displayStyle.accentColour }"
+        @click="
+          answers = []
+          otherAnswer = ''
+        "
+      >
         {{ languageText['clear'] }}
       </button>
     </div>
@@ -142,9 +105,6 @@ export default {
     displayStyle: {
       required: true,
       type: Object,
-      default: () => {
-        return {}
-      },
     },
     existingAnswer: {
       required: false,
@@ -163,6 +123,15 @@ export default {
     }
   },
   computed: {
+    convertedQuestion() {
+      const temp = JSON.parse(JSON.stringify(this.question))
+
+      temp.options.forEach((option) => {
+        option.questionOption = option.value
+      })
+
+      return temp
+    },
     availableAnswers() {
       return this.question.options.map((el) => {
         return el.value.toLowerCase()
@@ -178,7 +147,7 @@ export default {
     if (this.existingAnswer) {
       this.answers = JSON.parse(JSON.stringify(this.existingAnswer))
       const foundOtherAnswer = this.answers.find((el) => {
-        return el.otherAnswer
+        return el.questionOption === 'Other'
       })
       if (foundOtherAnswer) {
         this.otherAnswer = foundOtherAnswer.value
@@ -187,13 +156,18 @@ export default {
   },
   methods: {
     addToAnswer(option) {
-      option.code = option.value
       const foundAnswer = this.answers.find((el) => {
-        return el.value === option.value
+        return (
+          el.value === option.value &&
+          el.questionOption === option.questionOption
+        )
       })
       if (foundAnswer) {
         this.answers = this.answers.filter((el) => {
-          return el.value !== option.value
+          return (
+            el.value !== option.value &&
+            el.questionOption !== option.questionOption
+          )
         })
       } else {
         if (!this.question.allowMultiple) {
@@ -209,15 +183,25 @@ export default {
         this.otherAnswer = ''
       } else if (this.otherAnswer === '') {
         this.answers = this.answers.filter((el) => {
-          return !el.otherAnswer
+          return el.questionOption !== 'Other'
         })
       } else {
         this.addToAnswer({
-          text: this.otherAnswer,
+          questionOption: 'Other',
           value: this.otherAnswer,
-          otherAnswer: true,
         })
       }
+    },
+    removeOther() {
+      this.answers = this.answers.filter((el) => {
+        return el.questionOption !== 'Other'
+      })
+      this.otherAnswer = ''
+    },
+    answerPresent(value) {
+      return this.answers.find((el) => {
+        return el.value === value
+      })
     },
   },
 }
@@ -226,5 +210,9 @@ export default {
 <style scoped>
 .card-multiple-choice {
   @apply border-2 mb-2 w-full md:w-80 flex justify-start px-3 py-2 flex-wrap shadow-sm rounded transition duration-300 font-semibold;
+}
+
+.otherInput::placeholder {
+  @apply text-gray-900;
 }
 </style>

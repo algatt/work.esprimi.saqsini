@@ -1,13 +1,16 @@
 <template>
   <div v-if="survey" ref="surveyModal" class="flex flex-col p-5 h-full">
     <div
-      class="h-32 bg-cover flex flex-wrap items-center rounded w-full mb-5"
+      class="bg-cover flex flex-wrap items-center rounded w-full mb-5"
       :style="{
         backgroundColor: survey.options.backgroundColour,
         backgroundImage: 'url(' + survey.options.headerImage + ')',
       }"
     >
-      <div class="w-full h-32 flex justify-between items-center">
+      <div
+        class="w-full flex justify-between items-center"
+        :class="survey.options.headerImage !== '' ? 'h-96' : 'h-32'"
+      >
         <h3
           class="px-5 py-3"
           :class="survey.options.headerImage === '' ? null : 'frosted-area'"
@@ -15,7 +18,7 @@
             color:
               survey.options.headerImage === ''
                 ? survey.options.textColour
-                : survey.options.backgroundColour,
+                : survey.options.accentColour,
           }"
         >
           {{ languageText['survey_title'] }}
@@ -23,8 +26,8 @@
 
         <popup-menu-vue
           v-if="
-            !survey.flags.includes('OUTDATED_LANGUAGE_PACK') ||
-            survey.flags.includes('HAS_LANGUAGE_PACK')
+            survey.flags.includes('HAS_LANGUAGE_PACK_FILE') &&
+            !survey.flags.includes('OUTDATED_LANGUAGE_PACK')
           "
           class="px-5 py-3"
           :class="survey.options.headerImage === '' ? null : 'frosted-area'"
@@ -66,7 +69,7 @@
         class="mb-5"
       >
         <display-question
-          :key="question.code"
+          :key="`${question.code} ${currentLanguage}`"
           class="rounded shadow-lg"
           :display-style="survey.options"
           :language="currentLanguage"
@@ -157,12 +160,14 @@
     </div>
     <div
       v-if="survey.options.footerImage !== ''"
-      class="w-full h-32 bg-cover flex flex-wrap items-center rounded"
+      class="w-full bg-center flex flex-wrap items-center rounded"
       :style="{
         backgroundColor: survey.options.backgroundColour,
         backgroundImage: 'url(' + survey.options.footerImage + ')',
       }"
-    ></div>
+    >
+      <div class="h-32"></div>
+    </div>
   </div>
 </template>
 
@@ -269,48 +274,48 @@ export default {
     )
   },
   methods: {
-    getConditionState2(surveyOptions) {
-      let branching = JSON.parse(surveyOptions)
-      branching = branching.branching
-
-      if (branching.rules.length !== 0) {
-        const matching = {
-          true: 0,
-          false: 0,
-        }
-        branching.rules.forEach((iter) => {
-          if (iter.type === 'question') {
-            const answer = this.getAnswer(iter.parentObject.code)
-
-            if (answer.length === 0) matching.false++
-            let matchAtLeastOne = 0
-            answer.forEach((eachAnswer) => {
-              iter.condition.forEach((eachCondition) => {
-                // matching[eachAnswer === eachCondition]++
-                if (eachAnswer === eachCondition) matchAtLeastOne++
-              })
-            })
-            matching[matchAtLeastOne > 0]++
-          }
-        })
-
-        // if (branching.anyAreMet === true) {
-        //   if (matching.true > 0 && matching.false === 0) {
-        //     // finalResult.push(el)
-        //     return true
-        //   }
-        // } else if (branching.anyAreMet === false) {
-        //   if (matching.true > 0) {
-        //     // finalResult.push(el)
-        //     return true
-        //   }
-        // }
-      } else {
-        // finalResult.push(el)
-        return true
-      }
-      return false
-    },
+    // getConditionState2(surveyOptions) {
+    //   let branching = JSON.parse(surveyOptions)
+    //   branching = branching.branching
+    //
+    //   if (branching.rules.length !== 0) {
+    //     const matching = {
+    //       true: 0,
+    //       false: 0,
+    //     }
+    //     branching.rules.forEach((iter) => {
+    //       if (iter.type === 'question') {
+    //         const answer = this.getAnswer(iter.parentObject.code)
+    //
+    //         if (answer.length === 0) matching.false++
+    //         let matchAtLeastOne = 0
+    //         answer.forEach((eachAnswer) => {
+    //           iter.condition.forEach((eachCondition) => {
+    //             // matching[eachAnswer === eachCondition]++
+    //             if (eachAnswer === eachCondition) matchAtLeastOne++
+    //           })
+    //         })
+    //         matching[matchAtLeastOne > 0]++
+    //       }
+    //     })
+    //
+    //     // if (branching.anyAreMet === true) {
+    //     //   if (matching.true > 0 && matching.false === 0) {
+    //     //     // finalResult.push(el)
+    //     //     return true
+    //     //   }
+    //     // } else if (branching.anyAreMet === false) {
+    //     //   if (matching.true > 0) {
+    //     //     // finalResult.push(el)
+    //     //     return true
+    //     //   }
+    //     // }
+    //   } else {
+    //     // finalResult.push(el)
+    //     return true
+    //   }
+    //   return false
+    // },
     getConditionState(surveyOptions) {
       const branching = JSON.parse(surveyOptions)
       const rules = branching.branching.rules
@@ -329,18 +334,50 @@ export default {
                 ? ' && '
                 : ' || '
               : ''
+
             if (question.code) {
-              const existingAnswers = this.getAnswer(question.code)
+              const existingAnswers = this.getAnswer(question.code) // all available answers for this question
+
               let foundAnswer = false
               for (const i in existingAnswers) {
                 const temp = question.options.map((el) => {
-                  return el.code
+                  return { questionOption: el.code, value: el.name }
                 })
 
-                if (temp.includes(existingAnswers[i].code)) {
+                const originalQuestion = this.questions.find((el) => {
+                  return el.code === question.code
+                })
+
+                if (
+                  originalQuestion.flags.includes('RANKING') ||
+                  originalQuestion.flags.includes('RADIO_GRID')
+                ) {
+                  const value = `${existingAnswers[i].questionOption} (${existingAnswers[i].value})`
+
+                  if (
+                    temp.find((el) => {
+                      return el.questionOption === value
+                    })
+                  ) {
+                    foundAnswer = true
+                    break
+                  }
+                } else if (
+                  temp.find((el) => {
+                    return (
+                      el.questionOption === existingAnswers[i].questionOption &&
+                      el.value === existingAnswers[i].value
+                    )
+                  })
+                ) {
                   foundAnswer = true
                   break
                 }
+
+                // if (temp.includes(existingAnswers[i].code)) {
+                //   foundAnswer = true
+                //   break
+                // }
               }
 
               rulesOutcome[rule] += `${foundAnswer}${operator}`

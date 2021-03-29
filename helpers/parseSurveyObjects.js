@@ -6,8 +6,6 @@ import {
 } from '~/helpers/constants'
 
 export function parseSurveyToForm(survey, language = PREFERRED_LANGUAGE) {
-  console.log('parsing')
-  console.log(survey)
   const temp = JSON.parse(JSON.stringify(survey))
 
   if (!temp.defaultLanguage) temp.defaultLanguage = language
