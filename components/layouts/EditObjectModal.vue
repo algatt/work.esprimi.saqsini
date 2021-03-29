@@ -1,8 +1,7 @@
 <template>
   <div class="frosted p-0 md:p-8">
     <div
-      class="check-height mx-auto bg-white rounded-none md:border md:border-gray-100 shadow-md overflow-y-auto relative"
-      :class="width"
+      class="check-height mx-auto bg-white rounded-none md:border md:border-gray-100 shadow-md overflow-y-auto relative w-full md:w-10/12"
       @click.stop
     >
       <div
