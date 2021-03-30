@@ -8,6 +8,7 @@
       class="w-11/12 md:w-8/12 mx-auto"
       :original-survey="survey.survey"
       :questions="surveyData.questions"
+      :show-start="true"
       @finishSurvey="finishSurvey"
       @answers="processAnswers"
     ></PreviewSurvey>
@@ -51,6 +52,11 @@ export default {
     },
     parsedSurvey() {
       return parseSurveyToForm(JSON.parse(JSON.stringify(this.survey.survey)))
+    },
+    firstQuestion() {
+      return this.survey.questions.filter((el) => {
+        return el.ordinalPosition === 1
+      })
     },
   },
   mounted() {

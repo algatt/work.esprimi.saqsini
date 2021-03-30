@@ -63,25 +63,60 @@
       </div>
     </div>
     <div ref="questionsSection" class="w-full">
-      <div
-        v-for="question in questionsWithSectionsFiltered"
-        :key="question.code"
-        class="mb-5"
-      >
-        <display-question
-          :key="`${question.code} ${currentLanguage}`"
+      <template v-if="started">
+        <div
+          v-for="question in questionsWithSectionsFiltered"
+          :key="question.code"
+          class="mb-5"
+        >
+          <display-question
+            :key="`${question.code} ${currentLanguage}`"
+            class="rounded shadow-lg"
+            :display-style="survey.options"
+            :language="currentLanguage"
+            :language-text="languageText"
+            :question="question"
+            :existing-answer="getAnswer(question.code)"
+            @answers="processAnswers($event, question)"
+            @clearAnswers="clearAnswers(question)"
+          ></display-question>
+        </div>
+      </template>
+      <template v-else>
+        <div
+          :style="{ backgroundColor: survey.options.backgroundColour }"
           class="rounded shadow-lg"
-          :display-style="survey.options"
-          :language="currentLanguage"
-          :language-text="languageText"
-          :question="question"
-          :existing-answer="getAnswer(question.code)"
-          @answers="processAnswers($event, question)"
-          @clearAnswers="clearAnswers(question)"
-        ></display-question>
-      </div>
+        >
+          <display-question
+            :key="`${questiosWithSectionsFilteredFirstPage.code} ${currentLanguage}`"
+            class="rounded"
+            :display-style="survey.options"
+            :language="currentLanguage"
+            :language-text="languageText"
+            :question="questiosWithSectionsFilteredFirstPage"
+          ></display-question>
+          <div
+            class="flex items-center justify-center space-x-3 my-5 py-3 rounded shadow-lg"
+          >
+            <button
+              class="px-5 py-1 rounded font-semibold"
+              :style="{
+                backgroundColor: survey.options.accentColour,
+                color: survey.options.backgroundColour,
+              }"
+              @click="started = true"
+            >
+              Start
+            </button>
+          </div>
+        </div>
+      </template>
 
-      <div class="flex items-center justify-center space-x-3 my-5">
+      <div
+        v-if="started"
+        class="flex items-center justify-center space-x-3 my-5 py-3 rounded shadow-lg"
+        :style="{ backgroundColor: survey.options.backgroundColour }"
+      >
         <button
           :disabled="!enablePrevious"
           class="w-28 focus:outline-none py-1.5 px-3 rounded font-bold flex flex-wrap items-center justify-center shadow"
@@ -93,13 +128,12 @@
           :style="
             !enablePrevious
               ? {
-                  // color: survey.options.backgroundColour,
                   color: '#666666',
                   cursor: 'not-allowed',
                 }
               : {
-                  backgroundColor: survey.options.backgroundColour,
-                  color: survey.options.accentColour,
+                  backgroundColor: survey.options.accentColour,
+                  color: survey.options.backgroundColour,
                 }
           "
           @click="showPreviousPage"
@@ -123,8 +157,8 @@
                   cursor: 'not-allowed',
                 }
               : {
-                  backgroundColor: survey.options.backgroundColour,
-                  color: survey.options.accentColour,
+                  backgroundColor: survey.options.accentColour,
+                  color: survey.options.backgroundColour,
                 }
           "
           @click="showNextPage"
@@ -148,8 +182,8 @@
                   cursor: 'not-allowed',
                 }
               : {
-                  backgroundColor: survey.options.backgroundColour,
-                  color: survey.options.accentColour,
+                  backgroundColor: survey.options.accentColour,
+                  color: survey.options.backgroundColour,
                 }
           "
           @click="finishSurvey"
@@ -190,6 +224,11 @@ export default {
       type: Array,
       required: true,
     },
+    showStart: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 
   data() {
@@ -197,9 +236,9 @@ export default {
       answers: [],
       currentPage: 1,
       currentLanguage: 'en',
-      // originalSurvey: null,
       survey: null,
       loading: true,
+      started: false,
     }
   },
   computed: {
@@ -259,6 +298,11 @@ export default {
 
       return finalResult
     },
+    questiosWithSectionsFilteredFirstPage() {
+      return this.questionsWithSectionsFiltered.find((el) => {
+        return el.ordinalPosition
+      })
+    },
   },
   watch: {
     answers: {
@@ -272,6 +316,7 @@ export default {
     this.survey = parseSurveyToForm(
       JSON.parse(JSON.stringify(this.originalSurvey))
     )
+    if (!this.showStart) this.started = true
   },
   methods: {
     // getConditionState2(surveyOptions) {
