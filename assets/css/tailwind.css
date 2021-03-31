@@ -91,7 +91,7 @@ h1{
 }
 
 .btn-link {
-  @apply hover:underline text-primary font-semibold hover:text-primary-darker transition duration-300 focus:outline-none flex;
+  @apply hover:underline text-primary font-semibold hover:text-primary-darker transition duration-300 focus:outline-none flex cursor-pointer;
 }
 
 .btn-link:disabled {

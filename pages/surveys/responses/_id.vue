@@ -30,6 +30,18 @@
         <button
           class="items-center md:flex md:justify-center font-semibold hover:text-primary transition duration-300 focus:outline-none py-3 mr-6 border-b-2 border-transparent"
           :class="
+            selectedView === 'individual'
+              ? 'text-primary border-b-2 border-primary'
+              : 'text-gray-500'
+          "
+          @click="selectedView = 'individual'"
+        >
+          <i class="xl:pr-2 fas fa-user fa-fw" title="Crosstab"></i>
+          <span class="hidden md:block">Individual</span>
+        </button>
+        <button
+          class="items-center md:flex md:justify-center font-semibold hover:text-primary transition duration-300 focus:outline-none py-3 mr-6 border-b-2 border-transparent"
+          :class="
             selectedView === 'cross'
               ? 'text-primary border-b-2 border-primary'
               : 'text-gray-500'
@@ -47,6 +59,9 @@
     <div v-else-if="selectedView === 'questions'">
       <question-details :data="responses"></question-details>
     </div>
+    <div v-else-if="selectedView === 'individual'">
+      <individual-details :data="responses"></individual-details>
+    </div>
     <div v-else-if="selectedView === 'cross'">
       <cross-table-details
         v-if="false"
@@ -63,6 +78,7 @@ import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 import SurveyDetails from '~/components/charts/SurveyDetails'
 import QuestionDetails from '~/components/charts/QuestionList'
 import CrossTableDetails from '~/components/charts/CrossTableDetails'
+import IndividualDetails from '~/components/charts/InvidualDetails'
 
 export default {
   name: 'SurveyResponses',
@@ -72,11 +88,11 @@ export default {
     TopHeaderBar,
     Spinner,
     CrossTableDetails,
+    IndividualDetails,
   },
 
   data() {
     return {
-      responses2: [],
       responses: [],
       loading: true,
       selectedView: 'overall',
@@ -100,10 +116,6 @@ export default {
 
   async mounted() {
     this.loading = true
-    this.response2 = await this.$store.dispatch(
-      'responses/getResponses',
-      this.$route.params.id
-    )
     this.responses = await this.$store.dispatch(
       'surveys/getSurveyData',
       this.$route.params.id
