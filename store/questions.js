@@ -30,8 +30,6 @@ export const actions = {
   newQuestion({ dispatch, commit, state }, question) {
     delete question.code
 
-    console.log(question)
-
     const questions = JSON.parse(JSON.stringify(state.items))
     const newPositions = questions.map((el) => {
       return { question: el.code, position: el.ordinalPosition }
@@ -39,7 +37,6 @@ export const actions = {
     newPositions.forEach((el) => {
       if (el.position >= question.ordinalPosition) {
         el.position++
-        el.questionNumber++
       }
     })
 
@@ -65,7 +62,39 @@ export const actions = {
     })
   },
 
-  updateQuestion({ commit }, question) {
+  updateQuestion({ state, commit, dispatch }, question) {
+    const previousQuestionNumber = state.items.find((el) => {
+      return el.code === question.code
+    }).questionNumber
+
+    const questionsToUpdate = []
+
+    if (String(previousQuestionNumber) !== String(question.questionNumber)) {
+      const tempQuestions = JSON.parse(JSON.stringify(state.items))
+      tempQuestions.forEach((el) => {
+        let found = false
+        const branching = JSON.parse(el.surveyOptions)
+
+        if (branching.branching.rules) {
+          branching.branching.rules.forEach((rule) => {
+            rule.ruleList.forEach((item) => {
+              if (
+                item.questionNumber &&
+                String(item.questionNumber) === String(previousQuestionNumber)
+              ) {
+                item.questionNumber = question.questionNumber
+                found = true
+              }
+            })
+          })
+        }
+        if (found) {
+          el.surveyOptions = JSON.stringify(branching)
+          questionsToUpdate.push(el)
+        }
+      })
+    }
+
     return new Promise((resolve, reject) => {
       this.$axios
         .put(
@@ -78,8 +107,30 @@ export const actions = {
             },
           }
         )
-        .then((response) => {
-          resolve(response.data)
+        .then((questionResponse) => {
+          if (questionsToUpdate.length > 0) {
+            const promises = []
+
+            questionsToUpdate.forEach((el) => {
+              promises.push(
+                this.$axios
+                  .put(`/builder/question/${el.code}`, el, {
+                    headers: { 'Content-Type': 'application/json' },
+                  })
+                  .then((response) => {
+                    commit(
+                      'updateItem',
+                      { which: 'questions', item: response.data },
+                      { root: true }
+                    )
+                  })
+              )
+            })
+
+            Promise.all(promises).then(() => {
+              resolve(questionResponse.data)
+            })
+          } else resolve(questionResponse.data)
         })
         .catch((error) => {
           reject(error)
@@ -139,7 +190,6 @@ export const mutations = {
 
       if (newNumber) {
         el.ordinalPosition = newNumber.position
-        el.questionNumber = newNumber.position
       }
     })
   },

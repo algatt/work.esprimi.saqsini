@@ -20,8 +20,11 @@
                 <option
                   v-for="question in questions"
                   :key="`${condition.groupIndex} ${ruleIndex} ${question.questionNumber}`"
-                  :value="question.questionNumber"
-                  :selected="question.questionNumber === rule.questionNumber"
+                  :value="String(question.questionNumber)"
+                  :selected="
+                    String(question.questionNumber) ===
+                    String(rule.questionNumber)
+                  "
                 >
                   {{ getQuestionText(question).text }}
                 </option>
@@ -288,9 +291,8 @@ export default {
       this.$forceUpdate()
     },
     getCurrentQuestionOptions(questionNumber) {
-      console.log(questionNumber)
       const x = this.questions.find((el) => {
-        return el.questionNumber === questionNumber
+        return String(el.questionNumber) === String(questionNumber)
       })
 
       if (x.flags.includes('RANKING')) {

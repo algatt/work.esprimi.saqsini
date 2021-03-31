@@ -262,6 +262,34 @@
         :questions="questions"
         @close="showMoveMenu = false"
       ></question-move-menu>
+
+      <modal-generic
+        v-if="cannotDeleteDueToBranching.length !== 0"
+        @cancel="cannotDeleteDueToBranching = []"
+      >
+        <template v-slot:title
+          ><p class="font-semibold mb-5">Cannot Delete</p></template
+        >
+        <template v-slot:body>
+          <div class="flex flex-col mb-5">
+            <p class="mb-4">
+              This question is being used for branching by the following
+              questions
+            </p>
+            <p
+              v-for="(item, index) in cannotDeleteDueToBranching"
+              :key="index"
+              class="my-2"
+            >
+              <span>{{ item.name }}</span>
+              <span
+                class="bg-primary text-white text-sm font-semibold rounded-lg px-1 py-0.5"
+                >{{ item.questionNumber }}</span
+              >
+            </p>
+          </div>
+        </template>
+      </modal-generic>
     </template>
     <template v-else>
       <info-box class="mt-2"
@@ -300,10 +328,12 @@ import PopupMenu from '~/components/layouts/PopupMenu'
 import Invites from '~/components/contacts/Invites'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 import ContactBookDropdown from '~/components/contacts/ContactBookDropdown'
+import ModalGeneric from '~/components/layouts/ModalGeneric'
 
 export default {
   name: 'QuestionList',
   components: {
+    ModalGeneric,
     SurveyCollaborators,
     QuestionMoveMenu,
     PreviewSurveyModal,
@@ -328,6 +358,7 @@ export default {
       invites: [],
       error: false,
       loading: true,
+      cannotDeleteDueToBranching: [],
     }
   },
   computed: {
@@ -437,7 +468,31 @@ export default {
       this.showMoveMenu = question
     },
     deleteQuestion(question) {
-      this.$store.dispatch('questions/deleteQuestion', question.code)
+      this.cannotDeleteDueToBranching = []
+      this.questions.forEach((el) => {
+        const branching = JSON.parse(el.surveyOptions)
+        branching.branching.rules.forEach((rule) => {
+          rule.ruleList.forEach((rl) => {
+            if (String(rl.questionNumber) === String(question.questionNumber)) {
+              if (
+                !this.cannotDeleteDueToBranching.find((findQuestion) => {
+                  return (
+                    String(findQuestion.questionNumber) ===
+                    String(rl.questionNumber)
+                  )
+                })
+              )
+                this.cannotDeleteDueToBranching.push({
+                  questionNumber: el.questionNumber,
+                  name: el.name,
+                })
+            }
+          })
+        })
+      })
+
+      if (this.cannotDeleteDueToBranching.length === 0)
+        this.$store.dispatch('questions/deleteQuestion', question.code)
     },
     chooseQuestion(question) {
       this.$store.dispatch('setCurrentItemToBeEdited', question)
