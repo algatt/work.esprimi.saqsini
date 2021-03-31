@@ -4,30 +4,24 @@
     <div v-for="condition in conditions" :key="condition.groupIndex">
       <div class="flex flex-col border border-gray-100 shadow rounded p-2 my-3">
         <div
-          v-for="(
-            conditionQuestion, conditionQuestionIndex
-          ) in condition.questions"
-          :key="`${condition.groupIndex} ${conditionQuestionIndex}`"
+          v-for="(rule, ruleIndex) in condition.ruleList"
+          :key="`${condition.groupIndex} ${ruleIndex}`"
           class="flex flex-wrap"
         >
           <div class="w-8/12 flex p-1 items-start pr-3">
             <div class="flex w-full justify-between">
               <select
-                v-if="conditionQuestion.hasOwnProperty('code')"
+                v-if="rule.hasOwnProperty('questionNumber')"
                 class="input select flex flex-1"
                 @change="
-                  updateQuestion(
-                    condition.groupIndex,
-                    conditionQuestionIndex,
-                    $event
-                  )
+                  updateQuestion(condition.groupIndex, ruleIndex, $event)
                 "
               >
                 <option
                   v-for="question in questions"
-                  :key="`${condition.groupIndex} ${conditionQuestionIndex} ${question.code}`"
-                  :value="question.code"
-                  :selected="question.code === conditionQuestion.code"
+                  :key="`${condition.groupIndex} ${ruleIndex} ${question.questionNumber}`"
+                  :value="question.questionNumber"
+                  :selected="question.questionNumber === rule.questionNumber"
                 >
                   {{ getQuestionText(question).text }}
                 </option>
@@ -35,19 +29,13 @@
               <select
                 v-else
                 class="input select flex flex-1"
-                @change="
-                  updateFilter(
-                    condition.groupIndex,
-                    conditionQuestionIndex,
-                    $event
-                  )
-                "
+                @change="updateFilter(condition.groupIndex, ruleIndex, $event)"
               >
                 <option
                   v-for="filter in Object.keys(filters)"
-                  :key="`${condition.groupIndex} ${conditionQuestionIndex} ${filter}`"
+                  :key="`${condition.groupIndex} ${ruleIndex} ${filter}`"
                   :value="filter"
-                  :selected="filter === conditionQuestion.name"
+                  :selected="filter === rule.name"
                 >
                   {{ filter }}
                 </option>
@@ -55,9 +43,7 @@
               <div class="w-12 flex justify-center items-center">
                 <button
                   class="btn-link-danger"
-                  @click="
-                    deleteQuestion(condition.groupIndex, conditionQuestionIndex)
-                  "
+                  @click="deleteQuestion(condition.groupIndex, ruleIndex)"
                 >
                   <i class="far fa-trash-alt fa-fw"></i>
                 </button>
@@ -65,51 +51,33 @@
             </div>
           </div>
           <div
-            v-if="conditionQuestion.hasOwnProperty('code')"
+            v-if="rule.hasOwnProperty('questionNumber')"
             class="flex w-4/12 flex-col"
           >
             <multi-select
-              :key="
-                condition.groupIndex +
-                ' ' +
-                conditionQuestionIndex +
-                conditionQuestion.options.length
-              "
-              :original-list="getCurrentQuestionOptions(conditionQuestion.code)"
-              :selected-list="conditionQuestion.options"
+              :key="`${condition.groupIndex} ${ruleIndex} ${rule.options.length}`"
+              :original-list="getCurrentQuestionOptions(rule.questionNumber)"
+              :selected-list="rule.options"
               @selectedItems="
-                manageOptions(
-                  condition.groupIndex,
-                  conditionQuestionIndex,
-                  $event
-                )
+                manageOptions(condition.groupIndex, ruleIndex, $event)
               "
               ><template v-slot:title>Select</template></multi-select
             >
           </div>
           <div v-else class="flex w-4/12 flex-col">
             <multi-select
-              :key="
-                condition.groupIndex +
-                ' ' +
-                conditionQuestionIndex +
-                conditionQuestion.options.length
-              "
-              :original-list="getCurrentFilterOptions(conditionQuestion.name)"
-              :selected-list="conditionQuestion.options"
+              :key="`${condition.groupIndex} ${ruleIndex} ${rule.options.length}`"
+              :original-list="getCurrentFilterOptions(rule.name)"
+              :selected-list="rule.options"
               @selectedItems="
-                manageOptions(
-                  condition.groupIndex,
-                  conditionQuestionIndex,
-                  $event
-                )
+                manageOptions(condition.groupIndex, ruleIndex, $event)
               "
               ><template v-slot:title>Select</template></multi-select
             >
           </div>
           <select
-            v-if="conditionQuestion.hasOwnProperty('isAnd')"
-            v-model="conditionQuestion.isAnd"
+            v-if="rule.hasOwnProperty('isAnd')"
+            v-model="rule.isAnd"
             class="input select w-20 bg-gray-100 rounded"
           >
             <option :value="false">or</option>
@@ -240,7 +208,7 @@ export default {
       const obj = {
         contactListCode: this.contactList.code,
         groupIndex: len,
-        questions: [],
+        ruleList: [],
       }
       if (len > 0) {
         this.conditions[len - 1].isAnd = true
@@ -259,27 +227,19 @@ export default {
       }
     },
 
-    questionExistsInGroup(groupIndex, questionCode) {
-      return (
-        this.conditions
-          .find((el) => {
-            return el.groupIndex === groupIndex
-          })
-          .questions.find((el) => {
-            return el.code === questionCode
-          }) !== undefined
-      )
-    },
     addQuestion(groupIndex) {
       const group = this.conditions.find((el) => {
         return el.groupIndex === groupIndex
       })
 
-      const obj = { code: this.questions[0].code, options: [] }
-      if (group.questions.length > 0) {
-        group.questions[group.questions.length - 1].isAnd = true
+      const obj = {
+        questionNumber: this.questions[0].questionNumber,
+        options: [],
       }
-      group.questions.push(obj)
+      if (group.ruleList.length > 0) {
+        group.ruleList[group.ruleList.length - 1].isAnd = true
+      }
+      group.ruleList.push(obj)
       this.$forceUpdate()
     },
     addFilter(groupIndex) {
@@ -287,19 +247,19 @@ export default {
         return el.groupIndex === groupIndex
       })
       const obj = { name: Object.keys(this.filters)[0], options: [] }
-      if (group.questions.length > 0) {
-        group.questions[group.questions.length - 1].isAnd = true
+      if (group.ruleList.length > 0) {
+        group.ruleList[group.ruleList.length - 1].isAnd = true
       }
-      group.questions.push(obj)
+      group.ruleList.push(obj)
       this.$forceUpdate()
     },
     deleteQuestion(groupIndex, questionIndex) {
       for (const i in this.conditions) {
         if (this.conditions[i].groupIndex === groupIndex) {
-          this.conditions[i].questions.splice(questionIndex, 1)
-          if (this.conditions[i].questions.length > 0)
-            delete this.conditions[i].questions[
-              this.conditions[i].questions.length - 1
+          this.conditions[i].ruleList.splice(questionIndex, 1)
+          if (this.conditions[i].ruleList.length > 0)
+            delete this.conditions[i].ruleList[
+              this.conditions[i].ruleList.length - 1
             ].isAnd
         }
       }
@@ -308,8 +268,8 @@ export default {
     updateQuestion(groupIndex, conditionQuestionIndex, newCode) {
       for (const i in this.conditions) {
         if (this.conditions[i].groupIndex === groupIndex) {
-          this.conditions[i].questions[conditionQuestionIndex] = {
-            code: Number(newCode.target.value),
+          this.conditions[i].ruleList[conditionQuestionIndex] = {
+            questionNumber: Number(newCode.target.value), // TODO
             options: [],
           }
         }
@@ -319,7 +279,7 @@ export default {
     updateFilter(groupIndex, conditionQuestionIndex, newCode) {
       for (const i in this.conditions) {
         if (this.conditions[i].groupIndex === groupIndex) {
-          this.conditions[i].questions[conditionQuestionIndex] = {
+          this.conditions[i].ruleList[conditionQuestionIndex] = {
             name: newCode.target.value,
             options: [],
           }
@@ -327,9 +287,10 @@ export default {
       }
       this.$forceUpdate()
     },
-    getCurrentQuestionOptions(questionCode) {
+    getCurrentQuestionOptions(questionNumber) {
+      console.log(questionNumber)
       const x = this.questions.find((el) => {
-        return el.code === questionCode
+        return el.questionNumber === questionNumber
       })
 
       if (x.flags.includes('RANKING')) {
@@ -353,7 +314,6 @@ export default {
         })
         rows.forEach((row) => {
           columns.forEach((column) => {
-            console.log(column)
             data.push({
               code: `${row.value} (${column.value})`,
               name: `${row.value} (${column.value})`,
@@ -374,35 +334,11 @@ export default {
 
       return x || []
     },
-    existsInOption(groupIndex, questionIndex, value) {
-      return this.conditions
-        .find((el) => {
-          return el.groupIndex === groupIndex
-        })
-        .questions[questionIndex].options.includes(value)
-    },
-    // addOptionToQuestion(groupIndex, questionIndex, value) {
-    //   for (const i in this.conditions) {
-    //     if (this.conditions[i].groupIndex === groupIndex) {
-    //       if (
-    //         this.conditions[i].questions[questionIndex].options.includes(value)
-    //       )
-    //         this.conditions[i].questions[
-    //           questionIndex
-    //         ].options = this.conditions[i].questions[
-    //           questionIndex
-    //         ].options.filter((el) => {
-    //           return el !== value
-    //         })
-    //       else this.conditions[i].questions[questionIndex].options.push(value)
-    //     }
-    //   }
-    //   this.$forceUpdate()
-    // },
+
     manageOptions(groupIndex, questionIndex, newList) {
       for (const i in this.conditions) {
         if (this.conditions[i].groupIndex === groupIndex) {
-          this.conditions[i].questions[questionIndex].options = newList
+          this.conditions[i].ruleList[questionIndex].options = newList
         }
       }
       this.$forceUpdate()

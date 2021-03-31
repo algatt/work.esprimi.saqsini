@@ -319,48 +319,6 @@ export default {
     if (!this.showStart) this.started = true
   },
   methods: {
-    // getConditionState2(surveyOptions) {
-    //   let branching = JSON.parse(surveyOptions)
-    //   branching = branching.branching
-    //
-    //   if (branching.rules.length !== 0) {
-    //     const matching = {
-    //       true: 0,
-    //       false: 0,
-    //     }
-    //     branching.rules.forEach((iter) => {
-    //       if (iter.type === 'question') {
-    //         const answer = this.getAnswer(iter.parentObject.code)
-    //
-    //         if (answer.length === 0) matching.false++
-    //         let matchAtLeastOne = 0
-    //         answer.forEach((eachAnswer) => {
-    //           iter.condition.forEach((eachCondition) => {
-    //             // matching[eachAnswer === eachCondition]++
-    //             if (eachAnswer === eachCondition) matchAtLeastOne++
-    //           })
-    //         })
-    //         matching[matchAtLeastOne > 0]++
-    //       }
-    //     })
-    //
-    //     // if (branching.anyAreMet === true) {
-    //     //   if (matching.true > 0 && matching.false === 0) {
-    //     //     // finalResult.push(el)
-    //     //     return true
-    //     //   }
-    //     // } else if (branching.anyAreMet === false) {
-    //     //   if (matching.true > 0) {
-    //     //     // finalResult.push(el)
-    //     //     return true
-    //     //   }
-    //     // }
-    //   } else {
-    //     // finalResult.push(el)
-    //     return true
-    //   }
-    //   return false
-    // },
     getConditionState(surveyOptions) {
       const branching = JSON.parse(surveyOptions)
       const rules = branching.branching.rules
@@ -370,27 +328,29 @@ export default {
         let finalOutcome = ''
         for (const rule in rules) {
           rulesOutcome[rule] = ''
-          rules[rule].questions.forEach((question) => {
+          rules[rule].ruleList.forEach((branchingRule) => {
             const operator = Object.prototype.hasOwnProperty.call(
-              question,
+              branchingRule,
               'isAnd'
             )
-              ? question.isAnd
+              ? branchingRule.isAnd
                 ? ' && '
                 : ' || '
               : ''
 
-            if (question.code) {
-              const existingAnswers = this.getAnswer(question.code) // all available answers for this question
+            if (branchingRule.questionNumber) {
+              const existingAnswers = this.getAnswerByQuestionNumber(
+                branchingRule.questionNumber
+              ) // all available answers for this question
 
               let foundAnswer = false
               for (const i in existingAnswers) {
-                const temp = question.options.map((el) => {
+                const temp = branchingRule.options.map((el) => {
                   return { questionOption: el.code, value: el.name }
                 })
 
                 const originalQuestion = this.questions.find((el) => {
-                  return el.code === question.code
+                  return el.questionNumber === branchingRule.questionNumber
                 })
 
                 if (
@@ -418,11 +378,6 @@ export default {
                   foundAnswer = true
                   break
                 }
-
-                // if (temp.includes(existingAnswers[i].code)) {
-                //   foundAnswer = true
-                //   break
-                // }
               }
 
               rulesOutcome[rule] += `${foundAnswer}${operator}`
@@ -523,6 +478,15 @@ export default {
       this.$emit('finishSurvey')
     },
     getAnswer(code) {
+      const x = this.answers.find((el) => {
+        return el.code === code
+      })
+      return x && x.answers ? x.answers : []
+    },
+    getAnswerByQuestionNumber(questionNumber) {
+      const code = this.questions.find((el) => {
+        return el.questionNumber === questionNumber
+      }).code
       const x = this.answers.find((el) => {
         return el.code === code
       })
