@@ -103,106 +103,115 @@
         <div
           v-for="iteration in questionsNumberOfSections"
           :key="'page' + iteration"
-          class="mt-5 w-full md:w-8/12 mx-auto flex flex-col border-2 border-gray-100 rounded shadow p-3"
+          class="mt-5 w-full md:w-8/12 mx-auto flex flex-col border-2 border-gray-100 rounded shadow pt-3 px-3 bg-gray-100 mb-5"
         >
           <div
             v-for="question in getQuestionsInPage(iteration)"
             :key="question.code"
-            class="flex flex-col w-full p-2 mb-3"
           >
-            <div class="flex w-full">
-              <div class="flex flex-1 items-center">
-                <span
-                  class="font-semibold text-gray-800"
-                  :class="
-                    question.flags.includes('SECTION') ? 'text-2xl' : 'text-xl'
-                  "
-                  >{{ question.name }}</span
-                >
-                <span
-                  class="text-white font-bold text-sm bg-primary ml-2 rounded flex items-center justify-center px-1.5 shadow-sm"
-                  >{{ question.questionNumber }}</span
-                >
-              </div>
-              <div class="w-16 flex items-center justify-around">
-                <popup-menu class="mr-2">
-                  <template v-slot:menuButton
-                    ><button class="btn-link-rounded">
-                      <i class="fas fa-ellipsis-v fa-fw"></i></button
-                  ></template>
-                  <template v-slot:menuItems>
-                    <button class="w-full" @click="editQuestion(question)">
-                      <span class="popup-menu-button">
-                        <i class="fa-fw fas fa-pencil-alt fa-sm"></i>Edit</span
-                      >
-                    </button>
-                    <button
-                      v-if="question.ordinalPosition !== 1"
-                      class="w-full"
-                      @click="moveQuestion(question)"
-                    >
-                      <span class="popup-menu-button">
-                        <i class="fa-fw fas fa-arrows-alt-v fa-sm"></i
-                        >Move</span
-                      >
-                    </button>
-                    <button
-                      v-if="question.ordinalPosition !== 1"
-                      class="w-full"
-                      @click="deleteQuestion(question)"
-                    >
-                      <span class="popup-menu-button">
-                        <i class="fa-fw fas fa-trash-alt fa-sm"></i>Delete</span
-                      >
-                    </button>
-                  </template>
-                </popup-menu>
-                <popup-menu direction="center">
-                  <template v-slot:menuButton
-                    ><span class="btn-link-rounded"
-                      ><i class="fas fa-plus fa-fw"></i></span
-                  ></template>
-                  <template v-slot:menuItems>
-                    <button
-                      v-for="questionType in questionTypes"
-                      :key="questionType.code"
-                      @click="
-                        newQuestion(
-                          questionType.flag,
-                          question.ordinalPosition + 1
-                        )
-                      "
-                    >
-                      <span class="popup-menu-button">
-                        <i class="fa-fw fa-sm" :class="questionType.icon"></i
-                        >{{ questionType.text }}</span
-                      >
-                    </button>
-                  </template>
-                </popup-menu>
-              </div>
-            </div>
-            <div class="flex items-center py-2">
-              <span
-                class="text-sm bg-gray-100 rounded border border-gray-200 text-gray-600 px-1 py-0.5 mr-1"
-                >{{ questionTypeText(question) }}</span
-              >
-              <span
-                v-if="
-                  JSON.parse(question.surveyOptions).branching.rules.length !==
-                  0
-                "
-                class="text-sm bg-gray-100 rounded border border-gray-200 text-gray-600 px-1 py-0.5"
-                >branching</span
-              >
-            </div>
-            <display-question
-              v-if="showPreview"
-              :question="question"
-              :language-text="languageText"
-              class="p-3 w-full"
+            <div
+              class="flex flex-col w-full bg-white border border-gray-200 rounded p-5"
             >
-            </display-question>
+              <div class="flex w-full">
+                <div class="flex flex-1 items-center">
+                  <span
+                    class="font-semibold text-gray-800"
+                    :class="
+                      question.flags.includes('SECTION')
+                        ? 'text-2xl'
+                        : 'text-xl'
+                    "
+                    >{{ question.name }}</span
+                  >
+                  <span
+                    class="text-white font-bold text-sm bg-primary ml-2 rounded flex items-center justify-center px-1.5 shadow-sm"
+                    >{{ question.questionNumber }}</span
+                  >
+                </div>
+                <div class="w-16 flex items-center justify-end">
+                  <popup-menu class="mr-2">
+                    <template v-slot:menuButton
+                      ><button class="btn-link-rounded">
+                        <i class="fas fa-ellipsis-v fa-fw"></i></button
+                    ></template>
+                    <template v-slot:menuItems>
+                      <button class="w-full" @click="editQuestion(question)">
+                        <span class="popup-menu-button">
+                          <i class="fa-fw fas fa-pencil-alt fa-sm"></i
+                          >Edit</span
+                        >
+                      </button>
+                      <button
+                        v-if="question.ordinalPosition !== 1"
+                        class="w-full"
+                        @click="moveQuestion(question)"
+                      >
+                        <span class="popup-menu-button">
+                          <i class="fa-fw fas fa-arrows-alt-v fa-sm"></i
+                          >Move</span
+                        >
+                      </button>
+                      <button
+                        v-if="question.ordinalPosition !== 1"
+                        class="w-full"
+                        @click="deleteQuestion(question)"
+                      >
+                        <span class="popup-menu-button">
+                          <i class="fa-fw fas fa-trash-alt fa-sm"></i
+                          >Delete</span
+                        >
+                      </button>
+                    </template>
+                  </popup-menu>
+                </div>
+              </div>
+              <div class="flex items-center py-2">
+                <span
+                  class="text-sm bg-gray-100 rounded border border-gray-200 text-gray-600 px-1 py-0.5 mr-1"
+                  >{{ questionTypeText(question) }}</span
+                >
+                <span
+                  v-if="
+                    JSON.parse(question.surveyOptions).branching.rules
+                      .length !== 0
+                  "
+                  class="text-sm bg-gray-100 rounded border border-gray-200 text-gray-600 px-1 py-0.5"
+                  >branching</span
+                >
+              </div>
+              <display-question
+                v-if="showPreview"
+                :question="question"
+                :language-text="languageText"
+                class="p-3 w-full"
+              >
+              </display-question>
+            </div>
+            <div class="w-full flex justify-center h-12 items-center">
+              <popup-menu>
+                <template v-slot:menuButton
+                  ><span class="btn-link-rounded"
+                    ><i class="fas fa-plus fa-fw"></i></span
+                ></template>
+                <template v-slot:menuItems>
+                  <button
+                    v-for="questionType in questionTypes"
+                    :key="questionType.code"
+                    @click="
+                      newQuestion(
+                        questionType.flag,
+                        question.ordinalPosition + 1
+                      )
+                    "
+                  >
+                    <span class="popup-menu-button">
+                      <i class="fa-fw fa-sm" :class="questionType.icon"></i
+                      >{{ questionType.text }}</span
+                    >
+                  </button>
+                </template>
+              </popup-menu>
+            </div>
           </div>
         </div>
       </div>
@@ -267,9 +276,7 @@
         v-if="cannotDeleteDueToBranching.length !== 0"
         @cancel="cannotDeleteDueToBranching = []"
       >
-        <template v-slot:title
-          ><p class="font-semibold mb-5">Cannot Delete</p></template
-        >
+        <template v-slot:title>Cannot Delete</template>
         <template v-slot:body>
           <div class="flex flex-col mb-5">
             <p class="mb-4">

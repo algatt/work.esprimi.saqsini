@@ -350,7 +350,10 @@ export default {
                 })
 
                 const originalQuestion = this.questions.find((el) => {
-                  return el.questionNumber === branchingRule.questionNumber
+                  return (
+                    String(el.questionNumber) ===
+                    String(branchingRule.questionNumber)
+                  )
                 })
 
                 if (
@@ -485,7 +488,7 @@ export default {
     },
     getAnswerByQuestionNumber(questionNumber) {
       const code = this.questions.find((el) => {
-        return el.questionNumber === questionNumber
+        return String(el.questionNumber) === String(questionNumber)
       }).code
       const x = this.answers.find((el) => {
         return el.code === code
