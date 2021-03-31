@@ -80,7 +80,7 @@ export default {
             tempAnswers.push({
               token: this.surveyData.invitations[0].token,
               questionCode: answer.code,
-              questionOption: el.questionOption,
+              option: el.questionOption,
               value: el.value,
               surveyOptions: JSON.stringify(this.sessionDetails),
             })

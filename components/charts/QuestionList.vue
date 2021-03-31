@@ -23,6 +23,7 @@
       </div>
     </div>
   </div>
+
   <spinner v-else></spinner>
 </template>
 
@@ -99,6 +100,7 @@ export default {
         data.demographicLabels,
         invitees
       )
+
       return data
     },
     getDifferentAnswers(question, responses) {

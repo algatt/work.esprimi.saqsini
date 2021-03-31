@@ -1,4 +1,5 @@
 import colours from '~/assets/settings/colours.json'
+import { PREFERRED_LANGUAGE } from '~/helpers/constants'
 
 export function getDataAggregateByDemographic(
   selectedList,
@@ -43,15 +44,18 @@ export function getDataAggregateByDemographic(
 
 export function getDataAggregate(legendData, selectedList, originalData) {
   let data = {}
+
+  const selectedColours = []
+
   legendData.forEach((el) => {
-    if (selectedList.includes(el)) data[el] = 0
+    if (selectedList.includes(el)) {
+      data[el] = 0
+      selectedColours.push(colours[legendData.indexOf(el)])
+    }
   })
 
   originalData.responses.forEach((response) => {
-    const parsedValues = JSON.parse(response.value)
-    parsedValues.forEach((value) => {
-      if (selectedList.includes(value.value)) data[value.value] += 1
-    })
+    if (selectedList.includes(response.value)) data[response.value] += 1
   })
   data = Object.values(data)
 
@@ -62,7 +66,7 @@ export function getDataAggregate(legendData, selectedList, originalData) {
     datasets: [
       {
         data,
-        backgroundColor: colours,
+        backgroundColor: selectedColours,
       },
     ],
   }
@@ -71,25 +75,42 @@ export function getDataAggregate(legendData, selectedList, originalData) {
 export function getDifferentAnswers(question, responses) {
   let data = []
 
-  if (question.options) {
+  const isRadioGrid = question.flags.includes('RADIO_GRID')
+  const isRanking = question.flags.includes('RANKING')
+  const isTypeIn = question.flags.includes('TYPE_IN')
+
+  if (isRadioGrid) {
+    const rows = question.options.filter((el) => {
+      return el.flags.includes('ROW')
+    })
+
+    rows.forEach((el) => {
+      data.push({ text: el.value, code: el.value })
+    })
+  } else if (isRanking) {
     question.options.forEach((el) => {
       data.push({ text: el.value, code: el.value })
     })
+  } else if (!isTypeIn) {
+    question.options.forEach((el) => {
+      const option = el.text.find((options) => {
+        return options.language === PREFERRED_LANGUAGE
+      }).text
+      if (el.value) data.push({ text: option, code: el.value })
+    })
   }
-  responses.forEach((response) => {
-    const parsedValue = JSON.parse(response.value)
-    parsedValue.forEach((value) => {
+
+  if (!isRadioGrid && !isRanking) {
+    responses.forEach((response) => {
       if (
         !data.find((el) => {
-          return el.code === value.value ? value.value : value
+          return el.code === response.value
         })
-      )
-        data.push({
-          text: value.value ? value.value : value,
-          code: value.value ? value.value : value,
-        })
+      ) {
+        data.push({ text: response.option, code: response.value })
+      }
     })
-  })
+  }
 
   data = data.sort((a, b) => {
     return a.code > b.code ? 1 : -1
@@ -101,71 +122,49 @@ export function getDifferentAnswers(question, responses) {
 export function getDataAggregateRanking(
   legendData,
   selectedList,
-  originalData,
-  selectedDemographic
+  originalData
 ) {
   let answers = getDifferentAnswers(
     originalData.question,
     originalData.responses
   )
 
-  answers = answers
-    .map((el) => {
-      return el.code
-    })
-    .filter((el) => {
-      return selectedList.includes(el)
-    })
+  const originalAnswers = answers.map((el) => {
+    return el.code
+  })
+
+  answers = originalAnswers.filter((el) => {
+    return selectedList.includes(el)
+  })
 
   const dataToReturn = {
     labels: [],
     datasets: [],
   }
 
-  for (let i = 0; i < answers.length; i++) {
-    dataToReturn.labels.push(i + 1)
+  for (let i = 1; i <= originalAnswers.length; i++) {
+    dataToReturn.labels.push(i)
+  }
 
+  console.log(originalAnswers)
+
+  for (let i = 0; i < answers.length; i++) {
     dataToReturn.datasets.push({
       label: answers[i],
-      data: new Array(answers.length).fill(0),
-      backgroundColor: colours[i],
+      data: new Array(originalAnswers.length).fill(0),
+      backgroundColor: colours[originalAnswers.indexOf(answers[i])],
     })
   }
 
   const whichResponses = originalData.responses
-  const invitees = []
-
-  // if (selectedDemographic.length !== 0) {
-  //   const demographicValues = selectedDemographic.map((el) => {
-  //     return el.name
-  //   })
-  //   const whichDemographic = selectedDemographic[0].type
-  //   invitees = originalData.invitees
-  //     .filter((el) => {
-  //       return (
-  //         el[whichDemographic] &&
-  //         demographicValues.includes(el[whichDemographic])
-  //       )
-  //     })
-  //     .map((el) => {
-  //       return el.token
-  //     })
-  // }
 
   whichResponses.forEach((response) => {
-    const parsedValues = JSON.parse(response.value)
-    for (let i = 0; i < parsedValues.length; i++) {
-      const x = dataToReturn.datasets.find((el) => {
-        return (
-          (selectedDemographic.length === 0 &&
-            el.label === parsedValues[i].value) ||
-          (selectedDemographic.length !== 0 &&
-            invitees.includes(response.token) &&
-            el.label === parsedValues[i].value)
-        )
-      })
-      if (x) x.data[i] += 1
-    }
+    const x = dataToReturn.datasets.find((el) => {
+      return el.label === response.option
+    })
+
+    const index = dataToReturn.labels.indexOf(Number(response.value))
+    if (x) x.data[index]++
   })
   return dataToReturn
 }

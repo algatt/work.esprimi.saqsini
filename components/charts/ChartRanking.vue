@@ -20,9 +20,6 @@ export default {
       type: Array,
       required: true,
     },
-    selectedDemographic: {
-      required: true,
-    },
   },
   data() {
     return {
@@ -72,25 +69,7 @@ export default {
         return el.code
       })
 
-      return getDataAggregateRanking(
-        this.legendData,
-        selectedList,
-        this.data,
-        this.selectedDemographic
-      )
-    },
-  },
-  watch: {
-    selectedDemographic(value) {
-      if (value) {
-        // this.options.scales.xAxes[0].stacked = true
-        // this.options.scales.yAxes[0].stacked = true
-        this.options.legend.display = true
-      } else {
-        // this.options.scales.xAxes[0].stacked = false
-        // this.options.scales.yAxes[0].stacked = false
-        this.options.legend.display = false
-      }
+      return getDataAggregateRanking(this.legendData, selectedList, this.data)
     },
   },
 }

@@ -13,9 +13,6 @@
       id="divButtons"
       class="flex flex-col md:flex-row md:flex-wrap items-center w-full justify-between mt-2"
     >
-      <span v-if="question.showWeights" class="flex pr-3">
-        {{ question.options[0].text }}
-      </span>
       <span
         class="flex w-full md:flex-1 flex-col flex-wrap md:flex-row md:flex-grow"
       >
@@ -40,9 +37,6 @@
           <span v-else class="flex justify-center">{{ option.value }}</span>
         </button>
       </span>
-      <span v-if="question.showWeights" class="flex pl-3">{{
-        question.options[question.options.length - 1].text
-      }}</span>
     </div>
     <div class="flex my-2">
       <button

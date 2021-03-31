@@ -6,10 +6,7 @@
 
 <script>
 import BarChart from '~/components/charts/BarChart'
-import {
-  getDataAggregateByDemographic,
-  getDataAggregate,
-} from '~/helpers/chartHelpers'
+import { getDataAggregate } from '~/helpers/chartHelpers'
 
 export default {
   name: 'ChartMultipleChoice',
@@ -21,9 +18,6 @@ export default {
     },
     selectedList: {
       type: Array,
-      required: true,
-    },
-    selectedDemographic: {
       required: true,
     },
   },
@@ -73,28 +67,7 @@ export default {
         return el.code
       })
 
-      if (this.selectedDemographic) {
-        return getDataAggregateByDemographic(
-          selectedList,
-          this.selectedDemographic,
-          this.data
-        )
-      } else {
-        return getDataAggregate(this.legendData, selectedList, this.data)
-      }
-    },
-  },
-  watch: {
-    selectedDemographic(value) {
-      if (value) {
-        this.options.scales.xAxes[0].stacked = true
-        this.options.scales.yAxes[0].stacked = true
-        this.options.legend.display = true
-      } else {
-        this.options.scales.xAxes[0].stacked = false
-        this.options.scales.yAxes[0].stacked = false
-        this.options.legend.display = false
-      }
+      return getDataAggregate(this.legendData, selectedList, this.data)
     },
   },
 }
