@@ -21,7 +21,7 @@ export const actions = {
   redeem({ commit }, id) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .get(`/builder/invites?publicIdentifier=${id}&token=`, {
+        .get(`/builder/invites?publicIdentifier=${id}&token`, {
           headers: { Authorization: process.env.authorization },
         })
         .then((response) => {
