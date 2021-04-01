@@ -185,5 +185,7 @@ export function parseQuestionToApi(question) {
 
   if (temp.isMandatory) temp.flags.push('IS_MANDATORY')
 
+  delete temp.translatedText
+
   return temp
 }

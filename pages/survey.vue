@@ -61,7 +61,7 @@ export default {
   },
   mounted() {
     this.$store
-      .dispatch('surveys/getSession', this.$route.query.id)
+      .dispatch('invitations/redeem', this.$route.query.id)
       .then((response) => {
         this.surveyData = response
         this.loading = false
@@ -69,7 +69,7 @@ export default {
     this.generateSessionDetails()
   },
   methods: {
-    finishSurvey() {
+    async finishSurvey() {
       const tempAnswers = []
       this.answers
         .filter((el) => {
@@ -88,7 +88,13 @@ export default {
         })
 
       this.finished = true
-      this.$store.dispatch('surveys/saveSession', tempAnswers)
+
+      await this.$store.dispatch('invitations/submit', tempAnswers)
+      await this.$store.dispatch(
+        'invitations/consume',
+        this.surveyData.invitations[0].token
+      )
+
       setTimeout(() => {
         window.location.reload()
       }, 3000)

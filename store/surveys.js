@@ -425,38 +425,6 @@ export const actions = {
     })
   },
 
-  getSession({ commit }, id) {
-    return new Promise((resolve, reject) => {
-      this.$axios
-        .get(`/builder/sessions?publicIdentifier=${id}`, {
-          headers: { Authorization: process.env.authorization },
-        })
-        .then((response) => {
-          resolve(response.data)
-        })
-        .catch((error) => {
-          reject(error)
-        })
-    })
-  },
-
-  saveSession({ commit }, answers) {
-    return new Promise((resolve, reject) => {
-      this.$axios
-        .post(`/builder/sessions/`, answers, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((response) => {
-          resolve(response.data)
-        })
-        .catch((error) => {
-          reject(error)
-        })
-    })
-  },
-
   getSurveyData({ commit }, code) {
     return new Promise((resolve, reject) => {
       this.$axios
