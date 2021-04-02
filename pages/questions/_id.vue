@@ -103,11 +103,12 @@
         <div
           v-for="iteration in questionsNumberOfSections"
           :key="'page' + iteration"
-          class="mt-5 w-full md:w-8/12 mx-auto flex flex-col border-2 border-gray-100 rounded shadow pt-3 px-3 bg-gray-100 mb-5"
+          class="mt-5 w-full md:w-8/12 mx-auto flex flex-col border-2 border-gray-100 rounded shadow p-6 bg-gray-100 mb-5"
         >
           <div
             v-for="question in getQuestionsInPage(iteration)"
             :key="question.code"
+            class="relative"
           >
             <div
               class="flex flex-col w-full bg-white border border-gray-200 rounded p-5"
@@ -187,7 +188,10 @@
               >
               </display-question>
             </div>
-            <div class="w-full flex justify-center h-12 items-center">
+            <div
+              class="absolute z-20 mx-auto left-0 right-0 flex justify-center"
+              style="bottom: -10px"
+            >
               <popup-menu>
                 <template v-slot:menuButton
                   ><span class="btn-link-rounded"
