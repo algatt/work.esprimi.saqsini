@@ -1,30 +1,19 @@
 <template>
   <div v-if="!dataIsLoading" class="flex flex-wrap items-start">
-    <!--    <top-header-bar-->
-    <!--      which="invites"-->
-    <!--      :hide-delete="true"-->
-    <!--      :items="contacts"-->
-    <!--      class="w-full"-->
-    <!--      ><template v-slot:title></template>-->
-    <!--      <template v-slot:button-->
-    <!--        ><button-->
-    <!--          :disabled="selectedItemsLength === 0"-->
-    <!--          class="btn btn-primary"-->
-    <!--          @click="invite"-->
-    <!--        >-->
-    <!--          <i class="far fa-paper-plane fa-fw mr-1"></i>Invite-->
-    <!--        </button>-->
-    <!--      </template></top-header-bar-->
-    <!--    >-->
-
     <div class="w-full xl:w-3/12 pt-2">
-      <div class="px-3 py-1 mb-2">
+      <div class="px-3 py-1 mb-2 flex flex-col">
+        <div class="flex flex-col items-start mb-10">
+          <p class="label">Invite using Email</p>
+          <button class="btn btn-primary" @click="showInviteDialog">
+            Start
+          </button>
+        </div>
         <toggle-switch
           :change-colour="false"
           :checked="workEmail"
           @clicked="changeView($event)"
         >
-          <template v-slot:label>Contacts</template>
+          <template v-slot:label>Invite using Contact Book</template>
           <template v-slot:leftLabel>Personal Email</template>
           <template v-slot:rightLabel>Work Email</template>
         </toggle-switch>
@@ -163,6 +152,13 @@
         </p>
       </template>
     </display-table-component>
+
+    <EditObjectModal v-if="startEmailInvite && currentItemToBeEdited">
+      <template v-slot:title>Invite</template>
+      <template v-slot:content
+        ><InviteByEmail :survey="survey"></InviteByEmail
+      ></template>
+    </EditObjectModal>
   </div>
   <spinner v-else></spinner>
 </template>
@@ -173,10 +169,14 @@ import infoBox from '@/components/layouts/InfoBox'
 import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
 import ToggleSwitch from '~/components/layouts/ToggleSwitch'
 import Spinner from '~/components/layouts/Spinner'
+import EditObjectModal from '~/components/layouts/EditObjectModal'
+import InviteByEmail from '~/components/surveys/InviteByEmail'
 
 export default {
   name: 'ContactsInvites',
   components: {
+    InviteByEmail,
+    EditObjectModal,
     multiSelect,
     infoBox,
     DisplayTableComponent,
@@ -193,11 +193,18 @@ export default {
       selectedRoles: [],
       dataIsLoading: true,
       workEmail: false,
+      startEmailInvite: false,
     }
   },
   computed: {
     selectedItemsLength() {
       return this.$store.state.selectedItems.length
+    },
+    currentItemToBeEdited() {
+      return this.$store.state.currentItemToBeEdited
+    },
+    survey() {
+      return this.$store.state.surveys.items[0]
     },
     sectors() {
       if (!this.filters.sectors) return []
@@ -383,6 +390,10 @@ export default {
     },
     invite() {
       alert('Work in progress :(')
+    },
+    showInviteDialog() {
+      this.$store.dispatch('setCurrentItemToBeEdited', this.survey)
+      this.startEmailInvite = true
     },
   },
 }

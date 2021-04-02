@@ -80,14 +80,14 @@ export function parseSurveyToAPI(survey) {
 
   const dateStringFrom = temp.validFromDate + ' ' + temp.validFromTime
   temp.validFromTimestamp = moment(dateStringFrom).format(
-    'YYYY-MM-DD HH:MM:SSZZ'
+    'YYYY-MM-DD HH:mm:SSZZ'
   )
   delete temp.validFromDate
   delete temp.validFromTime
 
   if (temp.validToDate) {
     const dateStringTo = temp.validToDate + ' ' + temp.validToTime
-    temp.validToTimestamp = moment(dateStringTo).format('YYYY-MM-DD HH:MM:SSZZ')
+    temp.validToTimestamp = moment(dateStringTo).format('YYYY-MM-DD HH:mm:SSZZ')
     delete temp.validToDate
     delete temp.validToTime
   }
@@ -95,7 +95,7 @@ export function parseSurveyToAPI(survey) {
   if (temp.notificationDate) {
     const dateStringTo = temp.notificationDate + ' ' + temp.notificationTime
     temp.notificationTimestamp = moment(dateStringTo).format(
-      'YYYY-MM-DD HH:MM:SSZZ'
+      'YYYY-MM-DD HH:mm:SSZZ'
     )
     delete temp.notificationDate
     delete temp.notificationTime
@@ -104,7 +104,7 @@ export function parseSurveyToAPI(survey) {
   if (temp.reminderDate) {
     const dateStringTo = temp.reminderDate + ' ' + temp.reminderTime
     temp.reminderTimestamp = moment(dateStringTo).format(
-      'YYYY-MM-DD HH:MM:SSZZ'
+      'YYYY-MM-DD HH:mm:SSZZ'
     )
     delete temp.reminderDate
     delete temp.reminderTime
