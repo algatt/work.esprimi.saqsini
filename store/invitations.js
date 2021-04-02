@@ -18,10 +18,12 @@ export const actions = {
     })
   },
 
-  redeem({ commit }, id) {
+  redeem({ commit }, { id, token }) {
     return new Promise((resolve, reject) => {
+      let url = `/builder/invites?publicIdentifier=${id}`
+      if (token) url = url + `&token=${token}`
       this.$axios
-        .get(`/builder/invites?publicIdentifier=${id}&token`, {
+        .get(url, {
           headers: { Authorization: process.env.authorization },
         })
         .then((response) => {

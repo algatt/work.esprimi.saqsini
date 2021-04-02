@@ -61,7 +61,10 @@ export default {
   },
   mounted() {
     this.$store
-      .dispatch('invitations/redeem', this.$route.query.id)
+      .dispatch('invitations/redeem', {
+        id: this.$route.query.id,
+        token: this.$route.query.token,
+      })
       .then((response) => {
         this.surveyData = response
         this.loading = false
