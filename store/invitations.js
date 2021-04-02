@@ -20,9 +20,14 @@ export const actions = {
 
   redeem({ commit }, { id, token }) {
     return new Promise((resolve, reject) => {
-      let url = `/builder/invites?publicIdentifier=${id}`
-      if (token) url = url + `&token=${token}`
-      this.$axios
+      let url = ''
+      if (token) url = `/builder/invites?publicIdentifier=${id}&token=${token}`
+      else url = `/builder/invites/kiosk?publicIdentifier=${id}`
+
+      const axios = require('axios')
+      const instance = axios.create()
+
+      instance
         .get(url, {
           headers: { Authorization: process.env.authorization },
         })
