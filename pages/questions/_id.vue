@@ -66,6 +66,12 @@
               <i class="fas fa-users fa-fw mr-1"></i>Collaborators</span
             >
           </button>
+          <button class="w-full" @click="selectMenu('invite_settings')">
+            <span class="popup-menu-button">
+              <i class="fas fa-envelope-open-text fa-fw mr-1"></i>Invite
+              Settings</span
+            >
+          </button>
           <button class="w-full" @click="selectMenu('preview')">
             <span class="popup-menu-button">
               <i class="fas fa-eye fa-fw mr-1"></i>Preview</span
@@ -267,6 +273,16 @@
             </template>
           </edit-object-modal>
         </template>
+        <template
+          v-if="selectedMenu === 'invite_settings' && currentItemToBeEdited"
+        >
+          <edit-object-modal @modalClosed="selectedMenu = ''">
+            <template v-slot:title>Invites Settings</template>
+            <template v-slot:content
+              ><survey-invites-settings></survey-invites-settings>
+            </template>
+          </edit-object-modal>
+        </template>
       </transition>
 
       <question-move-menu
@@ -340,10 +356,12 @@ import Invites from '~/components/contacts/Invites'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 import ContactBookDropdown from '~/components/contacts/ContactBookDropdown'
 import ModalGeneric from '~/components/layouts/ModalGeneric'
+import SurveyInvitesSettings from '~/components/surveys/SurveyInvitesSettings'
 
 export default {
   name: 'QuestionList',
   components: {
+    SurveyInvitesSettings,
     ModalGeneric,
     SurveyCollaborators,
     QuestionMoveMenu,

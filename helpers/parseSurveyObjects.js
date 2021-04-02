@@ -30,6 +30,24 @@ export function parseSurveyToForm(survey, language = PREFERRED_LANGUAGE) {
     )
   }
 
+  if (temp.notificationTimestamp) {
+    temp.notificationDate = moment(
+      temp.notificationTimestamp.replace(' +', '+')
+    ).format('YYYY-MM-DD')
+    temp.notificationTime = moment(
+      temp.notificationTimestamp.replace(' +', '+')
+    ).format('HH:mm')
+  }
+
+  if (temp.reminderTimestamp) {
+    temp.reminderDate = moment(
+      temp.reminderTimestamp.replace(' +', '+')
+    ).format('YYYY-MM-DD')
+    temp.reminderTime = moment(
+      temp.reminderTimestamp.replace(' +', '+')
+    ).format('HH:mm')
+  }
+
   if (temp.text) {
     const text = temp.text.find((el) => {
       return el.language === language
@@ -72,6 +90,24 @@ export function parseSurveyToAPI(survey) {
     temp.validToTimestamp = moment(dateStringTo).format('YYYY-MM-DD HH:MM:SSZZ')
     delete temp.validToDate
     delete temp.validToTime
+  }
+
+  if (temp.notificationDate) {
+    const dateStringTo = temp.notificationDate + ' ' + temp.notificationTime
+    temp.notificationTimestamp = moment(dateStringTo).format(
+      'YYYY-MM-DD HH:MM:SSZZ'
+    )
+    delete temp.notificationDate
+    delete temp.notificationTime
+  }
+
+  if (temp.reminderDate) {
+    const dateStringTo = temp.reminderDate + ' ' + temp.reminderTime
+    temp.reminderTimestamp = moment(dateStringTo).format(
+      'YYYY-MM-DD HH:MM:SSZZ'
+    )
+    delete temp.reminderDate
+    delete temp.reminderTime
   }
 
   temp.text = [{ language: PREFERRED_LANGUAGE, text: temp.text }]
