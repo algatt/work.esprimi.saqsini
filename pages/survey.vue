@@ -2,7 +2,9 @@
   <div
     v-if="!loading"
     class="min-h-screen"
-    :style="{ backgroundColor: parsedSurvey.options.accentColour }"
+    :style="{
+      backgroundColor: true ? '#E5E7EB' : parsedSurvey.options.accentColour,
+    }"
   >
     <PreviewSurvey
       class="w-11/12 md:w-8/12 mx-auto"

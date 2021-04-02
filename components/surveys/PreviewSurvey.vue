@@ -1,7 +1,7 @@
 <template>
   <div v-if="survey" ref="surveyModal" class="flex flex-col p-5 h-full">
     <div
-      class="bg-cover flex flex-wrap items-center rounded w-full mb-5"
+      class="bg-cover flex flex-wrap items-center rounded w-full mb-5 shadow"
       :style="{
         backgroundColor: survey.options.backgroundColour,
         backgroundImage: 'url(' + survey.options.headerImage + ')',
@@ -71,7 +71,7 @@
         >
           <display-question
             :key="`${question.code} ${currentLanguage}`"
-            class="rounded shadow-lg"
+            class="rounded shadow"
             :display-style="survey.options"
             :language="currentLanguage"
             :language-text="languageText"
@@ -85,7 +85,7 @@
       <template v-else>
         <div
           :style="{ backgroundColor: survey.options.backgroundColour }"
-          class="rounded shadow-lg"
+          class="rounded shadow"
         >
           <display-question
             :key="`${questiosWithSectionsFilteredFirstPage.code} ${currentLanguage}`"
@@ -96,7 +96,7 @@
             :question="questiosWithSectionsFilteredFirstPage"
           ></display-question>
           <div
-            class="flex items-center justify-center space-x-3 my-5 py-3 rounded shadow-lg"
+            class="flex items-center justify-center space-x-3 my-5 py-3 rounded shadow"
           >
             <button
               class="px-5 py-1 rounded font-semibold"

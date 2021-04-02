@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col">
+  <div class="flex flex-col items-center">
     <horizontal-bar-chart
       :chart-data="datasets"
       :options="options"
@@ -68,6 +68,7 @@ export default {
   data() {
     return {
       options: {
+        responsive: false,
         maintainAspectRatio: false,
         legend: {
           display: false,

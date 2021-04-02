@@ -31,7 +31,7 @@
       class="flex"
     >
       <div
-        class="text-center font-semibold py-2 border-b-2"
+        class="text-center font-semibold py-2 border-b-2 flex items-center justify-center"
         :style="{
           width: `${100 / (datasets.columns.length + 1)}%`,
           minWidth: `${minElWidth}px`,
@@ -42,7 +42,7 @@
       <div
         v-for="(score, index) in datasets.responses[item]"
         :key="index"
-        class="text-center font-semibold py-2 border-b-2"
+        class="text-center font-semibold py-2 border-b-2 flex flex-col items-center"
         :style="{
           width: `${100 / (datasets.columns.length + 1)}%`,
           minWidth: `${minElWidth}px`,
@@ -59,6 +59,7 @@
           >{{ score }}</span
         >
         <span v-else>{{ score }}</span>
+        <span> {{ calculatePercentage(score, datasets.totalCount) }}%</span>
       </div>
     </div>
   </div>
@@ -136,6 +137,8 @@ export default {
       Object.keys(data.responses).forEach((el) => {
         Object.keys(data.responses[el]).forEach((val) => {
           const value = data.responses[el][val]
+          if (!data.totalCount) data.totalCount = value
+          else data.totalCount += value
           if (!data.minValue) data.minValue = value
           if (!data.maxValue) data.maxValue = value
           if (value < data.minValue) data.minValue = value
@@ -143,6 +146,11 @@ export default {
         })
       })
       return data
+    },
+  },
+  methods: {
+    calculatePercentage(value, total) {
+      return Math.round((value / total) * 100)
     },
   },
 }

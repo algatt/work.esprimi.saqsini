@@ -47,10 +47,11 @@
 
       <div class="flex flex-col">
         <label class="label">Notification Message</label>
-        <textarea
-          v-model="form.notificationMessage"
-          class="input text-area"
-        ></textarea>
+
+        <text-editor
+          :content="form.notificationMessage"
+          @updateContent="form.notificationMessage = $event"
+        ></text-editor>
       </div>
 
       <div class="flex flex-col">
@@ -103,10 +104,10 @@
 
       <div class="flex flex-col">
         <label class="label">Reminder Message</label>
-        <textarea
-          v-model="form.reminderMessage"
-          class="input text-area"
-        ></textarea>
+        <text-editor
+          :content="form.reminderMessage"
+          @updateContent="form.reminderMessage = $event"
+        ></text-editor>
       </div>
     </div>
 
@@ -127,6 +128,7 @@ import moment from 'moment'
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
 import { createMomentFromDateAndTime } from '~/helpers/helpers'
 import PopupInfo from '~/components/layouts/PopupInfo'
+import TextEditor from '~/components/layouts/textEditor'
 
 const checkDates = (value, vm) => {
   if (
@@ -148,7 +150,7 @@ const checkDates = (value, vm) => {
 
 export default {
   name: 'SurveyInvitesSettings',
-  components: { EditObjectModalBottomPart, PopupInfo },
+  components: { TextEditor, EditObjectModalBottomPart, PopupInfo },
   mixins: [validationMixin],
   data() {
     return {

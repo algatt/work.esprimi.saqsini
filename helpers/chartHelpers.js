@@ -66,6 +66,7 @@ export function getDataAggregate(legendData, selectedList, originalData) {
     datasets: [
       {
         data,
+        maxBarThickness: 56,
         backgroundColor: selectedColours,
       },
     ],
@@ -146,10 +147,9 @@ export function getDataAggregateRanking(
     dataToReturn.labels.push(i)
   }
 
-  console.log(originalAnswers)
-
   for (let i = 0; i < answers.length; i++) {
     dataToReturn.datasets.push({
+      maxBarThickness: 56,
       label: answers[i],
       data: new Array(originalAnswers.length).fill(0),
       backgroundColor: colours[originalAnswers.indexOf(answers[i])],

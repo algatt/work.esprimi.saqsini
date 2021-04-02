@@ -2,7 +2,9 @@
   <div class="frosted p-0 md:p-8 z-20" @click="$emit('modalClosed')">
     <div
       class="w-full md:w-6/12 mx-auto flex flex-col relative shadow-md overflow-y-auto"
-      :style="{ backgroundColor: survey.options.accentColour }"
+      :style="{
+        backgroundColor: true ? '#E5E7EB' : survey.options.accentColour,
+      }"
       @click.stop
     >
       <preview-survey

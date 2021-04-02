@@ -5,7 +5,7 @@ export default function ({ $axios, store, redirect }) {
   ])
 
   $axios.onError((err) => {
-    if (err.response.status === 403) {
+    if (err.response && err.response.status === 403) {
       store.dispatch('auth/cleanAfterLogout').then(() => {
         redirect({ name: 'login' })
       })

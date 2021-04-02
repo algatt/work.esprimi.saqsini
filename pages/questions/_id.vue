@@ -4,7 +4,7 @@
       <top-header-bar
         :which="selectedView === 'questions' ? 'questions' : 'invites'"
         :items="selectedView === 'questions' ? [] : invites"
-        class="w-full"
+        class="w-full z-20"
         :hide-select-all="selectedView === 'questions'"
         :hide-delete="true"
         ><template v-slot:title
@@ -105,7 +105,7 @@
       <div v-if="selectedView === 'invites'">
         <invites @contacts="checkContacts"></invites>
       </div>
-      <div v-else class="flex flex-col">
+      <div v-else class="flex flex-col w-full">
         <div
           v-for="iteration in questionsNumberOfSections"
           :key="'page' + iteration"
@@ -117,7 +117,7 @@
             class="relative"
           >
             <div
-              class="flex flex-col w-full bg-white border border-gray-200 rounded p-5"
+              class="flex flex-col w-full bg-white border border-gray-200 p-5"
             >
               <div class="flex w-full">
                 <div class="flex flex-1 items-center">
@@ -190,18 +190,18 @@
                 v-if="showPreview"
                 :question="question"
                 :language-text="languageText"
-                class="p-3 w-full"
+                class="w-full"
               >
               </display-question>
             </div>
             <div
               class="absolute z-20 mx-auto left-0 right-0 flex justify-center"
-              style="bottom: -10px"
+              style="bottom: -12px"
             >
               <popup-menu>
                 <template v-slot:menuButton
-                  ><span class="btn-link-rounded"
-                    ><i class="fas fa-plus fa-fw"></i></span
+                  ><span class="btn-link-rounded-primary"
+                    ><i class="fas fa-plus fa-fw fa-sm"></i></span
                 ></template>
                 <template v-slot:menuItems>
                   <button
@@ -214,7 +214,14 @@
                       )
                     "
                   >
-                    <span class="popup-menu-button">
+                    <span
+                      class="popup-menu-button"
+                      :class="
+                        questionType.text === 'Page'
+                          ? 'border-b border-gray-200'
+                          : null
+                      "
+                    >
                       <i class="fa-fw fa-sm" :class="questionType.icon"></i
                       >{{ questionType.text }}</span
                     >
@@ -483,12 +490,23 @@ export default {
     newQuestion(flag, ordinalPosition) {
       this.$store.dispatch('setCurrentItemToBeEdited', {
         code: -1,
-        questionNumber: ordinalPosition,
+        questionNumber: this.getMaxQuestionNumber(),
         surveyCode: Number(this.$route.params.id),
         flags: [flag],
         ordinalPosition,
         surveyOptions: JSON.stringify({}),
       })
+    },
+    getMaxQuestionNumber() {
+      let max = null
+      this.questions.forEach((el) => {
+        if (Number(el.questionNumber)) {
+          if (!max) max = Number(el.questionNumber)
+          else if (max < Number(el.questionNumber))
+            max = Number(el.questionNumber)
+        }
+      })
+      return max + 1
     },
     editQuestion(question) {
       this.$store.dispatch('setCurrentItemToBeEdited', question)

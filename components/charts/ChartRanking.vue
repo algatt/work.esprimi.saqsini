@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col">
+  <div class="flex flex-col items-center">
     <bar-chart :chart-data="datasets" :options="options"></bar-chart>
   </div>
 </template>
@@ -24,6 +24,7 @@ export default {
   data() {
     return {
       options: {
+        responsive: false,
         maintainAspectRatio: false,
         legend: {
           display: true,
