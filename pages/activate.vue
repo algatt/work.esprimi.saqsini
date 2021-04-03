@@ -1,55 +1,41 @@
 <template>
   <div
     v-if="!loading"
-    class="bg-white rounded border border-primary shadow-xl py-4 px-14 mb-20 flex flex-col flex-grow"
+    class="bg-white flex flex-col px-8 md:px-16 py-5 rounded shadow-lg items-center space-y-5"
     style="max-width: 350px"
   >
-    <h5 class="text-2xl text-primary font-bold text-center mb-4">
-      saqsini<i class="far fa-comments fa-fw ml-1"></i>
-    </h5>
+    <text-link>
+      <h4 class="text-primary">
+        <nuxt-link to="/">
+          saqsini<i class="far fa-comments fa-fw ml-1"></i>
+        </nuxt-link></h4
+    ></text-link>
+
     <template v-if="!emailRoute || !tokenRoute || !activated">
       <p class="mb-4">
         Oh no! We have a problem with this link. Click below so we send you
         another email.
       </p>
 
-      <label class="mb-1 font-semibold" for="email">Email</label>
-      <input id="email" v-model="email" type="email" class="input-login mb-3" />
+      <input-base id="email" v-model="email" type="email">Email</input-base>
 
-      <button
-        class="btn btn-primary my-3 py-2"
-        :disabled="$v.$invalid || inProgress"
-        @click="sendAnotherToken"
+      <button-animated :disabled="$v.$invalid" @click="sendAnotherToken"
+        ><template v-slot:icon
+          ><i class="fas fa-spinner fa-fw animate-spin"></i></template
+        >Send Another Token</button-animated
       >
-        <span v-if="!inProgress">Request new Token</span>
-        <span v-else class="flex items-center justify-center"
-          ><i class="fas fa-spinner fa-fw animate-spin mr-2"></i> Request new
-          Token</span
-        >
-      </button>
     </template>
 
     <template v-else>
-      <label class="mb-1 font-semibold" for="password">New Password</label>
-
-      <input
-        id="password"
-        v-model="password"
-        type="password"
-        class="input-login mb-3"
-      />
-
-      <button
-        class="btn btn-primary my-3 py-2"
-        :disabled="$v.$invalid || inProgress"
-        @click="setPassword"
+      <input-base id="password" v-model="password" type="password"
+        >Password</input-base
       >
-        <span v-if="!inProgress">Set Password</span>
-        <span v-else
-          ><i class="fas fa-spinner fa-fw animate-spin"></i> Setting
-          Password</span
-        >
-      </button>
+
+      <button-animated :disabled="$v.$invalid" @click="setPassword"
+        ><template v-slot:icon
+          ><i class="fas fa-spinner fa-fw animate-spin"></i></template
+        >Set Password</button-animated
+      >
     </template>
   </div>
   <spinner v-else></spinner>
@@ -59,16 +45,18 @@
 import { validationMixin } from 'vuelidate'
 import { email, required, minLength } from 'vuelidate/lib/validators'
 import spinner from '@/components/layouts/Spinner'
+import InputBase from '~/components/elements/InputBase'
+import ButtonAnimated from '~/components/elements/ButtonAnimated'
+
 export default {
   name: 'ActivateVue',
   layout: 'defaultLogin',
-  components: { spinner },
+  components: { ButtonAnimated, InputBase, spinner },
   mixins: [validationMixin],
   data() {
     return {
       email: '',
       password: '',
-      inProgress: false,
       activated: false,
       loading: true,
     }
@@ -123,7 +111,6 @@ export default {
       }
     },
     sendAnotherToken() {
-      this.inProgress = true
       this.$store
         .dispatch('auth/resendToken', { email: this.email })
         .then(() => {
@@ -133,13 +120,12 @@ export default {
         })
         .catch(() => {
           this.$toasted.show('There was a problem with resending the token.')
-        })
-        .finally(() => {
-          this.inProgress = false
+          window.setTimeout(() => {
+            this.$router.push('/login')
+          }, 4000)
         })
     },
     setPassword() {
-      this.inProgress = true
       this.$store
         .dispatch('auth/setPassword', {
           token: this.tokenRoute,
@@ -171,17 +157,11 @@ export default {
           this.$toasted.show(
             'There was a problem with setting up the password.'
           )
-        })
-        .finally(() => {
-          this.inProgress = false
+          window.setTimeout(() => {
+            this.$router.push('/login')
+          }, 4000)
         })
     },
   },
 }
 </script>
-
-<style scoped>
-.input-login {
-  @apply border-2 border-gray-200 rounded-sm px-3 py-1 focus:bg-gray-100 focus:border-primary transition duration-300 ring-offset-2 focus:outline-none;
-}
-</style>

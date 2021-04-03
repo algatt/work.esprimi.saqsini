@@ -1,45 +1,47 @@
 <template>
   <div
-    class="bg-white w-auto rounded border border-primary shadow-xl py-4 px-14 mb-20 flex flex-col space-y-5"
+    class="bg-white flex flex-col px-8 md:px-16 py-5 rounded shadow-lg items-center space-y-5"
+    style="max-width: 350px"
   >
-    <nuxt-link to="/" class="text-2xl text-primary font-bold text-center">
-      saqsini<i class="far fa-comments fa-fw ml-1"></i>
-    </nuxt-link>
+    <text-link>
+      <h4 class="text-primary">
+        <nuxt-link to="/">
+          saqsini<i class="far fa-comments fa-fw ml-1"></i>
+        </nuxt-link></h4
+    ></text-link>
 
     <p>
       Type in your email and we'll send you an email to reset your password.
     </p>
 
-    <input
+    <input-base
       id="email"
       v-model="email"
-      class="input-login mb-3"
       @keyup="$v.email.$touch"
-    />
+    ></input-base>
 
-    <div class="flex justify-center">
-      <button
-        class="btn btn-primary py-2 px-5"
-        :disabled="$v.$invalid || inProgress"
-        @click="resetPassword"
-      >
-        Reset Password
-      </button>
-    </div>
+    <button-animated :disabled="$v.$invalid" @click="resetPassword"
+      ><template v-slot:icon
+        ><i class="fas fa-spinner fa-fw animate-spin"></i></template
+      >Reset Password</button-animated
+    >
   </div>
 </template>
 
 <script>
 import { validationMixin } from 'vuelidate'
 import { required, email } from 'vuelidate/lib/validators'
+import TextLink from '~/components/elements/TextLink'
+import InputBase from '~/components/elements/InputBase'
+import ButtonAnimated from '~/components/elements/ButtonAnimated'
 export default {
   name: 'Reset',
+  components: { InputBase, TextLink, ButtonAnimated },
   layout: 'defaultLogin',
   mixins: [validationMixin],
   data() {
     return {
       email: '',
-      inProgress: false,
     }
   },
   validations: {
@@ -61,7 +63,6 @@ export default {
       }
     },
     resetPassword() {
-      this.inProgress = true
       this.$store
         .dispatch('auth/resetPassword', this.email)
         .then(() => {
@@ -71,22 +72,15 @@ export default {
           )
           window.setTimeout(() => {
             this.$router.push('/login')
-          }, 5000)
+          }, 4000)
         })
         .catch(() => {
           this.$toasted.error('There was a problem with your request.', {
             position: 'bottom-center',
           })
-          this.inProgress = false
           this.email = ''
         })
     },
   },
 }
 </script>
-
-<style scoped>
-.input-login {
-  @apply border-2 border-gray-200 rounded-sm px-3 py-1 focus:bg-gray-100 focus:border-primary transition duration-300 ring-offset-2 focus:outline-none;
-}
-</style>

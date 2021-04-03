@@ -7,6 +7,7 @@
       class="border-2 border-gray-300 rounded py-1 px-2 focus:border-primary focus:ring-0 focus:outline-none transition duration-300 disabled:border-gray-300 disabled:bg-gray-100"
       :class="error ? 'border-red-600' : null"
       :disabled="disabled"
+      @input="updateValue($event.target.value)"
     />
     <span class="text-sm text-red-600 px-1 py-1">
       <span v-if="error">{{ error }}</span>
@@ -35,6 +36,14 @@ export default {
       type: String,
       required: false,
       default: null,
+    },
+    value: {
+      type: String,
+    },
+  },
+  methods: {
+    updateValue(value) {
+      this.$emit('input', value)
     },
   },
 }
