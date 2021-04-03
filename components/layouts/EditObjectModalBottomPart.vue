@@ -80,11 +80,11 @@ export default {
   },
   mounted() {
     document.addEventListener('keydown', this.mapEscape)
-    document.addEventListener('keydown', this.mapEnter)
+    // document.addEventListener('keydown', this.mapEnter)
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.mapEscape)
-    document.removeEventListener('keydown', this.mapEnter)
+    // document.removeEventListener('keydown', this.mapEnter)
   },
   methods: {
     mapEscape(key) {
