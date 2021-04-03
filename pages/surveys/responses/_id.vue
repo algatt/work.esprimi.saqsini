@@ -63,10 +63,7 @@
       <individual-details :data="responses"></individual-details>
     </div>
     <div v-else-if="selectedView === 'cross'">
-      <cross-table-details
-        v-if="false"
-        :data="dataForCrossTab"
-      ></cross-table-details>
+      <cross-table-details :data="dataForCrossTab"></cross-table-details>
     </div>
   </div>
   <spinner v-else></spinner>
@@ -103,14 +100,13 @@ export default {
       const data = {}
       data.survey = this.responses.survey
       data.invitees = this.responses.invitations
-      // data.sessions = this.responses.sessions
       return data
     },
     dataForCrossTab() {
-      const data = {}
-      data.questions = this.responses.questions
-      data.responses = this.responses.responses
-      return data
+      return {
+        questions: this.responses.questions,
+        responses: this.responses.responses,
+      }
     },
   },
 

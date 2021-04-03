@@ -1,6 +1,6 @@
 <template>
-  <div class="flex flex-col justify-between w-full">
-    <div class="flex flex-col w-full space-y-5">
+  <div class="flex flex-col justify-between w-full space-y-5">
+    <div class="flex flex-col w-full space-y-10">
       <div class="flex flex-col">
         <div class="flex items-center w-full">
           <label for="notificationDate" class="label">Notification Date</label>

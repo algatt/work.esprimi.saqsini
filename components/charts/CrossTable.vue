@@ -1,38 +1,68 @@
 <template>
-  <table class="table-fixed w-11/12 mx-auto rounded border border-gray-200">
-    <tr class="bg-gray-100">
-      <th
-        v-for="(header, index) in tableHeader"
-        :key="index"
-        class="text-center py-2 border-b border-gray-200"
-        :style="{ width: `${100 / tableColumns}%` }"
+  <div
+    class="flex flex-col w-full overflow-auto max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-none mx-auto"
+  >
+    <div ref="crossTable">
+      <table
+        class="table flex-1 rounded border border-gray-200"
+        :style="{ minWidth: `${tableHeader.length * minElWidth}px` }"
       >
-        {{ header }}
-      </th>
-    </tr>
-    <tr
-      v-for="(rows, index) in tableRows"
-      :key="index"
-      class="border-b border-gray-200"
-    >
-      <td
-        v-for="(field, index) in rows"
-        :key="index"
-        class="text-center"
-        :class="
-          index === 0
-            ? 'bg-gray-100 font-semibold py-2 '
-            : field === maxValue
-            ? 'text-green-600'
-            : field === minValue
-            ? 'text-red-600'
-            : null
-        "
-      >
-        {{ field }}
-      </td>
-    </tr>
-  </table>
+        <caption v-if="details.xTitle" class="mb-5">
+          <span class="flex w-full justify-center font-semibold text-lg">
+            {{ details.xTitle }} {{ details.xOption }}</span
+          >
+          <span class="flex w-full justify-center">compared to </span>
+          <span class="flex w-full justify-center font-semibold text-lg">
+            {{ details.yTitle }} {{ details.yOption }}</span
+          >
+        </caption>
+        <tr class="bg-gray-100">
+          <th
+            v-for="(header, index) in tableHeader"
+            :key="index"
+            class="text-center py-2 border-b border-gray-200"
+            :style="{ width: `${100 / tableColumns}%` }"
+          >
+            {{ header }}
+          </th>
+        </tr>
+        <tr
+          v-for="(rows, index) in tableRows"
+          :key="index"
+          class="border-b border-gray-200"
+        >
+          <td
+            v-for="(field, index) in rows"
+            :key="index"
+            class="text-center"
+            :class="index === 0 ? 'bg-gray-100 font-semibold py-2 ' : null"
+          >
+            <span class="flex flex-col items-center py-2">
+              <span
+                v-if="field === minValue"
+                class="bg-red-100 text-red-700 rounded-lg px-2 py-0.5"
+                >{{ field }}</span
+              >
+              <span
+                v-else-if="field === maxValue"
+                class="bg-green-100 text-green-700 rounded-lg px-2 py-0.5"
+                >{{ field }}</span
+              >
+              <span v-else>{{ field }}</span>
+              <span v-if="index !== 0 && !hidePercentages">
+                {{ calculatePercentage(field, totalCount) }}%</span
+              >
+            </span>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div class="flex justify-end py-5">
+      <button class="btn btn-primary" @click="copyTableToClipboard">
+        Copy
+      </button>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -43,11 +73,21 @@ export default {
       required: true,
       type: Array,
     },
+    details: {
+      required: false,
+      type: Object,
+      default: () => {
+        return {}
+      },
+    },
   },
   data() {
     return {
       maxValue: null,
       minValue: null,
+      totalCount: null,
+      minElWidth: 150,
+      hidePercentages: false,
     }
   },
   computed: {
@@ -64,6 +104,7 @@ export default {
   mounted() {
     this.maxValue = this.getMaxValue()
     this.minValue = this.getMinValue()
+    this.totalCount = this.getTotalCount()
   },
   methods: {
     getMaxValue() {
@@ -85,6 +126,32 @@ export default {
         }
       }
       return minValue
+    },
+    getTotalCount() {
+      let totalCount = 0
+      for (let i = 1; i < this.data.length; i++) {
+        for (let j = 1; j < this.data[i].length; j++) {
+          const val = this.data[i][j]
+          totalCount += val
+        }
+      }
+      return totalCount
+    },
+    calculatePercentage(value, total) {
+      return Math.round((value / total) * 100)
+    },
+    copyTableToClipboard() {
+      this.hidePercentages = true
+      this.$nextTick(() => {
+        navigator.clipboard
+          .writeText(this.$refs.crossTable.innerHTML)
+          .then(() => {
+            this.$toasted.show(
+              'Table copied to clipboard. You can paste it in Excel.'
+            )
+            this.hidePercentages = false
+          })
+      })
     },
   },
 }

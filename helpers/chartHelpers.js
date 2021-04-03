@@ -99,9 +99,19 @@ export function getDifferentAnswers(question, responses) {
       }).text
       if (el.value) data.push({ text: option, code: el.value })
     })
+  } else if (isTypeIn) {
+    responses.forEach((response) => {
+      if (
+        !data.find((el) => {
+          return el.value === response.value
+        })
+      ) {
+        data.push({ text: response.value, code: response.value })
+      }
+    })
   }
 
-  if (!isRadioGrid && !isRanking) {
+  if (!isRadioGrid && !isRanking && !isTypeIn) {
     responses.forEach((response) => {
       if (
         !data.find((el) => {

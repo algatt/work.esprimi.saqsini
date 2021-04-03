@@ -323,6 +323,7 @@ pre {
 
 <style scoped>
 .editorContent {
+  min-height: 200px;
 }
 
 .menubarButton {
@@ -339,5 +340,6 @@ pre {
 
 .editorContent >>> .ProseMirror {
   @apply p-3 focus:outline-none border-b border-gray-200 focus:border-primary transition duration-300;
+  min-height: 200px;
 }
 </style>
