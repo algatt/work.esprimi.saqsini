@@ -1,5 +1,9 @@
 <template>
-  <ButtonBase :bg-colour="bgColour" :variant="variant" :disabled="disabled"
+  <ButtonBase
+    :bg-colour="bgColour"
+    :variant="variant"
+    :disabled="disabled"
+    @click="$emit('click')"
     ><template v-slot:default><slot></slot></template
     ><template v-slot:extra><slot name="icon"></slot></template
   ></ButtonBase>

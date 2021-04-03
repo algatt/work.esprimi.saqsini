@@ -4,9 +4,10 @@
     <input
       :type="type"
       :placeholder="placeholder"
-      class="border-2 border-gray-300 rounded py-1 px-2 focus:border-primary focus:ring-0 focus:outline-none transition duration-300 disabled:border-gray-300 disabled:bg-gray-100"
+      class="border-2 border-gray-200 rounded py-1.5 px-2 focus:border-primary focus:ring-0 focus:outline-none transition duration-300 disabled:border-gray-300 disabled:bg-gray-100"
       :class="error ? 'border-red-600' : null"
       :disabled="disabled"
+      :value="value"
       @input="updateValue($event.target.value)"
     />
     <span class="text-sm text-red-600 px-1 py-1">
@@ -38,7 +39,7 @@ export default {
       default: null,
     },
     value: {
-      type: String,
+      type: [String, Number],
     },
   },
   methods: {

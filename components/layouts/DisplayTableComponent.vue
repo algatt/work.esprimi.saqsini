@@ -1,28 +1,26 @@
 <template>
-  <div class="flex-col">
-    <div class="flex w-full flex-wrap items-start">
-      <div class="flex flex-col pl-0 rounded-lg shadow w-full">
-        <top-title-bar>
-          <template v-slot:content> <slot name="titleContent"></slot></template
-          ><template v-slot:contentSmall
-            ><slot name="titleContentSmall"></slot></template
-        ></top-title-bar>
-        <row-component
-          v-for="item in items"
-          :key="item.code"
-          :item="item"
-          @hovered="$emit('hovered', $event)"
-          @clicked="$emit('clicked', $event)"
-        >
-          <template v-slot:content>
-            <slot name="content" :item="item"></slot>
-          </template>
-          <template v-slot:popup-menu>
-            <slot name="popup-menu" :item="item"></slot>
-          </template>
-        </row-component>
-        <slot name="extra"></slot>
-      </div>
+  <div class="w-full flex-col">
+    <div class="flex flex-col pl-0 rounded-lg shadow w-full">
+      <top-title-bar>
+        <template v-slot:content> <slot name="titleContent"></slot></template
+        ><template v-slot:contentSmall
+          ><slot name="titleContentSmall"></slot></template
+      ></top-title-bar>
+      <row-component
+        v-for="item in items"
+        :key="item.code"
+        :item="item"
+        @hovered="$emit('hovered', $event)"
+        @clicked="$emit('clicked', $event)"
+      >
+        <template v-slot:content>
+          <slot name="content" :item="item"></slot>
+        </template>
+        <template v-slot:popup-menu>
+          <slot name="popup-menu" :item="item"></slot>
+        </template>
+      </row-component>
+      <slot name="extra"></slot>
     </div>
   </div>
 </template>

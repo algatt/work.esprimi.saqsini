@@ -1,56 +1,51 @@
 <template>
   <div class="flex flex-col justify-between w-full">
     <div class="flex flex-col w-full space-y-5">
-      <div class="flex flex-col">
-        <label for="inputSector" class="label">Sector</label>
-        <select id="inputSector" v-model="form.sectorCode" class="input select">
+      <select-base id="inputSector" v-model="form.sectorCode"
+        >Sector
+        <template v-slot:options>
           <option
             v-for="sector in sectors"
             :key="sector.code"
             :value="sector.code"
+            :selected="sector.code === item.sectorCode"
           >
             {{ sector.name }}
-          </option>
-        </select>
-      </div>
+          </option></template
+        ></select-base
+      >
 
-      <div class="flex flex-col">
-        <div class="flex items-center">
-          <label for="inputName" class="label">Industry</label>
-          <span v-if="$v.form.name.$error">
-            <span v-if="!$v.form.name.required" class="error">required</span
-            ><span v-else-if="!$v.form.name.uniqueNames" class="error"
-              >this industry already exists</span
-            ></span
-          >
-        </div>
-        <input
-          id="inputName"
-          v-model="form.name"
-          placeholder="Enter industry name"
-          class="input"
-          @change="$v.form.name.$touch()"
-        />
-      </div>
+      <input-base
+        id="inputName"
+        v-model="form.name"
+        :error="
+          $v.form.name.$model !== undefined
+            ? !$v.form.name.required
+              ? 'required'
+              : !$v.form.name.uniqueNames
+              ? 'this industry already exists'
+              : null
+            : null
+        "
+        @change="$v.form.name.$touch()"
+        >Industry Name</input-base
+      >
 
-      <div class="flex flex-col">
-        <div class="flex items-center">
-          <label for="inputAbbr" class="label">Abbreviation</label>
-          <span v-if="$v.form.abbr.$error">
-            <span v-if="!$v.form.abbr.required" class="error">required</span>
-            <span v-else-if="!$v.form.abbr.uniqueAbbr" class="error"
-              >this abbreviation already exists</span
-            ></span
-          >
-        </div>
-        <input
-          id="inputAbbr"
-          v-model="form.abbr"
-          placeholder="Enter abbreviation"
-          class="input"
-          @change="$v.form.abbr.$touch()"
-        />
-      </div>
+      <input-base
+        id="inputAbbr"
+        v-model="form.abbr"
+        :error="
+          $v.form.abbr.$model !== undefined
+            ? !$v.form.abbr.required
+              ? 'required'
+              : !$v.form.abbr.uniqueAbbr
+              ? 'this abbreviation already exists'
+              : null
+            : null
+        "
+        @change="$v.form.abbr.$touch()"
+        >Abbreviation</input-base
+      >
     </div>
     <edit-object-modal-bottom-part
       class="pt-10 pb-5"
@@ -66,10 +61,12 @@ import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
 
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
+import SelectBase from '~/components/elements/SelectBase'
+import InputBase from '~/components/elements/InputBase'
 
 export default {
   name: 'NewIndustry',
-  components: { EditObjectModalBottomPart },
+  components: { InputBase, SelectBase, EditObjectModalBottomPart },
   mixins: [validationMixin],
   validations: {
     form: {
@@ -119,7 +116,7 @@ export default {
       return this.industries.map((el) => {
         return el.code !== this.form.code &&
           el.sectorCode === this.form.sectorCode
-          ? el.name.toLowerCase()
+          ? el.abbr.toLowerCase()
           : ''
       })
     },

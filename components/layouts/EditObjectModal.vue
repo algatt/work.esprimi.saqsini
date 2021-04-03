@@ -1,24 +1,26 @@
 <template>
-  <div class="frosted p-0 md:p-8">
+  <div class="frosted">
     <div
-      class="check-height mx-auto bg-white rounded-none md:border md:border-gray-100 shadow-md overflow-y-auto relative w-full md:w-10/12"
+      class="check-height mx-auto bg-white rounded-none md:border md:border-gray-100 shadow-md overflow-y-auto relative w-full"
+      :class="customWidth"
       @click.stop
     >
       <div
-        class="bg-primary p-3 text-white text-lg sticky top-0 left-0 z-30"
+        class="bg-primary p-4 text-white text-lg sticky top-0 left-0 z-30 flex items-center"
         style="height: 50px"
       >
-        <h5 class="pl-2">
+        <h5>
           <slot name="title"></slot>
           <span v-if="!$slots.title && currentItemToBeEdited.code === -1"
-            >New</span
-          >
+            >New <slot name="secondTitle"></slot
+          ></span>
           <span v-if="!$slots.title && currentItemToBeEdited.code !== -1"
-            >Edit</span
-          >
+            >Edit <slot name="secondTitle"></slot
+          ></span>
         </h5>
       </div>
-      <div class="flex p-5" style="height: calc(100% - 50px)">
+
+      <div class="flex p-5 items-stretch" style="height: calc(100% - 50px)">
         <slot name="content"></slot>
       </div>
     </div>
@@ -29,10 +31,10 @@
 export default {
   name: 'EditObjectModal',
   props: {
-    width: {
+    customWidth: {
       type: String,
       required: false,
-      default: 'md:w-6/12',
+      default: 'md:w-8/12',
     },
   },
   computed: {
@@ -57,5 +59,3 @@ export default {
   },
 }
 </script>
-
-<style></style>

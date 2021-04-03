@@ -1,43 +1,36 @@
 <template>
   <div class="flex flex-col justify-between w-full">
     <div class="flex flex-col w-full space-y-5">
-      <div class="flex flex-col">
-        <div class="flex items-center">
-          <label for="inputName" class="label">Name</label>
-          <span v-if="$v.form.name.$error">
-            <span v-if="!$v.form.name.required" class="error">required</span
-            ><span v-else-if="!$v.form.name.uniqueNames" class="error"
-              >this department already exists</span
-            ></span
-          >
-        </div>
-        <input
-          id="inputName"
-          v-model="form.name"
-          placeholder="Enter department name"
-          class="input"
-          @change="$v.form.name.$touch()"
-        />
-      </div>
+      <input-base
+        id="inputName"
+        v-model="form.name"
+        :error="
+          $v.form.name.$model !== undefined
+            ? !$v.form.name.required
+              ? 'required'
+              : !$v.form.name.uniqueNames
+              ? 'this department already exists'
+              : null
+            : null
+        "
+        @change="$v.form.name.$touch()"
+        >Name</input-base
+      >
 
-      <div class="flex flex-col">
-        <div class="flex items-center">
-          <label for="inputAbbr" class="label">Abbreviation</label>
-          <span v-if="$v.form.abbr.$error">
-            <span v-if="!$v.form.abbr.required" class="error">required</span>
-            <span v-else-if="!$v.form.abbr.uniqueAbbr" class="error"
-              >this abbreviation already exists</span
-            ></span
-          >
-        </div>
-        <input
-          id="inputAbbr"
-          v-model="form.abbr"
-          placeholder="Enter abbreviation"
-          class="input"
-          @change="$v.form.abbr.$touch()"
-        />
-      </div>
+      <input-base
+        v-model="form.abbr"
+        :error="
+          $v.form.abbr.$model !== undefined
+            ? !$v.form.abbr.required
+              ? 'required'
+              : !$v.form.abbr.uniqueAbbr
+              ? 'this abbreviation already exists'
+              : null
+            : null
+        "
+        @change="$v.form.abbr.$touch()"
+        >Abbreviation</input-base
+      >
     </div>
     <edit-object-modal-bottom-part
       :form="form"
@@ -52,10 +45,11 @@ import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
 
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
+import InputBase from '~/components/elements/InputBase'
 
 export default {
   name: 'NewDepartment',
-  components: { EditObjectModalBottomPart },
+  components: { InputBase, EditObjectModalBottomPart },
   mixins: [validationMixin],
   validations: {
     form: {
@@ -106,6 +100,5 @@ export default {
   mounted() {
     document.getElementById('inputName').focus()
   },
-  methods: {},
 }
 </script>

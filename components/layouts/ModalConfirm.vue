@@ -1,29 +1,29 @@
 <template>
-  <div
-    class="fixed top-0 left-0 w-full h-full frosted flex items-center justify-center"
-  >
+  <div class="frosted">
     <div
-      class="bg-white px-10 py-4 flex flex-col rounded shadow-lg border border-gray-200"
+      class="bg-white px-10 py-4 flex flex-col rounded shadow-lg border border-gray-200 space-y-5"
     >
-      <h5 class="self-start text-primary text-lg mb-3">
+      <h5 class="text-primary">
         <slot name="title"></slot>
       </h5>
       <div class="mb-3"><slot name="message"></slot></div>
-      <div class="flex w-full justify-center">
-        <button class="btn btn-danger mr-3 w-20" @click="$emit('confirm')">
+      <div class="flex w-full justify-center space-x-5">
+        <button-base bg-colour="red" @click="$emit('confirm')">
           Delete
-        </button>
-        <button class="btn btn-primary w-20" @click="$emit('cancel')">
+        </button-base>
+        <button-base bg-colour="gray" @click="$emit('cancel')">
           Cancel
-        </button>
+        </button-base>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import ButtonBase from '~/components/elements/ButtonBase'
 export default {
   name: 'ModalConfirm',
+  components: { ButtonBase },
 }
 </script>
 

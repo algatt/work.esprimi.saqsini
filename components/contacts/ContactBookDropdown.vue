@@ -7,24 +7,23 @@
       @click="showMessage"
     ></div>
     <popup-menu class="mx-2">
-      <template v-slot:menuButton
-        ><span class="bg-gray-100 px-2 py-1 rounded"
+      <template v-slot:icon>
+        <span class="bg-gray-100 px-2 py-1 rounded"
           >{{ selectedContactList.name
           }}<i
             v-if="contactLists.length > 1"
             class="fas fa-caret-down fa-fw ml-4"
           ></i></span
       ></template>
-      <template v-if="!disabled" v-slot:menuItems>
+      <template v-if="!disabled" v-slot:menu>
         <template v-for="item in contactLists">
-          <button
+          <span
             v-if="item.code !== selectedContactList.code"
             :key="item.code"
-            class="popup-menu-button w-full"
             @click="setSelectedContactList(item)"
           >
-            <span>{{ item.name }}</span>
-          </button>
+            {{ item.name }}
+          </span>
         </template>
       </template>
     </popup-menu>
@@ -34,7 +33,7 @@
 </template>
 
 <script>
-import PopupMenu from '~/components/layouts/PopupMenu'
+import PopupMenu from '~/components/elements/PopupMenu'
 export default {
   name: 'ContactBookDropdown',
   components: { PopupMenu },

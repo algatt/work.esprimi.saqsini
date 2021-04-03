@@ -1,73 +1,56 @@
 <template>
   <div
-    class="flex relative flex-wrap justify-between items-center w-full h-auto lg:h-24"
+    class="flex flex-wrap relative justify-between items-center w-full h-16 lg:h-16"
   >
-    <div class="flex items-center h-10">
+    <div class="flex items-center">
       <h6 v-if="$slots.title" class="hidden xl:flex xl:w-auto">
         <slot name="title"> </slot>
-      </h6>
-      <h6 v-if="$slots.smallTitle" class="flex w-full xl:hidden">
-        <slot name="smallTitle"></slot>
       </h6>
       <div v-if="$slots.extraContent" class="w-full xl:w-auto">
         <slot name="extraContent"> </slot>
       </div>
-
-      <div v-if="!$slots.title && !$slots.extraContent && !$slots.smallTitle">
-        &nbsp;
-      </div>
     </div>
     <div class="flex flex-1 justify-end">
       <div
-        class="flex fixed right-0 bottom-0 items-center pr-5 pb-5 lg:relative lg:p-0"
+        class="flex fixed right-0 bottom-0 items-center pr-5 pb-5 lg:relative lg:p-0 z-20"
       >
         <div class="flex items-center">
           <slot name="extraButtons"></slot>
         </div>
         <div v-if="!hideMenu">
-          <popup-menu class="ml-2">
-            <template v-slot:menuButton
-              ><button class="hidden items-center lg:flex btn btn-primary">
-                <span>Actions<i class="ml-1 fas fa-caret-down fa-fw"></i></span>
-              </button>
-              <button class="flex lg:hidden btn btn-round-primary">
-                <span><i class="fas fa-ellipsis-v fa-fw"></i></span></button
-            ></template>
-            <template v-slot:menuItems>
+          <popup-menu class="ml-2"
+            ><template v-slot:icon>
+              <button-icon class="hidden lg:block"
+                ><slot name="menuText"></slot>
+                <template v-if="!$slots.menuText">Actions</template>
+                <template v-slot:icon
+                  ><i class="fas fa-caret-down"></i></template
+              ></button-icon>
+              <button-icon-rounded class="block lg:hidden">
+                <i class="fas fa-ellipsis-v fa-fw"></i
+              ></button-icon-rounded>
+            </template>
+            <template v-slot:menu>
               <template v-if="selectedItems === 0">
-                <button v-if="!hideSelectAll" class="w-full" @click="selectAll">
-                  <span class="popup-menu-button"
-                    ><i class="mr-1 fas fa-check-double fa-fw"></i>Select
-                    All</span
-                  >
-                </button>
+                <span v-if="!hideSelectAll" @click="selectAll"
+                  ><i class="mr-1 fas fa-check-double fa-fw"></i>Select
+                  All</span
+                >
               </template>
               <template v-else>
-                <button
-                  ref="clearAll"
-                  class="w-full"
-                  @click="emptySelectedItems"
+                <span @click="emptySelectedItems"
+                  ><i class="mr-1 fas fa-check-double fa-fw"></i> Clear
+                  Selection</span
                 >
-                  <span class="popup-menu-button"
-                    ><i class="mr-1 fas fa-check-double fa-fw"></i> Clear
-                    Selection</span
+                <span v-if="!hideDelete" @click="showModal = true"
+                  ><i class="mr-1 fas fa-trash-alt fa-fw"></i>Delete
+                  <template v-if="selectedItems === 1"
+                    >{{ selectedItems }} item</template
                   >
-                </button>
-                <button
-                  v-if="!hideDelete"
-                  class="w-full"
-                  @click="showModal = true"
-                >
-                  <span class="popup-menu-button"
-                    ><i class="mr-1 fas fa-trash-alt fa-fw"></i>Delete&nbsp;
-                    <span v-if="selectedItems === 1"
-                      >{{ selectedItems }} item</span
-                    >
-                    <span v-else-if="selectedItems > 1"
-                      >{{ selectedItems }} items</span
-                    >
-                  </span>
-                </button>
+                  <template v-else-if="selectedItems > 1"
+                    >{{ selectedItems }} items</template
+                  >
+                </span>
                 <slot name="menuButtonIfSelected"></slot>
               </template>
               <slot name="menuButtonIfNotSelected"></slot>
@@ -97,10 +80,17 @@
 
 <script>
 import ModalConfirm from '~/components/layouts/ModalConfirm'
-import PopupMenu from '~/components/layouts/PopupMenu'
+import PopupMenu from '~/components/elements/PopupMenu'
+import ButtonIcon from '~/components/elements/ButtonIcon'
+import ButtonIconRounded from '~/components/elements/ButtonIconRounded'
 export default {
   name: 'TopHeaderBar',
-  components: { ModalConfirm, PopupMenu },
+  components: {
+    ButtonIconRounded,
+    ButtonIcon,
+    ModalConfirm,
+    PopupMenu,
+  },
   props: {
     which: {
       type: String,

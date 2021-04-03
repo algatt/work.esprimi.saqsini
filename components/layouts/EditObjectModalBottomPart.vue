@@ -1,44 +1,35 @@
 <template>
   <div class="flex flex-wrap w-full justify-between items-center py-2">
-    <div class="flex flex-wrap items-center w-6/12">
+    <div class="flex flex-wrap items-center w-3/12">
       <template v-if="showDelete && form.code !== -1">
         <button-icon
           v-if="form.ordinalPosition !== 1"
-          colour="danger"
-          icon="fas fa-trash-alt"
-          class="btn btn-danger mr-2"
+          bg-colour="red"
           :disabled="form.code === -1"
           @click="deleteItem"
-        >
-          <template v-slot:text>Delete</template>
+          >Delete
+          <template v-slot:icon
+            ><i class="fas fa-trash-alt fa-fw fa-sm"></i
+          ></template>
         </button-icon>
       </template>
-      <!--      <button-->
-      <!--        v-if="false"-->
-      <!--        class="btn-danger mr-2"-->
-      <!--        :disabled="form.code === -1"-->
-      <!--        @click="deleteItem"-->
-      <!--      >-->
-      <!--        Delete-->
-      <!--      </button>-->
     </div>
 
-    <div class="flex flex-wrap items-center w-6/12 justify-end">
-      <button-icon
-        colour="secondary"
-        icon="fas fa-times"
-        @click="cancelCurrentItem"
-      >
-        <template v-slot:text>Cancel</template>
+    <div class="flex flex-wrap items-center w-9/12 justify-end space-x-3">
+      <button-icon bg-colour="gray" @click="cancelCurrentItem">
+        Cancel
+        <template v-slot:icon
+          ><i class="fas fa-times fa-fw fa-sm"></i
+        ></template>
       </button-icon>
       <button-icon
         v-if="showSave"
-        colour="primary"
-        icon="fas fa-save"
+        colour="blue"
         :disabled="!isValid"
         @click="saveItem"
       >
-        <template v-slot:text>Save</template>
+        Save
+        <template v-slot:icon><i class="fas fa-save fa-fw fa-sm"></i></template>
       </button-icon>
     </div>
   </div>
@@ -49,7 +40,7 @@ import {
   parseSurveyToAPI,
   parseQuestionToApi,
 } from '~/helpers/parseSurveyObjects'
-import ButtonIcon from '~/components/layouts/ButtonIcon'
+import ButtonIcon from '~/components/elements/ButtonIcon'
 
 export default {
   name: 'EditObjectModalBottomPart',

@@ -1,38 +1,30 @@
 <template>
   <button
-    class="font-medium rounded shadow border text-white focus:outline-none focus:ring-1 focus:ring-offset-2 transition duration-300"
+    class="rounded-full shadow text-white focus:outline-none focus:ring-1 focus:ring-offset-2 transition duration-300 h-6 w-6"
     :class="buttonStyle"
     :disabled="disabled"
     @click="$emit('click')"
   >
-    <span
-      class="flex items-stretch"
-      :class="$slots.extra ? 'justify-center' : 'justify-between'"
-    >
-      <span class="py-0.5" :class="$slots.extra ? 'pl-3 pr-2' : 'px-3'">
-        <slot></slot>
-      </span>
-      <span
-        v-if="$slots.extra"
-        class="flex items-center justify-center px-2 py-0.5"
-        :class="iconStyle"
-      >
-        <slot name="extra"></slot>
-      </span>
+    <span class="flex items-center justify-center">
+      <slot></slot>
     </span>
   </button>
 </template>
 
 <script>
 export default {
-  name: 'ButtonBase',
+  name: 'ButtonIconRounded',
   props: {
     bgColour: {
       type: String,
       required: false,
       default: 'blue',
     },
-
+    variant: {
+      type: String,
+      required: false,
+      default: 'normal',
+    },
     disabled: {
       type: Boolean,
       required: false,
@@ -41,7 +33,11 @@ export default {
   },
   computed: {
     colourNumber() {
-      return this.bgColour === 'gray' ? 400 : 600
+      return this.variant === 'normal'
+        ? this.bgColour === 'gray'
+          ? 300
+          : 500
+        : 700
     },
     colour() {
       return `${this.bgColour}-${this.colourNumber}`

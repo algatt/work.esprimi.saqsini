@@ -55,24 +55,24 @@ export default {
 }
 </script>
 
-<style scoped>
-.frosted {
-  @apply flex fixed top-0 left-0 w-full h-screen;
-  background: rgba(255, 255, 255, 0.5);
-  /*box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);*/
-  /*backdrop-filter: blur(2px);*/
-  /*-webkit-backdrop-filter: blur(2px);*/
-}
+<!--<style scoped>-->
+<!--.frosted {-->
+<!--  @apply flex fixed top-0 left-0 w-full h-screen;-->
+<!--  background: rgba(255, 255, 255, 0.5);-->
+<!--  /*box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);*/-->
+<!--  /*backdrop-filter: blur(2px);*/-->
+<!--  /*-webkit-backdrop-filter: blur(2px);*/-->
+<!--}-->
 
-@media only screen and (min-width: 768px) {
-  .check-height {
-    max-height: 90%;
-  }
-}
+<!--@media only screen and (min-width: 768px) {-->
+<!--  .check-height {-->
+<!--    max-height: 90%;-->
+<!--  }-->
+<!--}-->
 
-@media only screen and (max-width: 768px) {
-  .check-height {
-    max-height: 100%;
-  }
-}
-</style>
+<!--@media only screen and (max-width: 768px) {-->
+<!--  .check-height {-->
+<!--    max-height: 100%;-->
+<!--  }-->
+<!--}-->
+<!--</style>-->

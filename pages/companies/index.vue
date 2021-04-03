@@ -3,7 +3,6 @@
     <top-header-bar
       which="companies"
       :items="companies"
-      class="w-full"
       :hide-menu="companies.length === 0"
       ><template v-slot:title>Companies</template>
       <template v-slot:extraContent>
@@ -16,14 +15,14 @@
       <template v-slot:extraButtons>
         <button-icon
           v-if="!disableNewButton && companies.length !== 0"
-          colour="primary"
-          icon="fas fa-plus"
           @click="setCurrentItem({ code: -1 })"
         >
-          <template v-slot:text>New Company</template>
-        </button-icon></template
-      ></top-header-bar
-    >
+          New Company
+          <template v-slot:icon
+            ><i
+              class="fas fa-plus fa-fw fa-sm"
+            ></i> </template></button-icon></template
+    ></top-header-bar>
 
     <template v-if="contactlists.length < 1">
       <info-box type="info">
@@ -64,9 +63,9 @@
       >
         <template v-slot:title>No Companies</template>
         <template v-slot:content>
-          <button class="btn-link" @click="setCurrentItem({ code: -1 })">
+          <button-base @click="setCurrentItem({ code: -1 })">
             Create one...
-          </button>
+          </button-base>
         </template></info-box
       >
 
@@ -109,39 +108,31 @@
           </p>
 
           <p class="w-full xl:w-2/12 flex xl:justify-center">
-            <nuxt-link
-              class="btn-table"
-              :to="{
-                name: 'companies-departments-id',
-                params: { id: slotProps.item.code },
-              }"
-              @click.stop.native
-              >{{ slotProps.item.departmentCount
-              }}<span class="visible xl:hidden"
-                >&nbsp; departments
-              </span></nuxt-link
+            <text-link>
+              <nuxt-link
+                :to="{
+                  name: 'companies-departments-id',
+                  params: { id: slotProps.item.code },
+                }"
+                @click.stop.native
+                >{{ slotProps.item.departmentCount
+                }}<span class="visible xl:hidden"
+                  >&nbsp; departments
+                </span></nuxt-link
+              ></text-link
             >
           </p>
         </template>
         <template v-slot:popup-menu="slotProps">
-          <span
+          <display-table-row-popup
             :class="hovered === slotProps.item.code ? 'flex' : 'flex xl:hidden'"
-            class="items-center"
+            @close="hovered = null"
+            ><template v-slot:menu>
+              <span @click="setCurrentItem(slotProps.item)">
+                <i class="fas fa-pencil-alt"></i> Edit
+              </span>
+            </template></display-table-row-popup
           >
-            <popup-menu-vue
-              :object-code="slotProps.item.code"
-              direction="left"
-              @closeMenu="hovered = null"
-            >
-              <template v-slot:menuItems>
-                <button @click="setCurrentItem(slotProps.item)">
-                  <span class="popup-menu-button">
-                    <i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit</span
-                  >
-                </button>
-              </template>
-            </popup-menu-vue>
-          </span>
         </template>
       </display-table-component>
     </template>
@@ -151,6 +142,7 @@
         v-if="currentItemToBeEdited"
         @modalClosed="modalClosed"
       >
+        <template v-slot:secondTitle>Company</template>
         <template v-slot:content>
           <new-company
             v-if="!objectToCreate"
@@ -175,16 +167,21 @@ import NewCompany from '~/components/contacts/NewCompany'
 import SideTreeNav from '~/components/layouts/SideTreeNav'
 import NewIndustry from '~/components/contacts/NewIndustry'
 import NewSector from '~/components/contacts/NewSector'
-import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
 import viewMixin from '~/helpers/viewMixin'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 import ContactBookDropdown from '~/components/contacts/ContactBookDropdown'
-import ButtonIcon from '~/components/layouts/ButtonIcon'
+import ButtonIcon from '~/components/elements/ButtonIcon'
 import InfoBox from '~/components/layouts/InfoBox'
+import TextLink from '~/components/elements/TextLink'
+import DisplayTableRowPopup from '~/components/layouts/DisplayTableRowPopup'
+import ButtonBase from '~/components/elements/ButtonBase'
 export default {
   name: 'CompaniesList',
   components: {
+    DisplayTableRowPopup,
+    ButtonBase,
+    TextLink,
     Spinner,
     NewSector,
     NewIndustry,
@@ -192,7 +189,7 @@ export default {
     NewCompany,
     DisplayTableComponent,
     EditObjectModal,
-    PopupMenuVue,
+
     TopHeaderBar,
     ContactBookDropdown,
     ButtonIcon,

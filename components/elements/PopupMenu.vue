@@ -15,24 +15,20 @@
     <button
       v-if="showPopup"
       class="fixed left-0 top-0 z-10 w-full h-full cursor-default"
-      @click="showPopup = false"
+      @click="closePopup"
     ></button>
-    <transition name="fade">
-      <span
-        v-if="showPopup"
-        ref="popup"
-        class="rounded text-gray-700 border border-gray-300 z-20 absolute flex flex-col shadow popup-menu bg-white"
-        :style="{
-          left: left + 'px',
-          top: top + 'px',
 
-          minWidth: width,
-          maxWidth: width,
-        }"
-        @click="showPopup = false"
-        ><slot name="menu"></slot
-      ></span>
-    </transition>
+    <span
+      v-if="showPopup"
+      ref="popup"
+      class="rounded min-w-max text-gray-700 border border-gray-300 z-20 absolute flex flex-col shadow popup-menu bg-white"
+      :style="{
+        left: left + 'px',
+        top: top + 'px',
+      }"
+      @click="closePopup"
+      ><slot name="menu"></slot
+    ></span>
   </span>
 </template>
 
@@ -59,7 +55,7 @@ export default {
       this.top = this.$refs.popupButton.clientHeight + 5
       this.left = 0
 
-      if (this.showPopup) this.showPopup = false
+      if (this.showPopup) this.closePopup()
       else {
         this.showPopup = true
         this.$nextTick(() => {
@@ -77,13 +73,17 @@ export default {
         })
       }
     },
+    closePopup() {
+      this.showPopup = false
+      this.$emit('close')
+    },
   },
 }
 </script>
 
 <style scoped>
 .popup-menu >>> span {
-  @apply flex items-center w-full px-5 text-gray-500 py-1 hover:bg-gray-100 cursor-pointer transition duration-300;
+  @apply flex items-center w-full px-5 text-gray-500 py-2 hover:bg-gray-100 cursor-pointer transition duration-300;
 }
 
 .popup-menu >>> span > i {

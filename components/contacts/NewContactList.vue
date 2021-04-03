@@ -1,54 +1,41 @@
 <template>
   <div class="flex flex-col justify-between w-full">
     <div class="flex flex-col w-full space-y-5">
-      <div class="flex flex-col">
-        <div class="flex items-center">
-          <label for="inputName" class="label">List Name</label>
-          <span v-if="$v.form.name.$error">
-            <span v-if="!$v.form.name.required" class="error"
-              >required</span
-            ></span
-          >
-        </div>
-        <input
-          id="inputName"
-          v-model="form.name"
-          placeholder="Enter list reference name"
-          class="input"
-          @change="$v.form.name.$touch()"
-        />
-      </div>
+      <input-base
+        id="inputName"
+        v-model="form.name"
+        value="form.name"
+        :error="
+          $v.form.name.$model !== undefined && !$v.form.name.required
+            ? 'required'
+            : null
+        "
+        placeholder="Enter list reference name"
+        @change="$v.form.name.$touch"
+        >List Name</input-base
+      >
 
-      <div v-if="form.code === -1" class="flex flex-col">
-        <div class="flex items-center">
-          <label for="inputData" class="label-optional">List Data</label>
-        </div>
-        <input
-          id="inputData"
-          type="file"
-          placeholder="Upload a list template"
-          class="input"
-          @change="fileSelected"
-        />
-      </div>
+      <input-base
+        v-if="form.code === -1"
+        id="inputData"
+        type="file"
+        placeholder="Upload List Template"
+        @change="fileSelected"
+        >List Data</input-base
+      >
 
-      <div class="flex flex-col">
-        <div class="flex items-center">
-          <label for="inputValidity" class="label-optional">Valid Until</label>
-          <span v-if="$v.form.deleteBy.$error">
-            <span v-if="!$v.form.deleteBy.check" class="error"
-              >Date cannot be in the past.</span
-            ></span
-          >
-        </div>
-        <input
-          id="inputValidity"
-          v-model="form.deleteBy"
-          class="input"
-          type="date"
-          @change="$v.form.deleteBy.$touch()"
-        />
-      </div>
+      <input-base
+        id="inputValidity"
+        v-model="form.deleteBy"
+        :error="
+          $v.form.deleteBy.$model !== undefined && !$v.form.deleteBy.check
+            ? 'date cannot be in the past'
+            : null
+        "
+        type="date"
+        @change="$v.form.deleteBy.$touch()"
+        >Valid Until</input-base
+      >
     </div>
     <edit-object-modal-bottom-part
       :form="form"
@@ -63,10 +50,11 @@ import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
 import moment from 'moment'
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
+import InputBase from '~/components/elements/InputBase'
 
 export default {
   name: 'NewContactList',
-  components: { EditObjectModalBottomPart },
+  components: { InputBase, EditObjectModalBottomPart },
   mixins: [validationMixin],
   validations: {
     form: {
@@ -86,7 +74,6 @@ export default {
       form: null,
     }
   },
-
   computed: {
     isValid() {
       return !this.$v.$invalid
@@ -97,9 +84,6 @@ export default {
   },
   created() {
     this.form = JSON.parse(JSON.stringify(this.item))
-  },
-  mounted() {
-    // document.getElementById('inputName').focus()
   },
   methods: {
     fileSelected(event) {

@@ -78,7 +78,7 @@
       </button>
     </div>
     <div
-      class="hidden fixed top-0 z-40 justify-between items-center px-5 w-full h-12 bg-white lg:flex"
+      class="hidden fixed top-0 z-40 justify-between items-center px-3 w-full h-12 bg-white lg:flex"
     >
       <div class="flex flex-1 items-center">
         <nuxt-link

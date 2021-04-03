@@ -3,25 +3,21 @@
     <top-header-bar
       which="contactlist"
       :items="contactlists"
-      class="w-full"
       :hide-select-all="true"
     >
       <template v-slot:title> Contact Lists </template>
       <template v-slot:extraButtons>
-        <button-icon
-          icon="fas fa-plus"
-          colour="primary"
-          @click="setCurrentItem({ code: -1 })"
-        >
-          <template v-slot:text>New Contact List</template>
+        <button-icon @click="setCurrentItem({ code: -1 })">
+          Contact List
+          <template v-slot:icon
+            ><i class="fas fa-plus fa-fw fa-sm"></i
+          ></template>
         </button-icon>
       </template>
       <template v-slot:menuButtonIfNotSelected>
-        <button class="w-full" @click="downloadTemplate">
-          <span class="popup-menu-button">
-            <i class="fas fa-download fa-fw mr-1"></i>Download Template</span
-          >
-        </button>
+        <span @click="downloadTemplate">
+          <i class="fas fa-download fa-fw mr-1"></i>Download Template</span
+        >
       </template>
     </top-header-bar>
 
@@ -35,7 +31,6 @@
 
     <display-table-component
       v-else
-      class="w-full"
       :items="contactlists"
       @hovered="hovered = $event"
       @clicked="setCurrentItem($event)"
@@ -48,7 +43,7 @@
       </template>
       <template v-slot:titleContentSmall>Contacts</template>
       <template v-slot:content="slotProps"
-        ><p class="w-6/12">
+        ><p class="w-full lg:w-6/12">
           <span>{{ slotProps.item.name }}</span
           ><span
             v-if="slotProps.item.flags.includes('FLAGGED_FOR_REMOVAL')"
@@ -71,80 +66,61 @@
             <i class="fas fa-cloud-download-alt"></i>
           </span>
         </p>
-        <p class="w-6/12 text-right pr-4">
-          <span v-if="slotProps.item.deleteBy"
-            >{{ slotProps.item.deleteBy }}
-            <span
-              class="text-sm bg-gray-100 rounded px-1 py-0.5 text-gray-600"
-              >{{ calculateRemainingTime(slotProps.item.deleteBy) }}</span
-            ></span
+        <p class="w-full lg:w-6/12 text-left lg:text-right pr-4">
+          <template v-if="slotProps.item.deleteBy"
+            >Scheduled for Deletion
+            <badge-base bg-colour="blue">
+              {{ calculateRemainingTime(slotProps.item.deleteBy) }}</badge-base
+            ></template
           >
+
           <span v-else>Indefinite</span>
         </p>
       </template>
       <template v-slot:popup-menu="slotProps">
-        <span
+        <display-table-row-popup
           :class="hovered === slotProps.item.code ? 'flex' : 'flex xl:hidden'"
-          class="items-center"
+          @close="hovered = null"
         >
-          <popup-menu-vue
-            :object-code="slotProps.item.code"
-            direction="left"
-            @closeMenu="hovered = null"
-          >
-            <template v-slot:menuItems>
-              <button @click="setCurrentItem(slotProps.item)">
-                <span class="popup-menu-button">
-                  <i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit</span
-                >
-              </button>
-              <button @click="showCollaborators(slotProps.item)">
-                <span class="popup-menu-button">
-                  <i class="fas fa-users fa-fw fa-sm"></i>Collaborators</span
-                >
-              </button>
-              <button
-                v-if="!slotProps.item.flags.includes('GENERATE_EXPORT_DATA')"
-                @click="exportContactBook(slotProps.item)"
-              >
-                <span class="popup-menu-button">
-                  <i class="fas fa-file-export fa-fw fa-sm"></i>Start
-                  Export</span
-                >
-              </button>
-              <button
-                v-if="
-                  slotProps.item.flags.includes('HAS_EXPORT_DATA') &&
-                  !slotProps.item.flags.includes('GENERATE_EXPORT_DATA')
-                "
-                @click="getExportData(slotProps.item)"
-              >
-                <span class="popup-menu-button">
-                  <i class="fas fa-download fa-fw fa-sm"></i>Download Data</span
-                >
-              </button>
-              <button
-                v-if="!slotProps.item.flags.includes('FLAGGED_FOR_REMOVAL')"
-                @click="flagForRemoval(slotProps.item)"
-              >
-                <span class="popup-menu-button">
-                  <i class="fas fa-flag fa-fw fa-sm"></i>Flag for Removal</span
-                >
-              </button>
-              <button v-else @click="unflagForRemoval(slotProps.item)">
-                <span class="popup-menu-button">
-                  <i class="far fa-flag fa-fw fa-sm"></i>Remove from
-                  Deletion</span
-                >
-              </button>
-            </template>
-          </popup-menu-vue>
-        </span>
+          <template v-slot:menu>
+            <span @click="setCurrentItem(slotProps.item)"
+              ><i class="fas fa-pencil-alt fa-sm fa-fw"></i>Edit</span
+            >
+            <span @click="showCollaborators(slotProps.item)"
+              ><i class="fas fa-users fa-sm fa-fw"></i>Collaborators</span
+            >
+            <span
+              v-if="!slotProps.item.flags.includes('GENERATE_EXPORT_DATA')"
+              @click="exportContactBook(slotProps.item)"
+            >
+              <i class="fas fa-file-export fa-fw fa-sm"></i>Start Export
+            </span>
+            <span
+              v-if="
+                slotProps.item.flags.includes('HAS_EXPORT_DATA') &&
+                !slotProps.item.flags.includes('GENERATE_EXPORT_DATA')
+              "
+              @click="getExportData(slotProps.item)"
+            >
+              <i class="fas fa-download fa-fw fa-sm"></i>Download Data
+            </span>
+            <span
+              v-if="!slotProps.item.flags.includes('FLAGGED_FOR_REMOVAL')"
+              @click="flagForRemoval(slotProps.item)"
+            >
+              <i class="fas fa-flag fa-fw fa-sm"></i>Flag for Removal
+            </span>
+            <span v-else @click="unflagForRemoval(slotProps.item)">
+              <i class="far fa-flag fa-fw fa-sm"></i>Remove from Deletion
+            </span>
+          </template>
+        </display-table-row-popup>
       </template>
     </display-table-component>
 
     <transition name="fade">
       <edit-object-modal v-if="currentItemToBeEdited">
+        <template v-slot:secondTitle>Contact List</template>
         <template v-slot:content>
           <new-contact-list></new-contact-list>
         </template>
@@ -164,20 +140,24 @@
 import moment from 'moment'
 import EditObjectModal from '~/components/layouts/EditObjectModal'
 import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
-import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 import ContactListCollaborators from '~/components/contacts/ContactListCollaborators'
 import viewMixin from '~/helpers/viewMixin'
-import ButtonIcon from '~/components/layouts/ButtonIcon'
+import ButtonIcon from '~/components/elements/ButtonIcon'
 import NewContactList from '~/components/contacts/NewContactList'
+import BadgeBase from '~/components/elements/BadgeBase'
+import DisplayTableRowPopup from '~/components/layouts/DisplayTableRowPopup'
 
 export default {
   name: 'ContactLists',
   components: {
+    DisplayTableRowPopup,
+
+    BadgeBase,
     DisplayTableComponent,
     EditObjectModal,
-    PopupMenuVue,
+
     Spinner,
     TopHeaderBar,
     ContactListCollaborators,
