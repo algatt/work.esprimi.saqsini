@@ -3,12 +3,7 @@
     <template
       v-if="getValueFromObject(contacts, 'displayName', $route.params.id)"
     >
-      <top-header-bar
-        which="jobs"
-        :items="jobs"
-        class="w-full"
-        :hide-menu="jobs.length === 0"
-      >
+      <top-header-bar which="jobs" :items="jobs" :hide-menu="jobs.length === 0">
         <template v-slot:title
           >Job History for
           {{
@@ -18,15 +13,14 @@
 
         <template v-slot:extraButtons>
           <button-icon
-            v-if="!disableNewButton"
-            colour="primary"
-            icon="fas fa-plus"
+            v-if="!disableNewButton && jobs.length !== 0"
             @click="setCurrentItem({ code: -1 })"
-          >
-            <template v-slot:text>New Job</template>
-          </button-icon>
-        </template></top-header-bar
-      >
+            >New Job
+            <template v-slot:icon
+              ><i class="fas fa-plus fa-fw fa-sm"></i
+            ></template>
+          </button-icon> </template
+      ></top-header-bar>
 
       <info-box v-if="disableNewButton" class="flex-grow mt-2 md:mt-0">
         <template v-slot:title>We have a problem...</template>
@@ -49,16 +43,15 @@
       <info-box v-else-if="jobs.length === 0" class="flex-grow mt-2 md:mt-0">
         <template v-slot:title>No Job History</template>
         <template v-slot:content>
-          <button class="btn-link" @click="setCurrentItem({ code: -1 })">
+          <button-base @click="setCurrentItem({ code: -1 })">
             Add a new one...
-          </button>
+          </button-base>
         </template></info-box
       >
 
       <div v-else class="flex flex-col w-full">
         <display-table-component
           :items="jobs"
-          class="w-full"
           @hovered="hovered = $event"
           @clicked="setCurrentItem($event)"
         >
@@ -83,41 +76,51 @@
               {{ slotProps.item.roleName }}
             </p>
             <p class="w-full xl:w-2/12">
-              <span
+              <badge-base
                 v-if="slotProps.item.flags.includes('ONGOING')"
-                class="bg-green-200 text-sm text-green-700 px-2 py-0.5 rounded border border-green-300"
-                >Active</span
+                bg-colour="green"
+                >Active</badge-base
               >
-              <span
-                v-else
-                class="bg-red-200 text-sm text-red-700 px-2 py-0.5 rounded border border-red-300"
-                >Stopped</span
-              >
+              <badge-base v-else bg-colour="red">Stopped</badge-base>
             </p>
           </template>
           <template v-slot:popup-menu="slotProps">
-            <span
+            <display-table-row-popup
               :class="
                 hovered === slotProps.item.code ? 'flex' : 'flex xl:hidden'
               "
-              class="items-center"
+              @close="hovered = null"
             >
-              <popup-menu-vue
-                :object-code="slotProps.item.code"
-                direction="left"
-                @closeMenu="hovered = null"
-              >
-                <template v-slot:menuItems>
-                  <button @click="setCurrentItem(slotProps.item)">
-                    <span class="popup-menu-button">
-                      <i class="fas fa-pencil-alt fa-fw fa-sm mr-1"></i
-                      >Edit</span
-                    >
-                  </button>
-                </template>
-              </popup-menu-vue>
-            </span>
+              <template v-slot:menu>
+                <span @click="setCurrentItem(slotProps.item)"
+                  ><i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit</span
+                >
+              </template>
+            </display-table-row-popup>
           </template>
+          <!--          <template v-slot:popup-menu="slotProps">-->
+          <!--            <span-->
+          <!--              :class="-->
+          <!--                hovered === slotProps.item.code ? 'flex' : 'flex xl:hidden'-->
+          <!--              "-->
+          <!--              class="items-center"-->
+          <!--            >-->
+          <!--              <popup-menu-vue-->
+          <!--                :object-code="slotProps.item.code"-->
+          <!--                direction="left"-->
+          <!--                @closeMenu="hovered = null"-->
+          <!--              >-->
+          <!--                <template v-slot:menuItems>-->
+          <!--                  <button @click="setCurrentItem(slotProps.item)">-->
+          <!--                    <span class="popup-menu-button">-->
+          <!--                      <i class="fas fa-pencil-alt fa-fw fa-sm mr-1"></i-->
+          <!--                      >Edit</span-->
+          <!--                    >-->
+          <!--                  </button>-->
+          <!--                </template>-->
+          <!--              </popup-menu-vue>-->
+          <!--            </span>-->
+          <!--          </template>-->
 
           <template v-if="disableNewButton" v-slot:extra> </template>
         </display-table-component>
@@ -148,21 +151,27 @@
 import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
 import EditObjectModal from '~/components/layouts/EditObjectModal'
 import NewJob from '~/components/contacts/NewJob'
-import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
 import viewMixin from '~/helpers/viewMixin'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 import InfoBox from '~/components/layouts/InfoBox'
+import ButtonIcon from '~/components/elements/ButtonIcon'
+import ButtonBase from '~/components/elements/ButtonBase'
+import BadgeBase from '~/components/elements/BadgeBase'
+import DisplayTableRowPopup from '~/components/layouts/DisplayTableRowPopup'
 export default {
   name: 'JobsList',
   components: {
+    DisplayTableRowPopup,
+    BadgeBase,
+    ButtonBase,
     Spinner,
     DisplayTableComponent,
     EditObjectModal,
     NewJob,
-    PopupMenuVue,
     TopHeaderBar,
     InfoBox,
+    ButtonIcon,
   },
 
   mixins: [viewMixin],

@@ -1,89 +1,78 @@
 <template>
   <div class="flex flex-col justify-between w-full">
-    <div class="flex flex-col w-full space-y-5">
-      <div class="flex flex-col">
-        <label for="inputCompany" class="label">Company</label>
-        <select
-          id="inputCompany"
-          v-model="form.companyCode"
-          class="input select"
-          @change="
-            updateDepartments()
-            form.departmentCode = null
-          "
-        >
-          <option
+    <div class="flex flex-col w-full space-y-2">
+      <select-base
+        id="inputCompany"
+        v-model="form.companyCode"
+        @input="
+          updateDepartments()
+          form.departmentCode = null
+        "
+        >Company<template v-slot:options
+          ><option
             v-for="company in companies"
             :key="company.code"
             :value="company.code"
-            @click="form.companyName = company.name"
+            :selected="form.companyCode === company.code"
           >
             {{ company.name }}
-          </option>
-        </select>
-      </div>
+          </option></template
+        ></select-base
+      >
 
-      <div class="flex flex-col">
-        <label for="inputDepartment" class="label">Department</label>
-        <select
-          id="inputDepartment"
-          v-model="form.departmentCode"
-          class="input select"
-        >
-          <option
+      <select-base id="inputDepartment" v-model="form.departmentCode"
+        >Department<template v-slot:options
+          ><option
             v-for="department in departments"
             :key="department.code"
             :value="department.code"
+            :selected="form.departmentCode === department.code"
             @click="form.departmentName = department.name"
           >
             {{ department.name }}
-          </option>
-        </select>
-      </div>
+          </option></template
+        ></select-base
+      >
 
-      <div class="flex flex-col">
-        <label for="inputRole" class="label">Role</label>
-        <select id="inputRole" v-model="form.roleCode" class="input select">
-          <option
+      <select-base id="inputRole" v-model="form.roleCode"
+        >Role<template v-slot:options
+          ><option
             v-for="role in roles"
             :key="role.code"
             :value="role.code"
             @click="form.roleName = role.name"
           >
             {{ role.name }}
-          </option>
-        </select>
-      </div>
+          </option></template
+        ></select-base
+      >
+
+      <input-base
+        v-model="form.email"
+        :error="
+          $v.form.email.$model !== undefined
+            ? !$v.form.email.email
+              ? 'invalid email'
+              : null
+            : null
+        "
+        @change="$v.form.email.$touch()"
+        >Email</input-base
+      >
 
       <div class="flex flex-col">
-        <div class="flex items-center">
-          <label for="inputEmail" class="label">Email</label>
-          <span v-if="$v.form.email.$error">
-            <span v-if="!$v.form.email.email" class="error"
-              >Invalid email format.</span
-            ></span
-          >
-        </div>
-        <input
-          id="inputEmail"
-          v-model="form.email"
-          placeholder="Enter email address"
-          class="input"
-          @change="$v.form.email.$touch()"
-        />
-      </div>
+        <label for="inputPhone" class="font-semibold">Phone</label>
 
-      <div class="flex flex-col">
-        <div class="flex items-center">
-          <label for="inputPhone" class="label">Phone</label>
-          <span v-if="!isPhoneValid" class="error">invalid phone</span>
-        </div>
         <vue-tel-input
           id="inputPhone"
           v-model="phoneNumber"
           class="border-2 border-gray-300 rounded-sm py-1 focus:bg-gray-100 focus:border-primary transition duration-500 ring-offset-2 focus:outline-none"
           @validate="validatePhone"
         />
+        <span v-if="!isPhoneValid" class="text-sm text-red-600 px-1 py-1"
+          >invalid phone</span
+        >
+        <span v-else class="text-sm">&nbsp;</span>
       </div>
 
       <div class="flex items-center">
@@ -91,15 +80,18 @@
           :checked="form.isActive"
           @clicked="form.isActive = $event"
         >
+          <template v-slot:label
+            >Job Status
+            <popup-base class="ml-2"
+              ><span class="font-normal"
+                >Determines if employee is still active in this position or
+                not.</span
+              ></popup-base
+            ></template
+          >
           <template v-slot:leftLabel>Not Active</template>
           <template v-slot:rightLabel>Active</template>
         </toggle-switch>
-        <popup-info
-          ><template v-slot:text
-            >Determines if employee is still active in this position or
-            not.</template
-          ></popup-info
-        >
       </div>
     </div>
     <edit-object-modal-bottom-part
@@ -115,12 +107,20 @@
 import { validationMixin } from 'vuelidate'
 import { email, required } from 'vuelidate/lib/validators'
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
-import ToggleSwitch from '~/components/layouts/ToggleSwitch'
-import PopupInfo from '~/components/layouts/PopupInfo'
+import ToggleSwitch from '~/components/elements/ToggleSwitch'
+import PopupBase from '~/components/elements/PopupBase'
+import SelectBase from '~/components/elements/SelectBase'
+import InputBase from '~/components/elements/InputBase'
 
 export default {
   name: 'NewJob',
-  components: { PopupInfo, ToggleSwitch, EditObjectModalBottomPart },
+  components: {
+    InputBase,
+    SelectBase,
+    PopupBase,
+    ToggleSwitch,
+    EditObjectModalBottomPart,
+  },
   mixins: [validationMixin],
 
   data() {
@@ -220,12 +220,9 @@ export default {
 
 <style>
 .vue-tel-input {
-  /*@apply border-2 border-gray-300 rounded-sm px-3 py-2 focus:bg-gray-100 focus:border-primary transition duration-500 ring-offset-2 focus:outline-none;*/
-  /*@apply border-b border-gray-200 px-1 py-2 focus:border-primary transition duration-500 ease-in focus:outline-none;*/
-  border: none !important;
   box-shadow: none !important;
-  padding: 2px 1px !important;
-  border-bottom: 1px solid #e5e7eb !important;
-  border-radius: 0px !important;
+  border: 2px solid rgb(229, 231, 235) !important;
+  padding-top: 0.175rem !important;
+  padding-bottom: 0.175rem !important;
 }
 </style>

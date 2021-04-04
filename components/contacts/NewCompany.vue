@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col justify-between w-full">
-    <div class="flex flex-col w-full space-y-5">
+    <div class="flex flex-col w-full space-y-2">
       <select-base
         v-model="sectorCode"
         @input="form.industryCode = industries[0].code"
@@ -196,7 +196,10 @@ export default {
     }
   },
   mounted() {
-    document.getElementById('inputName').focus()
+    const obj = document
+      .getElementById('inputName')
+      .getElementsByTagName('input')[0]
+    obj.focus()
   },
   methods: {
     activateInput() {

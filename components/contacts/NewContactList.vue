@@ -85,6 +85,12 @@ export default {
   created() {
     this.form = JSON.parse(JSON.stringify(this.item))
   },
+  mounted() {
+    const obj = document
+      .getElementById('inputName')
+      .getElementsByTagName('input')[0]
+    obj.focus()
+  },
   methods: {
     fileSelected(event) {
       const files = document.getElementById('inputData').files

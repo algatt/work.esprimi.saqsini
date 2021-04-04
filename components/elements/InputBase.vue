@@ -12,6 +12,7 @@
     />
     <span class="text-sm text-red-600 px-1 py-1">
       <span v-if="error">{{ error }}</span>
+      <span v-else>&nbsp;</span>
     </span>
   </div>
 </template>

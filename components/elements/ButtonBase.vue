@@ -9,12 +9,12 @@
       class="flex items-stretch"
       :class="$slots.extra ? 'justify-center' : 'justify-between'"
     >
-      <span class="py-0.5" :class="$slots.extra ? 'pl-3 pr-2' : 'px-3'">
+      <span class="py-1" :class="$slots.extra ? 'pl-3 pr-2' : 'px-3'">
         <slot></slot>
       </span>
       <span
         v-if="$slots.extra"
-        class="flex items-center justify-center px-2 py-0.5"
+        class="flex items-center justify-center px-1 py-1"
         :class="iconStyle"
       >
         <slot name="extra"></slot>
@@ -41,7 +41,7 @@ export default {
   },
   computed: {
     colourNumber() {
-      return this.bgColour === 'gray' ? 400 : 600
+      return this.bgColour === 'gray' ? 300 : 600
     },
     colour() {
       return `${this.bgColour}-${this.colourNumber}`

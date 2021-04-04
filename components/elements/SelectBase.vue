@@ -8,6 +8,9 @@
     >
       <slot name="options"></slot>
     </select>
+    <span class="text-sm text-red-600 px-1 py-1">
+      <span>&nbsp;</span>
+    </span>
   </div>
 </template>
 

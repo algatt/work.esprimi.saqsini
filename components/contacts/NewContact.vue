@@ -1,27 +1,23 @@
 <template>
   <div class="flex flex-col justify-between w-full">
-    <div class="flex flex-col w-full space-y-5">
-      <div class="flex flex-col">
-        <div class="flex items-center">
-          <label for="inputName" class="label">Full Name</label>
-          <span v-if="$v.form.displayName.$error">
-            <span v-if="!$v.form.displayName.required" class="error"
-              >required</span
-            ></span
-          >
-        </div>
-        <input
-          id="inputName"
-          v-model="form.displayName"
-          placeholder="Enter full name"
-          class="input"
-          @change="$v.form.displayName.$touch()"
-        />
-      </div>
+    <div class="flex flex-col w-full space-y-3">
+      <input-base
+        id="inputName"
+        v-model="form.displayName"
+        :error="
+          $v.form.displayName.$model !== undefined
+            ? !$v.form.displayName.required
+              ? 'required'
+              : null
+            : null
+        "
+        @change="$v.form.displayName.$touch()"
+        >Full Name</input-base
+      >
 
-      <div class="flex flex-col">
-        <label for="inputGender" class="label-optional">Gender</label>
-        <select id="inputGender" v-model="form.gender" class="input select">
+      <select-base v-model="form.gender">
+        Gender
+        <template v-slot:options>
           <option
             v-for="genderItem in gender"
             :key="genderItem.value"
@@ -29,55 +25,49 @@
           >
             {{ genderItem.text }}
           </option>
-        </select>
-      </div>
+        </template>
+      </select-base>
+
+      <input-base
+        id="inputDob"
+        v-model="form.dob"
+        type="date"
+        :error="
+          $v.form.dob.$model !== undefined
+            ? !$v.form.dob.between
+              ? 'data cannot be before 1900, or in the future'
+              : null
+            : null
+        "
+        @change="$v.form.dob.$touch()"
+        >Date of Birth</input-base
+      >
+
+      <input-base
+        id="inputEmail"
+        v-model="form.email"
+        :error="
+          $v.form.email.$model !== undefined
+            ? !$v.form.email.email
+              ? 'invalid email format'
+              : null
+            : null
+        "
+        @change="$v.form.email.$touch()"
+        >Email</input-base
+      >
 
       <div class="flex flex-col">
-        <div class="flex items-center">
-          <label for="inputDob" class="label-optional">Birth Date</label>
-          <span v-if="$v.form.dob.$error">
-            <span v-if="!$v.form.dob.between" class="error"
-              >Date cannot be before 1900 or in the future.</span
-            ></span
-          >
-        </div>
-        <input
-          id="inputDob"
-          v-model="form.dob"
-          class="input"
-          type="date"
-          @change="$v.form.dob.$touch()"
-        />
-      </div>
+        <label for="inputPhone" class="font-semibold">Phone</label>
 
-      <div class="flex flex-col">
-        <div class="flex items-center">
-          <label for="inputEmail" class="label-optional">Email</label>
-          <span v-if="$v.form.email.$error">
-            <span v-if="!$v.form.email.email" class="error"
-              >Invalid email format.</span
-            ></span
-          >
-        </div>
-        <input
-          id="inputEmail"
-          v-model="form.email"
-          placeholder="Enter email address"
-          class="input"
-          @change="$v.form.email.$touch()"
-        />
-      </div>
-
-      <div class="flex flex-col">
-        <div class="flex items-center">
-          <label for="inputPhone" class="label-optional">Phone</label>
-          <span v-if="!isPhoneValid" class="error">invalid phone</span>
-        </div>
         <vue-tel-input
           id="inputPhone"
           v-model="phoneNumber"
           @validate="validatePhone"
         />
+        <span v-if="!isPhoneValid" class="text-sm text-red-600 px-1 py-1"
+          >invalid phone</span
+        >
       </div>
     </div>
     <edit-object-modal-bottom-part
@@ -94,10 +84,12 @@ import { validationMixin } from 'vuelidate'
 import { required, email } from 'vuelidate/lib/validators'
 import moment from 'moment'
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
+import InputBase from '~/components/elements/InputBase'
+import SelectBase from '~/components/elements/SelectBase'
 
 export default {
   name: 'NewContact',
-  components: { EditObjectModalBottomPart },
+  components: { SelectBase, InputBase, EditObjectModalBottomPart },
   mixins: [validationMixin],
   validations: {
     form: {
@@ -172,12 +164,9 @@ export default {
 
 <style>
 .vue-tel-input {
-  /*@apply border-2 border-gray-300 rounded-sm px-3 py-2 focus:bg-gray-100 focus:border-primary transition duration-500 ring-offset-2 focus:outline-none;*/
-  /*@apply border-b border-gray-200 px-1 py-2 focus:border-primary transition duration-500 ease-in focus:outline-none;*/
-  border: none !important;
   box-shadow: none !important;
-  padding: 2px 1px !important;
-  border-bottom: 1px solid #e5e7eb !important;
-  border-radius: 0px !important;
+  border: 2px solid rgb(229, 231, 235) !important;
+  padding-top: 0.175rem !important;
+  padding-bottom: 0.175rem !important;
 }
 </style>

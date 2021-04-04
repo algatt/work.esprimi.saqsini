@@ -87,6 +87,6 @@ export default {
 }
 
 .popup-menu >>> span > i {
-  @apply mr-2 text-gray-400;
+  @apply mr-2 text-gray-300;
 }
 </style>

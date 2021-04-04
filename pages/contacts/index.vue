@@ -3,7 +3,6 @@
     <top-header-bar
       which="contacts"
       :items="contacts"
-      class="w-full"
       :hide-menu="contacts.length === 0"
     >
       <template v-slot:title>Contacts</template>
@@ -17,14 +16,12 @@
       <template v-slot:extraButtons>
         <button-icon
           v-if="contactlists.length !== 0"
-          colour="primary"
-          icon="fas fa-plus"
           @click="setCurrentItem({ code: -1 })"
-        >
-          <template v-slot:text>New Contact</template>
-        </button-icon></template
-      ></top-header-bar
-    >
+          >New Contact
+          <template v-slot:icon
+            ><i class="fas fa-plus fa-sm fa-fw"></i
+          ></template> </button-icon></template
+    ></top-header-bar>
 
     <template v-if="contactlists.length < 1">
       <info-box type="info">
@@ -42,15 +39,14 @@
       >
         <template v-slot:title>No Contacts</template>
         <template v-slot:content>
-          <button class="btn-link" @click="setCurrentItem({ code: -1 })">
-            Create a contact...
-          </button>
+          <button-base @click="setCurrentItem({ code: -1 })"
+            >Create a contact</button-base
+          >
         </template></info-box
       >
 
       <display-table-component
         v-else
-        class="w-full"
         :items="contacts"
         @hovered="hovered = $event"
         @clicked="setCurrentItem($event)"
@@ -71,8 +67,8 @@
           <p class="w-full xl:w-2/12">
             <span v-if="slotProps.item.gender === 'M'">Male</span>
             <span v-else-if="slotProps.item.gender === 'F'">Female</span>
-            <span v-if="calculateAge(slotProps.item.dob) !== 0"
-              >{{ calculateAge(slotProps.item.dob) }}
+            <span v-if="calculateAge(slotProps.item.dob) !== 0" class="ml-1"
+              >{{ calculateAge(slotProps.item.dob) }} years
             </span>
           </p>
 
@@ -87,42 +83,35 @@
           </p>
         </template>
         <template v-slot:popup-menu="slotProps">
-          <span
+          <display-table-row-popup
             :class="hovered === slotProps.item.code ? 'flex' : 'flex xl:hidden'"
-            class="items-center"
+            @close="hovered = null"
           >
-            <popup-menu-vue
-              :object-code="slotProps.item.code"
-              direction="left"
-              @closeMenu="hovered = null"
-            >
-              <template v-slot:menuItems>
-                <button @click="setCurrentItem(slotProps.item)">
-                  <span class="popup-menu-button">
-                    <i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit</span
-                  >
-                </button>
-                <nuxt-link
-                  :to="{
-                    name: 'contacts-jobs-id',
-                    params: { id: slotProps.item.code },
-                  }"
-                  @click.stop.native
-                  ><span class="popup-menu-button"
-                    ><i class="fas fa-briefcase fa-fw fa-sm"></i>Manage Jobs ({{
-                      slotProps.item.jobCount
-                    }})</span
-                  >
-                </nuxt-link>
-              </template>
-            </popup-menu-vue>
-          </span>
+            <template v-slot:menu>
+              <span @click="setCurrentItem(slotProps.item)"
+                ><i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit</span
+              >
+
+              <nuxt-link
+                :to="{
+                  name: 'contacts-jobs-id',
+                  params: { id: slotProps.item.code },
+                }"
+                ><span
+                  ><i class="fas fa-briefcase fa-fw fa-sm"></i>Manage Jobs ({{
+                    slotProps.item.jobCount
+                  }})</span
+                ></nuxt-link
+              >
+            </template>
+          </display-table-row-popup>
         </template>
       </display-table-component>
     </template>
 
     <transition name="fade">
       <edit-object-modal v-if="currentItemToBeEdited">
+        <template v-slot:secondTitle>Contact</template>
         <template v-slot:content>
           <new-contact></new-contact>
         </template>
@@ -137,21 +126,23 @@ import moment from 'moment'
 import EditObjectModal from '~/components/layouts/EditObjectModal'
 import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
 import NewContact from '~/components/contacts/NewContact'
-import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 import viewMixin from '~/helpers/viewMixin'
 import ContactBookDropdown from '~/components/contacts/ContactBookDropdown'
-import ButtonIcon from '~/components/layouts/ButtonIcon'
+import ButtonIcon from '~/components/elements/ButtonIcon'
 import InfoBox from '~/components/layouts/InfoBox'
+import ButtonBase from '~/components/elements/ButtonBase'
+import DisplayTableRowPopup from '~/components/layouts/DisplayTableRowPopup'
 
 export default {
   name: 'ContactsList',
   components: {
+    DisplayTableRowPopup,
+    ButtonBase,
     NewContact,
     DisplayTableComponent,
     EditObjectModal,
-    PopupMenuVue,
     Spinner,
     TopHeaderBar,
     ContactBookDropdown,

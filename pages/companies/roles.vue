@@ -1,10 +1,6 @@
 <template>
   <div v-if="!loading" class="flex flex-wrap items-start">
-    <top-header-bar
-      which="roles"
-      :items="roles"
-      class="w-full"
-      :hide-menu="roles.length === 0"
+    <top-header-bar which="roles" :items="roles" :hide-menu="roles.length === 0"
       ><template v-slot:title>Roles</template>
       <template v-slot:extraContent>
         <div class="xl:ml-6 ml-0 flex items-center">
@@ -16,14 +12,12 @@
       <template v-slot:extraButtons>
         <button-icon
           v-if="contactlists.length !== 0"
-          colour="primary"
-          icon="fas fa-plus"
           @click="setCurrentItem({ code: -1 })"
-        >
-          <template v-slot:text>New Role</template>
-        </button-icon></template
-      ></top-header-bar
-    >
+          >New Role
+          <template v-slot:icon
+            ><i class="fas fa-plus fa-fw fa-sm"></i
+          ></template> </button-icon></template
+    ></top-header-bar>
 
     <template v-if="contactlists.length < 1">
       <info-box type="info">
@@ -39,9 +33,9 @@
       <info-box v-if="roles.length === 0" class="flex-grow mt-2 md:mt-0">
         <template v-slot:title>No Roles</template>
         <template v-slot:content>
-          <button class="btn-link" @click="setCurrentItem({ code: -1 })">
+          <button-base @click="setCurrentItem({ code: -1 })">
             Create a new one...
-          </button>
+          </button-base>
         </template></info-box
       >
 
@@ -62,34 +56,27 @@
             <span>
               {{ slotProps.item.name }}
             </span>
-            <span class="badge-gray">{{ slotProps.item.abbr }}</span>
+            <badge-base class="ml-2">{{ slotProps.item.abbr }}</badge-base>
           </div>
         </template>
         <template v-slot:popup-menu="slotProps">
-          <span
+          <display-table-row-popup
             :class="hovered === slotProps.item.code ? 'flex' : 'flex md:hidden'"
-            class="items-center"
+            @close="hovered = null"
           >
-            <popup-menu-vue
-              :object-code="slotProps.item.code"
-              direction="left"
-              @closeMenu="hovered = null"
-            >
-              <template v-slot:menuItems>
-                <button @click="setCurrentItem(slotProps.item)">
-                  <span class="popup-menu-button">
-                    <i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit</span
-                  >
-                </button>
-              </template>
-            </popup-menu-vue>
-          </span>
+            <template v-slot:menu>
+              <span @click="setCurrentItem(slotProps.item)"
+                ><i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit</span
+              >
+            </template>
+          </display-table-row-popup>
         </template>
       </display-table-component>
     </template>
 
     <transition name="fade">
       <edit-object-modal v-if="currentItemToBeEdited">
+        <template v-slot:secondTitle>Role</template>
         <template v-slot:content>
           <new-role></new-role>
         </template>
@@ -103,26 +90,31 @@
 import EditObjectModal from '~/components/layouts/EditObjectModal'
 import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
 import NewRole from '~/components/contacts/NewRole'
-import PopupMenuVue from '~/components/layouts/PopupMenu'
 import Spinner from '~/components/layouts/Spinner'
 import viewMixin from '~/helpers/viewMixin'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 import ContactBookDropdown from '~/components/contacts/ContactBookDropdown'
 import InfoBox from '~/components/layouts/InfoBox'
-import ButtonIcon from '~/components/layouts/ButtonIcon'
+import ButtonIcon from '~/components/elements/ButtonIcon'
+import ButtonBase from '~/components/elements/ButtonBase'
+import BadgeBase from '~/components/elements/BadgeBase'
+import DisplayTableRowPopup from '~/components/layouts/DisplayTableRowPopup'
 
 export default {
   name: 'RolesList',
   components: {
+    DisplayTableRowPopup,
+    BadgeBase,
     Spinner,
     NewRole,
     DisplayTableComponent,
     EditObjectModal,
-    PopupMenuVue,
+
     TopHeaderBar,
     ContactBookDropdown,
     InfoBox,
     ButtonIcon,
+    ButtonBase,
   },
   mixins: [viewMixin],
   data() {

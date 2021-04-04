@@ -2,6 +2,7 @@
   <button
     class="font-semibold border-b border-transparent transition duration-300 cursor-pointer focus:outline-none active:outline-none focus:ring-0"
     :class="linkColour"
+    @click="$emit('click')"
   >
     <slot></slot>
   </button>

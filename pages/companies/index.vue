@@ -96,8 +96,8 @@
             </span>
             <span class="flex items-baseline">
               <span> {{ slotProps.item.name }}</span>
-              <span class="badge-gray">{{ slotProps.item.abbr }}</span></span
-            >
+              <badge-base class="ml-2">{{ slotProps.item.abbr }}</badge-base>
+            </span>
           </p>
 
           <p class="w-full xl:w-3/12 flex xl:justify-center">
@@ -108,7 +108,7 @@
           </p>
 
           <p class="w-full xl:w-2/12 flex xl:justify-center">
-            <text-link>
+            <text-link class="px-0 xl:px-3">
               <nuxt-link
                 :to="{
                   name: 'companies-departments-id',
@@ -142,7 +142,11 @@
         v-if="currentItemToBeEdited"
         @modalClosed="modalClosed"
       >
-        <template v-slot:secondTitle>Company</template>
+        <template v-slot:secondTitle
+          ><span v-if="!objectToCreate">Company</span
+          ><span v-else-if="objectToCreate === 'industry'">Industry</span
+          ><span v-else-if="objectToCreate === 'sector'">Sector</span>
+        </template>
         <template v-slot:content>
           <new-company
             v-if="!objectToCreate"
@@ -176,9 +180,11 @@ import InfoBox from '~/components/layouts/InfoBox'
 import TextLink from '~/components/elements/TextLink'
 import DisplayTableRowPopup from '~/components/layouts/DisplayTableRowPopup'
 import ButtonBase from '~/components/elements/ButtonBase'
+import BadgeBase from '~/components/elements/BadgeBase'
 export default {
   name: 'CompaniesList',
   components: {
+    BadgeBase,
     DisplayTableRowPopup,
     ButtonBase,
     TextLink,
