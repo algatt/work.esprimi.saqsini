@@ -1,22 +1,24 @@
 <template>
-  <div class="flex flex-col w-full">
-    <h6>{{ notification.author.displayName }}</h6>
-    <h6>{{ notification.author.email }}</h6>
-    <p class="mt-3">{{ notification.subject }}</p>
-    <p class="mt-2 mb-3">{{ notification.content }}</p>
-    <p
-      v-if="notification.linkedEntityTypeFlags.includes('SURVEY')"
-      class="my-2"
-    >
-      <nuxt-link
-        :to="{
-          name: 'questions-id',
-          params: { id: notification.linkedEntityCode },
-        }"
-        class="btn btn-primary"
-        >Go To Survey</nuxt-link
+  <div class="flex flex-col justify-between w-full">
+    <div class="flex flex-col w-full space-y-2">
+      <h6>{{ notification.author.displayName }}</h6>
+      <h6>{{ notification.author.email }}</h6>
+      <p class="mt-3">{{ notification.subject }}</p>
+      <p class="mt-2 mb-3">{{ notification.content }}</p>
+      <p
+        v-if="notification.linkedEntityTypeFlags.includes('SURVEY')"
+        class="my-2"
       >
-    </p>
+        <nuxt-link
+          :to="{
+            name: 'questions-id',
+            params: { id: notification.linkedEntityCode },
+          }"
+          class="btn btn-primary"
+          >Go To Survey</nuxt-link
+        >
+      </p>
+    </div>
     <edit-object-modal-bottom-part
       :form="{}"
       which="notifications"

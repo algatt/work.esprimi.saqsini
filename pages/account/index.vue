@@ -31,36 +31,32 @@
         >
           <i class="fas fa-user fa-fw fa-5x bg-white"></i>
         </span>
-        <button
-          v-if="avatarImage !== ''"
-          class="btn-link mt-2"
+        <button-base
+          :disabled="avatarImage === ''"
+          class="mt-5"
           @click="resetImage"
+          >Reset</button-base
         >
-          Clear
-        </button>
       </div>
       <div class="flex flex-col p-5 w-full xl:w-8/12">
-        <label for="inputName" class="label">Display Name</label>
-        <input id="inputName" v-model="displayName" class="input mb-3" />
-        <label for="inputEmail" class="label">Email</label>
-        <input id="inputEmail" v-model="email" class="input mb-3" />
+        <input-base id="inputName" v-model="displayName"
+          >Display Name</input-base
+        >
+        <input-base id="inputEmail" v-model="email">Email</input-base>
       </div>
 
       <div class="w-full flex p-3 justify-center mb-4">
-        <button-icon
-          :disabled="$v.$invalid"
-          icon="fas fa-save"
-          colour="primary"
-          @click="updateDetails"
-          ><template v-slot:text>Update Details</template></button-icon
+        <button-icon :disabled="$v.$invalid" @click="updateDetails"
+          ><template v-slot:icon
+            ><i class="fas fa-save fa-fw fa-sm"></i></template
+          >Update Details</button-icon
         >
       </div>
       <div class="w-full flex p-3 justify-center bg-red-100">
-        <button-icon
-          icon="fas fa-exclamation-triangle"
-          colour="danger"
-          @click="showConfirm = true"
-          ><template v-slot:text>Delete Account</template></button-icon
+        <button-icon bg-colour="red" @click="showConfirm = true"
+          ><template v-slot:icon
+            ><i class="fas fa-exclamation-triangle fa-sm fa-fw"></i></template
+          >Delete Account</button-icon
         >
       </div>
     </div>
@@ -72,7 +68,7 @@
       <div
         class="bg-white border border-gray-200 shadow-md flex flex-col p-5 space-y-5"
       >
-        <h5>Deleting Account</h5>
+        <h5 class="text-primary">Deleting Account</h5>
         <p>
           If you delete your account, all your work will be lost and cannot be
           recovered.
@@ -80,24 +76,24 @@
         <p>
           if you are sure input your email below to confirm and press Delete.
         </p>
-        <input
+        <input-base
           v-model="confirmEmail"
-          class="input"
           placeholder="confirm your email"
-        />
+        ></input-base>
+
         <div class="flex justify-between w-full">
-          <button-icon
-            colour="primary"
-            icon="fas fa-times"
-            @click="showConfirm = false"
-            ><template v-slot:text>Cancel</template></button-icon
+          <button-icon @click="showConfirm = false"
+            ><template v-slot:icon
+              ><i class="fas fa-times fa-fw fa-sm"></i></template
+            >Cancel</button-icon
           >
           <button-icon
-            colour="danger"
-            icon="fas fa-exclamation-triangle"
+            bg-colour="red"
             :disabled="confirmEmail !== accountDetails.email"
             @click="logoutUser"
-            ><template v-slot:text>Delete Account</template></button-icon
+            ><template v-slot:icon
+              ><i class="fas fa-exclamation-triangle fa-fw fa-sm"></i></template
+            >Delete Account</button-icon
           >
         </div>
       </div>
@@ -110,10 +106,12 @@
 import { validationMixin } from 'vuelidate'
 import { required, email } from 'vuelidate/lib/validators'
 import Spinner from '~/components/layouts/Spinner'
-import ButtonIcon from '~/components/layouts/ButtonIcon'
+import ButtonIcon from '~/components/elements/ButtonIcon'
+import ButtonBase from '~/components/elements/ButtonBase'
+import InputBase from '~/components/elements/InputBase'
 export default {
   name: 'AccountDetails',
-  components: { Spinner, ButtonIcon },
+  components: { InputBase, ButtonBase, Spinner, ButtonIcon },
   mixins: [validationMixin],
   data() {
     return {

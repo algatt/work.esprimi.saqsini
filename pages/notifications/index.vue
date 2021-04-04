@@ -3,16 +3,12 @@
     <top-header-bar
       which="notifications"
       :items="notifications"
-      class="w-full"
       :hide-menu="notifications.length === 0"
       ><template v-slot:title>Notifications</template>
       <template v-slot:menuButtonIfSelected>
-        <button class="w-full" @click="markAllAsRead">
-          <span class="popup-menu-button">
-            <i class="far fa-envelope-open fa-fw mr-1"></i>Mark All As
-            Read</span
-          >
-        </button>
+        <span @click="markAllAsRead">
+          <i class="far fa-envelope-open fa-fw mr-1"></i>Mark All As Read</span
+        >
       </template></top-header-bar
     >
 
@@ -48,7 +44,7 @@
           <i class="hidden xl:flex"> {{ slotProps.item.author.email }}</i>
         </p>
         <p
-          class="w-full xl:w-6/12 flex items-center mb-2 lg:mb-0"
+          class="w-full xl:w-6/12 flex items-center mb-2 lg:mb-0 text-left"
           :class="
             slotProps.item.flags.includes('READ')
               ? 'text-gray-400'
@@ -64,7 +60,7 @@
             class="hidden xl:flex far fa-envelope fa-fw text-gray-700 mr-2"
           ></i>
           <button
-            class="subject-link flex items-center"
+            class="subject-link flex items-center text-left"
             :class="
               slotProps.item.flags.includes('READ')
                 ? 'text-gray-400'
