@@ -3,54 +3,30 @@
     <top-header-bar :hide-menu="true" which="">
       <template v-slot:title>{{ responses.survey.name }}</template>
       <template v-slot:extraButtons>
-        <button
-          class="items-center md:flex md:justify-center font-semibold hover:text-primary transition duration-300 focus:outline-none py-3 mr-6 border-b-2 border-transparent"
-          :class="
-            selectedView === 'overall'
-              ? 'text-primary border-b-2 border-primary'
-              : 'text-gray-500'
-          "
+        <menu-icon-button
+          :active="selectedView === 'overall'"
           @click="selectedView = 'overall'"
-        >
-          <i class="xl:pr-2 fas fa-poll fa-fw" title="Overall"></i>
-          <span class="hidden md:block">Overall</span>
-        </button>
-        <button
-          class="items-center md:flex md:justify-center font-semibold hover:text-primary transition duration-300 focus:outline-none py-3 mr-6 border-b-2 border-transparent"
-          :class="
-            selectedView === 'questions'
-              ? 'text-primary border-b-2 border-primary'
-              : 'text-gray-500'
-          "
+          >Overall<template v-slot:icon
+            ><i class="fas fa-poll fa-fw"></i></template
+        ></menu-icon-button>
+        <menu-icon-button
+          :active="selectedView === 'questions'"
           @click="selectedView = 'questions'"
-        >
-          <i class="xl:pr-2 fas fa-question-circle fa-fw" title="Questions"></i>
-          <span class="hidden md:block">Questions</span>
-        </button>
-        <button
-          class="items-center md:flex md:justify-center font-semibold hover:text-primary transition duration-300 focus:outline-none py-3 mr-6 border-b-2 border-transparent"
-          :class="
-            selectedView === 'individual'
-              ? 'text-primary border-b-2 border-primary'
-              : 'text-gray-500'
-          "
+          >Questions<template v-slot:icon
+            ><i class="fas fa-question-circle fa-fw"></i></template
+        ></menu-icon-button>
+        <menu-icon-button
+          :active="selectedView === 'individual'"
           @click="selectedView = 'individual'"
-        >
-          <i class="xl:pr-2 fas fa-user fa-fw" title="Crosstab"></i>
-          <span class="hidden md:block">Individual</span>
-        </button>
-        <button
-          class="items-center md:flex md:justify-center font-semibold hover:text-primary transition duration-300 focus:outline-none py-3 mr-6 border-b-2 border-transparent"
-          :class="
-            selectedView === 'cross'
-              ? 'text-primary border-b-2 border-primary'
-              : 'text-gray-500'
-          "
+          >Overall<template v-slot:icon
+            ><i class="fas fa-user fa-fw"></i></template
+        ></menu-icon-button>
+        <menu-icon-button
+          :active="selectedView === 'cross'"
           @click="selectedView = 'cross'"
-        >
-          <i class="xl:pr-2 fas fa-table fa-fw" title="Crosstab"></i>
-          <span class="hidden md:block">Crosstab</span>
-        </button>
+          >Overall<template v-slot:icon
+            ><i class="fas fa-table fa-fw"></i></template
+        ></menu-icon-button>
       </template>
     </top-header-bar>
     <div v-if="selectedView === 'overall'">
@@ -76,10 +52,12 @@ import SurveyDetails from '~/components/charts/SurveyDetails'
 import QuestionDetails from '~/components/charts/QuestionList'
 import CrossTableDetails from '~/components/charts/CrossTableDetails'
 import IndividualDetails from '~/components/charts/InvidualDetails'
+import MenuIconButton from '~/components/layouts/MenuIconButton'
 
 export default {
   name: 'SurveyResponses',
   components: {
+    MenuIconButton,
     QuestionDetails,
     SurveyDetails,
     TopHeaderBar,

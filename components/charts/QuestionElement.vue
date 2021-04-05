@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import MultiSelect from '~/components/layouts/MultiSelect'
+import MultiSelect from '~/components/elements/MultiSelect'
 import ChartMultipleChoice from '~/components/charts/ChartMultipleChoice'
 import ChartLikert from '~/components/charts/ChartLikert'
 import ChartRanking from '~/components/charts/ChartRanking'

@@ -1,9 +1,10 @@
 <template>
   <div class="flex flex-wrap w-full">
     <div class="flex flex-col w-full md:w-4/12">
+      <p class="font-semibold mb-1">X Axis</p>
       <select
         v-model="crossTabX"
-        class="input select w-full mb-5"
+        class="select w-full mb-5"
         @change="optionX = null"
       >
         <option :value="null">Choose question for X axis</option>
@@ -15,27 +16,39 @@
           {{ question.name }}
         </option>
       </select>
-      <select
+
+      <template
         v-if="
           crossTabX &&
           (crossTabX.flags.includes('RADIO_GRID') ||
             crossTabX.flags.includes('RANKING'))
         "
-        v-model="optionX"
-        class="input select w-full mb-5"
       >
-        <option :value="null">Select an option</option>
-        <option
-          v-for="(option, index) in getDifferentAnswers(crossTabX)"
-          :key="index"
-          :value="option.code"
+        <p class="font-semibold mb-1">X Axis - Question Option</p>
+
+        <select
+          v-if="
+            crossTabX &&
+            (crossTabX.flags.includes('RADIO_GRID') ||
+              crossTabX.flags.includes('RANKING'))
+          "
+          v-model="optionX"
+          class="select w-full mb-5"
         >
-          {{ option.text }}
-        </option>
-      </select>
+          <option :value="null">Select an option</option>
+          <option
+            v-for="(option, index) in getDifferentAnswers(crossTabX)"
+            :key="index"
+            :value="option.code"
+          >
+            {{ option.text }}
+          </option>
+        </select>
+      </template>
+      <p class="font-semibold mb-1">Y Axis</p>
       <select
         v-model="crossTabY"
-        class="input select w-full mb-5"
+        class="select w-full mb-5"
         @change="optionY = null"
       >
         <option :value="null">Choose question for Y axis</option>
@@ -47,24 +60,27 @@
           {{ question.name }}
         </option>
       </select>
-      <select
+
+      <template
         v-if="
           crossTabY &&
           (crossTabY.flags.includes('RADIO_GRID') ||
             crossTabY.flags.includes('RANKING'))
         "
-        v-model="optionY"
-        class="input select w-full mb-5"
       >
-        <option :value="null">Select an option</option>
-        <option
-          v-for="(option, index) in getDifferentAnswers(crossTabY)"
-          :key="index"
-          :value="option.code"
-        >
-          {{ option.text }}
-        </option>
-      </select>
+        <p class="font-semibold mb-1">Y Axis - Question Option</p>
+
+        <select v-model="optionY" class="select w-full mb-5">
+          <option :value="null">Select an option</option>
+          <option
+            v-for="(option, index) in getDifferentAnswers(crossTabY)"
+            :key="index"
+            :value="option.code"
+          >
+            {{ option.text }}
+          </option>
+        </select>
+      </template>
     </div>
 
     <div class="flex w-full md:w-8/12 justify-center items-center">
@@ -105,6 +121,7 @@ export default {
       crossTabY: null,
       optionX: null,
       optionY: null,
+      crossTabXX: null,
     }
   },
   computed: {
@@ -275,4 +292,13 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.select {
+  @apply border-2 border-gray-200 rounded py-1.5 px-2 focus:border-primary focus:ring-0 focus:outline-none transition duration-300 disabled:bg-gray-100;
+  @apply appearance-none;
+  background-image: url('/dropdown.svg');
+  background-repeat: no-repeat;
+  background-position: right 0.5em top 50%;
+  background-size: 1em auto;
+}
+</style>
