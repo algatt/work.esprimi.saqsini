@@ -19,4 +19,9 @@ module.exports = {
       },
     },
   },
+  purge: {
+    options: {
+      safelist: ['bg-blue-500', 'bg-blue-400', 'bg-blue-600', 'bg-blue-700'],
+    },
+  },
 }
