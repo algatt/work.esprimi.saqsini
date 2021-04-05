@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col justify-between w-full">
-    <div class="flex flex-col w-full space-y-2">
+    <div class="flex flex-col w-full space-y-5">
       <select-base
         id="inputCompany"
         v-model="form.companyCode"

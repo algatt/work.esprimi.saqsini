@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col justify-between w-full">
-    <div class="flex flex-col w-full space-y-2">
+    <div class="flex flex-col w-full space-y-5">
       <select-base
         v-model="form.categoryCode"
         @input="form.subCategoryCode = subcategories[0].code"
@@ -73,12 +73,8 @@
         <template v-slot:default>
           <span class="flex items-center">
             Reference Date
-            <popup-info
-              ><template v-slot:text>
-                <span class="font-normal"
-                  >This date will tell you when your survey was created</span
-                ></template
-              ></popup-info
+            <popup-base class="ml-1 font-normal">
+              This date will tell you when your survey was created</popup-base
             ></span
           >
         </template>
@@ -104,12 +100,8 @@
             <template v-slot:default>
               <span class="flex items-center">
                 Valid From Date
-                <popup-info
-                  ><template v-slot:text>
-                    <span class="font-normal"
-                      >This date will open the survey for responses</span
-                    ></template
-                  ></popup-info
+                <popup-base class="ml-1 font-normal"
+                  >This date will open the survey for responses</popup-base
                 ></span
               >
             </template></input-base
@@ -127,8 +119,9 @@
             "
             type="time"
             @change="$v.form.validFromTime.$touch()"
-            >Valid From Time</input-base
-          >
+            ><span class="flex items-center"
+              >Valid From Time<popup-base class="invisible"></popup-base></span
+          ></input-base>
         </div>
       </div>
 
@@ -152,13 +145,9 @@
             <template v-slot:default>
               <span class="flex items-center">
                 Valid To Date
-                <popup-info
-                  ><template v-slot:text>
-                    <span class="font-normal"
-                      >This date will close the survey for any future
-                      responses</span
-                    ></template
-                  ></popup-info
+                <popup-base class="ml-1 font-normal"
+                  >This date will close the survey for any future
+                  responses</popup-base
                 ></span
               >
             </template></input-base
@@ -179,13 +168,15 @@
             "
             type="time"
             @change="$v.form.validToTime.$touch()"
-            >Valid To Time</input-base
-          >
+            ><span class="flex items-center"
+              >Valid To Time<popup-base class="invisible"></popup-base></span
+          ></input-base>
         </div>
       </div>
     </div>
 
     <edit-object-modal-bottom-part
+      class="pt-10 pb-5"
       :form="form"
       which="surveys"
       :is-valid="isValid"
@@ -201,7 +192,7 @@ import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
 
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
 import { createMomentFromDateAndTime } from '~/helpers/helpers'
-import PopupInfo from '~/components/layouts/PopupInfo'
+import PopupBase from '~/components/elements/PopupBase'
 import SelectBase from '~/components/elements/SelectBase'
 import InputBase from '~/components/elements/InputBase'
 import TextAreaBase from '~/components/elements/TextAreaBase'
@@ -230,7 +221,7 @@ export default {
     TextAreaBase,
     InputBase,
     SelectBase,
-    PopupInfo,
+    PopupBase,
     EditObjectModalBottomPart,
   },
   mixins: [validationMixin],

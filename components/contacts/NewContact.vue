@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col justify-between w-full">
-    <div class="flex flex-col w-full space-y-3">
+    <div class="flex flex-col w-full space-y-5">
       <input-base
         id="inputName"
         v-model="form.displayName"

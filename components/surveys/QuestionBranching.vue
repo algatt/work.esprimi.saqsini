@@ -1,8 +1,8 @@
 <template>
   <spinner v-if="isLoading"></spinner>
-  <div v-else class="flex flex-col mt-2">
+  <div v-else class="flex flex-col">
     <div v-for="condition in conditions" :key="condition.groupIndex">
-      <div class="flex flex-col border border-gray-100 shadow rounded p-2 my-3">
+      <div class="flex flex-col border border-gray-100 shadow rounded p-2 mb-5">
         <div
           v-for="(rule, ruleIndex) in condition.ruleList"
           :key="`${condition.groupIndex} ${ruleIndex}`"
@@ -10,46 +10,48 @@
         >
           <div class="w-8/12 flex p-1 items-start pr-3">
             <div class="flex w-full justify-between">
-              <select
+              <select-base
                 v-if="rule.hasOwnProperty('questionNumber')"
                 class="input select flex flex-1"
-                @change="
-                  updateQuestion(condition.groupIndex, ruleIndex, $event)
-                "
+                @input="updateQuestion(condition.groupIndex, ruleIndex, $event)"
               >
-                <option
-                  v-for="question in questions"
-                  :key="`${condition.groupIndex} ${ruleIndex} ${question.questionNumber}`"
-                  :value="String(question.questionNumber)"
-                  :selected="
-                    String(question.questionNumber) ===
-                    String(rule.questionNumber)
-                  "
-                >
-                  {{ getQuestionText(question).text }}
-                </option>
-              </select>
-              <select
+                <template v-slot:options>
+                  <option
+                    v-for="question in questions"
+                    :key="`${condition.groupIndex} ${ruleIndex} ${question.questionNumber}`"
+                    :value="String(question.questionNumber)"
+                    :selected="
+                      String(question.questionNumber) ===
+                      String(rule.questionNumber)
+                    "
+                  >
+                    {{ getQuestionText(question).text }}
+                  </option>
+                </template>
+              </select-base>
+              <select-base
                 v-else
                 class="input select flex flex-1"
-                @change="updateFilter(condition.groupIndex, ruleIndex, $event)"
+                @input="updateFilter(condition.groupIndex, ruleIndex, $event)"
               >
-                <option
-                  v-for="filter in Object.keys(filters)"
-                  :key="`${condition.groupIndex} ${ruleIndex} ${filter}`"
-                  :value="filter"
-                  :selected="filter === rule.name"
+                <template v-slot:options>
+                  <option
+                    v-for="filter in Object.keys(filters)"
+                    :key="`${condition.groupIndex} ${ruleIndex} ${filter}`"
+                    :value="filter"
+                    :selected="filter === rule.name"
+                  >
+                    {{ filter }}
+                  </option></template
                 >
-                  {{ filter }}
-                </option>
-              </select>
-              <div class="w-12 flex justify-center items-center">
-                <button
-                  class="btn-link-danger"
+              </select-base>
+              <div class="w-12 flex justify-center items-center py-3.5">
+                <button-icon-rounded-outline
+                  bg-colour="red"
                   @click="deleteQuestion(condition.groupIndex, ruleIndex)"
                 >
                   <i class="far fa-trash-alt fa-fw"></i>
-                </button>
+                </button-icon-rounded-outline>
               </div>
             </div>
           </div>
@@ -78,59 +80,69 @@
               ><template v-slot:title>Select</template></multi-select
             >
           </div>
-          <select
+
+          <select-base
             v-if="rule.hasOwnProperty('isAnd')"
             v-model="rule.isAnd"
-            class="input select w-20 bg-gray-100 rounded"
+            class="ml-1 w-24"
           >
-            <option :value="false">or</option>
-            <option :value="true">and</option>
-          </select>
+            <template v-slot:options>
+              <option value="false" :selected="rule.isAnd === 'false'">
+                or
+              </option>
+              <option value="true" :selected="rule.isAnd === 'true'">
+                and
+              </option></template
+            >
+          </select-base>
         </div>
 
         <div class="flex justify-between items-center">
-          <div class="flex items-center">
-            New filter by
-            <button
+          <div class="flex items-center px-2 py-2">
+            <span class="border-b border-transparent mr-1">New filter by</span>
+            <text-link
               v-if="questions.length !== 0"
-              class="btn-link mx-1 py-2"
               @click="addQuestion(condition.groupIndex)"
             >
               Question
-            </button>
-            <span v-if="questions.length !== 0 && contactlists.length !== 0"
+            </text-link>
+            <span
+              v-if="questions.length !== 0 && contactlists.length !== 0"
+              class="border-b border-transparent mx-1"
               >or</span
             >
-            <button
+            <text-link
               v-if="contactlists.length !== 0"
-              class="btn-link mx-1 py-2"
               @click="addFilter(condition.groupIndex)"
             >
               Contact List
-            </button>
+            </text-link>
           </div>
-          <button
-            class="text-red-500 hover:text-red-600 hover:underline font-semibold mr-1 p-2"
+          <button-base
+            bg-colour="red"
             @click="deleteGroup(condition.groupIndex)"
           >
             Delete Group
-          </button>
+          </button-base>
         </div>
       </div>
-      <select
+      <select-base
         v-if="condition.hasOwnProperty('isAnd')"
         v-model="condition.isAnd"
-        class="input select w-20 bg-gray-100 rounded mb-1"
-      >
-        <option :value="false">or</option>
-        <option :value="true">and</option>
-      </select>
+        class="ml-1 w-24 mb-5"
+        ><template v-slot:options>
+          <option value="false" :selected="condition.isAnd === 'false'">
+            or
+          </option>
+          <option value="true" :selected="condition.isAnd === 'true'">
+            and
+          </option></template
+        >
+      </select-base>
     </div>
 
     <div class="flex w-full justify-between items-center">
-      <button class="btn-link ml-1 p-2" @click="addGroup">
-        Add Condition Group
-      </button>
+      <button-base @click="addGroup"> Add Condition Group </button-base>
     </div>
   </div>
 </template>
@@ -138,11 +150,22 @@
 <script>
 import { parseQuestionToForm } from '~/helpers/parseSurveyObjects'
 import Spinner from '~/components/layouts/Spinner'
-import MultiSelect from '~/components/layouts/MultiSelect'
+import MultiSelect from '~/components/elements/MultiSelect'
+import ButtonBase from '~/components/elements/ButtonBase'
+import TextLink from '~/components/elements/TextLink'
+import SelectBase from '~/components/elements/SelectBase'
+import ButtonIconRoundedOutline from '~/components/elements/ButtonIconRoundedOutline'
 
 export default {
   name: 'QuestionBranching',
-  components: { Spinner, MultiSelect },
+  components: {
+    ButtonIconRoundedOutline,
+    TextLink,
+    ButtonBase,
+    Spinner,
+    MultiSelect,
+    SelectBase,
+  },
   props: {
     existingConditions: {
       type: Object,
@@ -271,10 +294,10 @@ export default {
     updateQuestion(groupIndex, conditionQuestionIndex, newCode) {
       for (const i in this.conditions) {
         if (this.conditions[i].groupIndex === groupIndex) {
-          this.conditions[i].ruleList[conditionQuestionIndex] = {
-            questionNumber: Number(newCode.target.value), // TODO
-            options: [],
-          }
+          this.conditions[i].ruleList[
+            conditionQuestionIndex
+          ].questionNumber = newCode
+          this.conditions[i].ruleList[conditionQuestionIndex].options = []
         }
       }
       this.$forceUpdate()
@@ -283,7 +306,7 @@ export default {
       for (const i in this.conditions) {
         if (this.conditions[i].groupIndex === groupIndex) {
           this.conditions[i].ruleList[conditionQuestionIndex] = {
-            name: newCode.target.value,
+            name: newCode,
             options: [],
           }
         }

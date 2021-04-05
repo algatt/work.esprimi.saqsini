@@ -216,7 +216,10 @@
           </edit-object-modal>
         </template>
         <template v-if="selectedMenu === 'settings' && currentItemToBeEdited">
-          <edit-object-modal @modalClosed="selectedMenu = ''">
+          <edit-object-modal
+            custom-width="md:w-6/12"
+            @modalClosed="selectedMenu = ''"
+          >
             <template v-slot:title>Survey Settings</template>
             <template v-slot:content>
               <survey-settings></survey-settings>
@@ -224,7 +227,10 @@
           </edit-object-modal>
         </template>
         <template v-if="selectedMenu === 'language' && currentItemToBeEdited">
-          <edit-object-modal @modalClosed="selectedMenu = ''">
+          <edit-object-modal
+            custom-width="md:w-6/12"
+            @modalClosed="selectedMenu = ''"
+          >
             <template v-slot:title>Language Settings</template>
             <template v-slot:content>
               <survey-language-settings></survey-language-settings>
@@ -241,7 +247,10 @@
         <template
           v-if="selectedMenu === 'collaborators' && currentItemToBeEdited"
         >
-          <edit-object-modal @modalClosed="selectedMenu = ''">
+          <edit-object-modal
+            custom-width="md:w-6/12"
+            @modalClosed="selectedMenu = ''"
+          >
             <template v-slot:title>Collaborators</template>
             <template v-slot:content>
               <survey-collaborators></survey-collaborators>

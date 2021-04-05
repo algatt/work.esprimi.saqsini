@@ -5,51 +5,47 @@
         This survey only has the default language. You can generate a file that
         allows you to translate your survey in other languages.
       </p>
-      <button class="btn btn-primary my-2" @click="generateLanguagePack">
+      <button-base class="my-2" @click="generateLanguagePack">
         Generate Language Pack
-      </button>
+      </button-base>
     </div>
     <div v-else class="flex flex-col">
-      <div
+      <badge-base
         v-if="survey.flags.includes('OUTDATED_LANGUAGE_PACK')"
-        class="bg-red-50 p-5 border border-red-300 rounded text-gray-700 space-y-5"
+        bg-colour="red"
       >
-        <p>
+        <p class="px-2 py-1">
           The language pack is outdated since changes were made to the survey
           after the languages were uploaded. You need to generate the language
           pack again, and re-upload.
         </p>
-        <p>
+        <p class="px-2 py-1">
           Make sure to download the existing language pack to preserve previous
           translations.
         </p>
-      </div>
+      </badge-base>
       <p class="mt-3 mb-2">
         This survey is available in the following languages.
       </p>
       <div class="flex flex-wrap">
-        <span
-          v-for="item in survey.languages"
-          :key="item"
-          class="bg-gray-100 border border-gray-200 px-2 py-1 mr-2 rounded"
-        >
+        <badge-base v-for="item in survey.languages" :key="item">
           <span>{{ getCountryFromLanguage(item) }}</span>
-        </span>
+        </badge-base>
       </div>
       <h6 class="mt-5">Language Pack Options</h6>
       <div class="flex justify-start space-x-5">
-        <button class="btn btn-primary my-3" @click="downloadLanguagePack">
+        <button-base class="my-3" @click="downloadLanguagePack">
           Download Existing
-        </button>
+        </button-base>
 
-        <button class="btn btn-primary my-3" @click="generateLanguagePack">
+        <button-base class="my-3" @click="generateLanguagePack">
           Generate New
-        </button>
+        </button-base>
 
         <input id="inputFile" type="file" hidden @change="uploadFile" />
-        <button class="btn btn-primary my-3" @click="activateInputFile">
+        <button-base class="my-3" @click="activateInputFile">
           Upload New
-        </button>
+        </button-base>
       </div>
     </div>
 
@@ -66,9 +62,12 @@
 <script>
 import moment from 'moment'
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
+import ButtonBase from '~/components/elements/ButtonBase'
+import BadgeBase from '~/components/elements/BadgeBase'
+
 export default {
   name: 'SurveyLanguageSettings',
-  components: { EditObjectModalBottomPart },
+  components: { BadgeBase, EditObjectModalBottomPart, ButtonBase },
   computed: {
     survey() {
       return this.$store.state.currentItemToBeEdited

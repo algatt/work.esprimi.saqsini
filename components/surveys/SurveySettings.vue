@@ -2,7 +2,7 @@
   <div class="flex flex-col justify-between w-full">
     <div class="flex flex-col w-full space-y-5">
       <div class="flex flex-col">
-        <label class="label">Header Image</label>
+        <label class="font-semibold mb-1">Header Image</label>
         <input
           id="inputHeaderImage"
           type="file"
@@ -35,7 +35,7 @@
       </div>
 
       <div class="flex flex-col">
-        <label class="label">Footer Image</label>
+        <label class="font-semibold mb-1">Footer Image</label>
         <input
           id="inputFooterImage"
           type="file"
@@ -68,7 +68,7 @@
       </div>
 
       <div class="flex flex-col">
-        <label class="label">Accent Colour</label>
+        <label class="font-semibold mb-2">Accent Colour</label>
         <div class="flex space-x-2">
           <button
             v-for="(colour, index) in accentColours"
@@ -87,7 +87,7 @@
       </div>
 
       <div class="flex flex-col">
-        <label class="label">Background Colour</label>
+        <label class="font-semibold mb-2">Background Colour</label>
         <div class="flex space-x-2">
           <button
             v-for="(colour, index) in backgroundColours"

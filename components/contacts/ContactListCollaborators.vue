@@ -1,7 +1,7 @@
 <template>
   <div class="frosted">
     <div
-      class="check-height mx-auto bg-white rounded-none md:border md:border-gray-100 shadow-md overflow-y-auto relative w-full w-full md:w-4/12 flex flex-col justify-between"
+      class="check-height mx-auto bg-white rounded-none md:border md:border-gray-100 shadow-md overflow-y-auto relative w-full w-full md:w-6/12 flex flex-col justify-between"
       @click.stop
     >
       <div>
@@ -10,21 +10,21 @@
         </div>
         <div class="flex flex-col p-5 overflow-y-auto">
           <div class="flex flex-col w-full space-y-5">
-            <div class="flex flex-wrap h-24">
-              <input-base
-                id="inputEmail"
-                v-model="email"
-                class="flex flex-1"
-                type="email"
-                @blur="$v.email.$touch()"
-                >Collaborator's Email</input-base
-              >
-              <div class="flex items-center justify-start w-auto pl-2">
-                <button-base :disabled="$v.$invalid" @click="addCollaborator"
-                  >Add
-                </button-base>
-              </div>
-            </div>
+            <input-base-with-button
+              id="inputEmail"
+              v-model="email"
+              class="flex flex-1"
+              type="email"
+              @blur="$v.email.$touch()"
+              >Collaborator's Email
+              <template v-slot:button>
+                <button-for-input
+                  :disabled="$v.$invalid"
+                  @click="addCollaborator"
+                  ><i
+                    class="fas fa-check fa-fw"
+                  ></i> </button-for-input></template
+            ></input-base-with-button>
 
             <div
               v-if="filteredCollaborators.length !== 0"
@@ -68,17 +68,16 @@
 import { validationMixin } from 'vuelidate'
 import { required, email } from 'vuelidate/lib/validators'
 import ButtonIcon from '~/components/elements/ButtonIcon'
-import InputBase from '~/components/elements/InputBase'
-import ButtonBase from '~/components/elements/ButtonBase'
+import InputBaseWithButton from '~/components/elements/InputBaseWithButton'
 import ButtonIconRoundedOutline from '~/components/elements/ButtonIconRoundedOutline'
+import ButtonForInput from '~/components/elements/ButtonForInput'
 
 export default {
   name: 'ContactListCollaborators',
   components: {
     ButtonIconRoundedOutline,
-
-    ButtonBase,
-    InputBase,
+    ButtonForInput,
+    InputBaseWithButton,
     ButtonIcon,
   },
   mixins: [validationMixin],

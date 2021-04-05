@@ -4,7 +4,7 @@
       v-slot="{ commands, isActive, getMarkAttrs }"
       :editor="editor"
     >
-      <div class="flex flex-col">
+      <div class="flex flex-col mb-1">
         <div class="flex flex-wrap py-2 px-1">
           <button
             class="menubarButton"
@@ -339,7 +339,7 @@ pre {
 }
 
 .editorContent >>> .ProseMirror {
-  @apply p-3 focus:outline-none border-b border-gray-200 focus:border-primary transition duration-300;
+  @apply p-3 focus:outline-none border-2 rounded border-gray-200 focus:border-primary transition duration-300;
   min-height: 200px;
 }
 </style>
