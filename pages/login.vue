@@ -17,7 +17,10 @@
       >Password</input-base
     >
 
-    <button-animated :disabled="$v.$invalid" @click="attemptLogin"
+    <button-animated
+      bg-colour="blue"
+      :disabled="$v.$invalid"
+      @click="attemptLogin"
       ><template v-slot:icon
         ><i class="fas fa-spinner fa-fw animate-spin"></i></template
       >Login</button-animated

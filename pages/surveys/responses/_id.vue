@@ -24,7 +24,7 @@
         <menu-icon-button
           :active="selectedView === 'cross'"
           @click="selectedView = 'cross'"
-          >Overall<template v-slot:icon
+          >Cross Table<template v-slot:icon
             ><i class="fas fa-table fa-fw"></i></template
         ></menu-icon-button>
       </template>
