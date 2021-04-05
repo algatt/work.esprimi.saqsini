@@ -9,21 +9,17 @@
             class="flex relative items-center p-2"
             :style="{ width: `${100 / (options[0].scale.length + 1)}%` }"
           >
-            <div
-              class="w-full flex items-stretch border border-gray-200 rounded"
-            >
-              <input
-                v-model="options[0].scale[index].text"
-                class="text-center w-full bg-gray-50 py-2 focus:bg-white border-b border-transparent focus:border-primary transition duration-300"
-              />
-              <button
-                v-if="options[0].scale.length > 2"
-                class="w-8 text-red-400 hover:text-red-500 transition duration-300 flex items-center justify-center py-2 bg-gray-50 border-l-2 border-gray-100"
-                @click="deleteScale(index)"
-              >
-                <i class="fas fa-trash fa-fw fa-xs"></i>
-              </button>
-            </div>
+            <input-base-with-button v-model="options[0].scale[index].text">
+              <template v-slot:button>
+                <button-for-input
+                  bg-colour="red"
+                  :disabled="options[0].scale.length < 3"
+                  @click="deleteScale(index)"
+                >
+                  <i class="fas fa-trash-alt fa-xs fa-fw"></i>
+                </button-for-input>
+              </template>
+            </input-base-with-button>
           </div>
         </div>
         <div class="flex flex-wrap w-full">
@@ -38,21 +34,17 @@
                 width: `${100 / (options[0].scale.length + 1)}%`,
               }"
             >
-              <div
-                class="w-full flex items-stretch border border-gray-200 rounded"
-              >
-                <input
-                  v-model="options[0].rows[index]"
-                  class="text-center w-full bg-gray-50 py-2 focus:bg-white border-b border-transparent focus:border-primary transition duration-300"
-                />
-                <button
-                  v-if="options[0].rows.length > 1"
-                  class="w-8 text-red-400 hover:text-red-500 transition duration-300 flex items-center justify-center py-2 bg-gray-50 border-l-2 border-gray-100"
-                  @click="deleteRow(index)"
-                >
-                  <i class="fas fa-trash fa-fw fa-xs"></i>
-                </button>
-              </div>
+              <input-base-with-button v-model="options[0].rows[index]">
+                <template v-slot:button>
+                  <button-for-input
+                    bg-colour="red"
+                    :disabled="options[0].rows.length === 1"
+                    @click="deleteRow(index)"
+                  >
+                    <i class="fas fa-trash-alt fa-fw fa-xs"></i>
+                  </button-for-input>
+                </template>
+              </input-base-with-button>
             </div>
             <div
               v-for="i in options[0].scale.length"
@@ -71,24 +63,32 @@
         </div>
       </div>
       <div class="w-24 flex justify-center items-center">
-        <button class="btn-link-rounded" @click="addScale">
+        <button-icon-rounded @click="addScale">
           <i class="fas fa-plus fa-fw"></i>
-        </button>
+        </button-icon-rounded>
       </div>
     </div>
     <div class="flex justify-center">
-      <button class="btn-link-rounded" @click="addRow">
+      <button-icon-rounded @click="addRow">
         <i class="fas fa-plus fa-fw"></i>
-      </button>
+      </button-icon-rounded>
     </div>
   </div>
 </template>
 
 <script>
 import questionMixin from '~/helpers/questionMixin'
+import InputBaseWithButton from '~/components/elements/InputBaseWithButton'
+import ButtonForInput from '~/components/elements/ButtonForInput'
+import ButtonIconRounded from '~/components/elements/ButtonIconRounded'
 
 export default {
   name: 'NewQuestionRadioGrid',
+  components: {
+    ButtonIconRounded,
+    InputBaseWithButton,
+    ButtonForInput,
+  },
   mixins: [questionMixin],
   props: {
     form: {

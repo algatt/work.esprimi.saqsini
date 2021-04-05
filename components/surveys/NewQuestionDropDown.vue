@@ -2,59 +2,53 @@
   <div class="flex flex-col w-full space-y-5">
     <toggle-switch :checked="isList" @clicked="changeView">
       <template v-slot:label
-        >Data Input<popup-info
-          ><template v-slot:text
-            >You can input data one by one (Individual) or as a comma separated
-            list (List).</template
-          ></popup-info
+        >Data Input<popup-base class="ml-1 font-normal"
+          >You can input data one by one (Individual) or as a comma separated
+          list (List).</popup-base
         ></template
       >
       <template v-slot:leftLabel>Individual</template>
       <template v-slot:rightLabel>List</template>
     </toggle-switch>
 
-    <div class="flex flex-col">
-      <div class="flex items-center">
-        <label class="label">Options</label>
+    <div class="flex flex-col w-full xl:w-6/12">
+      <div class="flex items-center mb-2">
+        <label class="font-semibold">Options</label>
         <span v-if="$v.options.$error">
           <span class="error">all options are required</span>
         </span>
       </div>
       <template v-if="!isList">
-        <div
+        <input-base-with-button
           v-for="(option, index) in options"
+          :id="'inputOptions' + index"
           :key="option.ordinalPosition"
-          class="flex items-center mb-2"
+          v-model="option.text"
+          placeholder="Enter option text"
+          @input="$v.options.$touch()"
+          @keyup="updateValues"
         >
-          <input
-            :id="'inputOptions' + index"
-            v-model="option.text"
-            placeholder="Enter option text"
-            class="input w-7/12"
-            @keyup="updateValues"
-            @change="$v.options.$touch()"
-          />
-          <button
-            class="btn-link ml-2"
-            :disabled="options.length < 3"
-            @click="deleteOptionAtIndex(index)"
-          >
-            Delete
-          </button>
-        </div>
+          <template v-slot:button>
+            <button-for-input
+              bg-colour="red"
+              :disabled="options.length < 3"
+              @click="deleteOptionAtIndex(index)"
+            >
+              <i class="fas fa-trash-alt fa-fw"></i>
+            </button-for-input>
+          </template>
+        </input-base-with-button>
 
-        <div class="flex justify-start mt-2">
-          <button class="btn btn-primary px-3" @click="addNewOption">
-            Add New
-          </button>
+        <div class="flex justify-start mt-4 mb-4">
+          <button-base @click="addNewOption"> Add New Option </button-base>
         </div></template
       >
       <template v-else>
-        <textarea
+        <text-area-base
           v-model="optionsString"
-          class="input"
-          @change="convertFullString"
-        ></textarea>
+          class="w-full"
+          @input="convertFullString"
+        ></text-area-base>
       </template>
     </div>
   </div>
@@ -63,11 +57,23 @@
 <script>
 import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
-import PopupInfo from '~/components/layouts/PopupInfo'
-import ToggleSwitch from '~/components/layouts/ToggleSwitch'
+import PopupBase from '~/components/elements/PopupBase'
+import ToggleSwitch from '~/components/elements/ToggleSwitch'
+import InputBaseWithButton from '~/components/elements/InputBaseWithButton'
+import ButtonForInput from '~/components/elements/ButtonForInput'
+import ButtonBase from '~/components/elements/ButtonBase'
+import TextAreaBase from '~/components/elements/TextAreaBase'
+
 export default {
   name: 'NewQuestionDropDown',
-  components: { PopupInfo, ToggleSwitch },
+  components: {
+    TextAreaBase,
+    PopupBase,
+    ToggleSwitch,
+    InputBaseWithButton,
+    ButtonForInput,
+    ButtonBase,
+  },
   mixins: [validationMixin],
   props: {
     form: {
@@ -129,9 +135,9 @@ export default {
       })
 
       this.$nextTick(() => {
-        const el = document.getElementById(
-          'inputOptions' + (this.options.length - 1)
-        )
+        const el = document
+          .getElementById('inputOptions' + (this.options.length - 1))
+          .getElementsByTagName('input')[0]
         el.focus()
         el.select()
       })

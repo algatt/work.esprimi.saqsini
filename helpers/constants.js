@@ -90,7 +90,7 @@ export const QUESTION_HELP = {
   NAME:
     'This is an internal name for the question that can be used for reference.',
   REQUIRED:
-    'If set to required the respondent must answer the question before progressing.',
+    'If set to yes the respondent must answer the question before progressing.',
 }
 
 export const SURVEY_LANGUAGE_GENERIC_TERMS = {

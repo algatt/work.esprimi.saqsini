@@ -13,7 +13,7 @@
 
 <script>
 export default {
-  name: 'ButtonIconRounded',
+  name: 'ButtonIconRoundedOutline',
   props: {
     bgColour: {
       type: String,
@@ -28,7 +28,7 @@ export default {
   },
   computed: {
     colourNumber() {
-      return this.bgColour === 'gray' ? 300 : 500
+      return this.bgColour === 'gray' ? 400 : 500
     },
     colour() {
       return `${this.bgColour}-${this.colourNumber}`

@@ -1,182 +1,187 @@
 <template>
-  <div class="flex flex-col w-full space-y-5">
-    <div class="flex flex-col">
-      <label for="inputCategory" class="label">Category</label>
-      <select
-        id="inputCategory"
+  <div class="flex flex-col justify-between w-full">
+    <div class="flex flex-col w-full space-y-2">
+      <select-base
         v-model="form.categoryCode"
-        class="input select"
-        @change="form.subCategoryCode = subcategories[0].code"
+        @input="form.subCategoryCode = subcategories[0].code"
       >
-        <option
-          v-for="category in categories"
-          :key="category.code"
-          :value="category.code"
+        Category
+        <template v-slot:options>
+          <option
+            v-for="category in categories"
+            :key="category.code"
+            :value="category.code"
+            :selected="category.code === form.categoryCode"
+          >
+            {{ category.name }}
+          </option></template
         >
-          {{ category.name }}
-        </option>
-      </select>
-    </div>
+      </select-base>
 
-    <div class="flex flex-col">
-      <label for="inputSubcategory" class="label">Subcategory</label>
-      <select
-        id="inputSubcategory"
-        v-model="form.subCategoryCode"
-        class="input select"
-      >
-        <option
-          v-for="subcategory in subcategories"
-          :key="subcategory.code"
-          :value="subcategory.code"
+      <select-base v-model="form.subCategoryCode">
+        Subcategory
+        <template v-slot:options>
+          <option
+            v-for="subcategory in subcategories"
+            :key="subcategory.code"
+            :value="subcategory.code"
+            :selected="subcategory.code === form.subCategoryCode"
+          >
+            {{ subcategory.name }}
+          </option></template
         >
-          {{ subcategory.name }}
-        </option>
-      </select>
-    </div>
+      </select-base>
 
-    <div class="flex flex-col">
-      <div class="flex items-center w-full">
-        <label for="inputName" class="label">Name</label>
-        <span v-if="$v.form.name.$error">
-          <span v-if="!$v.form.name.required" class="error">required</span>
-        </span>
-      </div>
-
-      <input
+      <input-base
         id="inputName"
         v-model="form.name"
-        placeholder="Enter survey name"
-        class="input"
-        @change="$v.form.name.$touch()"
-      />
-    </div>
+        :error="
+          $v.form.name.$model !== undefined
+            ? !$v.form.name.required
+              ? 'required'
+              : null
+            : null
+        "
+        @input="$v.form.name.$touch()"
+        >Survey Name</input-base
+      >
 
-    <div class="flex flex-col">
-      <div class="flex items-center w-full">
-        <label for="inputText" class="label">Description</label
-        ><span v-if="$v.form.text.$error">
-          <span v-if="!$v.form.text.required" class="error"
-            >required</span
-          ></span
-        >
-      </div>
-
-      <textarea
-        id="inputText"
+      <text-area-base
         v-model="form.text"
-        placeholder="Enter survey description"
-        class="input"
-        @change="$v.form.text.$touch()"
-      />
-    </div>
+        :error="
+          $v.form.text.$model !== undefined
+            ? !$v.form.text.required
+              ? 'required'
+              : null
+            : null
+        "
+        @input="$v.form.text.$touch()"
+        >Survey Description</text-area-base
+      >
 
-    <div class="flex flex-col">
-      <div class="flex items-center w-full justify-between md:justify-start">
-        <div class="flex items-center">
-          <label for="inputReferenceDate" class="label">Reference Date</label>
-          <span v-if="$v.form.referenceDate.$error">
-            <span v-if="!$v.form.referenceDate.required" class="error"
-              >required</span
-            >
-          </span>
-        </div>
-        <popup-info
-          ><template v-slot:text
-            >This date will tell you when your survey was created.</template
-          ></popup-info
-        >
-      </div>
-
-      <input
-        id="inputReferenceDate"
+      <input-base
         v-model="form.referenceDate"
-        class="input w-full"
         type="date"
-        @change="$v.form.referenceDate.$touch()"
-      />
-    </div>
+        :error="
+          $v.form.referenceDate.$model !== undefined
+            ? !$v.form.referenceDate.required
+              ? 'required'
+              : null
+            : null
+        "
+      >
+        <template v-slot:default>
+          <span class="flex items-center">
+            Reference Date
+            <popup-info
+              ><template v-slot:text>
+                <span class="font-normal"
+                  >This date will tell you when your survey was created</span
+                ></template
+              ></popup-info
+            ></span
+          >
+        </template>
+      </input-base>
 
-    <div class="flex flex-col">
-      <div class="flex items-center w-full">
-        <label for="inputValidFromDate" class="label">Valid From</label>
-        <span
-          v-if="$v.form.validFromDate.$error || $v.form.validFromTime.$error"
-        >
-          <span v-if="!$v.form.validFromDate.required" class="error"
-            >date is required.</span
+      <div class="flex w-full">
+        <div class="w-9/12 pr-5">
+          <input-base
+            v-model="form.validFromDate"
+            :error="
+              $v.form.validFromDate.$model !== undefined
+                ? !$v.form.validFromDate.required
+                  ? 'required'
+                  : null
+                : null
+            "
+            type="date"
+            @change="
+              $v.form.validFromDate.$touch()
+              $v.form.validToDate.$touch()
+            "
           >
-          <span v-else-if="!$v.form.validFromTime.required" class="error"
-            >time is required.</span
+            <template v-slot:default>
+              <span class="flex items-center">
+                Valid From Date
+                <popup-info
+                  ><template v-slot:text>
+                    <span class="font-normal"
+                      >This date will open the survey for responses</span
+                    ></template
+                  ></popup-info
+                ></span
+              >
+            </template></input-base
           >
-          <span v-else>&nbsp;</span>
-        </span>
-        <popup-info
-          ><template v-slot:text
-            >Responses will be allowed from this date.</template
-          ></popup-info
-        >
-      </div>
-      <div class="flex flex-wrap md:space-x-3 justify-between w-full">
-        <input
-          id="inputValidFromDate"
-          v-model="form.validFromDate"
-          class="input w-8/12"
-          type="date"
-          @change="
-            $v.form.validFromDate.$touch()
-            $v.form.validToDate.$touch
-          "
-        />
-        <input
-          id="inputValidFromTime"
-          v-model="form.validFromTime"
-          class="input w-3/12"
-          type="time"
-          @change="$v.form.validFromTime.$touch()"
-        />
-      </div>
-    </div>
-
-    <div class="flex flex-col">
-      <div class="flex items-center w-full">
-        <label for="inputValidToDate" class="label-optional">Valid To</label>
-        <span v-if="$v.form.validToTime.$error || $v.form.validToDate.$error">
-          <span v-if="!$v.form.validToTime.dateRequiredIfTime" class="error"
-            >date must be filled in</span
+        </div>
+        <div class="w-3/12">
+          <input-base
+            v-model="form.validFromTime"
+            :error="
+              $v.form.validFromTime.$model !== undefined
+                ? !$v.form.validFromTime.required
+                  ? 'required'
+                  : null
+                : null
+            "
+            type="time"
+            @change="$v.form.validFromTime.$touch()"
+            >Valid From Time</input-base
           >
-          <span
-            v-else-if="!$v.form.validToDate.timeRequiredIfDate"
-            class="error"
-            >time must be filled in</span
-          >
-          <span v-else-if="!$v.form.validFromDate.checkDates" class="error">
-            this date must be after the from date
-          </span>
-        </span>
-        <popup-info
-          ><template v-slot:text
-            >If this is set, responses will be not be accepted after this
-            date.</template
-          ></popup-info
-        >
+        </div>
       </div>
 
-      <div class="flex flex-wrap space-x-3 md:space-x-3 justify-between w-full">
-        <input
-          id="inputValidToDate"
-          v-model="form.validToDate"
-          class="input w-8/12"
-          type="date"
-          @change="$v.form.validToDate.$touch()"
-        />
-        <input
-          id="inputValidToTime"
-          v-model="form.validToTime"
-          class="input w-3/12"
-          type="time"
-          @change="$v.form.validToTime.$touch()"
-        />
+      <div class="flex w-full">
+        <div class="w-9/12 pr-5">
+          <input-base
+            v-model="form.validToDate"
+            :error="
+              $v.form.validToDate.$model !== undefined
+                ? !$v.form.validToDate.checkDates
+                  ? 'this date must be after the valid from date'
+                  : null
+                : $v.form.validToTime.$model !== undefined &&
+                  !$v.form.validToTime.dateRequiredIfTime
+                ? 'required'
+                : null
+            "
+            type="date"
+            @change="$v.form.validToDate.$touch()"
+          >
+            <template v-slot:default>
+              <span class="flex items-center">
+                Valid To Date
+                <popup-info
+                  ><template v-slot:text>
+                    <span class="font-normal"
+                      >This date will close the survey for any future
+                      responses</span
+                    ></template
+                  ></popup-info
+                ></span
+              >
+            </template></input-base
+          >
+        </div>
+        <div class="w-3/12">
+          <input-base
+            v-model="form.validToTime"
+            :error="
+              $v.form.validToTime.$model !== undefined
+                ? !$v.form.validToTime.checkDates
+                  ? 'this date must be after the valid from date'
+                  : null
+                : $v.form.validToDate.$model !== undefined &&
+                  !$v.form.validToDate.timeRequiredIfDate
+                ? 'required'
+                : null
+            "
+            type="time"
+            @change="$v.form.validToTime.$touch()"
+            >Valid To Time</input-base
+          >
+        </div>
       </div>
     </div>
 
@@ -197,6 +202,9 @@ import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
 import { createMomentFromDateAndTime } from '~/helpers/helpers'
 import PopupInfo from '~/components/layouts/PopupInfo'
+import SelectBase from '~/components/elements/SelectBase'
+import InputBase from '~/components/elements/InputBase'
+import TextAreaBase from '~/components/elements/TextAreaBase'
 
 const checkDates = (value, vm) => {
   if (
@@ -218,7 +226,13 @@ const checkDates = (value, vm) => {
 
 export default {
   name: 'NewSurvey',
-  components: { PopupInfo, EditObjectModalBottomPart },
+  components: {
+    TextAreaBase,
+    InputBase,
+    SelectBase,
+    PopupInfo,
+    EditObjectModalBottomPart,
+  },
   mixins: [validationMixin],
   props: {
     selectedCategoryCode: {
@@ -336,7 +350,10 @@ export default {
     this.form = parseSurveyToForm(this.form)
   },
   mounted() {
-    document.getElementById('inputName').focus()
+    const obj = document
+      .getElementById('inputName')
+      .getElementsByTagName('input')[0]
+    obj.focus()
   },
 }
 </script>

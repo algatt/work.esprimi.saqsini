@@ -3,20 +3,17 @@
     <top-header-bar
       which="surveys"
       :items="surveys"
-      class="w-full"
       :hide-menu="disableNewButton || surveys.length === 0"
       ><template v-slot:title>Surveys</template>
       <template v-slot:extraButtons>
         <button-icon
-          v-if="!disableNewButton"
-          colour="primary"
-          icon="fas fa-plus"
+          v-if="!disableNewButton && surveys.length !== 0"
           @click="setCurrentItem({ code: -1 })"
-        >
-          <template v-slot:text>New Survey</template>
-        </button-icon></template
-      ></top-header-bar
-    >
+          >New Survey
+          <template v-slot:icon
+            ><i class="fas fa-plus fa-sm fa-fw"></i
+          ></template> </button-icon></template
+    ></top-header-bar>
 
     <side-tree-nav
       class="w-full xl:w-3/12"
@@ -47,9 +44,9 @@
     >
       <template v-slot:title>No Surveys here...</template>
       <template v-slot:content>
-        <button class="btn-link" @click="setCurrentItem({ code: -1 })">
+        <button-base @click="setCurrentItem({ code: -1 })">
           Create Survey
-        </button>
+        </button-base>
       </template></info-box
     >
 
@@ -78,39 +75,23 @@
               class="fas fa-trash fa-fw text-gray-300 ml-2"
             ></i>
           </p>
-          <p class="text-sm py-1">
+          <p class="py-1">
             {{ slotProps.item.referenceDate }}
           </p>
         </div>
 
-        <p class="w-full xl:w-2/12 flex mb-2 xl:mb-0">
+        <p class="w-6/12 xl:w-2/12 flex mb-2 xl:mb-0">
+          <span class="flex xl:hidden">Kiosk</span>
           <toggle-switch
-            class="block xl:hidden"
-            :checked="slotProps.item.flags.includes('KIOSK')"
-            @clicked="setKioskMode($event, slotProps.item)"
-          >
-            <template v-slot:leftLabel>No Kiosk</template>
-            <template v-slot:rightLabel>Enable Kiosk</template>
-          </toggle-switch>
-          <toggle-switch
-            class="hidden xl:block"
             :checked="slotProps.item.flags.includes('KIOSK')"
             @clicked="setKioskMode($event, slotProps.item)"
           >
           </toggle-switch>
         </p>
 
-        <p class="w-full xl:w-2/12 flex mb-2 xl:mb-0">
+        <p class="w-6/12 xl:w-2/12 flex mb-2 xl:mb-0">
+          <span class="flex xl:hidden">Available</span>
           <toggle-switch
-            class="block xl:hidden"
-            :checked="slotProps.item.flags.includes('ACTIVE')"
-            @clicked="changeAvailability($event, slotProps.item)"
-          >
-            <template v-slot:leftLabel>Disabled</template>
-            <template v-slot:rightLabel>Accepting Responses</template>
-          </toggle-switch>
-          <toggle-switch
-            class="hidden xl:block"
             :checked="slotProps.item.flags.includes('ACTIVE')"
             @clicked="changeAvailability($event, slotProps.item)"
           >
@@ -119,7 +100,7 @@
 
         <p class="w-full xl:w-2/12 flex xl:justify-center mb-2 xl:mb-0 xl:px-5">
           <span class="block xl:hidden mr-2">Response Rate</span>
-          <span class="flex flex-1">
+          <span class="flex flex-1 text-left xl:text-center">
             <nuxt-link
               :to="{
                 name: 'surveys-responses-id',
@@ -128,37 +109,12 @@
               class="w-full"
               @click.stop.native
             >
-              <button class="w-full bg-gray-100 relative h-7">
-                <span
-                  class="absolute left-0 top-0 h-7"
-                  :class="
-                    slotProps.item.responses === slotProps.item.invitees
-                      ? 'bg-primary'
-                      : 'bg-gray-300'
-                  "
-                  :style="{
-                    width: `${calculateWidth(
-                      slotProps.item.responses,
-                      slotProps.item.invitees
-                    )}%`,
-                  }"
-                  >&nbsp;</span
-                ><span
-                  class="absolute font-semibold top-0 left-0 w-full flex justify-center items-center h-full"
-                  ><span
-                    class="bg-white bg-opacity-50 text-gray-800 rounded-xl px-1 text-sm"
-                    >{{
-                      calculateWidth(
-                        slotProps.item.responses,
-                        slotProps.item.invitees
-                      )
-                    }}%</span
-                  ></span
-                >
-              </button>
+              <text-link
+                >{{ slotProps.item.responses }} /
+                {{ slotProps.item.invitees }}</text-link
+              >
             </nuxt-link>
           </span>
-          <!--          <span v-if="slotProps.item.responses === 0">No responses</span>-->
         </p>
         <p class="w-full xl:w-2/12 flex xl:justify-center mb-2 md:mb-0">
           <nuxt-link
@@ -168,64 +124,39 @@
             }"
             @click.stop.native
           >
-            <button class="btn-link">Manage Survey</button>
+            <text-link>Manage Survey</text-link>
           </nuxt-link>
         </p>
       </template>
       <template v-slot:popup-menu="slotProps">
-        <span
+        <display-table-row-popup
           :class="hovered === slotProps.item.code ? 'flex' : 'flex xl:hidden'"
-          class="items-center"
+          @close="hovered = null"
         >
-          <popup-menu
-            :object-code="slotProps.item.code"
-            @closeMenu="hovered = null"
-          >
-            <template v-slot:menuItems>
-              <button @click="setCurrentItem(slotProps.item)">
-                <span class="popup-menu-button">
-                  <i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit</span
-                >
-              </button>
-              <button @click="duplicateSurvey(slotProps.item)">
-                <span class="popup-menu-button">
-                  <i class="fas fa-copy fa-fw fa-sm"></i>Duplicate</span
-                >
-              </button>
-              <button
-                v-if="slotProps.item.flags.includes('FLAGGED_FOR_REMOVAL')"
-                @click="unflagFromDeletion(slotProps.item)"
-              >
-                <span class="popup-menu-button">
-                  <i class="fas fa-trash-restore-alt fa-fw fa-sm"></i
-                  >Restore</span
-                >
-              </button>
-              <button v-else @click="flagForDeletion(slotProps.item)">
-                <span class="popup-menu-button">
-                  <i class="fas fa-flag fa-fw fa-sm"></i>Mark for Deletion</span
-                >
-              </button>
-              <button
-                v-if="slotProps.item.flags.includes('KIOSK')"
-                @click="copyUrl(slotProps.item.publicIdentifier)"
-              >
-                <span class="popup-menu-button">
-                  <i class="fas fa-globe-europe fa-sm fa-fw"></i>Public URL
-                </span>
-                <!--                <nuxt-link-->
-                <!--                  class="popup-menu-button"-->
-                <!--                  :to="{-->
-                <!--                    name: 'survey',-->
-                <!--                    query: { id: slotProps.item.publicIdentifier },-->
-                <!--                  }"-->
-                <!--                >-->
-                <!--                  <i class="fas fa-globe-europe fa-sm fa-fw"></i>Public-->
-                <!--                  URL</nuxt-link-->
-              </button>
-            </template>
-          </popup-menu>
-        </span>
+          <template v-slot:menu>
+            <span @click="setCurrentItem(slotProps.item)">
+              <i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit</span
+            >
+            <span @click="duplicateSurvey(slotProps.item)">
+              <i class="fas fa-copy fa-fw fa-sm"></i>Duplicate</span
+            >
+            <span
+              v-if="slotProps.item.flags.includes('FLAGGED_FOR_REMOVAL')"
+              @click="unflagFromDeletion(slotProps.item)"
+            >
+              <i class="fas fa-trash-restore-alt fa-fw fa-sm"></i>Restore
+            </span>
+            <span v-else @click="flagForDeletion(slotProps.item)">
+              <i class="fas fa-flag fa-fw fa-sm"></i>Mark for Deletion
+            </span>
+            <span
+              v-if="slotProps.item.flags.includes('KIOSK')"
+              @click="copyUrl(slotProps.item.publicIdentifier)"
+            >
+              <i class="fas fa-globe-europe fa-sm fa-fw"></i>Public URL
+            </span>
+          </template>
+        </display-table-row-popup>
       </template>
     </display-table-component>
 
@@ -234,6 +165,11 @@
         v-if="currentItemToBeEdited"
         @modalClosed="modalClosed"
       >
+        <template v-slot:secondTitle>
+          <span v-if="!objectToCreate">Survey</span>
+          <span v-else-if="objectToCreate === 'category'">Category</span>
+          <span v-else-if="objectToCreate === 'subcategory'">Subcategory</span>
+        </template>
         <template v-slot:content>
           <new-survey
             v-if="!objectToCreate"
@@ -263,14 +199,18 @@ import Spinner from '~/components/layouts/Spinner'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 import InfoBox from '~/components/layouts/InfoBox'
 import viewMixin from '~/helpers/viewMixin'
-import ButtonIcon from '~/components/layouts/ButtonIcon'
-import PopupMenu from '~/components/layouts/PopupMenu'
+import ButtonIcon from '~/components/elements/ButtonIcon'
 import NewSurvey from '~/components/surveys/NewSurvey'
-import ToggleSwitch from '~/components/layouts/ToggleSwitch'
+import ToggleSwitch from '~/components/elements/ToggleSwitch'
+import ButtonBase from '~/components/elements/ButtonBase'
+import DisplayTableRowPopup from '~/components/layouts/DisplayTableRowPopup'
+import TextLink from '~/components/elements/TextLink'
 
 export default {
   name: 'SurveyList',
   components: {
+    TextLink,
+    DisplayTableRowPopup,
     ToggleSwitch,
     NewSubcategory,
     NewCategory,
@@ -281,8 +221,8 @@ export default {
     TopHeaderBar,
     InfoBox,
     ButtonIcon,
-    PopupMenu,
     NewSurvey,
+    ButtonBase,
   },
   mixins: [viewMixin],
   data() {

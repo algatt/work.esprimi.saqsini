@@ -1,38 +1,34 @@
 <template>
   <div class="flex flex-col w-full space-y-5">
-    <div class="flex flex-col">
-      <div class="flex items-center">
-        <label class="label">Options</label>
+    <div class="flex flex-col w-full xl:w-6/12">
+      <div class="flex items-center mt-4 mb-2">
+        <label class="font-semibold">Options</label>
         <span v-if="$v.options.$error">
           <span class="error">all options must be filled in</span>
         </span>
       </div>
-      <div
-        v-for="(option, index) in options"
-        :key="option.ordinalPosition"
-        class="flex items-center mb-2"
-      >
-        <input
-          :id="'inputOptions' + index"
-          v-model="option.text"
-          placeholder="Enter option text"
-          class="input w-7/12"
-          @keyup="updateValues"
-          @change="$v.options.$touch()"
-        />
-        <button
-          class="btn-link ml-2"
-          :disabled="options.length < 3"
-          @click="deleteOptionAtIndex(index)"
-        >
-          Delete
-        </button>
-      </div>
 
-      <div class="flex justify-start mt-2">
-        <button class="btn btn-primary px-3" @click="addNewOption">
-          Add New
-        </button>
+      <input-base-with-button
+        v-for="(option, index) in options"
+        :id="'inputOptions' + index"
+        :key="option.ordinalPosition"
+        v-model="option.text"
+        placeholder="Enter option text"
+        @keyup="updateValues"
+        @change="$v.options.$touch()"
+      >
+        <template v-slot:button>
+          <button-for-input
+            bg-colour="red"
+            :disabled="options.length < 3"
+            @click="deleteOptionAtIndex(index)"
+          >
+            <i class="fas fa-trash-alt fa-fw"></i> </button-for-input
+        ></template>
+      </input-base-with-button>
+
+      <div class="flex justify-start my-4">
+        <button-base @click="addNewOption"> Add New Option </button-base>
       </div>
     </div>
   </div>
@@ -41,10 +37,12 @@
 <script>
 import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
-
+import ButtonForInput from '~/components/elements/ButtonForInput'
+import InputBaseWithButton from '~/components/elements/InputBaseWithButton'
+import ButtonBase from '~/components/elements/ButtonBase'
 export default {
   name: 'NewQuestionRanking',
-
+  components: { ButtonForInput, InputBaseWithButton, ButtonBase },
   mixins: [validationMixin],
   props: {
     form: {
@@ -99,9 +97,9 @@ export default {
       })
 
       this.$nextTick(() => {
-        const el = document.getElementById(
-          'inputOptions' + (this.options.length - 1)
-        )
+        const el = document
+          .getElementById('inputOptions' + (this.options.length - 1))
+          .getElementsByTagName('input')[0]
         el.focus()
         el.select()
       })

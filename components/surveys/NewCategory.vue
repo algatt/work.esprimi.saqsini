@@ -1,24 +1,21 @@
 <template>
   <div class="flex flex-col justify-between w-full">
-    <div class="flex flex-col w-full space-y-5">
-      <div class="flex flex-col">
-        <div class="flex items-center w-full">
-          <label for="inputName" class="label">Category</label>
-          <span v-if="$v.form.name.$error">
-            <span v-if="!$v.form.name.required" class="error">required</span>
-            <span v-else-if="!$v.form.name.uniqueNames" class="error"
-              >this category already exists</span
-            ></span
-          >
-        </div>
-        <input
-          id="inputName"
-          v-model="form.name"
-          placeholder="Enter category name"
-          class="input"
-          @change="$v.form.name.$touch()"
-        />
-      </div>
+    <div class="flex flex-col w-full space-y-2">
+      <input-base
+        id="inputName"
+        v-model="form.name"
+        :error="
+          $v.form.name.$model !== undefined
+            ? !$v.form.name.required
+              ? 'required'
+              : !$v.form.name.uniqueNames
+              ? 'category already in use'
+              : null
+            : null
+        "
+        @change="$v.form.name.$touch()"
+        >Category Name</input-base
+      >
     </div>
     <edit-object-modal-bottom-part
       class="pt-10 pb-5"
@@ -34,10 +31,11 @@ import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
 
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
+import InputBase from '~/components/elements/InputBase'
 
 export default {
   name: 'NewCategory',
-  components: { EditObjectModalBottomPart },
+  components: { InputBase, EditObjectModalBottomPart },
   mixins: [validationMixin],
   validations: {
     form: {
@@ -74,7 +72,10 @@ export default {
     this.form = JSON.parse(JSON.stringify(this.item))
   },
   mounted() {
-    document.getElementById('inputName').focus()
+    const obj = document
+      .getElementById('inputName')
+      .getElementsByTagName('input')[0]
+    obj.focus()
   },
   methods: {},
 }

@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-col w-full space-y-5">
-    <div class="flex flex-col">
+    <div class="flex flex-col w-full xl:w-6/12">
       <div class="flex items-center">
-        <label class="label">Options</label>
+        <label class="font-semibold mt-4 mb-2">Options</label>
         <span v-if="$v.options.$error">
           <span class="error">all options must be filled in</span>
         </span>
@@ -10,38 +10,36 @@
       <div
         v-for="(option, index) in options"
         :key="option.ordinalPosition"
-        class="flex items-center mb-2"
+        class="flex w-full mb-1"
       >
-        <input
+        <input-base-with-button
           :id="'inputOptions' + index"
           v-model="option.text"
+          class="w-full"
           placeholder="Enter option text"
-          class="input w-7/12"
           @keyup="updateValues"
-          @change="$v.options.$touch()"
-        />
-        <button
-          class="btn-link ml-2"
-          :disabled="options.length < 3"
-          @click="deleteOptionAtIndex(index)"
+          @input="$v.options.$touch()"
         >
-          Delete
-        </button>
+          <template v-slot:button>
+            <button-for-input
+              :bg-colour="'red'"
+              :disabled="options.length < 3"
+              @click="deleteOptionAtIndex(index)"
+              ><i class="fas fa-trash-alt fa-fw"></i
+            ></button-for-input>
+          </template>
+        </input-base-with-button>
       </div>
 
-      <div class="flex justify-start mt-2">
-        <button class="btn btn-primary px-3" @click="addNewOption">
-          Add New
-        </button>
+      <div class="flex justify-start mt-2 mb-4">
+        <button-base @click="addNewOption"> Add New Option</button-base>
       </div>
     </div>
 
     <toggle-switch :checked="allowMultiple" @clicked="allowMultiple = $event">
       <template v-slot:label>
-        Allow Multiple Answers<popup-info
-          ><template v-slot:text
-            >Allows the respondent to choose more than one option.</template
-          ></popup-info
+        Allow Multiple Answers<popup-base class="ml-1 font-normal">
+          Allows the respondent to choose more than one option.</popup-base
         ></template
       >
       <template v-slot:leftLabel>No</template>
@@ -50,11 +48,9 @@
 
     <toggle-switch :checked="allowOther" @clicked="allowOther = $event">
       <template v-slot:label>
-        Allow Other Entry<popup-info
-          ><template v-slot:text
-            >Allow the respondent to input another answer not present in the
-            given options.</template
-          ></popup-info
+        Allow Other Entry<popup-base class="ml-1 font-normal"
+          >Allow the respondent to input another answer not present in the given
+          options.</popup-base
         ></template
       >
       <template v-slot:leftLabel>No</template>
@@ -66,12 +62,21 @@
 <script>
 import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
-import ToggleSwitch from '~/components/layouts/ToggleSwitch'
-import PopupInfo from '~/components/layouts/PopupInfo'
+import ToggleSwitch from '~/components/elements/ToggleSwitch'
+import PopupBase from '~/components/elements/PopupBase'
+import InputBaseWithButton from '~/components/elements/InputBaseWithButton'
+import ButtonBase from '~/components/elements/ButtonBase'
+import ButtonForInput from '~/components/elements/ButtonForInput'
 
 export default {
   name: 'NewQuestionMultipleChoice',
-  components: { PopupInfo, ToggleSwitch },
+  components: {
+    ButtonForInput,
+    PopupBase,
+    ToggleSwitch,
+    InputBaseWithButton,
+    ButtonBase,
+  },
   mixins: [validationMixin],
   props: {
     form: {
@@ -136,9 +141,9 @@ export default {
       })
 
       this.$nextTick(() => {
-        const el = document.getElementById(
-          'inputOptions' + (this.options.length - 1)
-        )
+        const el = document
+          .getElementById('inputOptions' + (this.options.length - 1))
+          .getElementsByTagName('input')[0]
         el.focus()
         el.select()
       })

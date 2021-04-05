@@ -1,101 +1,93 @@
 <template>
   <div class="flex flex-col justify-between w-full">
     <div class="flex flex-col w-full space-y-5">
-      <div class="w-full flex items-center">
-        <button
-          class="w-24 text-center font-semibold hover:text-primary focus:outline-none py-2 border-b-2"
-          :class="
-            selectedSection === 'details'
-              ? 'text-primary border-primary'
-              : 'border-gray-200'
-          "
+      <div class="w-full flex items-center mb-5">
+        <menu-icon-button
+          :active="selectedSection === 'details'"
           @click="selectedSection = 'details'"
         >
           Details
-        </button>
-        <button
-          class="w-24 text-center font-semibold hover:text-primary focus:outline-none py-2 border-b-2"
-          :class="
-            selectedSection === 'branching'
-              ? 'text-primary border-primary'
-              : 'border-gray-200'
-          "
+          <template v-slot:icon
+            ><i class="fas fa-question-circle fa-fw"></i
+          ></template>
+        </menu-icon-button>
+        <menu-icon-button
+          :active="selectedSection === 'branching'"
           @click="selectedSection = 'branching'"
         >
           Branching
-        </button>
+          <template v-slot:icon
+            ><i class="fas fa-code-branch fa-fw"></i
+          ></template>
+        </menu-icon-button>
       </div>
 
       <template v-if="selectedSection === 'details'">
-        <div class="flex flex-col">
-          <div class="flex items-center">
-            <label for="inputNumber" class="label">Question Number</label>
-            <span v-if="$v.form.questionNumber.$error">
-              <span v-if="!$v.form.questionNumber.required" class="error"
-                >required</span
-              >
-              <span v-if="!$v.form.questionNumber.duplicate" class="error"
-                >already used</span
-              >
-            </span>
-            <popup-info
-              ><template v-slot:text
-                >This is the question number used for internal purposes. The
-                respondent will not see this.
-              </template></popup-info
-            >
-          </div>
-          <input
+        <div class="flex flex-wrap">
+          <input-base
             id="inputNumber"
             v-model="form.questionNumber"
-            placeholder="Enter question number"
-            class="input w-full md:w-10/12"
+            class="w-full md:w-2/12"
+            :error="
+              $v.form.questionNumber.$model !== undefined
+                ? !$v.form.questionNumber.required
+                  ? 'required'
+                  : !$v.form.questionNumber.duplicate
+                  ? 'duplicate'
+                  : null
+                : null
+            "
             @change="$v.form.questionNumber.$touch()"
-          />
-        </div>
+            ><span class="flex items-center">
+              Question Number
+              <popup-base class="ml-1 font-normal"
+                >This is the question number used for internal purposes. The
+                respondent will not see this.</popup-base
+              >
+            </span></input-base
+          >
 
-        <div class="flex flex-col">
-          <div class="flex items-center">
-            <label for="inputName" class="label">Name</label>
-            <span v-if="$v.form.name.$error">
-              <span v-if="!$v.form.name.required" class="error">required</span>
-            </span>
-            <popup-info
-              ><template v-slot:text
-                >This is the name of the section used for internal purposes. The
-                respondent will not see this.
-              </template></popup-info
-            >
-          </div>
-          <input
+          <input-base
             id="inputName"
             v-model="form.name"
-            placeholder="Enter question name"
-            class="input w-full md:w-10/12"
+            class="w-full md:w-10/12 pl-5"
+            :error="
+              $v.form.name.$model !== undefined
+                ? !$v.form.name.required
+                  ? 'required'
+                  : null
+                : null
+            "
             @change="$v.form.name.$touch()"
-          />
+            ><span class="flex items-center">
+              Question Name
+              <popup-base class="ml-1 font-normal"
+                >This is the name of the question used for internal purposes.
+                The respondent will not see this.</popup-base
+              >
+            </span></input-base
+          >
         </div>
 
-        <div class="flex flex-col">
-          <div class="flex items-center">
-            <label for="inputText" class="label">Text</label>
-            <span v-if="$v.form.text.$error">
-              <span v-if="!$v.form.text.required" class="error">required</span>
-            </span>
-            <popup-info
-              ><template v-slot:text
-                >This page text will be seen by the respondent.</template
-              ></popup-info
+        <text-area-base
+          id="inputText"
+          v-model="form.text"
+          :error="
+            $v.form.text.$model !== undefined
+              ? !$v.form.text.required
+                ? 'required'
+                : null
+              : null
+          "
+          @change="$v.form.text.$touch()"
+          ><span class="flex items-center">
+            Question Text
+            <popup-base class="ml-1 font-normal"
+              >This is the question text that will be seen by the
+              respondent.</popup-base
             >
-          </div>
-          <textarea
-            id="inputText"
-            v-model="form.text"
-            placeholder="Enter question text"
-            class="input w-full md:w-10/12"
-            @change="$v.form.text.$touch()"
-          />
-        </div>
+          </span></text-area-base
+        >
 
         <toggle-switch
           v-if="questionType !== 'SECTION'"
@@ -104,7 +96,7 @@
         >
           <template v-slot:label>
             Required
-            <popup-info
+            <popup-info class="font-normal"
               ><template v-slot:text>{{ infoRequired }}</template></popup-info
             ></template
           >
@@ -185,12 +177,20 @@ import { parseQuestionToForm } from '~/helpers/parseSurveyObjects'
 import QuestionBranching from '~/components/surveys/QuestionBranching'
 import questionMixin from '~/helpers/questionMixin'
 import PopupInfo from '~/components/layouts/PopupInfo'
-import ToggleSwitch from '~/components/layouts/ToggleSwitch'
+import ToggleSwitch from '~/components/elements/ToggleSwitch'
 import NewQuestionRadioGrid from '~/components/surveys/NewQuestionRadioGrid'
+import MenuIconButton from '~/components/layouts/MenuIconButton'
+import InputBase from '~/components/elements/InputBase'
+import PopupBase from '~/components/elements/PopupBase'
+import TextAreaBase from '~/components/elements/TextAreaBase'
 
 export default {
   name: 'NewQuestion',
   components: {
+    TextAreaBase,
+    PopupBase,
+    InputBase,
+    MenuIconButton,
     NewQuestionRadioGrid,
     EditObjectModalBottomPart,
     QuestionBranching,

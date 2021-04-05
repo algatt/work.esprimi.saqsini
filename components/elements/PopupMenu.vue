@@ -14,14 +14,14 @@
 
     <button
       v-if="showPopup"
-      class="fixed left-0 top-0 z-10 w-full h-full cursor-default"
+      class="fixed left-0 top-0 z-30 w-full h-full cursor-default"
       @click="closePopup"
     ></button>
 
     <span
       v-if="showPopup"
       ref="popup"
-      class="rounded min-w-max text-gray-700 border border-gray-300 z-20 absolute flex flex-col shadow popup-menu bg-white"
+      class="rounded min-w-max text-gray-700 border border-gray-300 z-40 absolute flex flex-col shadow popup-menu bg-white"
       :style="{
         left: left + 'px',
         top: top + 'px',

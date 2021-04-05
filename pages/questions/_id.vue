@@ -4,15 +4,15 @@
       <top-header-bar
         :which="selectedView === 'questions' ? 'questions' : 'invites'"
         :items="selectedView === 'questions' ? [] : invites"
-        class="w-full z-20"
         :hide-select-all="selectedView === 'questions'"
         :hide-delete="true"
-        ><template v-slot:title
-          >{{ survey.name }}
-          <small class="ml-2 self-baseline font-normal">{{
-            survey.referenceDate
-          }}</small></template
-        >
+      >
+        <template v-slot:title>
+          {{ survey.name }}
+          <small class="ml-2 self-baseline font-normal">
+            {{ survey.referenceDate }}
+          </small>
+        </template>
         <template v-slot:extraContent>
           <div class="xl:ml-6 ml-0 flex items-center">
             <contact-book-dropdown
@@ -22,85 +22,71 @@
           </div>
         </template>
         <template v-slot:extraButtons>
-          <button
-            class="items-center md:flex md:justify-center font-semibold hover:text-primary transition duration-300 focus:outline-none py-3 mr-6"
-            :class="
-              selectedView === 'questions'
-                ? 'text-primary border-b-2 border-primary'
-                : 'text-gray-500'
-            "
+          <menu-icon-button
+            :active="selectedView === 'questions'"
             @click="selectedView = 'questions'"
           >
-            <i class="xl:pr-2 fas fa-question fa-fw" title="Questions"></i>
-            <span class="hidden md:block">Questions</span>
-          </button>
-          <button
-            class="items-center md:flex md:justify-center font-semibold hover:text-primary transition duration-300 focus:outline-none py-3 mr-6"
-            :class="
-              selectedView === 'invites'
-                ? 'text-primary border-b-2 border-primary'
-                : 'text-gray-500'
-            "
+            Questions
+            <template v-slot:icon>
+              <i class="fas fa-question fa-fw" title="Questions"></i>
+            </template>
+          </menu-icon-button>
+          <menu-icon-button
+            :active="selectedView === 'invites'"
             @click="selectedView = 'invites'"
           >
-            <i class="xl:pr-2 fas fa-paper-plane fa-fw" title="Invites"></i>
-            <span class="hidden md:block">Outreach</span>
-          </button>
+            Outreach
+            <template v-slot:icon>
+              <i class="fas fa-paper-plane fa-fw" title="Outreach"></i>
+            </template>
+          </menu-icon-button>
         </template>
         <template
           v-if="selectedView === 'questions'"
           v-slot:menuButtonIfNotSelected
         >
-          <button class="w-full" @click="selectMenu('settings')">
-            <span class="popup-menu-button">
-              <i class="fas fa-sliders-h fa-fw mr-1"></i>Settings</span
-            >
-          </button>
-          <button class="w-full" @click="selectMenu('language')">
-            <span class="popup-menu-button">
-              <i class="fas fa-language fa-fw mr-1"></i>Language</span
-            >
-          </button>
-          <button class="w-full" @click="selectMenu('collaborators')">
-            <span class="popup-menu-button">
-              <i class="fas fa-users fa-fw mr-1"></i>Collaborators</span
-            >
-          </button>
-          <button class="w-full" @click="selectMenu('invite_settings')">
-            <span class="popup-menu-button">
-              <i class="fas fa-envelope-open-text fa-fw mr-1"></i>Invite
-              Settings</span
-            >
-          </button>
-          <button class="w-full" @click="selectMenu('preview')">
-            <span class="popup-menu-button">
-              <i class="fas fa-eye fa-fw mr-1"></i>Preview</span
-            >
-          </button>
-          <button class="w-full" @click="showPreviewToggle">
-            <span class="popup-menu-button">
-              <template v-if="showPreview">
-                <i class="fas fa-question-circle fa-fw mr-1"></i>Show Title
-                Only</template
-              >
-              <template v-else
-                ><i
-                  v-if="!showPreview"
-                  class="fas fa-question-circle fa-fw mr-1"
-                ></i
-                >Show Question Content</template
-              >
-            </span>
-          </button>
+          <span @click="selectMenu('settings')">
+            <i class="fas fa-sliders-h fa-fw"></i>
+            Settings
+          </span>
+          <span @click="selectMenu('language')">
+            <i class="fas fa-language fa-fw"></i>
+            Language
+          </span>
+
+          <span @click="selectMenu('collaborators')">
+            <i class="fas fa-users fa-fw"></i>
+            Collaborators
+          </span>
+
+          <span @click="selectMenu('invite_settings')">
+            <i class="fas fa-envelope-open-text fa-fw"></i>
+            Invite Settings
+          </span>
+
+          <span @click="selectMenu('preview')">
+            <i class="fas fa-eye fa-fw"></i>
+            Preview
+          </span>
+
+          <span @click="showPreviewToggle">
+            <template v-if="showPreview">
+              <i class="fas fa-question-circle fa-fw"></i>
+              Show Title Only
+            </template>
+            <template v-else>
+              <i v-if="!showPreview" class="fas fa-question-circle fa-fw"></i>
+              Show Question Content
+            </template>
+          </span>
         </template>
         <template v-else v-slot:menuButtonIfNotSelected>
-          <button class="w-full" @click="invite()">
-            <span class="popup-menu-button">
-              <i class="fas fa-paper-plane fa-fw mr-1"></i>Invite</span
-            >
-          </button>
-        </template></top-header-bar
-      >
+          <span @click="invite()">
+            <i class="fas fa-paper-plane fa-fw"></i>
+            Invite
+          </span>
+        </template>
+      </top-header-bar>
 
       <div v-if="selectedView === 'invites'">
         <invites @contacts="checkContacts"></invites>
@@ -128,83 +114,73 @@
                         ? 'text-2xl'
                         : 'text-xl'
                     "
-                    >{{ question.name }}</span
                   >
-                  <span
-                    class="text-white font-bold text-sm bg-primary ml-2 rounded flex items-center justify-center px-1.5 shadow-sm"
-                    >{{ question.questionNumber }}</span
-                  >
+                    {{ question.name }}
+                  </span>
+                  <span class="mx-2 text-primary font-bold text-lg">
+                    {{ question.questionNumber }}
+                  </span>
                 </div>
                 <div class="w-16 flex items-center justify-end">
-                  <popup-menu class="mr-2">
-                    <template v-slot:menuButton
-                      ><button class="btn-link-rounded">
-                        <i class="fas fa-ellipsis-v fa-fw"></i></button
-                    ></template>
-                    <template v-slot:menuItems>
-                      <button class="w-full" @click="editQuestion(question)">
-                        <span class="popup-menu-button">
-                          <i class="fa-fw fas fa-pencil-alt fa-sm"></i
-                          >Edit</span
-                        >
-                      </button>
-                      <button
+                  <popup-menu>
+                    <template v-slot:icon>
+                      <button-icon-rounded bg-colour="gray">
+                        <i class="fas fa-ellipsis-v fa-fw"></i>
+                      </button-icon-rounded>
+                    </template>
+                    <template v-slot:menu>
+                      <span @click="editQuestion(question)">
+                        <i class="fa-fw fas fa-pencil-alt fa-sm"></i>
+                        Edit
+                      </span>
+                      <span
                         v-if="question.ordinalPosition !== 1"
-                        class="w-full"
                         @click="moveQuestion(question)"
                       >
-                        <span class="popup-menu-button">
-                          <i class="fa-fw fas fa-arrows-alt-v fa-sm"></i
-                          >Move</span
-                        >
-                      </button>
-                      <button
+                        <i class="fa-fw fas fa-arrows-alt-v fa-sm"></i>
+                        Move
+                      </span>
+                      <span
                         v-if="question.ordinalPosition !== 1"
-                        class="w-full"
                         @click="deleteQuestion(question)"
                       >
-                        <span class="popup-menu-button">
-                          <i class="fa-fw fas fa-trash-alt fa-sm"></i
-                          >Delete</span
-                        >
-                      </button>
+                        <i class="fa-fw fas fa-trash-alt fa-sm"></i>
+                        Delete
+                      </span>
                     </template>
                   </popup-menu>
                 </div>
               </div>
               <div class="flex items-center py-2">
-                <span
-                  class="text-sm bg-gray-100 rounded border border-gray-200 text-gray-600 px-1 py-0.5 mr-1"
-                  >{{ questionTypeText(question) }}</span
-                >
-                <span
+                <badge-base class="mr-1">
+                  {{ questionTypeText(question) }}
+                </badge-base>
+                <badge-base
                   v-if="
                     JSON.parse(question.surveyOptions).branching.rules
                       .length !== 0
                   "
-                  class="text-sm bg-gray-100 rounded border border-gray-200 text-gray-600 px-1 py-0.5"
-                  >branching</span
                 >
+                  branching
+                </badge-base>
               </div>
               <display-question
                 v-if="showPreview"
                 :question="question"
                 :language-text="languageText"
                 class="w-full"
-              >
-              </display-question>
+              ></display-question>
             </div>
-            <div
-              class="absolute z-20 mx-auto left-0 right-0 flex justify-center"
-              style="bottom: -12px"
-            >
+            <div class="flex justify-center py-1" style="bottom: -12px">
               <popup-menu>
-                <template v-slot:menuButton
-                  ><span class="btn-link-rounded-primary"
-                    ><i class="fas fa-plus fa-fw fa-sm"></i></span
-                ></template>
-                <template v-slot:menuItems>
-                  <button
+                <template v-slot:icon>
+                  <button-icon-rounded bg-colour="blue">
+                    <i class="fas fa-plus fa-fw fa-sm"></i>
+                  </button-icon-rounded>
+                </template>
+
+                <template v-slot:menu>
+                  <span
                     v-for="questionType in questionTypes"
                     :key="questionType.code"
                     @click="
@@ -214,18 +190,9 @@
                       )
                     "
                   >
-                    <span
-                      class="popup-menu-button"
-                      :class="
-                        questionType.text === 'Page'
-                          ? 'border-b border-gray-200'
-                          : null
-                      "
-                    >
-                      <i class="fa-fw fa-sm" :class="questionType.icon"></i
-                      >{{ questionType.text }}</span
-                    >
-                  </button>
+                    <i class="fa-fw fa-sm" :class="questionType.icon"></i>
+                    {{ questionType.text }}
+                  </span>
                 </template>
               </popup-menu>
             </div>
@@ -241,7 +208,8 @@
             currentItemToBeEdited.surveyCode
           "
         >
-          <edit-object-modal width="md:w-11/12">
+          <edit-object-modal custom-width="md:w-11/12">
+            <template v-slot:secondTitle>Question</template>
             <template v-slot:content>
               <new-question></new-question>
             </template>
@@ -275,8 +243,8 @@
         >
           <edit-object-modal @modalClosed="selectedMenu = ''">
             <template v-slot:title>Collaborators</template>
-            <template v-slot:content
-              ><survey-collaborators></survey-collaborators>
+            <template v-slot:content>
+              <survey-collaborators></survey-collaborators>
             </template>
           </edit-object-modal>
         </template>
@@ -285,8 +253,8 @@
         >
           <edit-object-modal @modalClosed="selectedMenu = ''">
             <template v-slot:title>Invites Settings</template>
-            <template v-slot:content
-              ><survey-invites-settings></survey-invites-settings>
+            <template v-slot:content>
+              <survey-invites-settings></survey-invites-settings>
             </template>
           </edit-object-modal>
         </template>
@@ -318,21 +286,22 @@
               <span>{{ item.name }}</span>
               <span
                 class="bg-primary text-white text-sm font-semibold rounded-lg px-1 py-0.5"
-                >{{ item.questionNumber }}</span
               >
+                {{ item.questionNumber }}
+              </span>
             </p>
           </div>
         </template>
       </modal-generic>
     </template>
     <template v-else>
-      <info-box class="mt-2"
-        ><template v-slot:title>We have a problem!</template
-        ><template v-slot:content
-          >You have landed on this page incorrectly, make sure you have clicked
-          on the correct links.</template
-        ></info-box
-      >
+      <info-box class="mt-2">
+        <template v-slot:title>We have a problem!</template>
+        <template v-slot:content>
+          You have landed on this page incorrectly, make sure you have clicked
+          on the correct links.
+        </template>
+      </info-box>
     </template>
   </div>
   <spinner v-else></spinner>
@@ -358,16 +327,22 @@ import {
   QUESTION_TYPES,
   SURVEY_LANGUAGE_GENERIC_TERMS,
 } from '~/helpers/constants'
-import PopupMenu from '~/components/layouts/PopupMenu'
+import PopupMenu from '~/components/elements/PopupMenu'
 import Invites from '~/components/contacts/Invites'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 import ContactBookDropdown from '~/components/contacts/ContactBookDropdown'
 import ModalGeneric from '~/components/layouts/ModalGeneric'
 import SurveyInvitesSettings from '~/components/surveys/SurveyInvitesSettings'
+import MenuIconButton from '~/components/layouts/MenuIconButton'
+import BadgeBase from '~/components/elements/BadgeBase'
+import ButtonIconRounded from '~/components/elements/ButtonIconRounded'
 
 export default {
   name: 'QuestionList',
   components: {
+    ButtonIconRounded,
+    BadgeBase,
+    MenuIconButton,
     SurveyInvitesSettings,
     ModalGeneric,
     SurveyCollaborators,
