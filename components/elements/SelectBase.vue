@@ -22,6 +22,10 @@ export default {
 
     value: {
       type: [String, Number, Boolean],
+      required: false,
+      default: () => {
+        return undefined
+      },
     },
   },
   methods: {

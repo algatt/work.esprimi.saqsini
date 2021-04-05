@@ -1,7 +1,7 @@
 <template>
   <div class="frosted p-0 md:p-8 z-20" @click="$emit('modalClosed')">
     <div
-      class="w-full md:w-6/12 mx-auto flex flex-col relative shadow-md overflow-y-auto"
+      class="w-full check-height md:w-8/12 mx-auto flex flex-col relative shadow-md overflow-y-auto"
       :style="{
         backgroundColor: true ? '#E5E7EB' : survey.options.accentColour,
       }"
@@ -12,10 +12,10 @@
         :questions="questions"
         @finishSurvey="$emit('modalClosed')"
       ></preview-survey>
-      <div class="absolute" style="top: 5px; right: 5px">
-        <button class="btn-link-rounded" @click="$emit('modalClosed')">
-          <i class="fas fa-times fa-fw fa-3xl text-gray-800"></i>
-        </button>
+      <div class="absolute" style="top: 10px; right: 10px">
+        <button-icon-rounded bg-colour="blue" @click="$emit('modalClosed')">
+          <i class="fas fa-times fa-fw fa-3xl text-white"></i>
+        </button-icon-rounded>
       </div>
     </div>
   </div>
@@ -24,10 +24,11 @@
 <script>
 import PreviewSurvey from '~/components/surveys/PreviewSurvey'
 import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
+import ButtonIconRounded from '~/components/elements/ButtonIconRounded'
 
 export default {
   name: 'PreviewSurveyModal',
-  components: { PreviewSurvey },
+  components: { ButtonIconRounded, PreviewSurvey },
   props: {
     originalSurvey: {
       type: Object,

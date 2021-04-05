@@ -102,9 +102,7 @@
             :key="question.code"
             class="relative"
           >
-            <div
-              class="flex flex-col w-full bg-white border border-gray-200 p-5"
-            >
+            <div class="flex flex-col w-full bg-white p-5">
               <div class="flex w-full">
                 <div class="flex flex-1 items-center">
                   <span
@@ -171,7 +169,9 @@
                 class="w-full"
               ></display-question>
             </div>
-            <div class="flex justify-center py-1" style="bottom: -12px">
+            <div
+              class="flex justify-center py-2 bg-white border-t-2 border-b-2 border-gray-100"
+            >
               <popup-menu>
                 <template v-slot:icon>
                   <button-icon-rounded bg-colour="blue">
@@ -444,12 +444,12 @@ export default {
           limit: 100,
           offset: 0,
         })
-        console.log('contact list')
+
         await this.$store.dispatch(
           'surveys/getSurveyByCode',
           this.$route.params.id
         )
-        console.log('survey')
+
         await this.$store.dispatch('questions/getQuestionsBySurvey', {
           limit: 1000,
           offset: 0,

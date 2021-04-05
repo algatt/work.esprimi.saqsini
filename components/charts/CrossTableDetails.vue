@@ -251,7 +251,6 @@ export default {
       })
 
       xAnswers.forEach((eachXAnswer) => {
-        console.log(eachXAnswer)
         const tempYAnswers = yAnswers.filter((el) => {
           return el[0] === eachXAnswer[0]
         })

@@ -27,8 +27,8 @@
           </th>
         </tr>
         <tr
-          v-for="(rows, index) in tableRows"
-          :key="index"
+          v-for="(rows, rowIndex) in tableRows"
+          :key="rowIndex"
           class="border-b border-gray-200"
         >
           <td

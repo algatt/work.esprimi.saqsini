@@ -26,8 +26,8 @@
       </div>
     </div>
     <div
-      v-for="(item, index) in Object.keys(datasets.responses)"
-      :key="index"
+      v-for="(item, indexResponse) in Object.keys(datasets.responses)"
+      :key="indexResponse"
       class="flex"
     >
       <div

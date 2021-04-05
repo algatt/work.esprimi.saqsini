@@ -55,8 +55,8 @@
           </div>
           <div class="w-full md:w-6/12 pl-10 md:pl-0 pt-3 md:pt-0">
             <span
-              v-for="(answer, index) in response.answers"
-              :key="index"
+              v-for="(answer, answerIndex) in response.answers"
+              :key="answerIndex"
               class="mr-3 px-2 py-1 bg-gray-100 rounded text-gray-700 border border-gray-200"
               >{{ answer }}</span
             >

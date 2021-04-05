@@ -111,6 +111,9 @@ export default {
     languageText: {
       type: Object,
       required: false,
+      default: () => {
+        return {}
+      },
     },
   },
 

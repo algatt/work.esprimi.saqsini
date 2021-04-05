@@ -50,6 +50,10 @@ export default {
     },
     value: {
       type: [String, Number],
+      required: false,
+      default: () => {
+        return undefined
+      },
     },
   },
 

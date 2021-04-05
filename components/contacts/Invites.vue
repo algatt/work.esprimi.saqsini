@@ -3,17 +3,23 @@
     <div class="w-full xl:w-3/12 pt-2">
       <div class="px-3 py-1 mb-2 flex flex-col">
         <div class="flex flex-col items-start mb-10">
-          <p class="label">Invite using Email</p>
-          <button class="btn btn-primary" @click="showInviteDialog">
-            Start
-          </button>
+          <p class="font-semibold mb-2">Invite using Email</p>
+          <button-icon @click="showInviteDialog">
+            Start Invites
+            <template v-slot:icon
+              ><i class="fas fa-paper-plane fa-fw fa-sm"></i></template
+          ></button-icon>
         </div>
         <toggle-switch
           :change-colour="false"
           :checked="workEmail"
           @clicked="changeView($event)"
         >
-          <template v-slot:label>Invite using Contact Book</template>
+          <template v-slot:label
+            ><span class="font-semibold mb-2"
+              >Invite using Contact Book</span
+            ></template
+          >
           <template v-slot:leftLabel>Personal Email</template>
           <template v-slot:rightLabel>Work Email</template>
         </toggle-switch>
@@ -164,17 +170,19 @@
 </template>
 
 <script>
-import multiSelect from '@/components/layouts/MultiSelect'
+import multiSelect from '@/components/elements/MultiSelect'
 import infoBox from '@/components/layouts/InfoBox'
 import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
-import ToggleSwitch from '~/components/layouts/ToggleSwitch'
+import ToggleSwitch from '~/components/elements/ToggleSwitch'
 import Spinner from '~/components/layouts/Spinner'
 import EditObjectModal from '~/components/layouts/EditObjectModal'
 import InviteByEmail from '~/components/surveys/InviteByEmail'
+import ButtonIcon from '~/components/elements/ButtonIcon'
 
 export default {
   name: 'ContactsInvites',
   components: {
+    ButtonIcon,
     InviteByEmail,
     EditObjectModal,
     multiSelect,

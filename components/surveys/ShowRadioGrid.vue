@@ -62,8 +62,8 @@
             </p>
           </div>
           <div
-            v-for="(i, index) in columns"
-            :key="index"
+            v-for="(i, columnIndex) in columns"
+            :key="columnIndex"
             class="text-center border-b-2 py-2"
             :style="{
               width: `${100 / (columns.length + 1)}%`,

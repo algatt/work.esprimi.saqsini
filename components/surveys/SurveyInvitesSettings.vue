@@ -62,53 +62,6 @@
         ></text-editor>
       </div>
 
-      <!--      <div class="flex flex-col">-->
-      <!--        <div class="flex items-center w-full">-->
-      <!--          <label for="reminderDate" class="label-optional">Reminder Date</label>-->
-      <!--          <span-->
-      <!--            v-if="$v.form.reminderTime.$error || $v.form.reminderDate.$error"-->
-      <!--          >-->
-      <!--            <span v-if="!$v.form.reminderTime.dateRequiredIfTime" class="error"-->
-      <!--              >date must be filled in</span-->
-      <!--            >-->
-      <!--            <span-->
-      <!--              v-else-if="!$v.form.reminderDate.timeRequiredIfDate"-->
-      <!--              class="error"-->
-      <!--              >time must be filled in</span-->
-      <!--            >-->
-      <!--            <span-->
-      <!--              v-else-if="!$v.form.notificationDate.checkDates"-->
-      <!--              class="error"-->
-      <!--            >-->
-      <!--              this date must be after the from date-->
-      <!--            </span>-->
-      <!--          </span>-->
-      <!--          <popup-info-->
-      <!--            ><template v-slot:text-->
-      <!--              >A reminder to fill in the survey will be sent on this date.-->
-      <!--            </template></popup-info-->
-      <!--          >-->
-      <!--        </div>-->
-
-      <!--        <div-->
-      <!--          class="flex flex-wrap space-x-3 md:space-x-3 justify-between w-full"-->
-      <!--        >-->
-      <!--          <input-->
-      <!--            id="reminderDate"-->
-      <!--            v-model="form.reminderDate"-->
-      <!--            class="input w-8/12"-->
-      <!--            type="date"-->
-      <!--            @change="$v.form.reminderDate.$touch()"-->
-      <!--          />-->
-      <!--          <input-->
-      <!--            id="inputValidToTime"-->
-      <!--            v-model="form.reminderTime"-->
-      <!--            class="input w-3/12"-->
-      <!--            type="time"-->
-      <!--            @change="$v.form.reminderTime.$touch()"-->
-      <!--          />-->
-      <!--        </div>-->
-      <!--      </div>-->
       <div class="flex w-full">
         <div class="w-9/12 pr-5">
           <input-base

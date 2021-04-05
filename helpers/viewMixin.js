@@ -16,7 +16,6 @@ export default {
   },
   methods: {
     setCurrentItem(item) {
-      console.log(item)
       this.$store.dispatch('setCurrentItemToBeEdited', item)
     },
   },

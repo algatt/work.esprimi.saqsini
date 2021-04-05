@@ -1,43 +1,63 @@
 <template>
-  <div class="frosted flex items-center justify-center z-30">
+  <div class="frosted flex items-center justify-center z-20">
     <div
-      class="bg-white flex flex-col shadow-lg rounded w-full h-full md:w-6/12 md:h-auto"
+      class="bg-white check-height flex flex-col shadow-lg w-full md:w-6/12 justify-between overflow-y-auto"
     >
-      <div class="bg-primary text-white font-semibold p-2 rounded-t">
-        Move {{ question.name }} after
-      </div>
-      <div class="px-5 py-2">
-        <button
-          v-for="item in questions"
-          :key="item.code"
-          :disabled="item.code === question.code"
-          class="flex my-2 p-2 transition duration-300 rounded hover:bg-gray-100"
-          :class="[
-            item.code === question.code
-              ? 'cursor-not-allowed'
-              : 'cursor-pointer',
-            item.flags.includes('SECTION') ? 'font-semibold' : 'ml-4',
-          ]"
-          @click="moveCurrentQuestionAfter(item.ordinalPosition)"
-        >
-          <p :class="item.code === question.code ? 'italic' : null">
-            {{ item.name }}
-            <span v-if="item.code === question.code"> (current question)</span>
-          </p>
-        </button>
+      <div class="flex flex-col">
+        <h5 class="bg-primary text-white font-semibold p-2 rounded-t">
+          Move {{ tempQuestion.name }} after
+        </h5>
+        <div class="px-5 py-2">
+          <button
+            v-for="item in questions"
+            :key="item.code"
+            :disabled="item.code === tempQuestion.code"
+            class="flex my-2 p-2 transition duration-300 rounded hover:bg-gray-100"
+            :class="[
+              item.code === tempQuestion.code ||
+              item.ordinalPosition === tempQuestion.ordinalPosition - 1
+                ? 'cursor-not-allowed'
+                : 'cursor-pointer',
+              item.flags.includes('SECTION') ? 'font-semibold' : 'ml-4',
+            ]"
+            @click="moveCurrentQuestionAfter(item.ordinalPosition)"
+          >
+            <p :class="item.code === tempQuestion.code ? 'italic' : null">
+              {{ item.name }}
+              <span class="text-primary font-semibold ml-2">{{
+                item.questionNumber
+              }}</span>
+              <badge-base
+                v-if="!item.flags.includes('SECTION')"
+                class="ml-2"
+                bg-colour="gray"
+                >{{ getQuestionType(item) }}</badge-base
+              >
+              <span v-if="item.code === tempQuestion.code">
+                (current question)</span
+              >
+            </p>
+          </button>
+        </div>
       </div>
       <div class="w-full p-3 justify-end w-full flex">
-        <button class="btn btn-primary px-3" @click="$emit('close')">
+        <button-base bg-colour="gray" @click="$emit('close')">
           Close
-        </button>
+        </button-base>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { getQuestionType } from '~/helpers/parseSurveyObjects'
+import BadgeBase from '~/components/elements/BadgeBase'
+import { QUESTION_TYPES } from '~/helpers/constants'
+import ButtonBase from '~/components/elements/ButtonBase'
+
 export default {
   name: 'QuestionMoveMenu',
+  components: { BadgeBase, ButtonBase },
   props: {
     question: {
       type: Object,
@@ -48,7 +68,26 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      tempQuestion: null,
+    }
+  },
+  created() {
+    this.tempQuestion = JSON.parse(JSON.stringify(this.question))
+  },
+  mounted() {
+    document.documentElement.style.overflow = 'hidden'
+    document.body.scroll = 'no'
+  },
+  destroyed() {
+    document.documentElement.style.overflow = 'visible'
+    document.body.scroll = 'yes'
+  },
   methods: {
+    getQuestionType(question) {
+      return QUESTION_TYPES[getQuestionType(question)].text
+    },
     moveCurrentQuestionAfter(position) {
       let tempQuestions = JSON.parse(JSON.stringify(this.questions))
       let indexToInsert = 0
@@ -67,6 +106,8 @@ export default {
       })
       let ordinalPosition = 1
       tempQuestions.forEach((el) => {
+        if (el.code === this.tempQuestion.code)
+          this.tempQuestion.ordinalPosition = ordinalPosition
         el.ordinalPosition = ordinalPosition++
       })
 
@@ -86,13 +127,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-.frosted {
-  @apply flex fixed top-0 left-0 w-full h-screen;
-  background: rgba(255, 255, 255, 0.5);
-  /*box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);*/
-  /*backdrop-filter: blur(2px);*/
-  /*-webkit-backdrop-filter: blur(2px);*/
-}
-</style>

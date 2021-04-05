@@ -256,6 +256,10 @@ export default {
   },
   mounted() {
     this.$v.form.questionNumber.$touch()
+    const obj = document
+      .getElementById('inputName')
+      .getElementsByTagName('input')[0]
+    obj.focus()
   },
   methods: {
     receiveConditions(ev) {

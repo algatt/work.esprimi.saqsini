@@ -17,15 +17,15 @@
               >
                 <template v-slot:options>
                   <option
-                    v-for="question in questions"
-                    :key="`${condition.groupIndex} ${ruleIndex} ${question.questionNumber}`"
-                    :value="String(question.questionNumber)"
+                    v-for="ques in questions"
+                    :key="`${condition.groupIndex} ${ruleIndex} ${ques.questionNumber}`"
+                    :value="String(ques.questionNumber)"
                     :selected="
-                      String(question.questionNumber) ===
+                      String(ques.questionNumber) ===
                       String(rule.questionNumber)
                     "
                   >
-                    {{ getQuestionText(question).text }}
+                    {{ getQuestionText(ques).text }}
                   </option>
                 </template>
               </select-base>

@@ -33,18 +33,18 @@
               <p class="font-semibold mb-3">Existing Collaborators</p>
 
               <div
-                v-for="item in filteredCollaborators"
-                :key="item.account.code"
+                v-for="collab in filteredCollaborators"
+                :key="collab.account.code"
                 class="flex justify-between items-center rounded py-3 border border-gray-100 shadow w-full my-1"
               >
                 <div class="flex flex-col px-5">
-                  <p>{{ item.account.displayName }}</p>
-                  <p>{{ item.account.email }}</p>
+                  <p>{{ collab.account.displayName }}</p>
+                  <p>{{ collab.account.email }}</p>
                 </div>
                 <div class="flex items-center pr-3">
                   <button-icon-rounded-outline
                     bg-colour="red"
-                    @click="removeCollaborator(item.account.email)"
+                    @click="removeCollaborator(collab.account.email)"
                     ><i class="far fa-trash-alt fa-fw"></i
                   ></button-icon-rounded-outline>
                 </div>

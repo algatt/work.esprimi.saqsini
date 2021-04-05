@@ -141,7 +141,10 @@ export default {
       ).trim()
   },
   mounted() {
-    document.getElementById('inputName').focus()
+    const obj = document
+      .getElementById('inputName')
+      .getElementsByTagName('input')[0]
+    obj.focus()
   },
   methods: {
     validatePhone(ev) {
