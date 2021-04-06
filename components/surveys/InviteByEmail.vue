@@ -2,9 +2,9 @@
   <div class="flex flex-col justify-between w-full">
     <div class="flex flex-col w-full space-y-5">
       <text-area-base v-model="contacts" class="input text-area">
-        <span class="flex items-center">
+        <span class="flex flex-col">
           Invites
-          <p class="italic text-sm ml-2 text-gray-600">
+          <p class="italic text-sm text-gray-600">
             You can enter a list of emails separated by a semicolon.
           </p>
         </span>
@@ -34,8 +34,8 @@
         >
       </div>
 
-      <div class="flex w-full">
-        <div class="w-9/12 pr-5">
+      <div class="flex flex-wrap w-full">
+        <div class="w-full xl:w-9/12 xl:pr-5">
           <input-base
             v-model="form.notificationDate"
             :error="
@@ -66,7 +66,7 @@
             </template></input-base
           >
         </div>
-        <div class="w-3/12">
+        <div class="w-full xl:w-3/12 mt-2 xl:mt-0">
           <input-base
             v-model="form.notificationTime"
             :error="
@@ -94,8 +94,8 @@
         ></text-editor>
       </div>
 
-      <div class="flex w-full">
-        <div class="w-9/12 pr-5">
+      <div class="flex w-full flex-wrap">
+        <div class="w-full xl:w-9/12 xl:pr-5">
           <input-base
             v-model="form.reminderDate"
             :error="
@@ -122,7 +122,7 @@
             </template></input-base
           >
         </div>
-        <div class="w-3/12">
+        <div class="w-full xl:w-3/12 mt-2 xl:mt-0">
           <input-base
             v-model="form.reminderTime"
             :error="

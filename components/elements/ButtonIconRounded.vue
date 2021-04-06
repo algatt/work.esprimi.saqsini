@@ -36,7 +36,7 @@ export default {
       return this.variant === 'normal'
         ? this.bgColour === 'gray'
           ? 300
-          : 500
+          : 600
         : 700
     },
     colour() {

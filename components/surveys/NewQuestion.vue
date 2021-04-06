@@ -23,51 +23,48 @@
       </div>
 
       <template v-if="selectedSection === 'details'">
-        <div class="flex flex-wrap">
-          <input-base
-            id="inputNumber"
-            v-model="form.questionNumber"
-            class="w-full md:w-2/12"
-            :error="
-              $v.form.questionNumber.$model !== undefined
-                ? !$v.form.questionNumber.required
-                  ? 'required'
-                  : !$v.form.questionNumber.duplicate
-                  ? 'duplicate'
-                  : null
+        <input-base
+          id="inputNumber"
+          v-model="form.questionNumber"
+          class="w-full md:w-60"
+          :error="
+            $v.form.questionNumber.$model !== undefined
+              ? !$v.form.questionNumber.required
+                ? 'required'
+                : !$v.form.questionNumber.duplicate
+                ? 'duplicate'
                 : null
-            "
-            @change="$v.form.questionNumber.$touch()"
-            ><span class="flex items-center">
-              Question Number
-              <popup-base class="ml-1 font-normal"
-                >This is the question number used for internal purposes. The
-                respondent will not see this.</popup-base
-              >
-            </span></input-base
-          >
+              : null
+          "
+          @change="$v.form.questionNumber.$touch()"
+          ><span class="flex items-center">
+            Question Number
+            <popup-base class="ml-1 font-normal"
+              >This is the question number used for internal purposes. The
+              respondent will not see this.</popup-base
+            >
+          </span></input-base
+        >
 
-          <input-base
-            id="inputName"
-            v-model="form.name"
-            class="w-full md:w-10/12 pl-5"
-            :error="
-              $v.form.name.$model !== undefined
-                ? !$v.form.name.required
-                  ? 'required'
-                  : null
+        <input-base
+          id="inputName"
+          v-model="form.name"
+          :error="
+            $v.form.name.$model !== undefined
+              ? !$v.form.name.required
+                ? 'required'
                 : null
-            "
-            @change="$v.form.name.$touch()"
-            ><span class="flex items-center">
-              Question Name
-              <popup-base class="ml-1 font-normal"
-                >This is the name of the question used for internal purposes.
-                The respondent will not see this.</popup-base
-              >
-            </span></input-base
-          >
-        </div>
+              : null
+          "
+          @change="$v.form.name.$touch()"
+          ><span class="flex items-center">
+            Question Name
+            <popup-base class="ml-1 font-normal"
+              >This is the name of the question used for internal purposes. The
+              respondent will not see this.</popup-base
+            >
+          </span></input-base
+        >
 
         <text-area-base
           id="inputText"

@@ -1,6 +1,7 @@
 <template>
   <div
-    class="flex flex-wrap relative justify-between items-center w-full h-16 lg:h-16"
+    class="flex flex-wrap relative justify-between items-center w-full xl:h-16"
+    :class="$slots.extraContent ? 'h-16' : 'h-0'"
   >
     <div class="flex items-center">
       <h6 v-if="$slots.title" class="hidden xl:flex xl:w-auto">

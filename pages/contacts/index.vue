@@ -15,7 +15,7 @@
       </template>
       <template v-slot:extraButtons>
         <button-icon
-          v-if="contactlists.length !== 0"
+          v-if="contactlists.length !== 0 && contacts.length !== 0"
           @click="setCurrentItem({ code: -1 })"
           >New Contact
           <template v-slot:icon

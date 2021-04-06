@@ -8,7 +8,7 @@
           :key="`${condition.groupIndex} ${ruleIndex}`"
           class="flex flex-wrap"
         >
-          <div class="w-8/12 flex p-1 items-start pr-3">
+          <div class="w-full xl:w-8/12 flex p-1 items-start pr-3">
             <div class="flex w-full justify-between">
               <select-base
                 v-if="rule.hasOwnProperty('questionNumber')"
@@ -57,10 +57,11 @@
           </div>
           <div
             v-if="rule.hasOwnProperty('questionNumber')"
-            class="flex w-4/12 flex-col"
+            class="w-full xl:w-4/12"
           >
             <multi-select
               :key="`${condition.groupIndex} ${ruleIndex} ${rule.options.length}`"
+              class="w-full"
               :original-list="getCurrentQuestionOptions(rule.questionNumber)"
               :selected-list="rule.options"
               @selectedItems="
@@ -69,7 +70,7 @@
               ><template v-slot:title>Select</template></multi-select
             >
           </div>
-          <div v-else class="flex w-4/12 flex-col">
+          <div v-else class="flex w-full xl:w-4/12 flex-col">
             <multi-select
               :key="`${condition.groupIndex} ${ruleIndex} ${rule.options.length}`"
               :original-list="getCurrentFilterOptions(rule.name)"
@@ -97,8 +98,8 @@
           </select-base>
         </div>
 
-        <div class="flex justify-between items-center">
-          <div class="flex items-center px-2 py-2">
+        <div class="flex flex-wrap justify-between items-center">
+          <div class="flex items-center px-2 py-2 w-full xl:w-auto">
             <span class="border-b border-transparent mr-1">New filter by</span>
             <text-link
               v-if="questions.length !== 0"
@@ -120,6 +121,7 @@
           </div>
           <button-base
             bg-colour="red"
+            class="ml-2 xl:pl-0"
             @click="deleteGroup(condition.groupIndex)"
           >
             Delete Group

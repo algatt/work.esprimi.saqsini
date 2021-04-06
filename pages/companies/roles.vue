@@ -52,7 +52,7 @@
         </template>
         <template v-slot:titleContentSmall>Roles</template>
         <template v-slot:content="slotProps"
-          ><div class="w-full flex items-baseline">
+          ><div class="w-full flex flex-wrap items-baseline">
             <span>
               {{ slotProps.item.name }}
             </span>

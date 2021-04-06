@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-col justify-between w-full">
     <div class="flex flex-col space-y-5">
-      <div class="flex w-full">
-        <div class="w-9/12 pr-5">
+      <div class="flex flex-wrap w-full">
+        <div class="w-full xl:w-9/12 xl:pr-5 mb-2 xl:mb-0">
           <input-base
             v-model="form.notificationDate"
             :error="
@@ -33,7 +33,7 @@
             </template></input-base
           >
         </div>
-        <div class="w-3/12">
+        <div class="w-full xl:w-3/12">
           <input-base
             v-model="form.notificationTime"
             :error="
@@ -62,8 +62,8 @@
         ></text-editor>
       </div>
 
-      <div class="flex w-full">
-        <div class="w-9/12 pr-5">
+      <div class="flex flex-wrap w-full">
+        <div class="w-full xl:w-9/12 xl:pr-5 mb-2 xl:mb-0">
           <input-base
             v-model="form.reminderDate"
             :error="
@@ -90,7 +90,7 @@
             </template></input-base
           >
         </div>
-        <div class="w-3/12">
+        <div class="w-full xl:w-3/12">
           <input-base
             v-model="form.reminderTime"
             :error="

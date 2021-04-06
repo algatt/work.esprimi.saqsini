@@ -1,13 +1,29 @@
 <template>
   <div class="flex flex-col w-full">
-    <div class="flex flex-wrap w-full">
-      <div class="flex flex-col flex-grow flex-1">
+    <div
+      class="flex flex-col w-full overflow-auto max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-none mx-auto"
+    >
+      <div
+        class="flex-col"
+        :style="{ minWidth: `${(options[0].scale.length + 2) * minElWidth}px` }"
+      >
         <div class="flex w-full flex justify-end">
+          <div
+            :style="{
+              width: `${100 / (options[0].scale.length + 2)}%`,
+              minWidth: `${minElWidth}px`,
+            }"
+          >
+            &nbsp;
+          </div>
           <div
             v-for="(item, index) in options[0].scale"
             :key="index"
             class="flex relative items-center p-2"
-            :style="{ width: `${100 / (options[0].scale.length + 1)}%` }"
+            :style="{
+              width: `${100 / (options[0].scale.length + 2)}%`,
+              minWidth: `${minElWidth}px`,
+            }"
           >
             <input-base-with-button v-model="options[0].scale[index].text">
               <template v-slot:button>
@@ -21,6 +37,17 @@
               </template>
             </input-base-with-button>
           </div>
+          <div
+            class="flex justify-center items-center pt-2"
+            :style="{
+              width: `${100 / (options[0].scale.length + 2)}%`,
+              minWidth: `${minElWidth}px`,
+            }"
+          >
+            <button-icon-rounded @click="addScale">
+              <i class="fas fa-plus fa-fw"></i>
+            </button-icon-rounded>
+          </div>
         </div>
         <div class="flex flex-wrap w-full">
           <div
@@ -31,7 +58,8 @@
             <div
               class="flex items-center relative"
               :style="{
-                width: `${100 / (options[0].scale.length + 1)}%`,
+                width: `${100 / (options[0].scale.length + 2)}%`,
+                minWidth: `${minElWidth}px`,
               }"
             >
               <input-base-with-button v-model="options[0].rows[index]">
@@ -50,7 +78,10 @@
               v-for="i in options[0].scale.length"
               :key="i"
               class="text-center"
-              :style="{ width: `${100 / (options[0].scale.length + 1)}%` }"
+              :style="{
+                width: `${100 / (options[0].scale.length + 2)}%`,
+                minWidth: `${minElWidth}px`,
+              }"
             >
               <input
                 :id="index + '_' + i"
@@ -60,18 +91,19 @@
               />
             </div>
           </div>
+          <div
+            class="flex justify-center items-center mt-2"
+            :style="{
+              width: `${100 / (options[0].scale.length + 2)}%`,
+              minWidth: `${minElWidth}px`,
+            }"
+          >
+            <button-icon-rounded @click="addRow">
+              <i class="fas fa-plus fa-fw"></i>
+            </button-icon-rounded>
+          </div>
         </div>
       </div>
-      <div class="w-24 flex justify-center items-center">
-        <button-icon-rounded @click="addScale">
-          <i class="fas fa-plus fa-fw"></i>
-        </button-icon-rounded>
-      </div>
-    </div>
-    <div class="flex justify-center">
-      <button-icon-rounded @click="addRow">
-        <i class="fas fa-plus fa-fw"></i>
-      </button-icon-rounded>
     </div>
   </div>
 </template>
@@ -100,6 +132,7 @@ export default {
     return {
       options: [{ scale: [], rows: [] }],
       convertedOptions: [],
+      minElWidth: 150,
     }
   },
   watch: {

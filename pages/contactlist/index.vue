@@ -67,11 +67,18 @@
           </span>
         </p>
         <p class="w-full lg:w-6/12 text-left lg:text-right pr-4">
-          <template v-if="slotProps.item.deleteBy"
-            >Scheduled for Deletion
-            <badge-base bg-colour="blue">
-              {{ calculateRemainingTime(slotProps.item.deleteBy) }}</badge-base
-            ></template
+          <span
+            v-if="slotProps.item.deleteBy"
+            class="flex flex-col xl:flex-row items-start xl:justify-end"
+          >
+            <template
+              >Scheduled for Deletion
+              <badge-base bg-colour="blue" class="xl:ml-2">
+                {{
+                  calculateRemainingTime(slotProps.item.deleteBy)
+                }}</badge-base
+              ></template
+            ></span
           >
 
           <span v-else>Indefinite</span>

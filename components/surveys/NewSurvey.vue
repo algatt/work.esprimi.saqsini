@@ -80,8 +80,8 @@
         </template>
       </input-base>
 
-      <div class="flex w-full">
-        <div class="w-9/12 pr-5">
+      <div class="flex flex-wrap w-full">
+        <div class="w-full xl:w-9/12 xl:pr-5 mb-2 xl:mb-0">
           <input-base
             v-model="form.validFromDate"
             :error="
@@ -107,7 +107,7 @@
             </template></input-base
           >
         </div>
-        <div class="w-3/12">
+        <div class="w-full xl:w-3/12">
           <input-base
             v-model="form.validFromTime"
             :error="
@@ -125,8 +125,8 @@
         </div>
       </div>
 
-      <div class="flex w-full">
-        <div class="w-9/12 pr-5">
+      <div class="flex flex-wrap w-full">
+        <div class="w-full xl:w-9/12 xl:pr-5 mb-2 xl:mb-0">
           <input-base
             v-model="form.validToDate"
             :error="
@@ -153,7 +153,7 @@
             </template></input-base
           >
         </div>
-        <div class="w-3/12">
+        <div class="w-full xl:w-3/12">
           <input-base
             v-model="form.validToTime"
             :error="

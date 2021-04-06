@@ -9,13 +9,14 @@
         v-if="notification.linkedEntityTypeFlags.includes('SURVEY')"
         class="my-2"
       >
-        <nuxt-link
-          :to="{
-            name: 'questions-id',
-            params: { id: notification.linkedEntityCode },
-          }"
-          class="btn btn-primary"
-          >Go To Survey</nuxt-link
+        <button-base>
+          <nuxt-link
+            :to="{
+              name: 'questions-id',
+              params: { id: notification.linkedEntityCode },
+            }"
+            >Go To Survey</nuxt-link
+          ></button-base
         >
       </p>
     </div>
@@ -31,9 +32,10 @@
 
 <script>
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
+import ButtonBase from '~/components/elements/ButtonBase'
 export default {
   name: 'ShowNotifications',
-  components: { EditObjectModalBottomPart },
+  components: { ButtonBase, EditObjectModalBottomPart },
   computed: {
     notification() {
       return this.$store.state.currentItemToBeEdited

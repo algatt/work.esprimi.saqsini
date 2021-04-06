@@ -208,7 +208,7 @@
             currentItemToBeEdited.surveyCode
           "
         >
-          <edit-object-modal custom-width="md:w-11/12">
+          <edit-object-modal custom-width="md:w-8/12">
             <template v-slot:secondTitle>Question</template>
             <template v-slot:content>
               <new-question></new-question>
