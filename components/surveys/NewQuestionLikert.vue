@@ -33,12 +33,12 @@
           @blur="sortOptions()"
         />
         <button-for-input
-          bg-colour="red"
+          text-colour="red"
           class="mt-3 rounded"
           :disabled="options.length < 3"
           @click="deleteOptionAtIndex(index)"
         >
-          <i class="fas fa-trash-alt"></i>
+          <i class="fas fa-trash-alt fa-fw"></i>
         </button-for-input>
       </div>
 

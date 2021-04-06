@@ -1,6 +1,6 @@
 <template>
   <button
-    class="font-medium text-white focus:outline-none focus:ring-1 focus:ring-offset-2 transition duration-300 rounded-r"
+    class="font-medium bg-gray-100 text-white focus:outline-none focus:ring-1 focus:ring-offset-2 transition duration-300 rounded-r"
     :class="buttonStyle"
     :disabled="disabled"
     @click="$emit('click')"
@@ -9,13 +9,12 @@
       class="flex items-stretch"
       :class="$slots.extra ? 'justify-center' : 'justify-between'"
     >
-      <span class="py-1" :class="$slots.extra ? 'pl-3 pr-2' : 'px-3'">
+      <span class="py-1" :class="$slots.extra ? 'pl-3 pr-2' : 'px-1.5'">
         <slot></slot>
       </span>
       <span
         v-if="$slots.extra"
-        class="flex items-center justify-center px-1 py-1"
-        :class="iconStyle"
+        class="flex items-center justify-center py-1 px-1.5"
       >
         <slot name="extra"></slot>
       </span>
@@ -27,7 +26,7 @@
 export default {
   name: 'ButtonForInput',
   props: {
-    bgColour: {
+    textColour: {
       type: String,
       required: false,
       default: 'blue',
@@ -41,23 +40,17 @@ export default {
   },
   computed: {
     colourNumber() {
-      return this.bgColour === 'gray' ? 300 : 600
+      return this.textColour === 'gray' ? 300 : 500
     },
     colour() {
-      return `${this.bgColour}-${this.colourNumber}`
+      return `${this.textColour}-${this.colourNumber}`
     },
     colourDarker() {
-      return `${this.bgColour}-${this.colourNumber + 100}`
+      return `${this.textColour}-${this.colourNumber + 100}`
     },
     buttonStyle() {
-      if (this.disabled) return `bg-gray-300 border-gray-300 text-gray-200`
-      else
-        return `bg-${this.colour} border-${this.colourDarker} focus:ring-${this.colour} hover:bg-${this.colourDarker}  focus:bg-${this.colourDarker}`
-    },
-    iconStyle() {
-      if (this.disabled) {
-        return `bg-gray-300 text-gray-200`
-      } else return `bg-${this.colourDarker}`
+      if (this.disabled) return `bg-gray-100 text-gray-200 cursor-not-allowed`
+      else return `text-${this.colour} hover:text-${this.colourDarker}`
     },
   },
 }

@@ -25,7 +25,7 @@
                 ><slot name="menuText"></slot>
                 <template v-if="!$slots.menuText">Actions</template>
                 <template v-slot:icon
-                  ><i class="fas fa-caret-down"></i></template
+                  ><i class="fas fa-caret-down fa-fw"></i></template
               ></button-icon>
               <button-icon-rounded class="block lg:hidden">
                 <i class="fas fa-ellipsis-v fa-fw"></i

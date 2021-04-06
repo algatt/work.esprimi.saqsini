@@ -28,11 +28,11 @@
             <input-base-with-button v-model="options[0].scale[index].text">
               <template v-slot:button>
                 <button-for-input
-                  bg-colour="red"
+                  text-colour="red"
                   :disabled="options[0].scale.length < 3"
                   @click="deleteScale(index)"
                 >
-                  <i class="fas fa-trash-alt fa-xs fa-fw"></i>
+                  <i class="fas fa-trash-alt fa-fw"></i>
                 </button-for-input>
               </template>
             </input-base-with-button>
@@ -65,11 +65,11 @@
               <input-base-with-button v-model="options[0].rows[index]">
                 <template v-slot:button>
                   <button-for-input
-                    bg-colour="red"
+                    text-colour="red"
                     :disabled="options[0].rows.length === 1"
                     @click="deleteRow(index)"
                   >
-                    <i class="fas fa-trash-alt fa-fw fa-xs"></i>
+                    <i class="fas fa-trash-alt fa-fw"></i>
                   </button-for-input>
                 </template>
               </input-base-with-button>

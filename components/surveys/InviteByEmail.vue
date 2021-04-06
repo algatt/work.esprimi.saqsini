@@ -319,11 +319,9 @@ export default {
         notificationMessage: this.form.notificationMessage,
         reminderTimestamp: this.reminderTimestamp,
         reminderMessage: this.form.reminderMessage,
-        invites: [
-          this.totalInvites.map((el) => {
-            return { email: el }
-          }),
-        ],
+        invites: this.totalInvites.map((el) => {
+          return { email: el }
+        }),
       }
 
       this.$store

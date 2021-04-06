@@ -11,18 +11,18 @@
       :original-survey="survey.survey"
       :questions="surveyData.questions"
       :show-start="true"
+      :has-token="hasToken"
       @finishSurvey="finishSurvey"
       @answers="processAnswers"
+      @changedAnswers="saveSession($event)"
     ></PreviewSurvey>
-    <modal-generic
-      v-if="finished"
-      width="w-64"
-      :style="{ color: parsedSurvey.options.accentColour }"
-    >
-      <template v-slot:title
-        ><span class="w-full flex justify-center py-10"
-          ><i class="fas fa-check-circle fa-fw fa-3x animate-bounce"></i></span
-      ></template>
+    <modal-generic v-if="finished && !hasToken">
+      <template v-slot:title>Finished</template
+      ><template v-slot:body> Thank you for participating. </template>
+    </modal-generic>
+    <modal-generic v-else-if="finished && hasToken">
+      <template v-slot:title>Finished</template
+      ><template v-slot:body> Thank you for participating. </template>
     </modal-generic>
   </div>
   <spinner v-else></spinner>
@@ -55,10 +55,8 @@ export default {
     parsedSurvey() {
       return parseSurveyToForm(JSON.parse(JSON.stringify(this.survey.survey)))
     },
-    firstQuestion() {
-      return this.survey.questions.filter((el) => {
-        return el.ordinalPosition === 1
-      })
+    hasToken() {
+      return this.$route.query.token !== undefined
     },
   },
   mounted() {
@@ -75,8 +73,33 @@ export default {
   },
   methods: {
     async finishSurvey() {
+      this.finished = true
+
+      const tempAnswers = this.convertAnswers(this.answers)
+
+      await this.$store.dispatch('invitations/submit', tempAnswers)
+      await this.$store.dispatch(
+        'invitations/consume',
+        this.surveyData.invitations[0].token
+      )
+
+      if (!this.hasToken)
+        setTimeout(() => {
+          window.location.reload()
+        }, 3000)
+    },
+    async saveSession(answers) {
+      this.answers = answers
+      const tempAnswers = this.convertAnswers(this.answers)
+
+      await this.$store.dispatch('invitations/submit', tempAnswers)
+    },
+    processAnswers(answers) {
+      this.answers = answers
+    },
+    convertAnswers(answers) {
       const tempAnswers = []
-      this.answers
+      answers
         .filter((el) => {
           return !el.questionType.includes('SECTION')
         })
@@ -91,21 +114,7 @@ export default {
             })
           })
         })
-
-      this.finished = true
-
-      await this.$store.dispatch('invitations/submit', tempAnswers)
-      await this.$store.dispatch(
-        'invitations/consume',
-        this.surveyData.invitations[0].token
-      )
-
-      setTimeout(() => {
-        window.location.reload()
-      }, 3000)
-    },
-    processAnswers(answers) {
-      this.answers = answers
+      return tempAnswers
     },
     generateSessionDetails() {
       USER_META_DATA.navigator.forEach((el) => {

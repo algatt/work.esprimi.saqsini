@@ -229,6 +229,11 @@ export default {
       required: false,
       default: false,
     },
+    hasToken: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 
   data() {
@@ -456,6 +461,8 @@ export default {
         answers,
         page: this.currentPage,
       })
+
+      if (this.hasToken) this.$emit('changedAnswers', this.answers)
     },
     showPreviousPage() {
       this.currentPage--

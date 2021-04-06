@@ -22,7 +22,7 @@
         >
           <template v-slot:button>
             <button-for-input
-              :bg-colour="'red'"
+              text-colour="red"
               :disabled="options.length < 3"
               @click="deleteOptionAtIndex(index)"
               ><i class="fas fa-trash-alt fa-fw"></i
