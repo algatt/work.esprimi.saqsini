@@ -40,6 +40,7 @@
         }"
       ></pie-chart>
     </div>
+
     <template v-if="false">
       <div
         v-for="(item, index) in differentKeys"
@@ -168,22 +169,65 @@
         }"
       ></line-chart>
     </div>
+    <div class="w-full md:w-4/12 flex justify-center items-center mb-20">
+      <horizontal-bar-chart
+        style="max-height: 300px"
+        :chart-data="totalResponsesPerQuestion"
+        :options="{
+          title: {
+            display: true,
+            text: 'Response Per Question',
+            fontSize: 16,
+            fontFamily: 'Poppins',
+          },
+          responsive: false,
+          maintainAspectRatio: false,
+          legend: {
+            display: false,
+          },
+          scales: {
+            xAxes: [
+              {
+                gridLines: {
+                  display: true,
+                  drawBorder: true,
+                  drawOnChartArea: false,
+                },
+                ticks: {
+                  beginAtZero: true,
+                  precision: 0,
+                },
+              },
+            ],
+            yAxes: [
+              {
+                gridLines: {
+                  display: true,
+                  drawBorder: true,
+                  drawOnChartArea: false,
+                },
+              },
+            ],
+          },
+        }"
+      ></horizontal-bar-chart>
+    </div>
   </div>
 </template>
 
 <script>
-// import { GChart } from 'vue-google-charts'
 import PieChart from '~/components/charts/PieChart'
 import colours from '~/assets/settings/colours.json'
 import LineChart from '~/components/charts/LineChart'
 import BarChart from '~/components/charts/BarChart'
+import HorizontalBarChart from '~/components/charts/HorizontalBarChart'
 export default {
   name: 'SurveyDetails',
   components: {
+    HorizontalBarChart,
     BarChart,
     LineChart,
     PieChart,
-    // GChart,
   },
   props: {
     details: {
@@ -272,6 +316,29 @@ export default {
       return keys.sort((a, b) => {
         return a > b ? 1 : -1
       })
+    },
+    totalResponsesPerQuestion() {
+      const obj = {}
+      this.details.responses.forEach((el) => {
+        if (!obj[el.questionCode]) obj[el.questionCode] = []
+        if (!obj[el.questionCode].includes(el.token))
+          obj[el.questionCode].push(el.token)
+      })
+      const result = []
+      const labels = []
+      Object.keys(obj).forEach((el) => {
+        result.push(obj[el].length)
+        labels.push(
+          this.details.questions.find((question) => {
+            return String(question.code) === String(el)
+          }).name
+        )
+      })
+
+      return {
+        labels,
+        datasets: [{ data: result, backgroundColor: colours }],
+      }
     },
   },
   methods: {

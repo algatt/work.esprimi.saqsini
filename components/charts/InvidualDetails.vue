@@ -1,19 +1,43 @@
 <template>
-  <div>
+  <div class="mt-3">
+    <div class="my-5 flex flex-col xl:flex-row">
+      <div class="w-auto xl:mr-10">
+        <select-base v-model="typeOfResponses">
+          Type of Responses
+          <template v-slot:options>
+            <option value="all">All Types</option>
+            <option value="kiosk">Kiosk</option>
+            <option value="invites">Invites</option>
+          </template>
+        </select-base>
+      </div>
+      <div class="w-auto mt-2 xl:mt-0">
+        <select-base v-model="isComplete">
+          Status
+          <template v-slot:options>
+            <option value="all">All</option>
+            <option value="completed">Completed</option>
+            <option value="incomplete">Incomplete</option>
+          </template>
+        </select-base>
+      </div>
+    </div>
     <div
-      v-for="invite in data.invitations"
+      v-for="invite in invitations"
       :key="invite.token"
-      class="rounded p-4 my-5 flex flex-col justify-between border border-gray-100 shadow cursor-pointer"
+      class="p-4 flex flex-col justify-between border border-gray-200 cursor-pointer"
       :class="
-        viewResponsesInvitee.token === invite.token ? null : 'hover:bg-gray-100'
+        viewResponsesInvitee.token === invite.token
+          ? 'bg-gray-100'
+          : 'hover:bg-gray-100'
       "
       @click="toggleViewResponses(invite)"
     >
-      <div class="flex">
-        <div class="flex flex-1 items-center">
+      <div class="flex flex-wrap">
+        <div class="flex w-full xl:flex-1 items-center">
           <span v-if="invite.flags.includes('KIOSK')" class="mr-3"
             >Kiosk Response</span
-          >
+          ><span v-else class="mr-3">Invitee Response</span>
           <span
             v-if="invite.flags.includes('SUBMITTED')"
             class="bg-green-100 text-green-700 text-sm font-semibold rounded px-1 py-0.5 border border-green-200 mr-3"
@@ -24,42 +48,45 @@
             class="bg-red-100 text-red-700 text-sm font-semibold rounded px-1 py-0.5 border border-red-200 mr-3"
             >incomplete</span
           >
-          <span v-if="invite.flags.includes('SUBMITTED')">
-            {{ invite.lastAccessed.substring(0, 10) }}
-          </span>
         </div>
-        <div class="w-32 btn-link">View Responses</div>
+        <div>
+          {{ invite.lastAccessed.substring(0, 16) }}
+        </div>
       </div>
-      <div v-if="viewResponsesInvitee.token === invite.token">
+      <div
+        v-if="viewResponsesInvitee.token === invite.token"
+        class="bg-gray-50 my-2 rounded border-2 border-gray-200"
+      >
         <div
           v-for="(response, index) in parsedResponses"
           :key="index"
-          class="flex flex-wrap items-center justify-between pb-3"
+          class="flex flex-col"
         >
           <div
             v-if="getQuestionType(response.question.flags).text === 'Page'"
-            class="mt-5 mb-1"
+            class="bg-gray-100 py-2 px-2 border-b border-gray-200"
+            :class="index !== 0 ? 'border-t' : null"
           >
             <span class="font-semibold">{{ response.question.name }}</span>
           </div>
-          <div v-else class="w-full md:w-6/12 pl-5">
-            <span>{{ response.question.name }}</span
-            ><span
-              class="text-sm text-white bg-primary rounded px-1 py-0.5 mx-2"
-              >{{ response.question.questionNumber }}</span
-            >
-            <span
-              class="text-sm text-gray-700 bg-gray-100 rounded px-1 py-0.5"
-              >{{ getQuestionType(response.question.flags).text }}</span
-            >
-          </div>
-          <div class="w-full md:w-6/12 pl-10 md:pl-0 pt-3 md:pt-0">
-            <span
-              v-for="(answer, answerIndex) in response.answers"
-              :key="answerIndex"
-              class="mr-3 px-2 py-1 bg-gray-100 rounded text-gray-700 border border-gray-200"
-              >{{ answer }}</span
-            >
+          <div v-else class="flex flex-wrap">
+            <div class="w-full md:w-6/12 pl-5 py-2">
+              <badge-base bg-colour="blue">{{
+                response.question.questionNumber
+              }}</badge-base>
+              <span>{{ response.question.name }}</span>
+              <badge-base bg-colour="gray">{{
+                getQuestionType(response.question.flags).text
+              }}</badge-base>
+            </div>
+            <div class="w-full md:w-6/12 py-2 px-5 xl:px-0 space-x-2">
+              <badge-base
+                v-for="(answer, answerIndex) in response.answers"
+                :key="answerIndex"
+                class="mt-2 xl:my-0"
+                >{{ answer }}</badge-base
+              >
+            </div>
           </div>
         </div>
       </div>
@@ -69,9 +96,12 @@
 
 <script>
 import { QUESTION_TYPES } from '~/helpers/constants'
+import BadgeBase from '~/components/elements/BadgeBase'
+import SelectBase from '~/components/elements/SelectBase'
 
 export default {
   name: 'InvidualDetailsVue',
+  components: { SelectBase, BadgeBase },
   props: {
     data: {
       type: Object,
@@ -81,9 +111,36 @@ export default {
   data() {
     return {
       viewResponsesInvitee: {},
+      typeOfResponses: 'all',
+      isComplete: 'all',
     }
   },
+
   computed: {
+    invitations() {
+      let temp = JSON.parse(JSON.stringify(this.data.invitations))
+      if (this.typeOfResponses === 'kiosk')
+        temp = temp.filter((el) => {
+          return el.flags.includes('KIOSK')
+        })
+      else if (this.typeOfResponses === 'invites')
+        temp = temp.filter((el) => {
+          return !el.flags.includes('KIOSK')
+        })
+
+      if (this.isComplete === 'completed')
+        temp = temp.filter((el) => {
+          return el.flags.includes('SUBMITTED')
+        })
+      else if (this.isComplete === 'incomplete')
+        temp = temp.filter((el) => {
+          return !el.flags.includes('SUBMITTED')
+        })
+
+      return temp.sort((a, b) => {
+        return a.lastModified < b.lastModified ? 1 : -1
+      })
+    },
     responsesForInvite() {
       if (!this.viewResponsesInvitee?.token) return []
       const responses = this.data.responses.filter((el) => {

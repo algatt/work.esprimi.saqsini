@@ -18,7 +18,7 @@
         <menu-icon-button
           :active="selectedView === 'individual'"
           @click="selectedView = 'individual'"
-          >Overall<template v-slot:icon
+          >Individual<template v-slot:icon
             ><i class="fas fa-user fa-fw"></i></template
         ></menu-icon-button>
         <menu-icon-button
@@ -78,6 +78,8 @@ export default {
       const data = {}
       data.survey = this.responses.survey
       data.invitees = this.responses.invitations
+      data.responses = this.responses.responses
+      data.questions = this.responses.questions
       return data
     },
     dataForCrossTab() {
