@@ -91,7 +91,6 @@ export default {
     async saveSession(answers) {
       this.answers = answers
       const tempAnswers = this.convertAnswers(this.answers)
-
       await this.$store.dispatch('invitations/submit', tempAnswers)
     },
     processAnswers(answers) {

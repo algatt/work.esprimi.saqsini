@@ -34,122 +34,11 @@
         >
       </div>
 
-      <div class="flex flex-wrap w-full">
-        <div class="w-full xl:w-9/12 xl:pr-5">
-          <input-base
-            v-model="form.notificationDate"
-            :error="
-              $v.form.notificationDate.$model !== undefined
-                ? !$v.form.notificationDate.required
-                  ? 'required'
-                  : null
-                : null
-            "
-            type="date"
-            @change="
-              $v.form.notificationDate.$touch()
-              $v.form.reminderDate.$touch()
-            "
-          >
-            <template v-slot:default>
-              <span class="flex items-center">
-                Notification Date
-                <popup-base class="ml-1"
-                  ><template v-slot:text>
-                    <span class="font-normal"
-                      >This is date when notifications will be sent to
-                      invitees.</span
-                    ></template
-                  ></popup-base
-                ></span
-              >
-            </template></input-base
-          >
-        </div>
-        <div class="w-full xl:w-3/12 mt-2 xl:mt-0">
-          <input-base
-            v-model="form.notificationTime"
-            :error="
-              $v.form.notificationTime.$model !== undefined
-                ? !$v.form.notificationTime.required
-                  ? 'required'
-                  : null
-                : null
-            "
-            type="time"
-            @change="$v.form.notificationTime.$touch()"
-            ><span class="flex items-center"
-              >Notification Time<popup-base
-                class="invisible"
-              ></popup-base></span
-          ></input-base>
-        </div>
-      </div>
-
-      <div class="flex flex-col">
-        <label class="font-semibold mb-2">Notification Message</label>
-        <text-editor
-          :content="form.notificationMessage"
-          @updateContent="form.notificationMessage = $event"
-        ></text-editor>
-      </div>
-
-      <div class="flex w-full flex-wrap">
-        <div class="w-full xl:w-9/12 xl:pr-5">
-          <input-base
-            v-model="form.reminderDate"
-            :error="
-              $v.form.reminderDate.$model !== undefined
-                ? !$v.form.reminderDate.checkDates
-                  ? 'this date must be after the valid from date'
-                  : null
-                : $v.form.reminderTime.$model !== undefined &&
-                  !$v.form.reminderTime.dateRequiredIfTime
-                ? 'required'
-                : null
-            "
-            type="date"
-            @change="$v.form.reminderDate.$touch()"
-          >
-            <template v-slot:default>
-              <span class="flex items-center">
-                Reminder Date
-                <popup-base class="ml-1 font-normal"
-                  >This is date when a reminder will be set to invitees who did
-                  not complete the survey</popup-base
-                ></span
-              >
-            </template></input-base
-          >
-        </div>
-        <div class="w-full xl:w-3/12 mt-2 xl:mt-0">
-          <input-base
-            v-model="form.reminderTime"
-            :error="
-              $v.form.reminderTime.$model !== undefined
-                ? !$v.form.reminderTime.checkDates
-                  ? 'this date must be after the valid from date'
-                  : null
-                : $v.form.reminderDate.$model !== undefined &&
-                  !$v.form.reminderDate.timeRequiredIfDate
-                ? 'required'
-                : null
-            "
-            type="time"
-            @change="$v.form.reminderTime.$touch()"
-            ><span class="flex items-center"
-              >Reminder Time<popup-base class="invisible"></popup-base></span
-          ></input-base>
-        </div>
-      </div>
-
-      <div class="flex flex-col">
-        <label class="font-semibold mb-2">Reminder Message</label>
-        <text-editor
-          :content="form.reminderMessage"
-          @updateContent="form.reminderMessage = $event"
-        ></text-editor>
-      </div>
+      <notification-reminder-section
+        :existing-data="form"
+        @update="form = $event"
+        @error="datesError = $event"
+      ></notification-reminder-section>
     </div>
     <div class="w-full flex py-10 flex justify-between">
       <button-icon bg-colour="gray" @click="cancel"
@@ -166,42 +55,19 @@
 </template>
 
 <script>
-import moment from 'moment'
 import { validationMixin } from 'vuelidate'
-import { required, email } from 'vuelidate/lib/validators'
+import { email } from 'vuelidate/lib/validators'
 import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
-import { createMomentFromDateAndTime } from '~/helpers/helpers'
 import ButtonIcon from '~/components/elements/ButtonIcon'
-import TextEditor from '~/components/layouts/textEditor'
 import TextAreaBase from '~/components/elements/TextAreaBase'
-import InputBase from '~/components/elements/InputBase'
-import PopupBase from '~/components/elements/PopupBase'
+import NotificationReminderSection from '~/components/surveys/NotificationReminderSection'
 
-const checkDates = (value, vm) => {
-  if (
-    vm.reminderDate === '' ||
-    vm.reminderDate === undefined ||
-    vm.reminderTime === '' ||
-    vm.reminderTime === undefined
-  )
-    return true
-
-  const dateStart = createMomentFromDateAndTime(
-    vm.notificationDate,
-    vm.notificationTime
-  )
-  const dateEnd = createMomentFromDateAndTime(vm.reminderDate, vm.reminderTime)
-
-  return moment(dateEnd).isAfter(moment(dateStart))
-}
 export default {
   name: 'InviteByEmail',
   components: {
+    NotificationReminderSection,
     TextAreaBase,
-    TextEditor,
     ButtonIcon,
-    InputBase,
-    PopupBase,
   },
   mixins: [validationMixin],
   props: {
@@ -214,6 +80,7 @@ export default {
     return {
       form: {},
       contacts: '',
+      datesError: false,
     }
   },
   validations: {
@@ -229,40 +96,10 @@ export default {
         },
       },
     },
-    form: {
-      notificationDate: {
-        required,
-        checkDates,
-      },
-      notificationTime: {
-        required,
-        checkDates,
-      },
-      reminderDate: {
-        timeRequiredIfDate(value) {
-          if (value === '' || value === undefined) return true
-          return (
-            this.form.reminderTime !== '' &&
-            this.form.reminderTime !== undefined
-          )
-        },
-        checkDates,
-      },
-      reminderTime: {
-        dateRequiredIfTime(value) {
-          if (value === '' || value === undefined) return true
-          return (
-            this.form.reminderDate !== '' &&
-            this.form.reminderDate !== undefined
-          )
-        },
-        checkDates,
-      },
-    },
   },
   computed: {
     isValid() {
-      return !this.$v.$invalid && this.totalInvites.length > 0
+      return !this.datesError && this.totalInvites.length > 0
     },
     parsedSurvey() {
       return parseSurveyToForm(this.survey)
@@ -286,22 +123,6 @@ export default {
         if (!obj[el].$invalid) x++
       })
       return x
-    },
-    notificationTimestamp() {
-      if (this.form.notificationDate && this.form.notificationTime) {
-        const dateStringTo =
-          this.form.notificationDate + ' ' + this.form.notificationTime
-        return moment(dateStringTo).format('YYYY-MM-DD HH:mm:SSZZ')
-      }
-      return null
-    },
-    reminderTimestamp() {
-      if (this.form.reminderDate && this.form.reminderTime) {
-        const dateStringTo =
-          this.form.reminderDate + ' ' + this.form.reminderTime
-        return moment(dateStringTo).format('YYYY-MM-DD HH:mm:SSZZ')
-      }
-      return null
     },
   },
   created() {

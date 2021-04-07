@@ -9,7 +9,7 @@
       class="flex items-stretch"
       :class="$slots.extra ? 'justify-center' : 'justify-between'"
     >
-      <span class="py-1" :class="$slots.extra ? 'pl-3 pr-2' : 'px-3'">
+      <span class="py-1 flex flex-1 justify-center px-2">
         <slot></slot>
       </span>
       <span

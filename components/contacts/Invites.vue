@@ -1,407 +1,102 @@
 <template>
-  <div v-if="!dataIsLoading" class="flex flex-wrap items-start">
+  <div class="flex flex-wrap items-start">
     <div class="w-full xl:w-3/12 pt-2">
-      <div class="px-3 py-1 mb-2 flex flex-col">
-        <div class="flex flex-col items-start mb-10">
-          <p class="font-semibold mb-2">Invite using Email</p>
-          <button-icon @click="showInviteDialog">
-            Start Invites
+      <div class="px-3 py-1 mb-2 flex flex-col items-stretch">
+        <p class="font-semibold mb-2">Invite using</p>
+        <div class="flex flex-col mb-5 w-40">
+          <button-icon @click="showInviteDialog('email')">
+            Email
             <template v-slot:icon
               ><i class="fas fa-paper-plane fa-fw fa-sm"></i></template
           ></button-icon>
         </div>
-        <toggle-switch
-          :change-colour="false"
-          :checked="workEmail"
-          @clicked="changeView($event)"
-        >
-          <template v-slot:label
-            ><span class="font-semibold mb-2"
-              >Invite using Contact Book</span
-            ></template
-          >
-          <template v-slot:leftLabel>Personal Email</template>
-          <template v-slot:rightLabel>Work Email</template>
-        </toggle-switch>
+
+        <div class="flex flex-col mb-5 w-40">
+          <button-icon @click="showInviteDialog('contacts')">
+            Contacts
+            <template v-slot:icon
+              ><i class="fas fa-paper-plane fa-fw fa-sm"></i></template
+          ></button-icon>
+        </div>
+
+        <div class="flex flex-col mb-5 w-40">
+          <button-icon @click="showInviteDialog('contactlist')">
+            Contact List
+            <template v-slot:icon
+              ><i class="fas fa-paper-plane fa-fw fa-sm"></i></template
+          ></button-icon>
+        </div>
       </div>
-
-      <template v-if="workEmail">
-        <multi-select
-          :key="'sectors' + getCodes(selectedSectors)"
-          class="w-full"
-          :original-list="sectors"
-          :selected-list="selectedSectors"
-          @selectedItems="updateAll('selectedSectors', $event)"
-          ><template v-slot:title>Sectors</template></multi-select
-        >
-
-        <multi-select
-          :key="'industries' + getCodes(selectedIndustries)"
-          class="w-full"
-          :original-list="industries"
-          :selected-list="selectedIndustries"
-          @selectedItems="updateAll('selectedIndustries', $event)"
-          ><template v-slot:title>Industries</template></multi-select
-        >
-
-        <multi-select
-          :key="'companies' + getCodes(selectedCompanies)"
-          class="w-full"
-          :original-list="companies"
-          :selected-list="selectedCompanies"
-          @selectedItems="updateAll('selectedCompanies', $event)"
-          ><template v-slot:title>Companies</template></multi-select
-        >
-
-        <multi-select
-          :key="'departments' + getCodes(selectedDepartments)"
-          class="w-full"
-          :original-list="departments"
-          :selected-list="selectedDepartments"
-          @selectedItems="selectedDepartments = $event"
-          ><template v-slot:title>Departments</template></multi-select
-        >
-
-        <multi-select
-          :key="'roles' + getCodes(selectedRoles)"
-          class="w-full"
-          :original-list="roles"
-          :selected-list="selectedRoles"
-          @selectedItems="selectedRoles = $event"
-          ><template v-slot:title>Roles</template></multi-select
-        >
-      </template>
     </div>
 
-    <div
-      v-if="contacts.length === 0"
-      class="w-full flex xl:w-auto xl:flex-grow p-5"
-    >
-      <info-box class="w-full">
-        <template v-slot:title>No Contacts here...</template>
-        <template v-slot:content>Try broadening your search.</template>
-      </info-box>
+    <div class="w-full xl:w-9/12 pt-2">
+      Existing invites will be displayed here...
     </div>
 
-    <display-table-component
-      v-else-if="workEmail"
-      class="w-full flex xl:w-auto xl:flex-grow"
-      :items="contacts"
-      @hovered="hovered = $event"
-    >
-      <template v-slot:title>Contact List</template>
-
-      <template v-slot:titleContent>
-        <p class="w-4/12">Contact</p>
-        <p class="w-4/12">Company</p>
-        <p class="w-4/12">Role</p>
-      </template>
-      <template v-slot:titleContentSmall>Contacts</template>
-      <template v-slot:content="slotProps"
-        ><p class="w-full xl:w-4/12 flex flex-col">
-          <span>{{ slotProps.item.contactDisplayName }}</span>
-          <span> {{ slotProps.item.contactEmail }}</span>
-        </p>
-        <p class="w-full xl:w-4/12 flex flex-col">
-          <span>{{ slotProps.item.companyName }}</span>
-          <span class="flex py-1">
-            <span class="text-sm bg-gray-100 border rounded px-2 mr-1">
-              {{ getSector(slotProps.item.companyCode) }}</span
-            >
-            <span class="text-sm bg-gray-100 border rounded px-2">
-              {{ getIndustry(slotProps.item.companyCode) }}</span
-            >
-          </span>
-        </p>
-
-        <p class="w-full xl:w-4/12 flex flex-col">
-          <span>{{ slotProps.item.roleName }}</span>
-          <span class="flex py-1">
-            <span
-              v-if="slotProps.item.departmentName"
-              class="text-sm bg-gray-100 border rounded px-2 mr-1"
-            >
-              {{ slotProps.item.departmentName }}</span
-            >
-          </span>
-        </p>
-      </template>
-    </display-table-component>
-    <display-table-component
-      v-else
-      class="w-full flex xl:w-auto xl:flex-grow"
-      :items="contacts"
-      @hovered="hovered = $event"
-    >
-      <template v-slot:title>Contact List</template>
-
-      <template v-slot:titleContent>
-        <p class="w-4/12">Contact</p>
-        <p class="w-4/12">Email</p>
-        <p class="w-4/12">Demographics</p>
-      </template>
-      <template v-slot:titleContentSmall>Contacts</template>
-      <template v-slot:content="slotProps"
-        ><p class="w-full xl:w-4/12 flex flex-col">
-          <span>{{ slotProps.item.displayName }}</span>
-        </p>
-        <p class="w-full xl:w-4/12 flex flex-col">
-          <span>{{ slotProps.item.email }}</span>
-        </p>
-
-        <p class="w-full xl:w-4/12 flex flex-wrap">
-          <span v-if="slotProps.item.gender === 'M'">Male</span>
-          <span v-else-if="slotProps.item.gender === 'F'">Female</span>
-          <span v-if="slotProps.item.age" class="ml-1"
-            >{{ slotProps.item.age }}
-          </span>
-        </p>
-      </template>
-    </display-table-component>
-
-    <EditObjectModal v-if="startEmailInvite && currentItemToBeEdited">
-      <template v-slot:title>Invite</template>
+    <EditObjectModal v-if="startInvite === 'email' && currentItemToBeEdited">
+      <template v-slot:title>Invite by Email</template>
       <template v-slot:content
         ><InviteByEmail :survey="survey"></InviteByEmail
       ></template>
     </EditObjectModal>
+
+    <EditObjectModal
+      v-else-if="startInvite === 'contacts' && currentItemToBeEdited"
+    >
+      <template v-slot:title>Invite By Contacts</template>
+      <template v-slot:content
+        ><InviteByContacts :survey="survey"></InviteByContacts
+      ></template>
+    </EditObjectModal>
+
+    <EditObjectModal
+      v-else-if="startInvite === 'contactlist' && currentItemToBeEdited"
+    >
+      <template v-slot:title>Invite By Contact List</template>
+      <template v-slot:content
+        ><InviteByContactList :survey="survey"></InviteByContactList
+      ></template>
+    </EditObjectModal>
   </div>
-  <spinner v-else></spinner>
 </template>
 
 <script>
-import multiSelect from '@/components/elements/MultiSelect'
-import infoBox from '@/components/layouts/InfoBox'
-import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
-import ToggleSwitch from '~/components/elements/ToggleSwitch'
-import Spinner from '~/components/layouts/Spinner'
 import EditObjectModal from '~/components/layouts/EditObjectModal'
 import InviteByEmail from '~/components/surveys/InviteByEmail'
 import ButtonIcon from '~/components/elements/ButtonIcon'
+import InviteByContacts from '~/components/surveys/InviteByContacts'
+import InviteByContactList from '~/components/surveys/InviteByContactList'
 
 export default {
   name: 'ContactsInvites',
   components: {
+    InviteByContactList,
+    InviteByContacts,
     ButtonIcon,
     InviteByEmail,
     EditObjectModal,
-    multiSelect,
-    infoBox,
-    DisplayTableComponent,
-    ToggleSwitch,
-    Spinner,
   },
   data() {
     return {
-      filters: [],
-      selectedSectors: [],
-      selectedIndustries: [],
-      selectedCompanies: [],
-      selectedDepartments: [],
-      selectedRoles: [],
-      dataIsLoading: true,
-      workEmail: false,
-      startEmailInvite: false,
+      startInvite: '',
     }
   },
   computed: {
-    selectedItemsLength() {
-      return this.$store.state.selectedItems.length
-    },
     currentItemToBeEdited() {
       return this.$store.state.currentItemToBeEdited
     },
     survey() {
       return this.$store.state.surveys.items[0]
     },
-    sectors() {
-      if (!this.filters.sectors) return []
-      const temp = this.filters.sectors
-      return temp.sort((a, b) => {
-        return a.name > b.name ? 1 : -1
-      })
-    },
-    industries() {
-      if (!this.filters.industries) return []
-      const temp = this.filters.industries
-      temp.sort((a, b) => {
-        return a.name > b.name ? 1 : -1
-      })
-
-      return temp.filter((el) => {
-        return this.getAvailableCodes(
-          this.sectors,
-          this.selectedSectors
-        ).includes(el.sectorCode)
-      })
-    },
-    companies() {
-      if (!this.filters.companies) return []
-      const temp = this.filters.companies
-      return temp
-        .filter((el) => {
-          return (
-            this.getAvailableCodes(this.sectors, this.selectedSectors).includes(
-              el.sectorCode
-            ) &&
-            this.getAvailableCodes(
-              this.industries,
-              this.selectedIndustries
-            ).includes(el.industryCode)
-          )
-        })
-        .sort((a, b) => {
-          return a.name > b.name ? 1 : -1
-        })
-    },
-    departments() {
-      if (!this.filters.departments) return []
-      const temp = JSON.parse(JSON.stringify(this.filters.departments))
-
-      temp.forEach((el) => {
-        el.name = el.name + ` (${this.getName(this.companies, el.companyCode)})`
-      })
-
-      return temp
-        .sort((a, b) => {
-          return a.name > b.name ? 1 : -1
-        })
-        .filter((el) => {
-          return this.getAvailableCodes(
-            this.companies,
-            this.selectedCompanies
-          ).includes(el.companyCode)
-        })
-    },
-    roles() {
-      if (!this.filters.roles) return []
-      const temp = this.filters.roles
-      return temp.sort((a, b) => {
-        return a.name > b.name ? 1 : -1
-      })
-    },
-    contacts() {
-      if (!this.filters.contacts) return []
-      if (!this.workEmail) return this.filters.contacts
-      const temp = this.$store.getters.getItems('jobs')
-      const whichCompanies = this.getAvailableCodes(
-        this.companies,
-        this.selectedCompanies
-      )
-
-      const whichDepartments = this.getAvailableCodes(
-        this.departments,
-        this.selectedDepartments
-      )
-
-      const whichRoles = this.getAvailableCodes(this.roles, this.selectedRoles)
-
-      const result = []
-
-      for (const i in temp) {
-        const item = temp[i]
-
-        if (
-          ((!item.companyCode && this.selectedCompanies.length === 0) ||
-            whichCompanies.includes(item.companyCode)) &&
-          ((!item.roleCode && this.selectedRoles.length === 0) ||
-            whichRoles.includes(item.roleCode)) &&
-          ((!item.departmentCode && this.selectedDepartments.length === 0) ||
-            whichDepartments.includes(item.departmentCode))
-        )
-          result.push(item)
-      }
-
-      return result
-    },
     contactlists() {
       return this.$store.getters.getItems('contactlist')
     },
   },
-  watch: {
-    contacts(val) {
-      return this.$emit('contacts', val)
-    },
-  },
-  created() {
-    this.dataIsLoading = true
-    this.$store
-      .dispatch('contactlist/getContactLists', { limit: 100, offset: 0 })
-      .then(() => {
-        if (this.contactlists.length !== 0) this.updateData()
-      })
-      .finally(() => {
-        this.dataIsLoading = false
-      })
-  },
+  created() {},
   methods: {
-    async updateData() {
-      this.dataIsLoading = true
-      this.filters = await this.$store.dispatch('invitations/getFilters')
-      //  await this.$store.dispatch('jobs/getAllJobs', { limit: 1000, offset: 0 })
-      this.dataIsLoading = false
-    },
-    changeView(state) {
-      this.workEmail = state
-      this.$store.dispatch('emptySelectedItems')
-    },
-    updateAll(list, newList) {
-      this[list] = newList
-      this.selectedIndustries = this.selectedIndustries.filter((el) => {
-        return this.getAvailableCodes(
-          this.sectors,
-          this.selectedSectors
-        ).includes(el.sectorCode)
-      })
-
-      this.selectedCompanies = this.selectedCompanies.filter((el) => {
-        return this.getAvailableCodes(
-          this.industries,
-          this.selectedIndustries
-        ).includes(el.industryCode)
-      })
-
-      this.selectedDepartments = this.selectedDepartments.filter((el) => {
-        return this.getAvailableCodes(
-          this.companies,
-          this.selectedCompanies
-        ).includes(el.companyCode)
-      })
-    },
-    getCodes(which) {
-      return which.map((el) => {
-        return el.code
-      })
-    },
-    getAvailableCodes(originalList, selectedList) {
-      return selectedList.length === 0
-        ? this.getCodes(originalList)
-        : this.getCodes(selectedList)
-    },
-    getName(which, code) {
-      const x = which.find((el) => {
-        return el.code === code
-      })
-      return x ? x.name : ''
-    },
-    getSector(companyCode) {
-      const code = this.companies.find((el) => {
-        return el.code === companyCode
-      }).sectorCode
-      return this.getName(this.sectors, code)
-    },
-    getIndustry(companyCode) {
-      const code = this.companies.find((el) => {
-        return el.code === companyCode
-      }).industryCode
-      return this.getName(this.industries, code)
-    },
-    invite() {
-      alert('Work in progress :(')
-    },
-    showInviteDialog() {
+    showInviteDialog(which) {
+      this.startInvite = which
       this.$store.dispatch('setCurrentItemToBeEdited', this.survey)
-      this.startEmailInvite = true
     },
   },
 }
