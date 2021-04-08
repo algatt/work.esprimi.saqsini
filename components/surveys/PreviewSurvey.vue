@@ -84,8 +84,8 @@
       </template>
       <template v-else>
         <div
+          class="rounded shadow py-10"
           :style="{ backgroundColor: survey.options.backgroundColour }"
-          class="rounded shadow"
         >
           <display-question
             :key="`${questiosWithSectionsFilteredFirstPage.code} ${currentLanguage}`"
@@ -95,20 +95,21 @@
             :language-text="languageText"
             :question="questiosWithSectionsFilteredFirstPage"
           ></display-question>
-          <div
-            class="flex items-center justify-center space-x-3 my-5 py-3 rounded shadow"
+        </div>
+        <div
+          class="flex items-center justify-center space-x-3 my-5 py-3 rounded shadow"
+          :style="{ backgroundColor: survey.options.backgroundColour }"
+        >
+          <button
+            class="px-5 py-1 rounded font-semibold"
+            :style="{
+              backgroundColor: survey.options.accentColour,
+              color: survey.options.backgroundColour,
+            }"
+            @click="started = true"
           >
-            <button
-              class="px-5 py-1 rounded font-semibold"
-              :style="{
-                backgroundColor: survey.options.accentColour,
-                color: survey.options.backgroundColour,
-              }"
-              @click="started = true"
-            >
-              Start
-            </button>
-          </div>
+            Start
+          </button>
         </div>
       </template>
 
