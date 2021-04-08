@@ -10,6 +10,7 @@
       <preview-survey
         :original-survey="originalSurvey"
         :questions="questions"
+        :show-start="true"
         @finishSurvey="$emit('modalClosed')"
       ></preview-survey>
       <div class="absolute" style="top: 10px; right: 10px">
