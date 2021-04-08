@@ -4,6 +4,7 @@ module.exports = {
       opacity: ['disabled'],
       backgroundColor: ['disabled'],
       borderColor: ['active'],
+      height: ['hover'],
     },
   },
   theme: {

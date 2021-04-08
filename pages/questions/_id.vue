@@ -171,9 +171,36 @@
               ></display-question>
             </div>
             <div
-              class="flex justify-center py-2 bg-white border-t-2 border-b-2 border-gray-100"
+              class="flex xl:hidden justify-center py-2 bg-white border-t-2 border-b-2 border-gray-100"
             >
               <popup-menu>
+                <template v-slot:icon>
+                  <button-icon-rounded bg-colour="blue">
+                    <i class="fas fa-plus fa-fw fa-sm"></i>
+                  </button-icon-rounded>
+                </template>
+
+                <template v-slot:menu>
+                  <span
+                    v-for="questionType in questionTypes"
+                    :key="questionType.code"
+                    @click="
+                      newQuestion(
+                        questionType.flag,
+                        question.ordinalPosition + 1
+                      )
+                    "
+                  >
+                    <i class="fa-fw fa-sm" :class="questionType.icon"></i>
+                    {{ questionType.text }}
+                  </span>
+                </template>
+              </popup-menu>
+            </div>
+            <div
+              class="bigScreenPopup hidden xl:flex justify-center bg-primary border-t-2 border-b-2 border-gray-100 h-3 cursor-pointer hover:h-10 hover:bg-white transition-all duration-500"
+            >
+              <popup-menu id="bigScreenPopupChild" class="opacity-0">
                 <template v-slot:icon>
                   <button-icon-rounded bg-colour="blue">
                     <i class="fas fa-plus fa-fw fa-sm"></i>
@@ -581,3 +608,12 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.bigScreenPopup #bigScreenPopupChild {
+  @apply opacity-0 transition-all duration-300;
+}
+.bigScreenPopup:hover #bigScreenPopupChild {
+  @apply opacity-100 ease-in transition-all duration-300;
+}
+</style>
