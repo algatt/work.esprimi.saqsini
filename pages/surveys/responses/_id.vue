@@ -56,6 +56,7 @@ import MenuIconButton from '~/components/layouts/MenuIconButton'
 
 export default {
   name: 'SurveyResponses',
+  middleware: ['surveyBuilder'],
   components: {
     MenuIconButton,
     QuestionDetails,

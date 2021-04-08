@@ -107,7 +107,7 @@ import viewMixin from '~/helpers/viewMixin'
 import EditObjectModal from '~/components/layouts/EditObjectModal'
 
 export default {
-  name: 'IndexVue',
+  name: 'Notifications',
   components: {
     ShowNotifications,
     Spinner,

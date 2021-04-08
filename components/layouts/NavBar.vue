@@ -182,7 +182,7 @@ export default {
   data() {
     return {
       whichSubMenu: '',
-      menuItems: jsonMenu,
+      menuItemsJson: jsonMenu,
       smallScreenMenu: false,
     }
   },
@@ -192,6 +192,15 @@ export default {
     },
     messageCount() {
       return this.$store.state.notifications.notificationStats.unreadCount
+    },
+    menuItems() {
+      const permissions = this.$store.getters['auth/getPermissions']
+      return this.menuItemsJson.filter((el) => {
+        return (
+          el.role.some((val) => permissions.includes(val)) ||
+          el.role.length === 0
+        )
+      })
     },
   },
   methods: {

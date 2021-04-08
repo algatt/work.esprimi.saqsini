@@ -2,48 +2,48 @@
   {
     "text": "Surveys",
     "id": "navSurveys",
-    "role": [],
+    "role": ["ADMIN", "SURVEY_BUILDER"],
     "children": [
       {
         "icon": "fas fa-clipboard fa-fw",
         "header": "My Surveys",
         "text": "Create and manage your surveys",
-        "role": [],
+        "role": ["ADMIN", "SURVEY_BUILDER"],
         "link": "surveys"
       }
     ]
   },
   {
     "text": "Contacts",
-    "role": [],
+    "role": ["ADMIN", "CONTACTBOOK"],
     "id": "navContactBook",
     "children": [
       {
         "icon": "fas fa-address-book fa-fw",
         "header": "Contact List",
         "text": "Manage your contact lists",
-        "role": [],
+        "role": ["ADMIN", "CONTACTBOOK"],
         "link": "contactlist"
       },
       {
         "icon": "fas fa-building fa-fw",
         "header": "Companies",
         "text": "Companies and their departments",
-        "role": [],
+        "role": ["ADMIN", "CONTACTBOOK"],
         "link": "companies"
       },
       {
         "icon": "fas fa-user-friends fa-fw",
         "header": "Contacts",
         "text": "Manage your contacts' details",
-        "role": [],
+        "role": ["ADMIN", "CONTACTBOOK"],
         "link": "contacts"
       },
       {
         "icon": "fas fa-briefcase fa-fw",
         "header": "Roles",
         "text": "Manage roles that can be applied to contacts",
-        "role": [],
+        "role": ["ADMIN", "CONTACTBOOK"],
         "link": "companies-roles"
       }
     ]

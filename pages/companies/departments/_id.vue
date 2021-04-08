@@ -96,6 +96,7 @@ import BadgeBase from '~/components/elements/BadgeBase'
 import DisplayTableRowPopup from '~/components/layouts/DisplayTableRowPopup'
 export default {
   name: 'ContactsList',
+  middleware: ['contactBook'],
   components: {
     DisplayTableRowPopup,
     BadgeBase,

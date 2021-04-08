@@ -183,6 +183,7 @@ import ButtonBase from '~/components/elements/ButtonBase'
 import BadgeBase from '~/components/elements/BadgeBase'
 export default {
   name: 'CompaniesList',
+  middleware: ['contactBook'],
   components: {
     BadgeBase,
     DisplayTableRowPopup,
@@ -195,7 +196,6 @@ export default {
     NewCompany,
     DisplayTableComponent,
     EditObjectModal,
-
     TopHeaderBar,
     ContactBookDropdown,
     ButtonIcon,

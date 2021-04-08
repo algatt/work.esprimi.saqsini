@@ -16,6 +16,7 @@
         <template v-slot:extraContent>
           <div class="xl:ml-6 ml-0 flex items-center">
             <contact-book-dropdown
+              v-if="canUseContactBook"
               :disabled="getBranchingContactBook().length > 0"
               @changedList="updateData"
             ></contact-book-dropdown>
@@ -348,6 +349,7 @@ import ButtonIconRounded from '~/components/elements/ButtonIconRounded'
 
 export default {
   name: 'QuestionList',
+  middleware: ['surveyBuilder'],
   components: {
     ButtonIconRounded,
     BadgeBase,
@@ -382,6 +384,9 @@ export default {
     }
   },
   computed: {
+    canUseContactBook() {
+      return this.$store.getters['auth/getPermissions'].includes('CONTACT_BOOK')
+    },
     languageText() {
       const data = {}
       Object.keys(SURVEY_LANGUAGE_GENERIC_TERMS).forEach((el) => {
@@ -440,10 +445,11 @@ export default {
       this.loading = true
 
       try {
-        await this.$store.dispatch('contactlist/getContactLists', {
-          limit: 100,
-          offset: 0,
-        })
+        if (this.canUseContactBook)
+          await this.$store.dispatch('contactlist/getContactLists', {
+            limit: 100,
+            offset: 0,
+          })
 
         await this.$store.dispatch(
           'surveys/getSurveyByCode',
@@ -456,7 +462,10 @@ export default {
           code: this.$route.params.id,
         })
 
-        if (this.getBranchingContactBook().length > 0) {
+        if (
+          this.canUseContactBook &&
+          this.getBranchingContactBook().length > 0
+        ) {
           const tempLists = this.$store.getters.getItems('contactlist')
           await this.$store.dispatch(
             'setContactList',

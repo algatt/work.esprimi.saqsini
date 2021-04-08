@@ -102,6 +102,7 @@ import DisplayTableRowPopup from '~/components/layouts/DisplayTableRowPopup'
 
 export default {
   name: 'RolesList',
+  middleware: ['contactBook'],
   components: {
     DisplayTableRowPopup,
     BadgeBase,
@@ -109,7 +110,6 @@ export default {
     NewRole,
     DisplayTableComponent,
     EditObjectModal,
-
     TopHeaderBar,
     ContactBookDropdown,
     InfoBox,

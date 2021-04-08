@@ -158,13 +158,12 @@ import DisplayTableRowPopup from '~/components/layouts/DisplayTableRowPopup'
 
 export default {
   name: 'ContactLists',
+  middleware: ['contactBook'],
   components: {
     DisplayTableRowPopup,
-
     BadgeBase,
     DisplayTableComponent,
     EditObjectModal,
-
     Spinner,
     TopHeaderBar,
     ContactListCollaborators,

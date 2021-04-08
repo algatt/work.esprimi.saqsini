@@ -208,6 +208,7 @@ import TextLink from '~/components/elements/TextLink'
 
 export default {
   name: 'SurveyList',
+  middleware: ['surveyBuilder'],
   components: {
     TextLink,
     DisplayTableRowPopup,

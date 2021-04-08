@@ -119,6 +119,7 @@
               Contact List
             </text-link>
           </div>
+
           <button-base
             bg-colour="red"
             class="ml-2 xl:pl-0"
@@ -143,8 +144,19 @@
       </select-base>
     </div>
 
-    <div class="flex w-full justify-between items-center">
-      <button-base @click="addGroup"> Add Condition Group </button-base>
+    <div class="flex flex-col w-full items-start">
+      <div
+        v-if="questions.length === 0 && contactlists.length === 0"
+        class="mb-6"
+      >
+        <p class="font-semibold">There is no branching available.</p>
+      </div>
+      <button-base
+        :disabled="questions.length === 0 && contactlists.length === 0"
+        @click="addGroup"
+      >
+        Add Condition Group
+      </button-base>
     </div>
   </div>
 </template>
@@ -183,6 +195,9 @@ export default {
     }
   },
   computed: {
+    canUseContactBook() {
+      return this.$store.getters['auth/getPermissions'].includes('CONTACT_BOOK')
+    },
     question() {
       return this.$store.state.currentItemToBeEdited
     },
@@ -205,10 +220,14 @@ export default {
       return JSON.parse(JSON.stringify(this.loadedFilters))
     },
     contactlists() {
-      return this.$store.getters.getItems('contactlist')
+      if (this.canUseContactBook)
+        return this.$store.getters.getItems('contactlist')
+      return []
     },
     contactList() {
-      return this.$store.getters.getSelectedContactList
+      if (this.canUseContactBook)
+        return this.$store.getters.getSelectedContactList
+      return {}
     },
   },
   watch: {
@@ -234,7 +253,7 @@ export default {
     addGroup() {
       const len = this.conditions.length
       const obj = {
-        contactListCode: this.contactList.code,
+        contactListCode: this.contactList.code ? this.contactList.code : null,
         groupIndex: len,
         ruleList: [],
       }

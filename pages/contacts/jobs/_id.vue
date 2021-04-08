@@ -161,6 +161,7 @@ import BadgeBase from '~/components/elements/BadgeBase'
 import DisplayTableRowPopup from '~/components/layouts/DisplayTableRowPopup'
 export default {
   name: 'JobsList',
+  middleware: ['contactBook'],
   components: {
     DisplayTableRowPopup,
     BadgeBase,

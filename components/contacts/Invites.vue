@@ -11,7 +11,7 @@
           ></button-icon>
         </div>
 
-        <div class="flex flex-col mb-5 w-40">
+        <div v-if="canUseContactBook" class="flex flex-col mb-5 w-40">
           <button-icon @click="showInviteDialog('contacts')">
             Contacts
             <template v-slot:icon
@@ -19,7 +19,7 @@
           ></button-icon>
         </div>
 
-        <div class="flex flex-col mb-5 w-40">
+        <div v-if="canUseContactBook" class="flex flex-col mb-5 w-40">
           <button-icon @click="showInviteDialog('contactlist')">
             Contact List
             <template v-slot:icon
@@ -82,6 +82,9 @@ export default {
     }
   },
   computed: {
+    canUseContactBook() {
+      return this.$store.getters['auth/getPermissions'].includes('CONTACT_BOOK')
+    },
     currentItemToBeEdited() {
       return this.$store.state.currentItemToBeEdited
     },
