@@ -58,7 +58,10 @@
             >Delete ({{ selectedInvites.length }})<template v-slot:icon
               ><i class="fas fa-trash-alt fa-fw"></i></template
           ></button-icon>
-          <button-icon class="mr-3" @click="selectedInvites = invites"
+          <button-icon
+            class="mr-3"
+            :disabled="invites.length === 0"
+            @click="selectedInvites = invites"
             >Select All<template v-slot:icon
               ><i class="fas fa-check-double fa-fw"></i></template
           ></button-icon>
@@ -70,7 +73,7 @@
           ></button-icon>
         </div>
       </div>
-      <div class="flex flex-col shadow rounded">
+      <div v-if="invites.length > 0" class="flex flex-col shadow rounded">
         <div
           class="flex flex-wrap bg-gray-100 border border-gray-200 py-3 uppercase font-semibold text-gray-700"
         >
@@ -121,6 +124,10 @@
           <span class="w-12 flex items-center justify-center"> </span>
         </div>
       </div>
+      <info-box v-else>
+        <template v-slot:title>No Invites</template>
+        <template v-slot:content>There are no invites here...</template>
+      </info-box>
       <div class="mb-10">&nbsp;</div>
     </div>
 
@@ -170,10 +177,12 @@ import InviteByContactList from '~/components/surveys/InviteByContactList'
 import BadgeBase from '~/components/elements/BadgeBase'
 import SelectBase from '~/components/elements/SelectBase'
 import ModalConfirm from '~/components/layouts/ModalConfirm'
+import InfoBox from '~/components/layouts/InfoBox'
 
 export default {
   name: 'ContactsInvites',
   components: {
+    InfoBox,
     ModalConfirm,
     SelectBase,
     BadgeBase,
