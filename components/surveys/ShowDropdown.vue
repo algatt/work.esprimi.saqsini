@@ -21,7 +21,7 @@
       >
         <option value="" disabled selected>{{ getNotSelected() }}</option>
         <option
-          v-for="(option, index) in convertedQuestion.options"
+          v-for="(option, index) in question.options"
           :key="index"
           :value="option.value"
         >
@@ -68,23 +68,12 @@ export default {
       answers: '',
     }
   },
-  computed: {
-    convertedQuestion() {
-      const temp = JSON.parse(JSON.stringify(this.question))
-
-      temp.options.forEach((option) => {
-        option.questionOption = option.value
-      })
-
-      return temp
-    },
-  },
   watch: {
     answers() {
       if (this.answers === '') {
         this.$emit('answers', [])
       } else {
-        const whichOption = this.convertedQuestion.options.find((el) => {
+        const whichOption = this.question.options.find((el) => {
           return el.value === this.answers
         })
 

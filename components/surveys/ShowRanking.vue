@@ -118,6 +118,9 @@ export default {
 
     if (this.existingAnswer) {
       this.answers = JSON.parse(JSON.stringify(this.existingAnswer))
+      this.answers = this.answers.sort((a, b) => {
+        return a.value > b.value ? 1 : -1
+      })
     }
 
     if (!this.answers) this.answers = []
@@ -154,7 +157,11 @@ export default {
     },
     moveAnswerToOptions(option, index) {
       this.answers.splice(index, 1)
-      this.options.push(option)
+      this.options.push(
+        this.convertedQuestion.options.find((el) => {
+          return el.value === option.questionOption
+        })
+      )
       this.dummies = []
       let rank = this.answers.length + 1
       this.options.forEach(() => {

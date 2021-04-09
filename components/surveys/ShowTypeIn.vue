@@ -62,17 +62,12 @@ export default {
 
   watch: {
     answer() {
-      this.$emit('answers', [{ questionOption: 'Type In', value: this.answer }])
+      this.$emit('answers', [{ value: this.answer }])
     },
   },
   created() {
-    if (
-      this.existingAnswer &&
-      this.existingAnswer.length > 0 &&
-      this.existingAnswer[0].value
-    ) {
-      this.answer = JSON.parse(JSON.stringify(this.existingAnswer)).value
-    }
+    if (this.existingAnswer && this.existingAnswer.length > 0)
+      this.answer = this.existingAnswer[0].value
   },
 }
 </script>

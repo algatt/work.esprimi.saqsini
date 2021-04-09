@@ -17,7 +17,7 @@
         class="flex w-full md:flex-1 flex-col flex-wrap md:flex-row md:flex-grow"
       >
         <button
-          v-for="(option, index) in convertedQuestion.options"
+          v-for="(option, index) in question.options"
           :key="index"
           class="card-likert"
           :style="{
@@ -77,17 +77,7 @@ export default {
       answers: [],
     }
   },
-  computed: {
-    convertedQuestion() {
-      const temp = JSON.parse(JSON.stringify(this.question))
 
-      temp.options.forEach((option) => {
-        option.questionOption = option.value
-      })
-
-      return temp
-    },
-  },
   watch: {
     answers() {
       this.$emit('answers', this.answers)

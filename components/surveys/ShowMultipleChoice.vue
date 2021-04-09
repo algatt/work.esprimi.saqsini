@@ -11,7 +11,7 @@
     </div>
     <div class="flex flex-col mt-2">
       <button
-        v-for="(option, index) in convertedQuestion.options"
+        v-for="(option, index) in question.options"
         :key="index"
         :style="{
           borderColor: displayStyle.accentColour,
@@ -123,15 +123,6 @@ export default {
     }
   },
   computed: {
-    convertedQuestion() {
-      const temp = JSON.parse(JSON.stringify(this.question))
-
-      temp.options.forEach((option) => {
-        option.questionOption = option.value
-      })
-
-      return temp
-    },
     availableAnswers() {
       return this.question.options.map((el) => {
         return el.value.toLowerCase()
@@ -157,17 +148,11 @@ export default {
   methods: {
     addToAnswer(option) {
       const foundAnswer = this.answers.find((el) => {
-        return (
-          el.value === option.value &&
-          el.questionOption === option.questionOption
-        )
+        return el.value === option.value
       })
       if (foundAnswer) {
         this.answers = this.answers.filter((el) => {
-          return (
-            el.value !== option.value &&
-            el.questionOption !== option.questionOption
-          )
+          return el.value !== option.value
         })
       } else {
         if (!this.question.allowMultiple) {
