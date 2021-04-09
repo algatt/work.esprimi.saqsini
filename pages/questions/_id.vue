@@ -3,10 +3,10 @@
     <template v-if="!error">
       <top-header-bar
         :which="selectedView === 'questions' ? 'questions' : 'invites'"
-        :items="selectedView === 'questions' ? [] : invites"
+        :items="[]"
         :hide-select-all="true"
         :hide-delete="true"
-        :hide-menu="selectedView === 'invites'"
+        :disable-menu="selectedView === 'invites'"
       >
         <template v-slot:title>
           {{ survey.name }}
@@ -82,16 +82,10 @@
             </template>
           </span>
         </template>
-        <template v-else v-slot:menuButtonIfNotSelected>
-          <span @click="invite()">
-            <i class="fas fa-paper-plane fa-fw"></i>
-            Invite
-          </span>
-        </template>
       </top-header-bar>
 
-      <div v-if="selectedView === 'invites'">
-        <invites @contacts="checkContacts"></invites>
+      <div v-if="selectedView === 'invites'" class="flex flex-col w-full">
+        <invites></invites>
       </div>
       <div v-else class="flex flex-col w-full">
         <div
@@ -199,31 +193,40 @@
               </popup-menu>
             </div>
             <div
-              class="bigScreenPopup hidden xl:flex justify-center bg-primary border-t-2 border-b-2 border-gray-100 h-3 cursor-pointer hover:h-10 hover:bg-white transition-all duration-500"
+              class="bigScreenPopup hidden xl:flex h-5 cursor-pointer hover:h-10 hover:bg-white duration-500"
             >
-              <popup-menu id="bigScreenPopupChild" class="opacity-0">
-                <template v-slot:icon>
-                  <button-icon-rounded bg-colour="blue">
-                    <i class="fas fa-plus fa-fw fa-sm"></i>
-                  </button-icon-rounded>
-                </template>
+              <div class="w-12 flex items-start justify-start">
+                <i
+                  id="bigScreenPopupIndicator"
+                  class="fas fa-caret-right fa-fw text-gray-400 opacity-1"
+                ></i>
+              </div>
+              <div class="flex flex-1 justify-center">
+                <popup-menu id="bigScreenPopupChild" class="opacity-0">
+                  <template v-slot:icon>
+                    <button-icon-rounded bg-colour="blue">
+                      <i class="fas fa-plus fa-fw fa-sm"></i>
+                    </button-icon-rounded>
+                  </template>
 
-                <template v-slot:menu>
-                  <span
-                    v-for="questionType in questionTypes"
-                    :key="questionType.code"
-                    @click="
-                      newQuestion(
-                        questionType.flag,
-                        question.ordinalPosition + 1
-                      )
-                    "
-                  >
-                    <i class="fa-fw fa-sm" :class="questionType.icon"></i>
-                    {{ questionType.text }}
-                  </span>
-                </template>
-              </popup-menu>
+                  <template v-slot:menu>
+                    <span
+                      v-for="questionType in questionTypes"
+                      :key="questionType.code"
+                      @click="
+                        newQuestion(
+                          questionType.flag,
+                          question.ordinalPosition + 1
+                        )
+                      "
+                    >
+                      <i class="fa-fw fa-sm" :class="questionType.icon"></i>
+                      {{ questionType.text }}
+                    </span>
+                  </template>
+                </popup-menu>
+              </div>
+              <div class="w-12"></div>
             </div>
           </div>
         </div>
@@ -405,7 +408,6 @@ export default {
       showPreview: null,
       whichSubMenu: null,
       showMoveMenu: null,
-      invites: [],
       error: false,
       loading: true,
       cannotDeleteDueToBranching: [],
@@ -582,12 +584,6 @@ export default {
       this.showPreview = !this.showPreview
       cookies.set('questionPreviewMode', this.showPreview)
     },
-    invite() {
-      alert('todo')
-    },
-    checkContacts(result) {
-      this.invites = result
-    },
     getBranchingContactBook() {
       const code = []
       for (const i in this.questions) {
@@ -616,5 +612,21 @@ export default {
 }
 .bigScreenPopup:hover #bigScreenPopupChild {
   @apply opacity-100 ease-in transition-all duration-300;
+}
+
+.bigScreenPopup #bigScreenPopupIndicator {
+  @apply opacity-100 transition-all duration-500;
+}
+.bigScreenPopup:hover #bigScreenPopupIndicator {
+  @apply opacity-0 ease-in transition-all duration-100;
+}
+
+.bigScreenPopup {
+  @apply border-t-2 border-b-2 border-gray-100 bg-gray-50;
+  transition-property: height, background-color;
+}
+
+.bigScreenPopup:hover {
+  @apply bg-white border-gray-100 bg-gray-50;
 }
 </style>

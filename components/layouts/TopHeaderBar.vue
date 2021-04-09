@@ -21,7 +21,7 @@
         <div v-if="!hideMenu">
           <popup-menu class="ml-2"
             ><template v-slot:icon>
-              <button-icon class="hidden lg:block"
+              <button-icon class="hidden lg:block" :disabled="disableMenu"
                 ><slot name="menuText"></slot>
                 <template v-if="!$slots.menuText">Actions</template>
                 <template v-slot:icon
@@ -113,6 +113,10 @@ export default {
       },
     },
     hideMenu: {
+      type: Boolean,
+      default: false,
+    },
+    disableMenu: {
       type: Boolean,
       default: false,
     },

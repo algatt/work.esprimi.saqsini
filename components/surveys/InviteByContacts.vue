@@ -207,6 +207,7 @@ export default {
         .dispatch('invitations/add', list)
         .then(() => {
           this.$toasted.show('Invitations successfully sent')
+          this.$store.dispatch('invitations/getAll', { code: this.survey.code })
           this.cancel()
         })
         .catch(() => {

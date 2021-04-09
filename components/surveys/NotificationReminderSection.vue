@@ -180,6 +180,8 @@ export default {
   watch: {
     form: {
       handler(ev) {
+        this.form.notificationTimestamp = this.notificationTimestamp
+        this.form.reminderTimestamp = this.reminderTimestamp
         this.$emit('update', this.form)
         this.$emit('error', this.$v.$invalid)
       },

@@ -136,9 +136,9 @@ export default {
       const list = {
         surveyCode: this.survey.code,
         filter: null,
-        notificationTimestamp: this.notificationTimestamp,
+        notificationTimestamp: this.form.notificationTimestamp,
         notificationMessage: this.form.notificationMessage,
-        reminderTimestamp: this.reminderTimestamp,
+        reminderTimestamp: this.form.reminderTimestamp,
         reminderMessage: this.form.reminderMessage,
         invites: this.totalInvites.map((el) => {
           return { email: el }
@@ -149,6 +149,7 @@ export default {
         .dispatch('invitations/add', list)
         .then(() => {
           this.$toasted.show('Invitations successfully sent')
+          this.$store.dispatch('invitations/getAll', { code: this.survey.code })
           this.cancel()
         })
         .catch(() => {

@@ -12,6 +12,7 @@
       :questions="surveyData.questions"
       :show-start="true"
       :has-token="hasToken"
+      :existing-answers="existingAnswers"
       @finishSurvey="finishSurvey"
       @answers="processAnswers"
       @changedAnswers="saveSession($event)"
@@ -57,6 +58,24 @@ export default {
     },
     hasToken() {
       return this.$route.query.token !== undefined
+    },
+    existingAnswers() {
+      const answers = JSON.parse(JSON.stringify(this.surveyData.questions))
+      this.surveyData.responses.forEach((response) => {
+        const x = answers.find((question) => {
+          return question.code === response.questionCode
+        })
+        if (!x.answers) x.answers = []
+
+        x.answers.push({
+          questionOption: response.option,
+          value: response.value,
+        })
+      })
+
+      return answers.filter((el) => {
+        return el.answers
+      })
     },
   },
   mounted() {

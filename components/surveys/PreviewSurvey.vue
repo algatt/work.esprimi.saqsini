@@ -235,6 +235,13 @@ export default {
       required: false,
       default: false,
     },
+    existingAnswers: {
+      type: Array,
+      required: false,
+      default: () => {
+        return []
+      },
+    },
   },
 
   data() {
@@ -322,6 +329,11 @@ export default {
     this.survey = parseSurveyToForm(
       JSON.parse(JSON.stringify(this.originalSurvey))
     )
+    if (this.existingAnswers.length > 0) {
+      this.existingAnswers.forEach((el) => {
+        this.processAnswers(el.answers, el)
+      })
+    }
     if (!this.showStart) this.started = true
   },
   methods: {

@@ -236,6 +236,8 @@ export const getters = {
   getPermissions(state) {
     const permissions = []
 
+    if (!state.authUser) return []
+
     if (state.authUser.appFlags.includes('SURVEY_BUILDER'))
       permissions.push('SURVEY_BUILDER')
     if (state.authUser.appFlags.includes('CONTACTBOOK'))

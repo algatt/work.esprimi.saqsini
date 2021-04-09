@@ -76,10 +76,14 @@ export const actions = {
 
   submit({ commit }, answers) {
     return new Promise((resolve, reject) => {
-      this.$axios
+      const axios = require('axios')
+      const instance = axios.create()
+
+      instance
         .put(`/builder/invites/`, answers, {
           headers: {
             'Content-Type': 'application/json',
+            Authorization: process.env.authorization,
           },
         })
         .then((response) => {
@@ -93,8 +97,13 @@ export const actions = {
 
   consume({ commit }, token) {
     return new Promise((resolve, reject) => {
-      this.$axios
-        .patch(`/builder/invites/${token}/consume`)
+      const axios = require('axios')
+      const instance = axios.create()
+
+      instance
+        .patch(`/builder/invites/${token}/consume`, {
+          headers: { Authorization: process.env.authorization },
+        })
         .then((response) => {
           resolve(response.data)
         })
