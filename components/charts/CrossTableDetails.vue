@@ -247,7 +247,7 @@ export default {
         } else if (this.crossTabX.flags.includes('TYPE_IN')) {
           xAnswers.push([response.token, String(response.value)])
         } else {
-          xAnswers.push([response.token, String(response.option)])
+          xAnswers.push([response.token, String(response.value)])
         }
       })
 
@@ -263,7 +263,7 @@ export default {
         } else if (this.crossTabY.flags.includes('TYPE_IN')) {
           yAnswers.push([response.token, String(response.value)])
         } else {
-          yAnswers.push([response.token, String(response.option)])
+          yAnswers.push([response.token, String(response.value)])
         }
       })
 
