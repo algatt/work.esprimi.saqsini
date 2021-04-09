@@ -3,6 +3,40 @@ export const state = () => ({
 })
 
 export const actions = {
+  getAll({ commit }, { code }) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .get(`/builder/invites/all?code=${code}`)
+        .then((response) => {
+          commit(
+            'setItems',
+            {
+              which: 'invitations',
+              items: response.data,
+            },
+            { root: true }
+          )
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  delete({ commit }, { code }) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .delete(`/builder/invites/${code}`)
+        .then((response) => {
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
   getFilters({ commit, rootGetters }) {
     return new Promise((resolve, reject) => {
       this.$axios

@@ -14,7 +14,7 @@
       </span>
       <span
         v-if="$slots.extra"
-        class="flex items-center justify-center px-1 py-1"
+        class="flex items-center justify-center px-1 py-1 transition duration-300"
         :class="iconStyle"
       >
         <slot name="extra"></slot>

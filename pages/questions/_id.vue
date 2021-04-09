@@ -4,8 +4,9 @@
       <top-header-bar
         :which="selectedView === 'questions' ? 'questions' : 'invites'"
         :items="selectedView === 'questions' ? [] : invites"
-        :hide-select-all="selectedView === 'questions'"
+        :hide-select-all="true"
         :hide-delete="true"
+        :hide-menu="selectedView === 'invites'"
       >
         <template v-slot:title>
           {{ survey.name }}
