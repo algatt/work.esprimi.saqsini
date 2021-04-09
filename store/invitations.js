@@ -101,7 +101,7 @@ export const actions = {
       const instance = axios.create()
 
       instance
-        .patch(`/builder/invites/${token}/consume`, {
+        .patch(`/builder/invites/${token}/consume`, null, {
           headers: { Authorization: process.env.authorization },
         })
         .then((response) => {

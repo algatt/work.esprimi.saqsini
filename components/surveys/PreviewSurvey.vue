@@ -390,10 +390,7 @@ export default {
                   }
                 } else if (
                   temp.find((el) => {
-                    return (
-                      el.questionOption === existingAnswers[i].questionOption &&
-                      el.value === existingAnswers[i].value
-                    )
+                    return el.value === existingAnswers[i].value
                   })
                 ) {
                   foundAnswer = true
