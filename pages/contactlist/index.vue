@@ -155,6 +155,7 @@ import ButtonIcon from '~/components/elements/ButtonIcon'
 import NewContactList from '~/components/contacts/NewContactList'
 import BadgeBase from '~/components/elements/BadgeBase'
 import DisplayTableRowPopup from '~/components/layouts/DisplayTableRowPopup'
+import InfoBox from '~/components/layouts/InfoBox'
 
 export default {
   name: 'ContactLists',
@@ -169,6 +170,7 @@ export default {
     ContactListCollaborators,
     ButtonIcon,
     NewContactList,
+    InfoBox,
   },
   mixins: [viewMixin],
   data() {

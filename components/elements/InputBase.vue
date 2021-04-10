@@ -11,6 +11,7 @@
       @input="updateValue($event.target.value)"
       @keyup="$emit('keyup', $event.target.value)"
       @blur="$emit('blur', $event.target.value)"
+      @change="$emit('change', $event.target.value)"
     />
     <span v-if="error" class="text-sm text-red-600 px-1 py-1">
       {{ error }}
@@ -41,7 +42,7 @@ export default {
       default: null,
     },
     value: {
-      type: [String, Number],
+      type: [String, Number, Date],
       required: false,
       default: () => {
         return undefined

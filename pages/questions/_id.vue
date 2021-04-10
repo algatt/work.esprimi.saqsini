@@ -415,7 +415,7 @@ export default {
   },
   computed: {
     canUseContactBook() {
-      return this.$store.getters['auth/getPermissions'].includes('CONTACT_BOOK')
+      return this.$store.getters['auth/getPermissions'].includes('CONTACTBOOK')
     },
     languageText() {
       const data = {}

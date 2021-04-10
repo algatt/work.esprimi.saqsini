@@ -4,7 +4,6 @@
       <input-base
         id="inputName"
         v-model="form.name"
-        value="form.name"
         :error="
           $v.form.name.$model !== undefined && !$v.form.name.required
             ? 'required'
@@ -15,14 +14,13 @@
         >List Name</input-base
       >
 
-      <input-base
+      <p class="font-semibold">Contact List</p>
+      <input
         v-if="form.code === -1"
         id="inputData"
         type="file"
-        placeholder="Upload List Template"
         @change="fileSelected"
-        >List Data</input-base
-      >
+      />
 
       <input-base
         id="inputValidity"
@@ -93,8 +91,7 @@ export default {
   },
   methods: {
     fileSelected(event) {
-      const files = document.getElementById('inputData').files
-      this.form.dataFile = files[0]
+      this.form.dataFile = document.getElementById('inputData').files[0]
     },
   },
 }

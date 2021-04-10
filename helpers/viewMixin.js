@@ -15,8 +15,8 @@ export default {
     },
   },
   methods: {
-    setCurrentItem(item) {
-      this.$store.dispatch('setCurrentItemToBeEdited', item)
+    async setCurrentItem(item) {
+      await this.$store.dispatch('setCurrentItemToBeEdited', item)
     },
   },
 }

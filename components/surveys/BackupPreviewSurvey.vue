@@ -50,6 +50,11 @@
                 class="px-5 py-2"
                 @click="changeLanguage(language)"
               >
+                <language-flag
+                  v-if="false"
+                  :iso="language"
+                  :squared="false"
+                ></language-flag>
                 {{ getCountryFromLanguage(language) }}
               </button>
             </div>
@@ -60,21 +65,18 @@
     <div ref="questionsSection" class="w-full">
       <template v-if="started">
         <div
-          v-for="question in processedQuestions"
+          v-for="question in questionsWithSectionsFiltered"
           :key="question.code"
           class="mb-5"
         >
           <display-question
-            v-if="question.page === currentPage"
             :key="`${question.code} ${currentLanguage}`"
             class="rounded shadow"
             :display-style="survey.options"
             :language="currentLanguage"
             :language-text="languageText"
             :question="question"
-            :existing-answer="
-              getAnswerByQuestionNumber(question.questionNumber)
-            "
+            :existing-answer="getAnswer(question.code)"
             @answers="processAnswers($event, question)"
             @clearAnswers="clearAnswers(question)"
           ></display-question>
@@ -86,12 +88,12 @@
           :style="{ backgroundColor: survey.options.backgroundColour }"
         >
           <display-question
-            :key="`${processedQuestions[0].code} ${currentLanguage}`"
+            :key="`${questiosWithSectionsFilteredFirstPage.code} ${currentLanguage}`"
             class="rounded"
             :display-style="survey.options"
             :language="currentLanguage"
             :language-text="languageText"
-            :question="processedQuestions[0]"
+            :question="questiosWithSectionsFilteredFirstPage"
           ></display-question>
         </div>
         <div
@@ -206,16 +208,14 @@
 
 <script>
 import DisplayQuestion from '~/components/surveys/DisplayQuestion'
+import LanguageFlag from '~/components/layouts/LanguageFlag'
 import PopupMenuVue from '~/components/layouts/PopupMenu'
 import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
-import {
-  SURVEY_LANGUAGE_GENERIC_TERMS,
-  PREFERRED_LANGUAGE,
-} from '~/helpers/constants'
+import { SURVEY_LANGUAGE_GENERIC_TERMS } from '~/helpers/constants'
 
 export default {
   name: 'PreviewSurvey',
-  components: { PopupMenuVue, DisplayQuestion },
+  components: { PopupMenuVue, DisplayQuestion, LanguageFlag },
   props: {
     originalSurvey: {
       type: Object,
@@ -248,8 +248,9 @@ export default {
     return {
       answers: [],
       currentPage: 1,
-      currentLanguage: PREFERRED_LANGUAGE,
+      currentLanguage: 'en',
       survey: null,
+      loading: true,
       started: false,
     }
   },
@@ -264,10 +265,10 @@ export default {
       return data
     },
     enableNext() {
-      for (const cnt of this.processedQuestionsCurrentPage) {
+      for (const cnt of this.questionsWithSectionsFiltered) {
         if (
           cnt.flags.includes('IS_MANDATORY') &&
-          this.getAnswerByQuestionNumber(cnt.questionNumber).length === 0
+          this.getAnswer(cnt.code).length === 0
         )
           return false
       }
@@ -276,50 +277,43 @@ export default {
     enablePrevious() {
       return this.currentPage > 1
     },
-
-    isFinalPage() {
-      return (
-        this.currentPage ===
-        this.processedQuestions
-          .map((el) => {
-            return el.page
-          })
-          .reduce((a, b) => {
-            return Math.max(a, b)
-          })
-      )
+    totalPages() {
+      let pages = this.questionsWithSections.map((el) => {
+        return el.page
+      })
+      pages = Math.max(...pages)
+      return pages
     },
-
-    processedQuestions() {
-      let questions = JSON.parse(JSON.stringify(this.questions))
-      questions = questions.sort((a, b) => {
+    isFinalPage() {
+      return this.totalPages === this.currentPage
+    },
+    questionsWithSections() {
+      let x = JSON.parse(JSON.stringify(this.questions))
+      x = x.sort((a, b) => {
         return a.ordinalPosition > b.ordinalPosition ? 1 : -1
       })
       let page = 0
-      questions.forEach((el) => {
+      x.forEach((el) => {
         if (el.flags.includes('SECTION')) page++
         el.page = page
-        el.validity = this.getConditionState(el.surveyOptions)
       })
-      const whichSectionsAreValid = questions
-        .filter((el) => {
-          return el.flags.includes('SECTION') && el.validity === true
-        })
-        .map((el) => {
-          return el.page
-        })
-      questions.forEach((el) => {
-        if (
-          !el.flags.includes('SECTION') &&
-          !whichSectionsAreValid.includes(el.page)
-        )
-          el.validity = false
-      })
-      return questions
+      return x
     },
-    processedQuestionsCurrentPage() {
-      return this.processedQuestions.filter((el) => {
+    questionsWithSectionsFiltered() {
+      const questionsOnThisPage = this.questionsWithSections.filter((el) => {
         return el.page === this.currentPage
+      })
+
+      const finalResult = []
+      questionsOnThisPage.forEach((el) => {
+        if (this.getConditionState(el.surveyOptions)) finalResult.push(el)
+      })
+
+      return finalResult
+    },
+    questiosWithSectionsFilteredFirstPage() {
+      return this.questionsWithSectionsFiltered.find((el) => {
+        return el.ordinalPosition
       })
     },
   },
@@ -478,58 +472,36 @@ export default {
         page: this.currentPage,
       })
 
-      const whichSectionsAreValid = this.processedQuestions
-        .filter((el) => {
-          return el.validity === true
-        })
-        .map((el) => {
-          return el.code
-        })
-
-      this.answers = this.answers.filter((el) => {
-        return whichSectionsAreValid.includes(el.code)
-      })
-
       if (this.hasToken) this.$emit('changedAnswers', this.answers)
     },
     showPreviousPage() {
-      const whichPage = this.processedQuestions
-        .filter((el) => {
-          return (
-            el.page < this.currentPage &&
-            el.flags.includes('SECTION') &&
-            el.validity === true
-          )
-        })
-        .map((el) => {
-          return el.page
-        })
-        .reduce((a, b) => {
-          return Math.max(a, b)
-        })
-      this.currentPage = whichPage
+      this.currentPage--
       this.$refs.surveyModal.scrollIntoView()
     },
     showNextPage() {
-      const whichPage = this.processedQuestions
-        .filter((el) => {
-          return (
-            el.page > this.currentPage &&
-            el.flags.includes('SECTION') &&
-            el.validity === true
-          )
+      let currentPage = this.currentPage + 1
+
+      while (currentPage <= this.totalPages) {
+        const x = this.questionsWithSections.filter((el) => {
+          return el.page === currentPage
         })
-        .map((el) => {
-          return el.page
-        })
-        .reduce((a, b) => {
-          return Math.min(a, b)
-        })
-      this.currentPage = whichPage
+        if (this.getConditionState(x[0].surveyOptions)) {
+          this.currentPage = currentPage
+          break
+        }
+        currentPage++
+      }
+
       this.$refs.surveyModal.scrollIntoView()
     },
     finishSurvey() {
       this.$emit('finishSurvey')
+    },
+    getAnswer(code) {
+      const x = this.answers.find((el) => {
+        return el.code === code
+      })
+      return x && x.answers ? x.answers : []
     },
     getAnswerByQuestionNumber(questionNumber) {
       const code = this.questions.find((el) => {

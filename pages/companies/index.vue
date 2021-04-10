@@ -251,6 +251,7 @@ export default {
       .dispatch('contactlist/getContactLists', { limit: 100, offset: 0 })
       .then(() => {
         if (this.contactlists.length !== 0) this.updateData()
+        else this.$store.dispatch('setLoading', false)
       })
   },
   methods: {
