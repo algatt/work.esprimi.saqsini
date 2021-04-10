@@ -17,9 +17,9 @@
           borderColor: displayStyle.accentColour,
           backgroundColor: answerPresent(option.value)
             ? displayStyle.accentColour
-            : displayStyle.backgroundColour,
+            : 'white',
           color: answerPresent(option.value)
-            ? displayStyle.backgroundColour
+            ? 'white'
             : displayStyle.textColour,
         }"
         class="card-multiple-choice"
@@ -41,13 +41,8 @@
         :style="{
           borderColor: displayStyle.accentColour,
           backgroundColor:
-            otherAnswer !== ''
-              ? displayStyle.accentColour
-              : displayStyle.backgroundColour,
-          color:
-            otherAnswer !== ''
-              ? displayStyle.backgroundColour
-              : displayStyle.textColour,
+            otherAnswer !== '' ? displayStyle.accentColour : 'white',
+          color: otherAnswer !== '' ? 'white' : displayStyle.textColour,
         }"
       >
         <span
@@ -66,13 +61,8 @@
           :style="{
             borderColor: displayStyle.accentColour,
             backgroundColor:
-              otherAnswer !== ''
-                ? displayStyle.accentColour
-                : displayStyle.backgroundColour,
-            color:
-              otherAnswer !== ''
-                ? displayStyle.backgroundColour
-                : displayStyle.textColour,
+              otherAnswer !== '' ? displayStyle.accentColour : 'white',
+            color: otherAnswer !== '' ? 'white' : displayStyle.textColour,
           }"
           placeholder="Other answer..."
           @blur="checkOtherAnswer"

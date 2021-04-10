@@ -2,29 +2,29 @@
   <div
     v-if="!loading"
     class="min-h-screen"
-    :style="{
-      backgroundColor: true ? '#E5E7EB' : parsedSurvey.options.accentColour,
-    }"
+    :style="{ backgroundColor: parsedSurvey.options.backgroundColour }"
   >
-    <PreviewSurvey
-      class="w-11/12 md:w-8/12 mx-auto"
-      :original-survey="survey.survey"
-      :questions="surveyData.questions"
-      :show-start="true"
-      :has-token="hasToken"
-      :existing-answers="existingAnswers"
-      @finishSurvey="finishSurvey"
-      @answers="processAnswers"
-      @changedAnswers="saveSession($event)"
-    ></PreviewSurvey>
-    <modal-generic v-if="finished && !hasToken">
-      <template v-slot:title>Finished</template
-      ><template v-slot:body> Thank you for participating. </template>
-    </modal-generic>
-    <modal-generic v-else-if="finished && hasToken">
-      <template v-slot:title>Finished</template
-      ><template v-slot:body> Thank you for participating. </template>
-    </modal-generic>
+    <div class="w-full min-h-screen">
+      <PreviewSurvey
+        class="w-11/12 md:w-8/12 mx-auto"
+        :original-survey="survey.survey"
+        :questions="surveyData.questions"
+        :show-start="true"
+        :has-token="hasToken"
+        :existing-answers="existingAnswers"
+        @finishSurvey="finishSurvey"
+        @answers="processAnswers"
+        @changedAnswers="saveSession($event)"
+      ></PreviewSurvey>
+      <modal-generic v-if="finished && !hasToken">
+        <template v-slot:title>Finished</template
+        ><template v-slot:body> Thank you for participating. </template>
+      </modal-generic>
+      <modal-generic v-else-if="finished && hasToken">
+        <template v-slot:title>Finished</template
+        ><template v-slot:body> Thank you for participating. </template>
+      </modal-generic>
+    </div>
   </div>
   <spinner v-else></spinner>
 </template>

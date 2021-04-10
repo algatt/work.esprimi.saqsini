@@ -1,9 +1,13 @@
 <template>
-  <div v-if="survey" ref="surveyModal" class="flex flex-col p-5 h-full">
+  <div
+    v-if="survey"
+    ref="surveyModal"
+    class="flex flex-col p-5 h-full"
+    :style="{ backgroundColor: survey.options.backgroundColour }"
+  >
     <div
-      class="bg-cover flex flex-wrap items-center rounded w-full mb-5 shadow"
+      class="bg-cover flex flex-wrap items-center rounded w-full mb-5 shadow bg-white"
       :style="{
-        backgroundColor: survey.options.backgroundColour,
         backgroundImage: 'url(' + survey.options.headerImage + ')',
       }"
     >
@@ -67,7 +71,7 @@
           <display-question
             v-if="question.page === currentPage"
             :key="`${question.code} ${currentLanguage}`"
-            class="rounded shadow"
+            class="rounded shadow bg-white"
             :display-style="survey.options"
             :language="currentLanguage"
             :language-text="languageText"
@@ -81,10 +85,7 @@
         </div>
       </template>
       <template v-else>
-        <div
-          class="rounded shadow py-10"
-          :style="{ backgroundColor: survey.options.backgroundColour }"
-        >
+        <div class="rounded shadow py-10 bg-white">
           <display-question
             :key="`${processedQuestions[0].code} ${currentLanguage}`"
             class="rounded"
@@ -95,14 +96,12 @@
           ></display-question>
         </div>
         <div
-          class="flex items-center justify-center space-x-3 my-5 py-3 rounded shadow"
-          :style="{ backgroundColor: survey.options.backgroundColour }"
+          class="flex items-center justify-center space-x-3 my-5 py-3 rounded shadow bg-white"
         >
           <button
-            class="px-5 py-1 rounded font-semibold"
+            class="px-5 py-1 rounded font-semibold text-white"
             :style="{
               backgroundColor: survey.options.accentColour,
-              color: survey.options.backgroundColour,
             }"
             @click="started = true"
           >
@@ -113,8 +112,7 @@
 
       <div
         v-if="started"
-        class="flex items-center justify-center space-x-3 my-5 py-3 rounded shadow-lg"
-        :style="{ backgroundColor: survey.options.backgroundColour }"
+        class="flex items-center justify-center space-x-3 my-5 py-3 rounded shadow-lg bg-white"
       >
         <button
           :disabled="!enablePrevious"
@@ -132,7 +130,7 @@
                 }
               : {
                   backgroundColor: survey.options.accentColour,
-                  color: survey.options.backgroundColour,
+                  color: 'white',
                 }
           "
           @click="showPreviousPage"
@@ -157,7 +155,7 @@
                 }
               : {
                   backgroundColor: survey.options.accentColour,
-                  color: survey.options.backgroundColour,
+                  color: 'white',
                 }
           "
           @click="showNextPage"
@@ -182,7 +180,7 @@
                 }
               : {
                   backgroundColor: survey.options.accentColour,
-                  color: survey.options.backgroundColour,
+                  color: 'white',
                 }
           "
           @click="finishSurvey"

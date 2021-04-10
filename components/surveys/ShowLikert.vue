@@ -24,9 +24,9 @@
             borderColor: displayStyle.accentColour,
             backgroundColor: answerPresent(option.value)
               ? displayStyle.accentColour
-              : displayStyle.backgroundColour,
+              : 'white',
             color: answerPresent(option.value)
-              ? displayStyle.backgroundColour
+              ? 'white'
               : displayStyle.textColour,
           }"
           @click="addAnswer(option)"

@@ -15,7 +15,7 @@
         class="dropdown-input dropdown-select md:w-6/12 w-full"
         :style="{
           borderColor: displayStyle.accentColour,
-          backgroundColor: displayStyle.backgroundColour,
+          backgroundColor: 'white',
           color: displayStyle.textColour,
         }"
       >

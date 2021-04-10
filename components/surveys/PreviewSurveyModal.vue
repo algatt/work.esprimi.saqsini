@@ -2,9 +2,7 @@
   <div class="frosted p-0 md:p-8 z-20" @click="$emit('modalClosed')">
     <div
       class="w-full check-height md:w-8/12 mx-auto flex flex-col relative shadow-md overflow-y-auto"
-      :style="{
-        backgroundColor: true ? '#E5E7EB' : survey.options.accentColour,
-      }"
+      :style="{ backgroundColor: survey.options.backgroundColour }"
       @click.stop
     >
       <preview-survey
@@ -13,6 +11,7 @@
         :show-start="true"
         @finishSurvey="$emit('modalClosed')"
       ></preview-survey>
+
       <div class="absolute" style="top: 10px; right: 10px">
         <button-icon-rounded bg-colour="blue" @click="$emit('modalClosed')">
           <i class="fas fa-times fa-fw fa-3xl text-white"></i>

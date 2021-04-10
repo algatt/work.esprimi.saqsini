@@ -20,7 +20,7 @@
           class="md:w-7/12 w-11/12 p-3 my-2 rounded shadow-sm cursor-pointer mx-auto border-2 border-transparent"
           :style="{
             backgroundColor: displayStyle.accentColour,
-            color: displayStyle.backgroundColour,
+            color: 'white',
           }"
           @click="moveOptionToAnswers(option, index)"
         >
@@ -35,7 +35,7 @@
           class="w-11/12 md:w-7/12 p-3 my-2 rounded shadow-sm cursor-pointer mx-auto border-2 border-transparent"
           :style="{
             backgroundColor: displayStyle.accentColour,
-            color: displayStyle.backgroundColour,
+            color: 'white',
           }"
           @click="moveAnswerToOptions(option, index)"
         >
