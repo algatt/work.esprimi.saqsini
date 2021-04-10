@@ -91,12 +91,12 @@
         <div
           v-for="iteration in questionsNumberOfSections"
           :key="'page' + iteration"
-          class="mt-5 w-full md:w-8/12 mx-auto flex flex-col border-2 border-gray-100 rounded shadow p-6 bg-gray-100 mb-5"
+          class="mt-5 w-full md:w-8/12 mx-auto flex flex-col mb-5 border border-gray-100 shadow"
         >
           <div
             v-for="question in getQuestionsInPage(iteration)"
             :key="question.code"
-            class="relative"
+            class="relative bigScreenPopup cursor-pointer border-b-2 border-gray-100"
           >
             <div class="flex flex-col w-full bg-white p-5">
               <div class="flex w-full">
@@ -166,7 +166,7 @@
               ></display-question>
             </div>
             <div
-              class="flex xl:hidden justify-center py-2 bg-white border-t-2 border-b-2 border-gray-100"
+              class="flex xl:hidden justify-center py-0.5 bg-gray-100 border-t-2 border-b-2 border-gray-100"
             >
               <popup-menu>
                 <template v-slot:icon>
@@ -193,16 +193,11 @@
               </popup-menu>
             </div>
             <div
-              class="bigScreenPopup hidden xl:flex h-5 cursor-pointer hover:h-10 hover:bg-white duration-500"
+              id="bigScreenPopupChild"
+              class="hidden xl:flex h-5 duration-500"
             >
-              <div class="w-12 flex items-start justify-start">
-                <i
-                  id="bigScreenPopupIndicator"
-                  class="fas fa-caret-right fa-fw text-gray-400 opacity-1"
-                ></i>
-              </div>
               <div class="flex flex-1 justify-center">
-                <popup-menu id="bigScreenPopupChild" class="opacity-0">
+                <popup-menu id="" class="opacity-1">
                   <template v-slot:icon>
                     <button-icon-rounded bg-colour="blue">
                       <i class="fas fa-plus fa-fw fa-sm"></i>
@@ -226,7 +221,6 @@
                   </template>
                 </popup-menu>
               </div>
-              <div class="w-12"></div>
             </div>
           </div>
         </div>
@@ -611,22 +605,6 @@ export default {
   @apply opacity-0 transition-all duration-300;
 }
 .bigScreenPopup:hover #bigScreenPopupChild {
-  @apply opacity-100 ease-in transition-all duration-300;
-}
-
-.bigScreenPopup #bigScreenPopupIndicator {
-  @apply opacity-100 transition-all duration-500;
-}
-.bigScreenPopup:hover #bigScreenPopupIndicator {
-  @apply opacity-0 ease-in transition-all duration-100;
-}
-
-.bigScreenPopup {
-  @apply border-t-2 border-b-2 border-gray-100 bg-gray-50;
-  transition-property: height, background-color;
-}
-
-.bigScreenPopup:hover {
-  @apply bg-white border-gray-100 bg-gray-50;
+  @apply opacity-100 ease-in transition-all duration-300 h-10;
 }
 </style>
