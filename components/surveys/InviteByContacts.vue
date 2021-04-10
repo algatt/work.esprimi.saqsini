@@ -186,9 +186,9 @@ export default {
       const list = {
         surveyCode: this.survey.code,
         filter: null,
-        notificationTimestamp: this.notificationTimestamp,
+        notificationTimestamp: this.form.notificationTimestamp,
         notificationMessage: this.form.notificationMessage,
-        reminderTimestamp: this.reminderTimestamp,
+        reminderTimestamp: this.form.reminderTimestamp,
         reminderMessage: this.form.reminderMessage,
         invites: this.selectedContacts.map((el) => {
           return {
