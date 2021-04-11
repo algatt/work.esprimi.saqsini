@@ -101,6 +101,8 @@ export default {
           return { option: el.option, value: el.value, found: false }
         })
 
+      if (originalAnswers.length === 0) return true
+
       const currentAnswers = this.answers
         .filter((el) => {
           return el.code === code
