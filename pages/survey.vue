@@ -47,6 +47,7 @@ export default {
       answers: [],
       finished: false,
       sessionDetails: {},
+      changedAnswers: {},
     }
   },
   computed: {
@@ -91,6 +92,45 @@ export default {
     this.generateSessionDetails()
   },
   methods: {
+    hasAnswerChanged(code) {
+      const originalAnswers = this.surveyData.responses
+        .filter((el) => {
+          return el.questionCode === code
+        })
+        .map((el) => {
+          return { option: el.option, value: el.value, found: false }
+        })
+
+      const currentAnswers = this.answers
+        .filter((el) => {
+          return el.code === code
+        })
+        .map((el) => {
+          return {
+            option: el.answers[0].questionOption,
+            value: el.answers[0].value,
+          }
+        })
+
+      originalAnswers.forEach((oa) => {
+        currentAnswers.forEach((ca) => {
+          if (oa.option === ca.option && oa.value === ca.value) oa.found = true
+        })
+      })
+
+      return (
+        originalAnswers.filter((el) => {
+          return el.found === false
+        }).length > 0
+      )
+    },
+    getExistingSessionDetails(code) {
+      const x = this.surveyData.responses.find((el) => {
+        return el.questionCode === code
+      })
+      if (x) return x.surveyOptions
+      return {}
+    },
     async finishSurvey() {
       this.finished = true
 
@@ -128,7 +168,9 @@ export default {
               questionCode: answer.code,
               option: el.questionOption,
               value: el.value,
-              surveyOptions: JSON.stringify(this.sessionDetails),
+              surveyOptions: this.hasAnswerChanged(answer.code)
+                ? JSON.stringify(this.sessionDetails)
+                : this.getExistingSessionDetails(answer.code),
             })
           })
         })
