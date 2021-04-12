@@ -19,6 +19,7 @@
               >Collaborator's Email
               <template v-slot:button>
                 <button-for-input
+                  text-colour="green"
                   :disabled="$v.$invalid"
                   @click="addCollaborator"
                   ><i

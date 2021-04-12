@@ -8,7 +8,11 @@
       >
         Collaborator Email
         <template v-slot:button>
-          <button-for-input :disabled="$v.$invalid" @click="addCollaborator">
+          <button-for-input
+            text-colour="green"
+            :disabled="$v.$invalid"
+            @click="addCollaborator"
+          >
             <i class="fas fa-check fa-fw"></i> </button-for-input
         ></template>
       </input-base-with-button>
