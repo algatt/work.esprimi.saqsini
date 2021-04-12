@@ -115,6 +115,7 @@
                     {{ question.questionNumber }}
                   </span>
                 </div>
+
                 <div class="w-16 flex items-center justify-end">
                   <popup-menu>
                     <template v-slot:icon>

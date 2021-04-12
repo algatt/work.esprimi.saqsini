@@ -11,19 +11,28 @@
           <button
             v-for="item in questions"
             :key="item.code"
-            :disabled="item.code === tempQuestion.code"
+            :disabled="
+              item.code === tempQuestion.code ||
+              item.ordinalPosition === tempQuestion.ordinalPosition - 1 ||
+              item.ordinalPosition < minPosition
+            "
             class="flex my-2 p-2 transition duration-300 rounded hover:bg-gray-100"
             :class="[
               item.code === tempQuestion.code ||
-              item.ordinalPosition === tempQuestion.ordinalPosition - 1
+              item.ordinalPosition === tempQuestion.ordinalPosition - 1 ||
+              item.ordinalPosition < minPosition
                 ? 'cursor-not-allowed'
                 : 'cursor-pointer',
-              item.flags.includes('SECTION') ? 'font-semibold' : 'ml-4',
             ]"
             @click="moveCurrentQuestionAfter(item.ordinalPosition)"
           >
-            <p :class="item.code === tempQuestion.code ? 'italic' : null">
-              {{ item.name }}
+            <p>
+              <span
+                :class="
+                  item.flags.includes('SECTION') ? 'font-semibold' : 'ml-4'
+                "
+                >{{ item.name }}</span
+              >
               <span class="text-primary font-semibold ml-2">{{
                 item.questionNumber
               }}</span>
@@ -33,8 +42,17 @@
                 bg-colour="gray"
                 >{{ getQuestionType(item) }}</badge-base
               >
-              <span v-if="item.code === tempQuestion.code">
-                (current question)</span
+              <badge-base
+                v-if="item.code === tempQuestion.code"
+                class="ml-2"
+                bg-colour="green"
+                >current question</badge-base
+              >
+              <badge-base
+                v-if="item.ordinalPosition <= minPosition"
+                bg-colour="red"
+                title="Moving it here will cause existing branching not to work anymore."
+                >branching problem</badge-base
               >
             </p>
           </button>
@@ -73,6 +91,19 @@ export default {
       tempQuestion: null,
     }
   },
+  computed: {
+    minPosition() {
+      let whichPosition = null
+      this.questions.forEach((el) => {
+        if (this.getBranchingError(el)) {
+          if (whichPosition && whichPosition < el.ordinalPosition)
+            whichPosition = el.ordinalPosition
+          else whichPosition = el.ordinalPosition
+        }
+      })
+      return whichPosition
+    },
+  },
   created() {
     this.tempQuestion = JSON.parse(JSON.stringify(this.question))
   },
@@ -85,6 +116,22 @@ export default {
     document.body.scroll = 'yes'
   },
   methods: {
+    getBranchingError(question) {
+      let found = false
+
+      const branching = JSON.parse(this.question.surveyOptions)
+      if (branching.branching) {
+        branching.branching.rules.forEach((rule) => {
+          rule.ruleList.forEach((rl) => {
+            if (rl.questionNumber === question.questionNumber) {
+              found = true
+            }
+          })
+        })
+      }
+
+      return found
+    },
     getQuestionType(question) {
       return QUESTION_TYPES[getQuestionType(question)].text
     },
