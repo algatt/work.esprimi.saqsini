@@ -156,7 +156,6 @@
 
 <script>
 import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
-import ButtonIcon from '~/components/elements/ButtonIcon'
 import NotificationReminderSection from '~/components/surveys/NotificationReminderSection'
 import MultiSelect from '~/components/elements/MultiSelect'
 import TextLink from '~/components/elements/TextLink'
@@ -168,7 +167,6 @@ export default {
     Spinner,
     TextLink,
     NotificationReminderSection,
-    ButtonIcon,
     MultiSelect,
   },
   props: {

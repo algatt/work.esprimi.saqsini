@@ -20,10 +20,9 @@
       <input-base id="email" v-model="email" type="email">Email</input-base>
 
       <button-animated :disabled="$v.$invalid" @click="sendAnotherToken"
-        ><template v-slot:icon
+        >Send Another Token<template v-slot:icon
           ><i class="fas fa-spinner fa-fw animate-spin"></i></template
-        >Send Another Token</button-animated
-      >
+      ></button-animated>
     </template>
 
     <template v-else>
@@ -32,10 +31,9 @@
       >
 
       <button-animated :disabled="$v.$invalid" @click="setPassword"
-        ><template v-slot:icon
+        >Set Password<template v-slot:icon
           ><i class="fas fa-spinner fa-fw animate-spin"></i></template
-        >Set Password</button-animated
-      >
+      ></button-animated>
     </template>
   </div>
   <spinner v-else></spinner>

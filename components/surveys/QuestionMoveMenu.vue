@@ -59,9 +59,9 @@
         </div>
       </div>
       <div class="w-full p-3 justify-end w-full flex">
-        <button-base bg-colour="gray" @click="$emit('close')">
+        <button-basic colour="gray" @click="$emit('close')">
           Close
-        </button-base>
+        </button-basic>
       </div>
     </div>
   </div>
@@ -71,11 +71,10 @@
 import { getQuestionType } from '~/helpers/parseSurveyObjects'
 import BadgeBase from '~/components/elements/BadgeBase'
 import { QUESTION_TYPES } from '~/helpers/constants'
-import ButtonBase from '~/components/elements/ButtonBase'
 
 export default {
   name: 'QuestionMoveMenu',
-  components: { BadgeBase, ButtonBase },
+  components: { BadgeBase },
   props: {
     question: {
       type: Object,

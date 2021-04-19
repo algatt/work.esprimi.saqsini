@@ -55,11 +55,11 @@
         </div>
       </div>
       <div class="w-full flex justify-end p-5 px-3">
-        <button-icon bg-colour="gray" @click="cancelModal">
-          <template v-slot:icon
-            ><i class="fas fa-times fa-fw fa-sm"></i></template
-          >Cancel
-        </button-icon>
+        <button-basic colour="gray" @click="cancelModal">
+          Cancel<template v-slot:rightIcon
+            ><i class="fas fa-times fa-fw fa-sm"></i
+          ></template>
+        </button-basic>
       </div>
     </div>
   </div>
@@ -68,7 +68,6 @@
 <script>
 import { validationMixin } from 'vuelidate'
 import { required, email } from 'vuelidate/lib/validators'
-import ButtonIcon from '~/components/elements/ButtonIcon'
 import InputBaseWithButton from '~/components/elements/InputBaseWithButton'
 import ButtonIconRoundedOutline from '~/components/elements/ButtonIconRoundedOutline'
 import ButtonForInput from '~/components/elements/ButtonForInput'
@@ -79,7 +78,6 @@ export default {
     ButtonIconRoundedOutline,
     ButtonForInput,
     InputBaseWithButton,
-    ButtonIcon,
   },
   mixins: [validationMixin],
   props: {

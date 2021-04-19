@@ -43,7 +43,7 @@
       </div>
 
       <div key="addNewButton" class="flex justify-start my-4">
-        <button-base @click="addNewOption"> Add New Option </button-base>
+        <button-basic @click="addNewOption"> Add New Option </button-basic>
       </div>
     </div>
 
@@ -68,7 +68,6 @@ import PopupBase from '~/components/elements/PopupBase'
 import ToggleSwitch from '~/components/elements/ToggleSwitch'
 import InputBase from '~/components/elements/InputBase'
 import ButtonForInput from '~/components/elements/ButtonForInput'
-import ButtonBase from '~/components/elements/ButtonBase'
 
 export default {
   name: 'NewQuestionLikert',
@@ -77,7 +76,6 @@ export default {
     PopupBase,
     ToggleSwitch,
     InputBase,
-    ButtonBase,
   },
   mixins: [validationMixin, questionMixin],
   props: {

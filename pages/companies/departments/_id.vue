@@ -8,19 +8,19 @@
       >
         <template v-slot:title> Departments for {{ company.name }}</template>
         <template v-if="departments.length !== 0" v-slot:extraButtons>
-          <button-icon @click="setCurrentItem({ code: -1 })">
+          <button-basic @click="setCurrentItem({ code: -1 })">
             New Department
-            <template v-slot:icon
+            <template v-slot:rightIcon
               ><i class="fas fa-plus fa-fw fa-sm"></i>
-            </template> </button-icon></template
+            </template> </button-basic></template
       ></top-header-bar>
 
       <info-box v-if="departments.length === 0" class="flex-grow mt-2 md:mt-0">
         <template v-slot:title>No Departments</template>
         <template v-slot:content>
-          <button-base @click="setCurrentItem({ code: -1 })">
+          <button-basic @click="setCurrentItem({ code: -1 })">
             Create a department...
-          </button-base>
+          </button-basic>
         </template></info-box
       >
 
@@ -90,8 +90,7 @@ import Spinner from '~/components/layouts/Spinner'
 import viewMixin from '~/helpers/viewMixin'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 import InfoBox from '~/components/layouts/InfoBox'
-import ButtonIcon from '~/components/elements/ButtonIcon'
-import ButtonBase from '~/components/elements/ButtonBase'
+
 import BadgeBase from '~/components/elements/BadgeBase'
 import DisplayTableRowPopup from '~/components/layouts/DisplayTableRowPopup'
 export default {
@@ -106,8 +105,6 @@ export default {
     EditObjectModal,
     TopHeaderBar,
     InfoBox,
-    ButtonBase,
-    ButtonIcon,
   },
   mixins: [viewMixin],
   computed: {

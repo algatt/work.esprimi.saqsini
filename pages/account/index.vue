@@ -31,11 +31,11 @@
         >
           <i class="fas fa-user fa-fw fa-5x bg-white"></i>
         </span>
-        <button-base
+        <button-basic
           :disabled="avatarImage === ''"
           class="mt-5"
           @click="resetImage"
-          >Reset</button-base
+          >Reset</button-basic
         >
       </div>
       <div class="flex flex-col p-5 w-full xl:w-8/12">
@@ -46,18 +46,16 @@
       </div>
 
       <div class="w-full flex p-3 justify-center mb-4">
-        <button-icon :disabled="$v.$invalid" @click="updateDetails"
-          ><template v-slot:icon
+        <button-basic :disabled="$v.$invalid" @click="updateDetails"
+          >Update Details<template v-slot:rightIcon
             ><i class="fas fa-save fa-fw fa-sm"></i></template
-          >Update Details</button-icon
-        >
+        ></button-basic>
       </div>
       <div class="w-full flex p-3 justify-center bg-red-100">
-        <button-icon bg-colour="red" @click="showConfirm = true"
-          ><template v-slot:icon
+        <button-basic colour="red" @click="showConfirm = true"
+          >Delete Account<template v-slot:rightIcon
             ><i class="fas fa-exclamation-triangle fa-sm fa-fw"></i></template
-          >Delete Account</button-icon
-        >
+        ></button-basic>
       </div>
     </div>
 
@@ -82,19 +80,17 @@
         ></input-base>
 
         <div class="flex justify-between w-full">
-          <button-icon @click="showConfirm = false"
-            ><template v-slot:icon
+          <button-basic @click="showConfirm = false"
+            >Cancel<template v-slot:rightIcon
               ><i class="fas fa-times fa-fw fa-sm"></i></template
-            >Cancel</button-icon
-          >
-          <button-icon
-            bg-colour="red"
+          ></button-basic>
+          <button-basic
+            colour="red"
             :disabled="confirmEmail !== accountDetails.email"
             @click="logoutUser"
-            ><template v-slot:icon
+            >Delete Account<template v-slot:rightIcon
               ><i class="fas fa-exclamation-triangle fa-fw fa-sm"></i></template
-            >Delete Account</button-icon
-          >
+          ></button-basic>
         </div>
       </div>
     </div>
@@ -106,12 +102,11 @@
 import { validationMixin } from 'vuelidate'
 import { required, email } from 'vuelidate/lib/validators'
 import Spinner from '~/components/layouts/Spinner'
-import ButtonIcon from '~/components/elements/ButtonIcon'
-import ButtonBase from '~/components/elements/ButtonBase'
+
 import InputBase from '~/components/elements/InputBase'
 export default {
   name: 'AccountDetails',
-  components: { InputBase, ButtonBase, Spinner, ButtonIcon },
+  components: { InputBase, Spinner },
   mixins: [validationMixin],
   data() {
     return {

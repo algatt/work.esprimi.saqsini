@@ -32,7 +32,7 @@
       </div>
 
       <div class="flex justify-start mt-2 mb-4">
-        <button-base @click="addNewOption"> Add New Option</button-base>
+        <button-basic @click="addNewOption"> Add New Option</button-basic>
       </div>
     </div>
 
@@ -65,7 +65,7 @@ import { required } from 'vuelidate/lib/validators'
 import ToggleSwitch from '~/components/elements/ToggleSwitch'
 import PopupBase from '~/components/elements/PopupBase'
 import InputBaseWithButton from '~/components/elements/InputBaseWithButton'
-import ButtonBase from '~/components/elements/ButtonBase'
+
 import ButtonForInput from '~/components/elements/ButtonForInput'
 
 export default {
@@ -75,7 +75,6 @@ export default {
     PopupBase,
     ToggleSwitch,
     InputBaseWithButton,
-    ButtonBase,
   },
   mixins: [validationMixin],
   props: {

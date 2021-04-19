@@ -2,35 +2,32 @@
   <div class="flex flex-wrap w-full justify-between items-center py-2">
     <div class="flex flex-wrap items-center w-3/12">
       <template v-if="showDelete && form.code !== -1">
-        <button-icon
+        <button-basic
           v-if="form.ordinalPosition !== 1"
-          bg-colour="red"
+          colour="red"
           :disabled="form.code === -1"
           @click="deleteItem"
           >Delete
-          <template v-slot:icon
+          <template v-slot:rightIcon
             ><i class="fas fa-trash-alt fa-fw fa-sm"></i
           ></template>
-        </button-icon>
+        </button-basic>
       </template>
     </div>
 
     <div class="flex flex-wrap items-center w-9/12 justify-end space-x-3">
-      <button-icon bg-colour="gray" @click="cancelCurrentItem">
+      <button-basic colour="gray" @click="cancelCurrentItem">
         Cancel
-        <template v-slot:icon
+        <template v-slot:rightIcon
           ><i class="fas fa-times fa-fw fa-sm"></i
         ></template>
-      </button-icon>
-      <button-icon
-        v-if="showSave"
-        colour="blue"
-        :disabled="!isValid"
-        @click="saveItem"
-      >
+      </button-basic>
+      <button-basic v-if="showSave" :disabled="!isValid" @click="saveItem">
         Save
-        <template v-slot:icon><i class="fas fa-save fa-fw fa-sm"></i></template>
-      </button-icon>
+        <template v-slot:rightIcon
+          ><i class="fas fa-save fa-fw fa-sm"></i
+        ></template>
+      </button-basic>
     </div>
   </div>
 </template>
@@ -40,11 +37,9 @@ import {
   parseSurveyToAPI,
   parseQuestionToApi,
 } from '~/helpers/parseSurveyObjects'
-import ButtonIcon from '~/components/elements/ButtonIcon'
 
 export default {
   name: 'EditObjectModalBottomPart',
-  components: { ButtonIcon },
   props: {
     form: {
       required: true,

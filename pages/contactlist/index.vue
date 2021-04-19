@@ -7,12 +7,12 @@
     >
       <template v-slot:title> Contact Lists </template>
       <template v-slot:extraButtons>
-        <button-icon @click="setCurrentItem({ code: -1 })">
+        <button-basic @click="setCurrentItem({ code: -1 })">
           Contact List
-          <template v-slot:icon
+          <template v-slot:rightIcon
             ><i class="fas fa-plus fa-fw fa-sm"></i
           ></template>
-        </button-icon>
+        </button-basic>
       </template>
       <template v-slot:menuButtonIfNotSelected>
         <span @click="downloadTemplate">
@@ -151,7 +151,7 @@ import Spinner from '~/components/layouts/Spinner'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 import ContactListCollaborators from '~/components/contacts/ContactListCollaborators'
 import viewMixin from '~/helpers/viewMixin'
-import ButtonIcon from '~/components/elements/ButtonIcon'
+
 import NewContactList from '~/components/contacts/NewContactList'
 import BadgeBase from '~/components/elements/BadgeBase'
 import DisplayTableRowPopup from '~/components/layouts/DisplayTableRowPopup'
@@ -168,7 +168,7 @@ export default {
     Spinner,
     TopHeaderBar,
     ContactListCollaborators,
-    ButtonIcon,
+
     NewContactList,
     InfoBox,
   },

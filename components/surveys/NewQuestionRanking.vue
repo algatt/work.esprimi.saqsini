@@ -28,7 +28,7 @@
       </input-base-with-button>
 
       <div class="flex justify-start my-4">
-        <button-base @click="addNewOption"> Add New Option </button-base>
+        <button-basic @click="addNewOption"> Add New Option </button-basic>
       </div>
     </div>
   </div>
@@ -39,10 +39,10 @@ import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
 import ButtonForInput from '~/components/elements/ButtonForInput'
 import InputBaseWithButton from '~/components/elements/InputBaseWithButton'
-import ButtonBase from '~/components/elements/ButtonBase'
+
 export default {
   name: 'NewQuestionRanking',
-  components: { ButtonForInput, InputBaseWithButton, ButtonBase },
+  components: { ButtonForInput, InputBaseWithButton },
   mixins: [validationMixin],
   props: {
     form: {

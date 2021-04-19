@@ -12,14 +12,14 @@
         >
 
         <template v-slot:extraButtons>
-          <button-icon
+          <button-basic
             v-if="!disableNewButton && jobs.length !== 0"
             @click="setCurrentItem({ code: -1 })"
             >New Job
-            <template v-slot:icon
+            <template v-slot:rightIcon
               ><i class="fas fa-plus fa-fw fa-sm"></i
             ></template>
-          </button-icon> </template
+          </button-basic> </template
       ></top-header-bar>
 
       <info-box v-if="disableNewButton" class="flex-grow mt-2 md:mt-0">
@@ -43,9 +43,9 @@
       <info-box v-else-if="jobs.length === 0" class="flex-grow mt-2 md:mt-0">
         <template v-slot:title>No Job History</template>
         <template v-slot:content>
-          <button-base @click="setCurrentItem({ code: -1 })">
+          <button-basic @click="setCurrentItem({ code: -1 })">
             Add a new one...
-          </button-base>
+          </button-basic>
         </template></info-box
       >
 
@@ -155,8 +155,7 @@ import Spinner from '~/components/layouts/Spinner'
 import viewMixin from '~/helpers/viewMixin'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 import InfoBox from '~/components/layouts/InfoBox'
-import ButtonIcon from '~/components/elements/ButtonIcon'
-import ButtonBase from '~/components/elements/ButtonBase'
+
 import BadgeBase from '~/components/elements/BadgeBase'
 import DisplayTableRowPopup from '~/components/layouts/DisplayTableRowPopup'
 export default {
@@ -165,14 +164,13 @@ export default {
   components: {
     DisplayTableRowPopup,
     BadgeBase,
-    ButtonBase,
+
     Spinner,
     DisplayTableComponent,
     EditObjectModal,
     NewJob,
     TopHeaderBar,
     InfoBox,
-    ButtonIcon,
   },
 
   mixins: [viewMixin],

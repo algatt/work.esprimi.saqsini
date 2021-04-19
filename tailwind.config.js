@@ -3,8 +3,10 @@ module.exports = {
     extend: {
       opacity: ['disabled'],
       backgroundColor: ['disabled'],
-      borderColor: ['active'],
+      borderColor: ['active', 'disabled'],
       height: ['hover'],
+      textColor: ['disabled'],
+      cursor: ['disabled'],
     },
   },
   theme: {

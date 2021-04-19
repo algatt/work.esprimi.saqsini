@@ -80,7 +80,7 @@
 <script>
 import moment from 'moment'
 import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
-import ButtonIcon from '~/components/elements/ButtonIcon'
+
 import NotificationReminderSection from '~/components/surveys/NotificationReminderSection'
 import InputBaseWithButton from '~/components/elements/InputBaseWithButton'
 import ButtonForInput from '~/components/elements/ButtonForInput'
@@ -94,7 +94,7 @@ export default {
     ButtonForInput,
     InputBaseWithButton,
     NotificationReminderSection,
-    ButtonIcon,
+
     TextLink,
   },
   props: {

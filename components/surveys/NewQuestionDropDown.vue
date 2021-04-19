@@ -40,7 +40,7 @@
         </input-base-with-button>
 
         <div class="flex justify-start mt-4 mb-4">
-          <button-base @click="addNewOption"> Add New Option </button-base>
+          <button-basic @click="addNewOption"> Add New Option </button-basic>
         </div></template
       >
       <template v-else>
@@ -61,7 +61,7 @@ import PopupBase from '~/components/elements/PopupBase'
 import ToggleSwitch from '~/components/elements/ToggleSwitch'
 import InputBaseWithButton from '~/components/elements/InputBaseWithButton'
 import ButtonForInput from '~/components/elements/ButtonForInput'
-import ButtonBase from '~/components/elements/ButtonBase'
+
 import TextAreaBase from '~/components/elements/TextAreaBase'
 
 export default {
@@ -72,7 +72,6 @@ export default {
     ToggleSwitch,
     InputBaseWithButton,
     ButtonForInput,
-    ButtonBase,
   },
   mixins: [validationMixin],
   props: {

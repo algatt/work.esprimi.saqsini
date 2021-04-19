@@ -17,14 +17,10 @@
       >Password</input-base
     >
 
-    <button-animated
-      bg-colour="blue"
-      :disabled="$v.$invalid"
-      @click="attemptLogin"
-      ><template v-slot:icon
+    <button-animated colour="blue" :disabled="$v.$invalid" @click="attemptLogin"
+      >Login<template v-slot:rightIcon
         ><i class="fas fa-spinner fa-fw animate-spin"></i></template
-      >Login</button-animated
-    >
+    ></button-animated>
 
     <text-link>
       <nuxt-link :to="{ name: 'forgot' }">Forgot Password</nuxt-link></text-link

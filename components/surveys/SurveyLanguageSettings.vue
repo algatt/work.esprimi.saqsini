@@ -5,9 +5,9 @@
         This survey only has the default language. You can generate a file that
         allows you to translate your survey in other languages.
       </p>
-      <button-base class="my-2" @click="generateLanguagePack">
+      <button-basic class="my-2" @click="generateLanguagePack">
         Generate Language Pack
-      </button-base>
+      </button-basic>
     </div>
     <div v-else class="flex flex-col">
       <badge-base
@@ -34,18 +34,18 @@
       </div>
       <h6 class="mt-5">Language Pack Options</h6>
       <div class="flex justify-start space-x-5">
-        <button-base class="my-3" @click="downloadLanguagePack">
+        <button-basic class="my-3" @click="downloadLanguagePack">
           Download Existing
-        </button-base>
+        </button-basic>
 
-        <button-base class="my-3" @click="generateLanguagePack">
+        <button-basic class="my-3" @click="generateLanguagePack">
           Generate New
-        </button-base>
+        </button-basic>
 
         <input id="inputFile" type="file" hidden @change="uploadFile" />
-        <button-base class="my-3" @click="activateInputFile">
+        <button-basic class="my-3" @click="activateInputFile">
           Upload New
-        </button-base>
+        </button-basic>
       </div>
     </div>
 
@@ -62,12 +62,12 @@
 <script>
 import moment from 'moment'
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
-import ButtonBase from '~/components/elements/ButtonBase'
+
 import BadgeBase from '~/components/elements/BadgeBase'
 
 export default {
   name: 'SurveyLanguageSettings',
-  components: { BadgeBase, EditObjectModalBottomPart, ButtonBase },
+  components: { BadgeBase, EditObjectModalBottomPart },
   computed: {
     survey() {
       return this.$store.state.currentItemToBeEdited

@@ -8,22 +8,20 @@
       </h5>
       <div class="mb-3"><slot name="message"></slot></div>
       <div class="flex w-full justify-center space-x-5">
-        <button-base bg-colour="red" @click="$emit('confirm')">
+        <button-basic colour="red" @click="$emit('confirm')">
           Delete
-        </button-base>
-        <button-base bg-colour="gray" @click="$emit('cancel')">
+        </button-basic>
+        <button-basic colour="gray" @click="$emit('cancel')">
           Cancel
-        </button-base>
+        </button-basic>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import ButtonBase from '~/components/elements/ButtonBase'
 export default {
   name: 'ModalConfirm',
-  components: { ButtonBase },
 }
 </script>
 

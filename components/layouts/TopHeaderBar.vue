@@ -21,12 +21,11 @@
         <div v-if="!hideMenu">
           <popup-menu class="ml-2"
             ><template v-slot:icon>
-              <button-icon class="hidden lg:block" :disabled="disableMenu"
-                ><slot name="menuText"></slot>
+              <button-basic class="hidden lg:flex" :disabled="disableMenu">
                 <template v-if="!$slots.menuText">Actions</template>
-                <template v-slot:icon
+                <template v-slot:rightIcon
                   ><i class="fas fa-caret-down fa-fw"></i></template
-              ></button-icon>
+              ></button-basic>
               <button-icon-rounded class="block lg:hidden">
                 <i class="fas fa-ellipsis-v fa-fw"></i
               ></button-icon-rounded>
@@ -82,13 +81,13 @@
 <script>
 import ModalConfirm from '~/components/layouts/ModalConfirm'
 import PopupMenu from '~/components/elements/PopupMenu'
-import ButtonIcon from '~/components/elements/ButtonIcon'
+
 import ButtonIconRounded from '~/components/elements/ButtonIconRounded'
 export default {
   name: 'TopHeaderBar',
   components: {
     ButtonIconRounded,
-    ButtonIcon,
+
     ModalConfirm,
     PopupMenu,
   },

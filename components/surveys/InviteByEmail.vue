@@ -58,7 +58,7 @@
 import { validationMixin } from 'vuelidate'
 import { email } from 'vuelidate/lib/validators'
 import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
-import ButtonIcon from '~/components/elements/ButtonIcon'
+
 import TextAreaBase from '~/components/elements/TextAreaBase'
 import NotificationReminderSection from '~/components/surveys/NotificationReminderSection'
 
@@ -67,7 +67,6 @@ export default {
   components: {
     NotificationReminderSection,
     TextAreaBase,
-    ButtonIcon,
   },
   mixins: [validationMixin],
   props: {

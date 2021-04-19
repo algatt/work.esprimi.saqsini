@@ -6,13 +6,14 @@
       :hide-menu="disableNewButton || surveys.length === 0"
       ><template v-slot:title>Surveys</template>
       <template v-slot:extraButtons>
-        <button-icon
+        <button-basic
           v-if="!disableNewButton && surveys.length !== 0"
           @click="setCurrentItem({ code: -1 })"
           >New Survey
-          <template v-slot:icon
-            ><i class="fas fa-plus fa-sm fa-fw"></i
-          ></template> </button-icon></template
+          <template v-slot:rightIcon>
+            <i class="fas fa-plus fa-sm fa-fw"></i>
+          </template>
+        </button-basic> </template
     ></top-header-bar>
 
     <side-tree-nav
@@ -44,9 +45,9 @@
     >
       <template v-slot:title>No Surveys here...</template>
       <template v-slot:content>
-        <button-base @click="setCurrentItem({ code: -1 })">
+        <button-basic @click="setCurrentItem({ code: -1 })">
           Create Survey
-        </button-base>
+        </button-basic>
       </template></info-box
     >
 
@@ -199,10 +200,8 @@ import Spinner from '~/components/layouts/Spinner'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 import InfoBox from '~/components/layouts/InfoBox'
 import viewMixin from '~/helpers/viewMixin'
-import ButtonIcon from '~/components/elements/ButtonIcon'
 import NewSurvey from '~/components/surveys/NewSurvey'
 import ToggleSwitch from '~/components/elements/ToggleSwitch'
-import ButtonBase from '~/components/elements/ButtonBase'
 import DisplayTableRowPopup from '~/components/layouts/DisplayTableRowPopup'
 import TextLink from '~/components/elements/TextLink'
 
@@ -221,9 +220,8 @@ export default {
     EditObjectModal,
     TopHeaderBar,
     InfoBox,
-    ButtonIcon,
+
     NewSurvey,
-    ButtonBase,
   },
   mixins: [viewMixin],
   data() {

@@ -13,15 +13,15 @@
         </div>
       </template>
       <template v-slot:extraButtons>
-        <button-icon
+        <button-basic
           v-if="!disableNewButton && companies.length !== 0"
           @click="setCurrentItem({ code: -1 })"
         >
           New Company
-          <template v-slot:icon
+          <template v-slot:rightIcon
             ><i
               class="fas fa-plus fa-fw fa-sm"
-            ></i> </template></button-icon></template
+            ></i> </template></button-basic></template
     ></top-header-bar>
 
     <template v-if="contactlists.length < 1">
@@ -63,9 +63,9 @@
       >
         <template v-slot:title>No Companies</template>
         <template v-slot:content>
-          <button-base @click="setCurrentItem({ code: -1 })">
+          <button-basic @click="setCurrentItem({ code: -1 })">
             Create one...
-          </button-base>
+          </button-basic>
         </template></info-box
       >
 
@@ -175,11 +175,11 @@ import Spinner from '~/components/layouts/Spinner'
 import viewMixin from '~/helpers/viewMixin'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 import ContactBookDropdown from '~/components/contacts/ContactBookDropdown'
-import ButtonIcon from '~/components/elements/ButtonIcon'
+
 import InfoBox from '~/components/layouts/InfoBox'
 import TextLink from '~/components/elements/TextLink'
 import DisplayTableRowPopup from '~/components/layouts/DisplayTableRowPopup'
-import ButtonBase from '~/components/elements/ButtonBase'
+
 import BadgeBase from '~/components/elements/BadgeBase'
 export default {
   name: 'CompaniesList',
@@ -187,7 +187,7 @@ export default {
   components: {
     BadgeBase,
     DisplayTableRowPopup,
-    ButtonBase,
+
     TextLink,
     Spinner,
     NewSector,
@@ -198,7 +198,7 @@ export default {
     EditObjectModal,
     TopHeaderBar,
     ContactBookDropdown,
-    ButtonIcon,
+
     InfoBox,
   },
   mixins: [viewMixin],

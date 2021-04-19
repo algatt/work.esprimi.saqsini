@@ -5,27 +5,27 @@
         <div class="px-3 py-1 mb-2 flex flex-col items-stretch">
           <p class="font-semibold mb-2">Invite using</p>
           <div class="flex flex-col mb-5 w-40">
-            <button-icon @click="showInviteDialog('email')">
+            <button-basic @click="showInviteDialog('email')">
               Email
-              <template v-slot:icon
+              <template v-slot:rightIcon
                 ><i class="fas fa-paper-plane fa-fw fa-sm"></i></template
-            ></button-icon>
+            ></button-basic>
           </div>
 
           <div v-if="canUseContactBook" class="flex flex-col mb-5 w-40">
-            <button-icon @click="showInviteDialog('contacts')">
+            <button-basic @click="showInviteDialog('contacts')">
               Contacts
-              <template v-slot:icon
+              <template v-slot:rightIcon
                 ><i class="fas fa-paper-plane fa-fw fa-sm"></i></template
-            ></button-icon>
+            ></button-basic>
           </div>
 
           <div v-if="canUseContactBook" class="flex flex-col mb-5 w-40">
-            <button-icon @click="showInviteDialog('contactlist')">
+            <button-basic @click="showInviteDialog('contactlist')">
               Contact List
-              <template v-slot:icon
+              <template v-slot:rightIcon
                 ><i class="fas fa-paper-plane fa-fw fa-sm"></i></template
-            ></button-icon>
+            ></button-basic>
           </div>
 
           <div class="flex flex-col mb-5 w-40">
@@ -36,9 +36,9 @@
                 params: { id: survey.code },
               }"
             >
-              <button-icon
-                >Responses<template v-slot:icon
-                  ><i class="fas fa-poll fa-fw"></i></template></button-icon
+              <button-basic
+                >Responses<template v-slot:rightIcon
+                  ><i class="fas fa-poll fa-fw"></i></template></button-basic
             ></nuxt-link>
           </div>
         </div>
@@ -65,27 +65,27 @@
             </template>
           </select-base>
           <div class="flex flex-wrap items-end space-y-2 mb-2 pl-3 xl:pl-0">
-            <button-icon
+            <button-basic
               :disabled="selectedInvites.length === 0"
               class="mr-3"
-              bg-colour="red"
+              colour="red"
               @click="confirmDelete = true"
-              >Delete ({{ selectedInvites.length }})<template v-slot:icon
+              >Delete ({{ selectedInvites.length }})<template v-slot:rightIcon
                 ><i class="fas fa-trash-alt fa-fw"></i></template
-            ></button-icon>
-            <button-icon
+            ></button-basic>
+            <button-basic
               class="mr-3"
               :disabled="invites.length === 0"
               @click="selectedInvites = invites"
-              >Select All<template v-slot:icon
+              >Select All<template v-slot:rightIcon
                 ><i class="fas fa-check-double fa-fw"></i></template
-            ></button-icon>
-            <button-icon
+            ></button-basic>
+            <button-basic
               :disabled="selectedInvites.length === 0"
               @click="selectedInvites = []"
-              >Clear Selection<template v-slot:icon
+              >Clear Selection<template v-slot:rightIcon
                 ><i class="fas fa-times-circle fa-fw"></i></template
-            ></button-icon>
+            ></button-basic>
           </div>
         </div>
         <div v-if="invites.length > 0" class="flex flex-col shadow rounded">
@@ -185,7 +185,6 @@
 <script>
 import EditObjectModal from '~/components/layouts/EditObjectModal'
 import InviteByEmail from '~/components/surveys/InviteByEmail'
-import ButtonIcon from '~/components/elements/ButtonIcon'
 import InviteByContacts from '~/components/surveys/InviteByContacts'
 import InviteByContactList from '~/components/surveys/InviteByContactList'
 import BadgeBase from '~/components/elements/BadgeBase'
@@ -202,7 +201,6 @@ export default {
     BadgeBase,
     InviteByContactList,
     InviteByContacts,
-    ButtonIcon,
     InviteByEmail,
     EditObjectModal,
   },

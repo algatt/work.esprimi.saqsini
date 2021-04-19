@@ -21,10 +21,9 @@
     ></input-base>
 
     <button-animated :disabled="$v.$invalid" @click="resetPassword"
-      ><template v-slot:icon
+      >Reset Password<template v-slot:icon
         ><i class="fas fa-spinner fa-fw animate-spin"></i></template
-      >Reset Password</button-animated
-    >
+    ></button-animated>
   </div>
 </template>
 

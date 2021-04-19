@@ -14,13 +14,13 @@
         </div>
       </template>
       <template v-slot:extraButtons>
-        <button-icon
+        <button-basic
           v-if="contactlists.length !== 0 && contacts.length !== 0"
           @click="setCurrentItem({ code: -1 })"
           >New Contact
-          <template v-slot:icon
+          <template v-slot:rightIcon
             ><i class="fas fa-plus fa-sm fa-fw"></i
-          ></template> </button-icon></template
+          ></template> </button-basic></template
     ></top-header-bar>
 
     <template v-if="contactlists.length < 1">
@@ -39,8 +39,8 @@
       >
         <template v-slot:title>No Contacts</template>
         <template v-slot:content>
-          <button-base @click="setCurrentItem({ code: -1 })"
-            >Create a contact</button-base
+          <button-basic @click="setCurrentItem({ code: -1 })"
+            >Create a contact</button-basic
           >
         </template></info-box
       >
@@ -130,9 +130,9 @@ import Spinner from '~/components/layouts/Spinner'
 import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 import viewMixin from '~/helpers/viewMixin'
 import ContactBookDropdown from '~/components/contacts/ContactBookDropdown'
-import ButtonIcon from '~/components/elements/ButtonIcon'
+
 import InfoBox from '~/components/layouts/InfoBox'
-import ButtonBase from '~/components/elements/ButtonBase'
+
 import DisplayTableRowPopup from '~/components/layouts/DisplayTableRowPopup'
 
 export default {
@@ -140,14 +140,14 @@ export default {
   middleware: ['contactBook'],
   components: {
     DisplayTableRowPopup,
-    ButtonBase,
+
     NewContact,
     DisplayTableComponent,
     EditObjectModal,
     Spinner,
     TopHeaderBar,
     ContactBookDropdown,
-    ButtonIcon,
+
     InfoBox,
   },
   mixins: [viewMixin],

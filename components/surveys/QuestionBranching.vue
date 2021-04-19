@@ -120,13 +120,13 @@
             </text-link>
           </div>
 
-          <button-base
-            bg-colour="red"
+          <button-basic
+            colour="red"
             class="ml-2 xl:pl-0"
             @click="deleteGroup(condition.groupIndex)"
           >
             Delete Group
-          </button-base>
+          </button-basic>
         </div>
       </div>
       <select-base
@@ -151,12 +151,12 @@
       >
         <p class="font-semibold">There is no branching available.</p>
       </div>
-      <button-base
+      <button-basic
         :disabled="questions.length === 0 && contactlists.length === 0"
         @click="addGroup"
       >
         Add Condition Group
-      </button-base>
+      </button-basic>
     </div>
   </div>
 </template>
@@ -165,7 +165,7 @@
 import { parseQuestionToForm } from '~/helpers/parseSurveyObjects'
 import Spinner from '~/components/layouts/Spinner'
 import MultiSelect from '~/components/elements/MultiSelect'
-import ButtonBase from '~/components/elements/ButtonBase'
+
 import TextLink from '~/components/elements/TextLink'
 import SelectBase from '~/components/elements/SelectBase'
 import ButtonIconRoundedOutline from '~/components/elements/ButtonIconRoundedOutline'
@@ -175,7 +175,7 @@ export default {
   components: {
     ButtonIconRoundedOutline,
     TextLink,
-    ButtonBase,
+
     Spinner,
     MultiSelect,
     SelectBase,
