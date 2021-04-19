@@ -43,14 +43,14 @@
 import { validationMixin } from 'vuelidate'
 import { email, required, minLength } from 'vuelidate/lib/validators'
 import spinner from '@/components/layouts/Spinner'
-import InputBase from '~/components/elements/InputBase'
+
 import ButtonAnimated from '~/components/elements/ButtonAnimated'
 import TextLink from '~/components/elements/TextLink'
 
 export default {
   name: 'ActivateVue',
   layout: 'defaultLogin',
-  components: { ButtonAnimated, InputBase, spinner, TextLink },
+  components: { ButtonAnimated, spinner, TextLink },
   mixins: [validationMixin],
   data() {
     return {

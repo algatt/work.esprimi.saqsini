@@ -84,12 +84,11 @@ import { validationMixin } from 'vuelidate'
 import { required, email } from 'vuelidate/lib/validators'
 import moment from 'moment'
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
-import InputBase from '~/components/elements/InputBase'
 import SelectBase from '~/components/elements/SelectBase'
 
 export default {
   name: 'NewContact',
-  components: { SelectBase, InputBase, EditObjectModalBottomPart },
+  components: { SelectBase, EditObjectModalBottomPart },
   mixins: [validationMixin],
   validations: {
     form: {
@@ -141,10 +140,7 @@ export default {
       ).trim()
   },
   mounted() {
-    const obj = document
-      .getElementById('inputName')
-      .getElementsByTagName('input')[0]
-    obj.focus()
+    document.getElementById('inputName').focus()
   },
   methods: {
     validatePhone(ev) {

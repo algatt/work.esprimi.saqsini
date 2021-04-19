@@ -48,11 +48,10 @@ import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
 import moment from 'moment'
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
-import InputBase from '~/components/elements/InputBase'
 
 export default {
   name: 'NewContactList',
-  components: { InputBase, EditObjectModalBottomPart },
+  components: { EditObjectModalBottomPart },
   mixins: [validationMixin],
   validations: {
     form: {
@@ -84,10 +83,7 @@ export default {
     this.form = JSON.parse(JSON.stringify(this.item))
   },
   mounted() {
-    const obj = document
-      .getElementById('inputName')
-      .getElementsByTagName('input')[0]
-    obj.focus()
+    document.getElementById('inputName').focus()
   },
   methods: {
     fileSelected(event) {

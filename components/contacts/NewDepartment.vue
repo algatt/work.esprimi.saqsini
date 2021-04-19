@@ -45,11 +45,10 @@ import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
 
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
-import InputBase from '~/components/elements/InputBase'
 
 export default {
   name: 'NewDepartment',
-  components: { InputBase, EditObjectModalBottomPart },
+  components: { EditObjectModalBottomPart },
   mixins: [validationMixin],
   validations: {
     form: {
@@ -98,10 +97,7 @@ export default {
     if (!this.form.companyCode) this.form.companyCode = this.$route.params.id
   },
   mounted() {
-    const obj = document
-      .getElementById('inputName')
-      .getElementsByTagName('input')[0]
-    obj.focus()
+    document.getElementById('inputName').focus()
   },
 }
 </script>

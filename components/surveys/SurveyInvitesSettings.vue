@@ -137,7 +137,7 @@ import moment from 'moment'
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
 import { createMomentFromDateAndTime } from '~/helpers/helpers'
 import TextEditor from '~/components/layouts/textEditor'
-import InputBase from '~/components/elements/InputBase'
+
 import PopupBase from '~/components/elements/PopupBase'
 
 const checkDates = (value, vm) => {
@@ -164,7 +164,6 @@ export default {
     TextEditor,
     EditObjectModalBottomPart,
 
-    InputBase,
     PopupBase,
   },
   mixins: [validationMixin],

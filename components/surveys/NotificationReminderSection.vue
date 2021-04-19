@@ -123,7 +123,6 @@ import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
 import { createMomentFromDateAndTime } from '~/helpers/helpers'
 import TextEditor from '~/components/layouts/textEditor'
-import InputBase from '~/components/elements/InputBase'
 import PopupBase from '~/components/elements/PopupBase'
 
 const checkDates = (value, vm) => {
@@ -146,7 +145,7 @@ const checkDates = (value, vm) => {
 
 export default {
   name: 'NotificationReminderSection',
-  components: { TextEditor, InputBase, PopupBase },
+  components: { TextEditor, PopupBase },
   mixins: [validationMixin],
   props: {
     existingData: {

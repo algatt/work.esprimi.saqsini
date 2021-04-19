@@ -177,7 +177,7 @@ import PopupInfo from '~/components/layouts/PopupInfo'
 import ToggleSwitch from '~/components/elements/ToggleSwitch'
 import NewQuestionRadioGrid from '~/components/surveys/NewQuestionRadioGrid'
 import MenuIconButton from '~/components/layouts/MenuIconButton'
-import InputBase from '~/components/elements/InputBase'
+
 import PopupBase from '~/components/elements/PopupBase'
 import TextAreaBase from '~/components/elements/TextAreaBase'
 
@@ -186,7 +186,7 @@ export default {
   components: {
     TextAreaBase,
     PopupBase,
-    InputBase,
+
     MenuIconButton,
     NewQuestionRadioGrid,
     EditObjectModalBottomPart,
@@ -253,10 +253,7 @@ export default {
   },
   mounted() {
     this.$v.form.questionNumber.$touch()
-    const obj = document
-      .getElementById('inputName')
-      .getElementsByTagName('input')[0]
-    obj.focus()
+    document.getElementById('inputName').focus()
   },
   methods: {
     receiveConditions(ev) {

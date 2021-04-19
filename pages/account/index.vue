@@ -103,10 +103,9 @@ import { validationMixin } from 'vuelidate'
 import { required, email } from 'vuelidate/lib/validators'
 import Spinner from '~/components/layouts/Spinner'
 
-import InputBase from '~/components/elements/InputBase'
 export default {
   name: 'AccountDetails',
-  components: { InputBase, Spinner },
+  components: { Spinner },
   mixins: [validationMixin],
   data() {
     return {

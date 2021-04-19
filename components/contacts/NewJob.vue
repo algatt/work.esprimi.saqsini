@@ -110,12 +110,10 @@ import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBotto
 import ToggleSwitch from '~/components/elements/ToggleSwitch'
 import PopupBase from '~/components/elements/PopupBase'
 import SelectBase from '~/components/elements/SelectBase'
-import InputBase from '~/components/elements/InputBase'
 
 export default {
   name: 'NewJob',
   components: {
-    InputBase,
     SelectBase,
     PopupBase,
     ToggleSwitch,

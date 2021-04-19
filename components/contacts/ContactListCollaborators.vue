@@ -118,10 +118,7 @@ export default {
     this.$store.dispatch('emptySelectedItems')
     document.documentElement.style.overflow = 'hidden'
     document.body.scroll = 'no'
-    const obj = document
-      .getElementById('inputEmail')
-      .getElementsByTagName('input')[0]
-    obj.focus()
+    document.getElementById('inputEmail').focus()
   },
   destroyed() {
     document.documentElement.style.overflow = 'visible'

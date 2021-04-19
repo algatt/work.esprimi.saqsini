@@ -194,7 +194,7 @@ import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBotto
 import { createMomentFromDateAndTime } from '~/helpers/helpers'
 import PopupBase from '~/components/elements/PopupBase'
 import SelectBase from '~/components/elements/SelectBase'
-import InputBase from '~/components/elements/InputBase'
+
 import TextAreaBase from '~/components/elements/TextAreaBase'
 
 const checkDates = (value, vm) => {
@@ -219,7 +219,7 @@ export default {
   name: 'NewSurvey',
   components: {
     TextAreaBase,
-    InputBase,
+
     SelectBase,
     PopupBase,
     EditObjectModalBottomPart,
@@ -341,10 +341,7 @@ export default {
     this.form = parseSurveyToForm(this.form)
   },
   mounted() {
-    const obj = document
-      .getElementById('inputName')
-      .getElementsByTagName('input')[0]
-    obj.focus()
+    document.getElementById('inputName').focus()
   },
 }
 </script>

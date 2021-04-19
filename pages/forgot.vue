@@ -31,11 +31,11 @@
 import { validationMixin } from 'vuelidate'
 import { required, email } from 'vuelidate/lib/validators'
 import TextLink from '~/components/elements/TextLink'
-import InputBase from '~/components/elements/InputBase'
+
 import ButtonAnimated from '~/components/elements/ButtonAnimated'
 export default {
   name: 'Reset',
-  components: { InputBase, TextLink, ButtonAnimated },
+  components: { TextLink, ButtonAnimated },
   layout: 'defaultLogin',
   mixins: [validationMixin],
   data() {

@@ -66,7 +66,7 @@ import { required, numeric } from 'vuelidate/lib/validators'
 import questionMixin from '~/helpers/questionMixin'
 import PopupBase from '~/components/elements/PopupBase'
 import ToggleSwitch from '~/components/elements/ToggleSwitch'
-import InputBase from '~/components/elements/InputBase'
+
 import ButtonForInput from '~/components/elements/ButtonForInput'
 
 export default {
@@ -75,7 +75,6 @@ export default {
     ButtonForInput,
     PopupBase,
     ToggleSwitch,
-    InputBase,
   },
   mixins: [validationMixin, questionMixin],
   props: {
@@ -164,9 +163,10 @@ export default {
         el.ordinalPosition = position++
       })
       this.$nextTick(() => {
-        const el = document
-          .getElementById('inputOptions' + (this.options.length - 1))
-          .getElementsByTagName('input')[0]
+        const el = document.getElementById(
+          'inputOptions' + (this.options.length - 1)
+        )
+
         el.focus()
         el.select()
       })

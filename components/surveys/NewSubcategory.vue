@@ -47,11 +47,10 @@ import { required } from 'vuelidate/lib/validators'
 
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
 import SelectBase from '~/components/elements/SelectBase'
-import InputBase from '~/components/elements/InputBase'
 
 export default {
   name: 'NewSubcategory',
-  components: { SelectBase, EditObjectModalBottomPart, InputBase },
+  components: { SelectBase, EditObjectModalBottomPart },
   mixins: [validationMixin],
   validations: {
     form: {

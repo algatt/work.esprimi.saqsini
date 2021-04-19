@@ -62,11 +62,10 @@ import { required } from 'vuelidate/lib/validators'
 
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
 import SelectBase from '~/components/elements/SelectBase'
-import InputBase from '~/components/elements/InputBase'
 
 export default {
   name: 'NewIndustry',
-  components: { InputBase, SelectBase, EditObjectModalBottomPart },
+  components: { SelectBase, EditObjectModalBottomPart },
   mixins: [validationMixin],
   validations: {
     form: {
@@ -125,10 +124,7 @@ export default {
     this.form = JSON.parse(JSON.stringify(this.item))
   },
   mounted() {
-    const obj = document
-      .getElementById('inputName')
-      .getElementsByTagName('input')[0]
-    obj.focus()
+    document.getElementById('inputName').focus()
   },
   methods: {},
 }

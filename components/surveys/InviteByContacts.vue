@@ -63,15 +63,14 @@
       ></notification-reminder-section>
     </div>
     <div class="w-full flex py-10 flex justify-between">
-      <button-icon bg-colour="gray" @click="cancel"
-        ><template v-slot:icon><i class="fas fa-times fa-fw"></i></template
-        >Cancel</button-icon
-      >
-      <button-icon :disabled="!isValid" @click="sendInvites"
-        ><template v-slot:icon
+      <button-basic bg-colour="gray" @click="cancel"
+        >Cancel<template v-slot:icon
+          ><i class="fas fa-times fa-fw"></i></template
+      ></button-basic>
+      <button-basic :disabled="!isValid" @click="sendInvites"
+        >Send Invites<template v-slot:icon
           ><i class="fas fa-paper-plane fa-fw"></i></template
-        >Send Invites</button-icon
-      >
+      ></button-basic>
     </div>
   </div>
   <spinner v-else></spinner>

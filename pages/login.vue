@@ -31,12 +31,11 @@
 <script>
 import { validationMixin } from 'vuelidate'
 import { required, email } from 'vuelidate/lib/validators'
-import InputBase from '~/components/elements/InputBase'
 import TextLink from '~/components/elements/TextLink'
 import ButtonAnimated from '~/components/elements/ButtonAnimated'
 export default {
   name: 'LoginVue',
-  components: { TextLink, InputBase, ButtonAnimated },
+  components: { TextLink, ButtonAnimated },
   layout: 'defaultLogin',
   mixins: [validationMixin],
   data() {
