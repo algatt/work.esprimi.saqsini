@@ -599,40 +599,48 @@ export default {
       return code
     },
     clearBranching() {
-      this.questions.forEach((question) => {
-        const obj = JSON.parse(JSON.stringify(question))
-        const branching = JSON.parse(obj.surveyOptions).branching
+      const promise = new Promise((resolve, reject) => {
+        this.questions.forEach((question) => {
+          const obj = JSON.parse(JSON.stringify(question))
+          const branching = JSON.parse(obj.surveyOptions).branching
 
-        if (branching.rules) {
-          branching.rules.forEach((rule) => {
-            rule.ruleList = rule.ruleList.filter((el) => {
-              return !el.contactListCode
+          if (branching.rules) {
+            branching.rules.forEach((rule) => {
+              rule.ruleList = rule.ruleList.filter((el) => {
+                return !el.contactListCode
+              })
             })
-          })
 
-          branching.rules = branching.rules.filter((el) => {
-            return el.ruleList.length > 0
-          })
+            branching.rules = branching.rules.filter((el) => {
+              return el.ruleList.length > 0
+            })
 
-          branching.rules.forEach((rule) => {
-            const len = rule.ruleList.length
-            if (len > 0 && rule.ruleList[len - 1].isAnd)
-              delete rule.ruleList[len - 1].isAnd
-          })
+            branching.rules.forEach((rule) => {
+              const len = rule.ruleList.length
+              if (len > 0 && rule.ruleList[len - 1].isAnd)
+                delete rule.ruleList[len - 1].isAnd
+            })
 
-          if (branching.rules.length > 0) {
-            delete branching.rules[branching.rules.length - 1].isAnd
+            if (branching.rules.length > 0) {
+              delete branching.rules[branching.rules.length - 1].isAnd
+            }
           }
-        }
 
-        const surveyOptions = JSON.parse(obj.surveyOptions)
-        surveyOptions.branching = branching
-        obj.surveyOptions = JSON.stringify(surveyOptions)
+          const surveyOptions = JSON.parse(obj.surveyOptions)
+          surveyOptions.branching = branching
+          obj.surveyOptions = JSON.stringify(surveyOptions)
 
-        this.$store.dispatch('updateItem', {
-          which: 'questions',
-          item: obj,
+          this.$store.dispatch('updateItem', {
+            which: 'questions',
+            item: obj,
+          })
+
+          if (obj.ordinalPosition === this.questions.length) resolve()
         })
+      })
+
+      promise.then(() => {
+        this.$toasted.show('Contact List branching removed')
       })
     },
     getQuestionsInPage(page) {
