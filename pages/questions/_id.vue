@@ -20,6 +20,7 @@
               v-if="canUseContactBook"
               :disabled="getBranchingContactBook().length > 0"
               @changedList="updateData"
+              @clearBranching="clearBranching"
             ></contact-book-dropdown>
           </div>
         </template>
@@ -372,6 +373,7 @@ import SurveyInvitesSettings from '~/components/surveys/SurveyInvitesSettings'
 import MenuIconButton from '~/components/layouts/MenuIconButton'
 import BadgeBase from '~/components/elements/BadgeBase'
 import ButtonIconRounded from '~/components/elements/ButtonIconRounded'
+import InfoBox from '~/components/layouts/InfoBox'
 
 export default {
   name: 'QuestionList',
@@ -395,6 +397,7 @@ export default {
     Invites,
     TopHeaderBar,
     ContactBookDropdown,
+    InfoBox,
   },
   data() {
     return {
@@ -584,13 +587,53 @@ export default {
       for (const i in this.questions) {
         const tempQuestion = JSON.parse(this.questions[i].surveyOptions)
         if (tempQuestion.branching.rules.length > 0) {
-          tempQuestion.branching.rules.forEach((el) => {
-            if (!code.includes(el.contactListCode))
-              code.push(el.contactListCode)
+          tempQuestion.branching.rules.forEach((rule) => {
+            rule.ruleList.forEach((ruleList) => {
+              if (ruleList.contactListCode) {
+                code.push(ruleList.contactListCode)
+              }
+            })
           })
         }
       }
       return code
+    },
+    clearBranching() {
+      this.questions.forEach((question) => {
+        const obj = JSON.parse(JSON.stringify(question))
+        const branching = JSON.parse(obj.surveyOptions).branching
+
+        if (branching.rules) {
+          branching.rules.forEach((rule) => {
+            rule.ruleList = rule.ruleList.filter((el) => {
+              return !el.contactListCode
+            })
+          })
+
+          branching.rules = branching.rules.filter((el) => {
+            return el.ruleList.length > 0
+          })
+
+          branching.rules.forEach((rule) => {
+            const len = rule.ruleList.length
+            if (len > 0 && rule.ruleList[len - 1].isAnd)
+              delete rule.ruleList[len - 1].isAnd
+          })
+
+          if (branching.rules.length > 0) {
+            delete branching.rules[branching.rules.length - 1].isAnd
+          }
+        }
+
+        const surveyOptions = JSON.parse(obj.surveyOptions)
+        surveyOptions.branching = branching
+        obj.surveyOptions = JSON.stringify(surveyOptions)
+
+        this.$store.dispatch('updateItem', {
+          which: 'questions',
+          item: obj,
+        })
+      })
     },
     getQuestionsInPage(page) {
       return this.questionsWithSections.filter((el) => {

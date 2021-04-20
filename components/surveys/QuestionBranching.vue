@@ -253,7 +253,6 @@ export default {
     addGroup() {
       const len = this.conditions.length
       const obj = {
-        contactListCode: this.contactList.code ? this.contactList.code : null,
         groupIndex: len,
         ruleList: [],
       }
@@ -293,7 +292,11 @@ export default {
       const group = this.conditions.find((el) => {
         return el.groupIndex === groupIndex
       })
-      const obj = { name: Object.keys(this.filters)[0], options: [] }
+      const obj = {
+        name: Object.keys(this.filters)[0],
+        options: [],
+        contactListCode: this.contactList.code ? this.contactList.code : null,
+      }
       if (group.ruleList.length > 0) {
         group.ruleList[group.ruleList.length - 1].isAnd = true
       }
@@ -329,6 +332,9 @@ export default {
           this.conditions[i].ruleList[conditionQuestionIndex] = {
             name: newCode,
             options: [],
+            contactListCode: this.contactList.code
+              ? this.contactList.code
+              : null,
           }
         }
       }

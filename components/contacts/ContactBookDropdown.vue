@@ -70,7 +70,15 @@ export default {
     },
     showMessage() {
       this.$toasted.show(
-        `You cannot change the contact list right now, since it's being used for branching.`
+        `You cannot change the contact list right now, since it's being used for branching.`,
+        {
+          action: {
+            text: 'Clear Brancing',
+            onClick: () => {
+              this.$emit('clearBranching')
+            },
+          },
+        }
       )
     },
   },
