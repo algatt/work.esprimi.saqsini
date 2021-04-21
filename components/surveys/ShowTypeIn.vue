@@ -14,7 +14,7 @@
         v-model="answer"
         class="w-full border-2 rounded-sm p-5"
         :style="{
-          backgroundColor: displayStyle.backgroundColour,
+          backgroundColor: 'white',
           color: displayStyle.textColour,
           borderColor: displayStyle.accentColour,
         }"

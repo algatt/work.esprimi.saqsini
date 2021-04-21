@@ -148,9 +148,10 @@ export default {
       })
 
       this.$nextTick(() => {
-        const el = document
-          .getElementById('inputOptions' + (this.options.length - 1))
-          .getElementsByTagName('input')[0]
+        const el = document.getElementById(
+          'inputOptions' + (this.options.length - 1)
+        )
+
         el.focus()
         el.select()
       })

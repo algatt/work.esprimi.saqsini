@@ -13,11 +13,13 @@
     >
       <div
         class="w-full flex justify-between items-center"
-        :class="survey.options.headerImage !== '' ? 'h-96' : 'h-32'"
+        :class="survey.options.headerImage !== '' ? 'h-56' : 'h-32'"
       >
         <h3
           class="px-5 py-3"
-          :class="survey.options.headerImage === '' ? null : 'frosted-area'"
+          :class="
+            survey.options.headerImage === '' ? null : 'bg-white rounded-r'
+          "
           :style="{
             color:
               survey.options.headerImage === ''
@@ -273,6 +275,7 @@ export default {
     enableNext() {
       for (const cnt of this.processedQuestionsCurrentPage) {
         if (
+          cnt.validity === true &&
           cnt.flags.includes('IS_MANDATORY') &&
           this.getAnswerByQuestionNumber(cnt.questionNumber).length === 0
         )
@@ -437,7 +440,8 @@ export default {
         // console.log(this.evaluateBooleanExpression(finalOutcome))
         return this.evaluateBooleanExpression(finalOutcome)
       }
-      return true
+
+      return which !== 'disqualify'
     },
     evaluateBooleanExpression(obj) {
       // eslint-disable-next-line no-new-func
@@ -538,6 +542,9 @@ export default {
       const question = this.processedQuestions.find((el) => {
         return el.page === whichPage && el.flags.includes('SECTION')
       })
+
+      console.log(this.getConditionState(question.surveyOptions, 'disqualify'))
+
       if (this.getConditionState(question.surveyOptions, 'disqualify')) {
         this.disqualify = true
         this.$emit('disqualifySurvey')
