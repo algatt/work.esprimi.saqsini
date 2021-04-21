@@ -18,7 +18,9 @@
         <h3
           class="px-5 py-3"
           :class="
-            survey.options.headerImage === '' ? null : 'bg-white rounded-r'
+            survey.options.headerImage === ''
+              ? null
+              : 'bg-white bg-opacity-90 rounded-r'
           "
           :style="{
             color:
@@ -36,7 +38,9 @@
             !survey.flags.includes('OUTDATED_LANGUAGE_PACK')
           "
           class="px-5 py-3"
-          :class="survey.options.headerImage === '' ? null : 'frosted-area'"
+          :class="
+            survey.options.headerImage === '' ? null : 'bg-white bg-opacity-90'
+          "
           :style="{
             color: survey.options.textColour,
           }"
@@ -52,8 +56,7 @@
             >
               <button
                 v-if="language !== currentLanguage"
-                :style="{ backgroundColor: survey.options.backgroundColour }"
-                class="px-5 py-2"
+                class="px-5 py-2 w-full"
                 @click="changeLanguage(language)"
               >
                 {{ getCountryFromLanguage(language) }}
