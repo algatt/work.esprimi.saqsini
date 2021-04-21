@@ -63,27 +63,35 @@
     </div>
     <div ref="questionsSection" class="w-full">
       <template v-if="started">
-        <div
-          v-for="question in processedQuestions"
-          :key="question.code"
-          class="mb-5"
-        >
-          <display-question
-            v-if="question.page === currentPage && question.validity"
-            :key="`${question.code} ${currentLanguage}`"
-            class="rounded shadow bg-white"
-            :display-style="survey.options"
-            :language="currentLanguage"
-            :language-text="languageText"
-            :question="question"
-            :existing-answer="
-              getAnswerByQuestionNumber(question.questionNumber)
-            "
-            @answers="processAnswers($event, question)"
-            @clearAnswers="clearAnswers(question)"
-          ></display-question>
-        </div>
+        <template v-if="!disqualify">
+          <div
+            v-for="question in processedQuestions"
+            :key="question.code"
+            class="mb-5"
+          >
+            <display-question
+              v-if="question.page === currentPage && question.validity"
+              :key="`${question.code} ${currentLanguage}`"
+              class="rounded shadow bg-white"
+              :display-style="survey.options"
+              :language="currentLanguage"
+              :language-text="languageText"
+              :question="question"
+              :existing-answer="
+                getAnswerByQuestionNumber(question.questionNumber)
+              "
+              @answers="processAnswers($event, question)"
+              @clearAnswers="clearAnswers(question)"
+            ></display-question></div
+        ></template>
+        <template v-else>
+          <div class="rounded bg-white shadow p-5">
+            Unfortunately, you are uneligible to participate in this survey.
+            Thank you for your time.
+          </div>
+        </template>
       </template>
+
       <template v-else>
         <div class="rounded shadow py-10 bg-white">
           <display-question
@@ -111,7 +119,7 @@
       </template>
 
       <div
-        v-if="started"
+        v-if="started && !disqualify"
         class="flex items-center justify-center space-x-3 my-5 py-3 rounded shadow-lg bg-white"
       >
         <button
@@ -249,6 +257,7 @@ export default {
       currentLanguage: PREFERRED_LANGUAGE,
       survey: null,
       started: false,
+      disqualify: false,
     }
   },
   computed: {
@@ -341,9 +350,11 @@ export default {
     if (!this.showStart) this.started = true
   },
   methods: {
-    getConditionState(surveyOptions) {
+    getConditionState(surveyOptions, which = 'branching') {
       const branching = JSON.parse(surveyOptions)
-      const rules = branching.branching.rules
+      let rules = {}
+      if (which === 'branching') rules = branching.branching.rules
+      else rules = branching.disqualify.rules
 
       if (rules.length !== 0) {
         const rulesOutcome = {}
@@ -523,7 +534,15 @@ export default {
         .reduce((a, b) => {
           return Math.min(a, b)
         })
-      this.currentPage = whichPage
+
+      const question = this.processedQuestions.find((el) => {
+        return el.page === whichPage && el.flags.includes('SECTION')
+      })
+      if (this.getConditionState(question.surveyOptions, 'disqualify')) {
+        this.disqualify = true
+        this.$emit('disqualifySurvey')
+      } else this.currentPage = whichPage
+
       this.$refs.surveyModal.scrollIntoView()
     },
     finishSurvey() {

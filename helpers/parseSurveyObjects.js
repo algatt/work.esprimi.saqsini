@@ -176,6 +176,12 @@ export function parseQuestionToForm(question, language = PREFERRED_LANGUAGE) {
       }
     }
 
+    if (surveyOptions.disqualify) {
+      temp.disqualify = surveyOptions.disqualify
+    } else {
+      temp.disqualify = { rules: [] }
+    }
+
     delete temp.surveyOptions
   }
 
@@ -213,6 +219,7 @@ export function parseQuestionToApi(question) {
   })
 
   temp.surveyOptions.branching = question.branching
+  temp.surveyOptions.disqualify = question.disqualify
   temp.surveyOptions = JSON.stringify(temp.surveyOptions)
 
   temp.flags = temp.flags.filter((el) => {

@@ -20,6 +20,15 @@
             ><i class="fas fa-code-branch fa-fw"></i
           ></template>
         </menu-icon-button>
+        <menu-icon-button
+          v-if="questionType === 'SECTION'"
+          :active="selectedSection === 'disqualify'"
+          @click="selectedSection = 'disqualify'"
+          >Disqualify
+          <template v-slot:icon>
+            <i class="fas fa-eraser fa-fw"></i>
+          </template>
+        </menu-icon-button>
       </div>
 
       <template v-if="selectedSection === 'details'">
@@ -145,10 +154,17 @@
       </template>
 
       <question-branching
-        v-else
+        v-else-if="selectedSection === 'branching'"
         :existing-conditions="form.branching"
         @conditions="receiveConditions"
       ></question-branching>
+      <question-disqualify
+        v-else-if="
+          selectedSection === 'disqualify' && questionType === 'SECTION'
+        "
+        :existing-conditions="form.disqualify"
+        @conditions="receiveDisqualify"
+      ></question-disqualify>
     </div>
     <edit-object-modal-bottom-part
       class="pt-10 pb-2"
@@ -177,6 +193,7 @@ import PopupInfo from '~/components/layouts/PopupInfo'
 import ToggleSwitch from '~/components/elements/ToggleSwitch'
 import NewQuestionRadioGrid from '~/components/surveys/NewQuestionRadioGrid'
 import MenuIconButton from '~/components/layouts/MenuIconButton'
+import QuestionDisqualify from '~/components/surveys/QuestionDisqualify'
 
 import PopupBase from '~/components/elements/PopupBase'
 import TextAreaBase from '~/components/elements/TextAreaBase'
@@ -186,7 +203,6 @@ export default {
   components: {
     TextAreaBase,
     PopupBase,
-
     MenuIconButton,
     NewQuestionRadioGrid,
     EditObjectModalBottomPart,
@@ -199,6 +215,7 @@ export default {
     NewQuestionMultipleChoice,
     PopupInfo,
     ToggleSwitch,
+    QuestionDisqualify,
   },
   mixins: [validationMixin, questionMixin],
   data() {
@@ -258,6 +275,9 @@ export default {
   methods: {
     receiveConditions(ev) {
       this.form.branching = ev
+    },
+    receiveDisqualify(ev) {
+      this.form.disqualify = ev
     },
   },
 }

@@ -13,6 +13,7 @@
         :has-token="hasToken"
         :existing-answers="existingAnswers"
         @finishSurvey="finishSurvey"
+        @disqualifySurvey="disqualifySurvey"
         @answers="processAnswers"
         @changedAnswers="saveSession($event)"
       ></PreviewSurvey>
@@ -148,6 +149,9 @@ export default {
         setTimeout(() => {
           window.location.reload()
         }, 3000)
+    },
+    disqualifySurvey() {
+      alert('disqualifed')
     },
     async saveSession(answers) {
       this.answers = answers
