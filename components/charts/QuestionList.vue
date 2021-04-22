@@ -15,6 +15,9 @@
           >{{ item.question.type.text }}
         </span>
       </div>
+      <div class="flex justify-center items-center w-full space-x-2 my-2">
+        {{ getQuestionTitle(item.question) }}
+      </div>
       <div class="flex flex-wrap w-full">
         <question-element
           :key="item.question.questionCode"
@@ -32,6 +35,7 @@ import Spinner from '~/components/layouts/Spinner'
 import { QUESTION_TYPES } from '~/helpers/constants'
 import QuestionElement from '~/components/charts/QuestionElement'
 import { getDifferentAnswers } from '~/helpers/chartHelpers'
+import { parseQuestionToForm } from '~/helpers/parseSurveyObjects'
 
 export default {
   name: 'QuestionList',
@@ -68,6 +72,9 @@ export default {
     this.loading = false
   },
   methods: {
+    getQuestionTitle(question) {
+      return parseQuestionToForm(question).text
+    },
     getQuestionType(question) {
       let result = ''
       question.flags.forEach((el) => {

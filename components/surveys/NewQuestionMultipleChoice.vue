@@ -129,8 +129,10 @@ export default {
       this.options = this.form.options
     }
 
-    this.allowOther = this.form.allowOther
-    this.allowMultiple = this.form.allowMultiple
+    this.allowOther =
+      this.form.allowOther === undefined ? true : this.form.allowOther
+    this.allowMultiple =
+      this.form.allowMultiple === undefined ? true : this.form.allowMultiple
   },
   methods: {
     addNewOption() {
