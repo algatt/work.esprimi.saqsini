@@ -1,5 +1,9 @@
 <template>
   <div v-if="!loading">
+    <button-basic colour="blue" @click="print"
+      >Save to PDF<template v-slot:rightIcon
+        ><i class="fas fa-file-pdf fa-fw"></i></template
+    ></button-basic>
     <div
       v-for="item in processedQuestions"
       :key="item.question.code"
@@ -18,6 +22,7 @@
       <div class="flex justify-center items-center w-full space-x-2 my-2">
         {{ getQuestionTitle(item.question) }}
       </div>
+
       <div class="flex flex-wrap w-full">
         <question-element
           :key="item.question.questionCode"
@@ -25,21 +30,28 @@
         ></question-element>
       </div>
     </div>
+    <modal-generic v-if="startPrint">
+      <template v-slot:title>Setting up PDF</template>
+      <template v-slot:body>PDF will be available shortly.</template>
+    </modal-generic>
   </div>
 
   <spinner v-else></spinner>
 </template>
 
 <script>
+import { jsPDF } from 'jspdf'
+import html2canvas from 'html2canvas'
 import Spinner from '~/components/layouts/Spinner'
 import { QUESTION_TYPES } from '~/helpers/constants'
 import QuestionElement from '~/components/charts/QuestionElement'
 import { getDifferentAnswers } from '~/helpers/chartHelpers'
 import { parseQuestionToForm } from '~/helpers/parseSurveyObjects'
-
+import ButtonBasic from '~/components/elements/ButtonBasic'
+import ModalGeneric from '~/components/layouts/ModalGeneric'
 export default {
   name: 'QuestionList',
-  components: { QuestionElement, Spinner },
+  components: { ModalGeneric, ButtonBasic, QuestionElement, Spinner },
   props: {
     data: {
       type: Object,
@@ -51,6 +63,7 @@ export default {
       loading: true,
       workingData: null,
       processedQuestions: [],
+      startPrint: false,
     }
   },
   mounted() {
@@ -72,6 +85,58 @@ export default {
     this.loading = false
   },
   methods: {
+    print() {
+      this.startPrint = true
+      window.setTimeout(() => {
+        if (process.browser) {
+          // eslint-disable-next-line new-cap
+          const doc = new jsPDF({
+            orientation: 'portrait',
+            unit: 'cm',
+          })
+
+          doc.setFont('Helvetica', 'bold')
+          doc.setFontSize(24)
+          doc.text(this.data.survey.name, 3, 3)
+          doc.setFontSize(18)
+          doc.text(this.data.survey.referenceDate, 3, 5)
+
+          const promises = []
+
+          this.processedQuestions.forEach((question) => {
+            const obj = document.getElementById(
+              `question_graph_${question.question.code}`
+            )
+            promises.push(
+              new Promise((resolve) => {
+                html2canvas(obj).then((canvas) => {
+                  doc.addPage()
+                  doc.setFont('Helvetica', 'bold')
+                  doc.setFontSize(16)
+                  doc.text(question.question.name, 2, 2)
+                  doc.setFont('Helvetica', 'bold')
+                  doc.setFontSize(14)
+                  doc.text(this.getQuestionTitle(question.question), 2, 3)
+                  resolve(
+                    doc.addImage(
+                      canvas,
+                      2,
+                      5,
+                      canvas.width * 0.0264583333,
+                      canvas.height * 0.0264583333
+                    )
+                  )
+                })
+              })
+            )
+          })
+          Promise.all(promises).then(() => {
+            doc.save(`${this.data.survey.name}.pdf`)
+            this.startPrint = false
+          })
+        }
+      }, 1000)
+    },
     getQuestionTitle(question) {
       return parseQuestionToForm(question).text
     },

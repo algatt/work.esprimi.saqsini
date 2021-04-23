@@ -15,7 +15,10 @@
           <template v-slot:title>Available answers</template>
         </multi-select>
       </div>
-      <div class="w-full md:w-9/12 flex flex-col p-5">
+      <div
+        :id="`question_graph_${data.question.code}`"
+        class="w-full md:w-auto mx-auto flex flex-col p-5"
+      >
         <chart-multiple-choice
           v-if="
             data.question.type.flag === 'MULTIPLE_CHOICE' ||
