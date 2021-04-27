@@ -80,7 +80,7 @@ export const actions = {
       const instance = axios.create()
 
       instance
-        .put(`/builder/invites/`, answers, {
+        .put(`builder/responses/submit`, answers, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: process.env.authorization,
