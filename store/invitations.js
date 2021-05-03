@@ -129,4 +129,17 @@ export const actions = {
         })
     })
   },
+
+  anonymiseResponses({ commit }, code) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .patch(`/builder/invites/anonimiseBySurveyCode/${code}`)
+        .then(() => {
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
 }

@@ -156,6 +156,10 @@
             >
               <i class="fas fa-globe-europe fa-sm fa-fw"></i>Public URL
             </span>
+            <span @click="anonymiseResponses(slotProps.item.code)"
+              ><i class="fas fa-user-secret fa-fw fa-sm"></i>Anonymise
+              Respondents</span
+            >
           </template>
         </display-table-row-popup>
       </template>
@@ -343,6 +347,16 @@ export default {
           action: { text: 'GO', href: url, target: '_blank' },
         })
       })
+    },
+    anonymiseResponses(code) {
+      this.$store
+        .dispatch('invitations/anonymiseResponses', code)
+        .then(() => {
+          this.$toasted.show('Responses anonymised')
+        })
+        .catch(() => {
+          this.$toasted.show('There was a problem anonymising the responses')
+        })
     },
   },
 }
