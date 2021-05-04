@@ -58,6 +58,7 @@
 
         <text-editor
           :content="form.notificationMessage"
+          :enable-email-fields="contactList !== null"
           @updateContent="form.notificationMessage = $event"
         ></text-editor>
       </div>
@@ -115,6 +116,7 @@
         <label class="label">Reminder Message</label>
         <text-editor
           :content="form.reminderMessage"
+          :enable-email-fields="contactList !== null"
           @updateContent="form.reminderMessage = $event"
         ></text-editor>
       </div>
@@ -207,6 +209,9 @@ export default {
   computed: {
     survey() {
       return this.$store.state.currentItemToBeEdited
+    },
+    contactList() {
+      return this.$store.state.selectedContactList
     },
   },
   created() {

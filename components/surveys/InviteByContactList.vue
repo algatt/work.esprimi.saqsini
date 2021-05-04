@@ -134,6 +134,7 @@
         </div>
       </div>
       <notification-reminder-section
+        :enable-email-fields="true"
         :existing-data="form"
         @update="form = $event"
         @error="datesError = $event"

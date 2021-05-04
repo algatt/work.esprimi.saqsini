@@ -112,7 +112,7 @@
       <div class="flex flex-col">
         <label class="font-semibold mb-2">Reminder Message</label>
         <text-editor
-          :enable-email-fields="true"
+          :enable-email-fields="enableEmailFields"
           :content="form.reminderMessage"
           @updateContent="form.reminderMessage = $event"
         ></text-editor>
@@ -159,6 +159,10 @@ export default {
     showNotification: {
       type: Boolean,
       default: true,
+    },
+    enableEmailFields: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {

@@ -24,6 +24,7 @@ export const actions = {
         .then(async () => {
           await dispatch('getUserDetails')
           await dispatch('getUserAvatar')
+          commit('setContactList', null, { root: true })
           resolve()
         })
         .catch((error) => reject(error))
