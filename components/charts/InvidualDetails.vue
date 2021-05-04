@@ -89,6 +89,16 @@
             </div>
           </div>
         </div>
+        <div class="flex">
+          <a
+            class="bg-blue-600 w-full text-white font-medium py-3 hover:bg-blue-700 transition duration-300 text-center"
+            target="_blank"
+            :href="`/survey?id=${data.survey.publicIdentifier}&token=${invite.token}`"
+            @click.stop
+          >
+            Modify Responses&nbsp;<i class="fas fa-external-link-alt"></i>
+          </a>
+        </div>
       </div>
     </div>
   </div>

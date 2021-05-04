@@ -6,6 +6,32 @@
     >
       <div class="flex flex-col mb-1">
         <div class="flex flex-wrap py-2 px-1">
+          <div class="flex relative">
+            <button class="menubarButton" @click="commands.customCommand('aa')">
+              <i class="fas fa-user-tag fa-fw"></i>
+            </button>
+
+            <div
+              v-if="showTagMenu"
+              class="fixed top-0 left-0 w-full h-full z-30"
+              @click.stop="showTagMenu = false"
+            ></div>
+            <div
+              v-if="showTagMenu"
+              class="absolute bg-white flex flex-wrap top-8 border border-gray-100 transition duration-300 p-3 shadow z-30"
+              style="max-width: 340px; min-width: 340px"
+            >
+              <button
+                v-for="(item, index) in NOTIFICATION_EDITOR_FIELDS"
+                :key="index"
+                class="border rounded border-gray-200 text-sm px-1 py-0.5 bg-gray-100 mr-1 mb-1 cursor-pointer hover:bg-gray-200"
+                @click.stop="insertTag(item)"
+              >
+                {{ item }}
+              </button>
+            </div>
+          </div>
+
           <button
             class="menubarButton"
             :class="{ 'is-active': isActive.bold() }"
@@ -148,7 +174,11 @@
       </div>
     </editor-menu-bar>
 
-    <editor-content class="editorContent" :editor="editor" />
+    <editor-content
+      ref="editorContent"
+      class="editorContent"
+      :editor="editor"
+    />
   </div>
 </template>
 
@@ -178,6 +208,7 @@ import {
   CodeBlockHighlight,
   Focus,
 } from 'tiptap-extensions'
+import { NOTIFICATION_EDITOR_FIELDS } from '~/helpers/constants'
 
 export default {
   components: {
@@ -190,12 +221,19 @@ export default {
       required: false,
       default: '',
     },
+    enableEmailFields: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       editor: null,
       linkUrl: null,
       addUrl: false,
+      NOTIFICATION_EDITOR_FIELDS,
+      showTagMenu: false,
     }
   },
   mounted() {
@@ -203,6 +241,7 @@ export default {
       onUpdate: ({ getHTML }) => {
         this.$emit('updateContent', getHTML())
       },
+
       extensions: [
         new Blockquote(),
         new BulletList(),
@@ -253,6 +292,9 @@ export default {
     setLinkUrl(command, url) {
       command({ href: url })
       this.addUrl = false
+    },
+    insertTag(item) {
+      console.log(this.editor)
     },
   },
 }

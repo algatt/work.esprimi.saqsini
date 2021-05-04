@@ -253,7 +253,11 @@ export const actions = {
   anonymiseResponses({ dispatch }, code) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .patch(`/builder/invites/anonimiseByExternalEntityCode/${code}`)
+        .patch(`/builder/invites/anonimiseByExternalEntityCode/${code}`, null, {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        })
         .then(() => {
           resolve()
         })

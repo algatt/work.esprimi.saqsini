@@ -54,66 +54,70 @@
       <label class="font-semibold mb-2">Notification Message</label>
       <text-editor
         :content="form.notificationMessage"
+        :enable-email-fields="true"
         @updateContent="form.notificationMessage = $event"
       ></text-editor>
     </div>
 
-    <div class="flex w-full flex-wrap">
-      <div class="w-full xl:w-9/12 xl:pr-5">
-        <input-base
-          v-model="form.reminderDate"
-          :error="
-            $v.form.reminderDate.$model !== undefined
-              ? !$v.form.reminderDate.checkDates
-                ? 'this date must be after the valid from date'
+    <template v-if="showNotification">
+      <div class="flex w-full flex-wrap">
+        <div class="w-full xl:w-9/12 xl:pr-5">
+          <input-base
+            v-model="form.reminderDate"
+            :error="
+              $v.form.reminderDate.$model !== undefined
+                ? !$v.form.reminderDate.checkDates
+                  ? 'this date must be after the valid from date'
+                  : null
+                : $v.form.reminderTime.$model !== undefined &&
+                  !$v.form.reminderTime.dateRequiredIfTime
+                ? 'required'
                 : null
-              : $v.form.reminderTime.$model !== undefined &&
-                !$v.form.reminderTime.dateRequiredIfTime
-              ? 'required'
-              : null
-          "
-          type="date"
-          @change="$v.form.reminderDate.$touch()"
-        >
-          <template v-slot:default>
-            <span class="flex items-center">
-              Reminder Date
-              <popup-base class="ml-1 font-normal"
-                >This is date when a reminder will be set to invitees who did
-                not complete the survey</popup-base
-              ></span
-            >
-          </template></input-base
-        >
-      </div>
-      <div class="w-full xl:w-3/12 mt-2 xl:mt-0">
-        <input-base
-          v-model="form.reminderTime"
-          :error="
-            $v.form.reminderTime.$model !== undefined
-              ? !$v.form.reminderTime.checkDates
-                ? 'this date must be after the valid from date'
+            "
+            type="date"
+            @change="$v.form.reminderDate.$touch()"
+          >
+            <template v-slot:default>
+              <span class="flex items-center">
+                Reminder Date
+                <popup-base class="ml-1 font-normal"
+                  >This is date when a reminder will be set to invitees who did
+                  not complete the survey</popup-base
+                ></span
+              >
+            </template></input-base
+          >
+        </div>
+        <div class="w-full xl:w-3/12 mt-2 xl:mt-0">
+          <input-base
+            v-model="form.reminderTime"
+            :error="
+              $v.form.reminderTime.$model !== undefined
+                ? !$v.form.reminderTime.checkDates
+                  ? 'this date must be after the valid from date'
+                  : null
+                : $v.form.reminderDate.$model !== undefined &&
+                  !$v.form.reminderDate.timeRequiredIfDate
+                ? 'required'
                 : null
-              : $v.form.reminderDate.$model !== undefined &&
-                !$v.form.reminderDate.timeRequiredIfDate
-              ? 'required'
-              : null
-          "
-          type="time"
-          @change="$v.form.reminderTime.$touch()"
-          ><span class="flex items-center"
-            >Reminder Time<popup-base class="invisible"></popup-base></span
-        ></input-base>
+            "
+            type="time"
+            @change="$v.form.reminderTime.$touch()"
+            ><span class="flex items-center"
+              >Reminder Time<popup-base class="invisible"></popup-base></span
+          ></input-base>
+        </div>
       </div>
-    </div>
 
-    <div class="flex flex-col">
-      <label class="font-semibold mb-2">Reminder Message</label>
-      <text-editor
-        :content="form.reminderMessage"
-        @updateContent="form.reminderMessage = $event"
-      ></text-editor>
-    </div>
+      <div class="flex flex-col">
+        <label class="font-semibold mb-2">Reminder Message</label>
+        <text-editor
+          :enable-email-fields="true"
+          :content="form.reminderMessage"
+          @updateContent="form.reminderMessage = $event"
+        ></text-editor>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -151,6 +155,10 @@ export default {
     existingData: {
       type: Object,
       required: true,
+    },
+    showNotification: {
+      type: Boolean,
+      default: true,
     },
   },
   data() {

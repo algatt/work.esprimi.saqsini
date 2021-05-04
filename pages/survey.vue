@@ -151,7 +151,10 @@ export default {
         }, 3000)
     },
     disqualifySurvey() {
-      alert('disqualifed')
+      this.$store.dispatch(
+        'invitations/disqualify',
+        this.surveyData.invitations[0].token
+      )
     },
     async saveSession(answers) {
       this.answers = answers
