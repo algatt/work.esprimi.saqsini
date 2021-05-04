@@ -249,4 +249,17 @@ export const actions = {
         })
     })
   },
+
+  anonymiseResponses({ dispatch }, code) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .patch(`/builder/invites/anonimiseByExternalEntityCode/${code}`)
+        .then(() => {
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
 }

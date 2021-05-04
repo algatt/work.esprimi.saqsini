@@ -120,7 +120,7 @@
             <span v-else @click="unflagForRemoval(slotProps.item)">
               <i class="far fa-flag fa-fw fa-sm"></i>Remove from Deletion
             </span>
-            <span
+            <span @click="anonymiseResponses(slotProps.item)"
               ><i class="fas fa-user-secret fa-fw fa-sm"></i>Anonymise
               Contacts</span
             >
@@ -240,6 +240,18 @@ export default {
     },
     getExportData(contactList) {
       this.$store.dispatch('contactlist/getExportData', contactList)
+    },
+    anonymiseResponses(contactList) {
+      this.$store
+        .dispatch(`contactlist/anonymiseResponses`, contactList.code)
+        .then(() => {
+          this.$toasted.show(`Anonymising of ${contactList.name} in progress`)
+        })
+        .catch(() => {
+          this.$toasted.error(
+            'There was a problem anonymising the contact list.'
+          )
+        })
     },
   },
 }

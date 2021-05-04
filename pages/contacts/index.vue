@@ -103,6 +103,10 @@
                   }})</span
                 ></nuxt-link
               >
+              <span @click="anonymiseResponses(slotProps.item)">
+                <i class="fas fa-user-secret fa-fw fa-sm"></i>Anonymise
+                Responses</span
+              >
             </template>
           </display-table-row-popup>
         </template>
@@ -181,6 +185,20 @@ export default {
     },
     calculateAge(dob) {
       return moment().diff(moment(dob), 'y')
+    },
+    anonymiseResponses(contact) {
+      this.$store
+        .dispatch('invitations/anonymiseResponsesByEmail', contact.email)
+        .then(() => {
+          this.$toasted.show(
+            `Responses for ${contact.email} will be anonymised`
+          )
+        })
+        .catch(() => {
+          this.$toasted.error(
+            `There was a problem anonymising responses for ${contact.email}`
+          )
+        })
     },
   },
 }

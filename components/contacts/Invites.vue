@@ -94,8 +94,9 @@
           >
             <span class="w-12 flex items-center justify-center"> </span>
             <span class="flex flex-1 flex-wrap">
-              <span class="w-full xl:w-8/12">Email</span>
+              <span class="w-full xl:w-7/12">Email</span>
               <span class="w-full xl:w-4/12">Flags</span>
+              <span class="w-full xl:w-1/12">&nbsp;</span>
             </span>
             <span class="w-12 flex items-center justify-center"></span>
           </div>
@@ -116,7 +117,7 @@
                 ><i class="fas fa-check-circle fa-fw text-gray-200"></i></span
             ></span>
             <span class="flex flex-1 flex-wrap">
-              <span class="w-full xl:w-8/12">{{ invite.email }}</span>
+              <span class="w-full xl:w-7/12">{{ invite.email }}</span>
               <span class="w-full xl:w-4/12"
                 ><badge-base
                   v-for="(flag, index) in processFlags(invite.flags)"
@@ -131,6 +132,14 @@
                   "
                   >{{ flag }}</badge-base
                 ></span
+              >
+              <span class="w-full xl:w-1/12"
+                ><button
+                  class="underline hover:text-blue-600"
+                  @click.stop="anonymiseResponse(invite.token)"
+                >
+                  Anonymise
+                </button></span
               >
             </span>
 
@@ -308,6 +317,16 @@ export default {
         this.selectedInvites = []
         this.confirmDelete = false
       })
+    },
+    anonymiseResponse(token) {
+      this.$store
+        .dispatch('invitations/anonymiseResponsesByToken', token)
+        .then(() => {
+          this.$toasted.show(`Responses will be anonymised.`)
+        })
+        .catch(() => {
+          this.$toasted.error(`There was a problem anonymising responses.`)
+        })
     },
   },
 }

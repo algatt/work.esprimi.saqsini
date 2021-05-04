@@ -352,10 +352,10 @@ export default {
       this.$store
         .dispatch('invitations/anonymiseResponses', code)
         .then(() => {
-          this.$toasted.show('Responses anonymised')
+          this.$toasted.show(`Survey's responses will be anonymised.`)
         })
         .catch(() => {
-          this.$toasted.show('There was a problem anonymising the responses')
+          this.$toasted.error('There was a problem anonymising the responses')
         })
     },
   },

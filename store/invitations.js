@@ -142,4 +142,30 @@ export const actions = {
         })
     })
   },
+
+  anonymiseResponsesByEmail({ commit }, email) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .patch(`/builder/invites/anonimiseByEmail/${email}`)
+        .then(() => {
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  anonymiseResponsesByToken({ commit }, token) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .patch(`/builder/invites/anonimiseByToken/${token}`)
+        .then(() => {
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
 }
