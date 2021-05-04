@@ -194,11 +194,11 @@ export default {
             email: el.email,
             contactBookCode: this.contactList.code,
             externalEntityCode: this.contactList.code,
-            filter: {
+            filter: JSON.stringify({
               Gender: el.gender ? el.gender : null,
               Age: el.dob ? this.calculateAge(el.dob) : null,
               'Full Name': el.displayName,
-            },
+            }),
           }
         }),
       }

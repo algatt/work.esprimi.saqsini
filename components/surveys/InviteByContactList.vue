@@ -435,7 +435,7 @@ export default {
             email: el.email,
             contactBookCode: this.$store.state.selectedContactList.code,
             externalEntityCode: this.$store.state.selectedContactList.code,
-            filter: {
+            filter: JSON.stringify({
               Gender: el.gender ? el.gender : null,
               Age: el.age ? el.age : null,
               'Full Name': el.displayName,
@@ -449,7 +449,7 @@ export default {
                 : null,
               'Role Name': el.roleName ? el.roleName : null,
               'Role Abbreviation': el.roleAbbr ? el.roleAbbr : null,
-            },
+            }),
           }
         }),
       }
