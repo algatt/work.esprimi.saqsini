@@ -1,0 +1,194 @@
+<template>
+  <div class="w-full">
+    <div class="md:pl-5 w-full mb-10 md:mb-0">
+      <TableHeader
+        ><template #left><slot name="headerLeft"></slot></template
+        ><template #right
+          ><selection-delete-clear-button
+            v-if="processedTableData.length !== 0"
+            :enable-clear="selectedItems.length > 0"
+            :enable-select="selectedItems.length !== processedTableData.length"
+            :enable-delete="selectedItems.length > 0"
+            @clear="selectedItems = []"
+            @selectAll="selectedItems = processedTableData"
+            @deleteAll="$emit('deleteAll', selectedItems)"
+          ></selection-delete-clear-button
+          ><slot name="headerRight"></slot></template
+      ></TableHeader>
+    </div>
+    <div class="overflow-x-auto w-full md:pl-5">
+      <table
+        v-if="processedTableData.length > 0"
+        class="w-full overflow-visible mx-auto whitespace-nowrap bg-white rounded divide-y divide-gray-300"
+      >
+        <thead class="bg-gray-100">
+          <tr class="text-gray-600">
+            <th class="w-8">&nbsp;</th>
+            <th
+              v-for="(column, columnIndex) in tableDefinition"
+              :key="columnIndex"
+              class="font-semibold text-sm uppercase px-6 py-4"
+              :class="[
+                { 'cursor-pointer': column.sortable },
+                column.align ? `text-${column.align}` : 'text-left',
+              ]"
+              @click="sort(column.field)"
+            >
+              <span>{{ column.title }}</span>
+              <span v-if="column.sortable && fieldToSort == column.field">
+                <i v-if="sortAscending" class="fas fa-caret-up fa-fw"></i>
+                <i v-else class="fas fa-caret-down fa-fw"></i>
+              </span>
+              <span v-else-if="column.sortable && fieldToSort !== column.field">
+                <i class="fas fa-caret-up fa-fw text-gray-300"></i>
+              </span>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          <tr
+            v-for="(row, rowIndex) in processedTableData"
+            :key="row.code ? row.code : rowIndex"
+            class="hover:bg-gray-100 transition duration-300 cursor-pointer"
+            @mouseover="whichIsHovered = rowIndex"
+            @mouseleave="whichIsHovered = null"
+            @click="selectItem(row)"
+          >
+            <td class="w-8" style="min-width: 2rem">
+              <span class="flex justify-center">
+                <transition name="fade"
+                  ><i
+                    v-if="
+                      whichIsHovered === rowIndex &&
+                      !existsInSelectedItems(row.code)
+                    "
+                    class="far fa-check-circle fa-sm fa-fw text-gray-300"
+                  ></i
+                  ><i
+                    v-else-if="existsInSelectedItems(row.code)"
+                    class="fas fa-check-circle fa-sm fa-fw"
+                    :class="`text-${color}-600`"
+                  ></i> </transition
+              ></span>
+            </td>
+            <td
+              v-for="(column, columnIndex) in tableDefinition"
+              :key="columnIndex"
+              class="px-6 py-4"
+              :class="column.align ? `text-${column.align}` : 'text-left'"
+            >
+              <slot v-if="column.slot" :name="column.slot" :item="row"></slot>
+              <span v-else>{{ row[column.field] }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div v-else class="w-full flex justify-center font-medium py-8">
+        Nothing here!
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import SelectionDeleteClearButton from './SelectionDeleteClearButton'
+import TableHeader from './TableHeader'
+export default {
+  name: 'DataTable',
+  components: { SelectionDeleteClearButton, TableHeader },
+  props: {
+    tableData: {
+      type: Array,
+      required: true,
+    },
+    tableDefinition: {
+      type: Array,
+      required: true,
+    },
+    color: {
+      type: String,
+      required: false,
+      default: 'blue',
+    },
+    selectAll: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    clearAll: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+  },
+  data() {
+    return {
+      fieldToSort: null,
+      sortAscending: 1,
+      selectedItems: [],
+      whichIsHovered: null,
+    }
+  },
+  computed: {
+    processedTableData() {
+      const tempData = JSON.parse(JSON.stringify(this.tableData))
+      if (tempData && tempData.length > 0)
+        return tempData.sort((a, b) => {
+          if (a[this.fieldToSort] < b[this.fieldToSort])
+            return this.sortAscending ? -1 : 1
+          if (a[this.fieldToSort] > b[this.fieldToSort])
+            return this.sortAscending ? 1 : -1
+          return 0
+        })
+      else return []
+    },
+  },
+  watch: {
+    selectAll(value) {
+      if (value) this.selectedItems = this.processedTableData
+    },
+    clearAll(value) {
+      if (value) this.selectedItems = []
+    },
+  },
+  methods: {
+    sort(field) {
+      this.whichIsHovered = null
+      if (this.fieldToSort === field) this.sortAscending = !this.sortAscending
+      else {
+        this.fieldToSort = field
+        this.sortAscending = true
+      }
+    },
+    selectItem(row) {
+      if (
+        this.selectedItems.find((el) => {
+          return el.code === row.code
+        })
+      ) {
+        this.selectedItems = this.selectedItems.filter((el) => {
+          return el.code !== row.code
+        })
+      } else {
+        this.selectedItems.push(row)
+      }
+      this.$emit('selectItems', this.selectedItems)
+    },
+    existsInSelectedItems(code) {
+      return this.selectedItems.find((el) => {
+        return el.code === code
+      })
+    },
+  },
+}
+</script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+</style>

@@ -12,30 +12,27 @@
       ></i>
     </button>
 
-    <button
-      v-if="showPopup"
-      class="fixed left-0 top-0 z-20 w-full h-full cursor-default"
-      @click.stop="closePopup"
-    ></button>
-
-    <div
-      v-if="showPopup"
-      ref="popup"
-      class="rounded min-w-max text-gray-700 border border-gray-300 z-20 fixed flex flex-col shadow popup-menu bg-white"
-      :style="{
-        left: left + 'px',
-        top: top + 'px',
-      }"
-      @click.stop="closePopup"
-    >
-      <slot name="menu"></slot>
-    </div>
+    <screen-overlay v-if="showPopup" @click="closePopup">
+      <div
+        ref="popup"
+        class="rounded min-w-max text-gray-700 border border-gray-300 z-20 fixed flex flex-col shadow popup-menu bg-white"
+        :style="{
+          left: left + 'px',
+          top: top + 'px',
+        }"
+        @click.stop="closePopup"
+      >
+        <slot name="menu"></slot>
+      </div>
+    </screen-overlay>
   </span>
 </template>
 
 <script>
+import ScreenOverlay from '~/components/layouts/ScreenOverlay'
 export default {
-  name: 'PopupMenu',
+  name: 'LPopupMenu',
+  components: { ScreenOverlay },
   props: {
     width: {
       type: String,

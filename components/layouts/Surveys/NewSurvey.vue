@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col justify-between w-full">
+  <div>
     <div class="flex flex-col w-full space-y-5">
       <select-base
         v-model="form.categoryCode"
@@ -174,13 +174,6 @@
         </div>
       </div>
     </div>
-
-    <edit-object-modal-bottom-part
-      class="pt-10 pb-5"
-      :form="form"
-      which="surveys"
-      :is-valid="isValid"
-    ></edit-object-modal-bottom-part>
   </div>
 </template>
 
@@ -190,7 +183,6 @@ import { required } from 'vuelidate/lib/validators'
 import moment from 'moment'
 import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
 
-import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
 import { createMomentFromDateAndTime } from '~/helpers/helpers'
 import PopupBase from '~/components/elements/PopupBase'
 import SelectBase from '~/components/elements/SelectBase'
@@ -222,10 +214,13 @@ export default {
 
     SelectBase,
     PopupBase,
-    EditObjectModalBottomPart,
   },
   mixins: [validationMixin],
   props: {
+    dataItem: {
+      type: Object,
+      required: true,
+    },
     selectedCategoryCode: {
       type: Number,
       required: false,
@@ -320,7 +315,7 @@ export default {
     },
   },
   created() {
-    this.form = JSON.parse(JSON.stringify(this.item))
+    this.form = JSON.parse(JSON.stringify(this.dataItem))
     if (this.form.subCategoryCode) {
       const getSubcategory = this.subcategories.find((el) => {
         return Number(el.code) === Number(this.form.subCategoryCode)

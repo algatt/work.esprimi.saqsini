@@ -23,7 +23,7 @@ export const actions = {
         })
         .then(async () => {
           await dispatch('getUserDetails')
-          await dispatch('getUserAvatar')
+          // await dispatch('getUserAvatar')
           resolve()
         })
         .catch((error) => reject(error))
