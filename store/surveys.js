@@ -1,11 +1,12 @@
 import qs from 'qs'
-// import moment from 'moment'
+import { convertSurveyFromFormToApi } from '~/services/survey-helpers'
+
 export const state = () => ({
   items: [],
 })
 
 export const actions = {
-  getSurveysAll({ state, commit }, { limit, offset }) {
+  getSurveysAll({ state, commit }, { limit = 100, offset = 0 }) {
     return new Promise((resolve, reject) => {
       this.$axios
         .get(`/builder/instance/all?limit=${limit}&offset=${offset}`)
@@ -48,7 +49,7 @@ export const actions = {
     })
   },
 
-  getSurveysCategory({ state, commit }, { limit, offset, code }) {
+  getSurveysCategory({ state, commit }, { limit = 100, offset = 0, code }) {
     return new Promise((resolve, reject) => {
       this.$axios
         .get(
@@ -71,7 +72,7 @@ export const actions = {
     })
   },
 
-  getSurveysSubcategory({ state, commit }, { limit, offset, code }) {
+  getSurveysSubcategory({ state, commit }, { limit = 100, offset = 0, code }) {
     return new Promise((resolve, reject) => {
       this.$axios
         .get(
@@ -99,29 +100,33 @@ export const actions = {
         .post(
           '/builder/instance/',
 
-          survey,
+          convertSurveyFromFormToApi(survey),
           {
             headers: {
               'Content-Type': 'application/json',
             },
           }
         )
-        .then(async (response) => {
-          const question = {
-            surveyCode: response.data.code,
-            ordinalPosition: 1,
-            questionNumber: 1,
-            surveyOptions: JSON.stringify({ branching: { rules: [] } }),
-            name: 'Page 1',
-            text: [{ language: response.data.defaultLanguage, text: 'Page 1' }],
-            flags: ['SECTION'],
-          }
-
-          await dispatch('questions/newQuestion', question, { root: true })
-          await dispatch('categories/getCategories', false, { root: true })
-
+        .then((response) => {
+          commit('newSurvey', response.data)
           resolve(response.data)
         })
+        // .then(async (response) => {
+        //   const question = {
+        //     surveyCode: response.data.code,
+        //     ordinalPosition: 1,
+        //     questionNumber: 1,
+        //     surveyOptions: JSON.stringify({ branching: { rules: [] } }),
+        //     name: 'Page 1',
+        //     text: [{ language: response.data.defaultLanguage, text: 'Page 1' }],
+        //     flags: ['SECTION'],
+        //   }
+        //
+        //   await dispatch('questions/newQuestion', question, { root: true })
+        //   await dispatch('categories/getCategories', false, { root: true })
+        //
+        //   resolve(response.data)
+        // })
         .catch((error) => {
           reject(error)
         })
@@ -131,6 +136,7 @@ export const actions = {
   updateSurvey({ commit, dispatch, state }, survey) {
     const newCategoryCode = survey.categoryCode
     const newSubcategoryCode = survey.subCategoryCode
+
     const oldSubcategoryCode = state.items.find((el) => {
       return el.code === survey.code
     }).subCategoryCode
@@ -140,7 +146,7 @@ export const actions = {
         .put(
           '/builder/instance/' + survey.code,
 
-          survey,
+          convertSurveyFromFormToApi(survey),
           {
             headers: {
               'Content-Type': 'application/json',
@@ -156,6 +162,7 @@ export const actions = {
             })
           response.data.categoryCode = newCategoryCode
           response.data.subCategoryCode = newSubcategoryCode
+          commit('updateSurvey', response.data)
           resolve(response.data)
         })
         .catch((error) => {
@@ -251,8 +258,9 @@ export const actions = {
     return new Promise((resolve, reject) => {
       this.$axios
         .delete('/builder/instance/' + code)
-        .then(async () => {
-          await dispatch('categories/getCategories', false, { root: true })
+        .then(() => {
+          // await dispatch('categories/getCategories', false, { root: true })
+          commit('deleteSurvey', code)
           resolve()
         })
         .catch((error) => {
@@ -449,3 +457,22 @@ export const actions = {
 //     return x
 //   },
 // }
+
+export const mutations = {
+  newSurvey(state, survey) {
+    state.items.push(survey)
+  },
+
+  updateSurvey(state, survey) {
+    const foundSurvey = state.items.find((el) => {
+      return el.code === survey.code
+    })
+    Object.assign(foundSurvey, survey)
+  },
+
+  deleteSurvey(state, code) {
+    state.items = state.items.filter((el) => {
+      return el.code !== code
+    })
+  },
+}

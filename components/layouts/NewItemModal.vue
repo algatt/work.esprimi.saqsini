@@ -4,25 +4,36 @@
       class="bg-white w-full md:w-8/12 border border-gray-100 shadow-lg md:rounded modalHeight"
     >
       <ModalHeader class="h-14">
-        <div class="bg-blue-600 text-white p-3 md:rounded-t">
-          New Survey
+        <div
+          class="text-white p-3 md:rounded-t"
+          :class="`bg-${options.color ? options.color : 'blue'}-600`"
+        >
+          {{ options.header ? options.header : 'New' }}
         </div></ModalHeader
       >
       <ModalBody class="overflow-y-auto bodyHeight">
         <div class="p-3">
-          <component :is="whichComponent" :data-item="dataItem"></component>
+          <component
+            :is="whichComponent"
+            :data-item="dataItem"
+            @valid="isValid = $event"
+            @update="updatedItem = $event"
+          ></component>
         </div>
       </ModalBody>
       <ModalFooter class="h-14">
         <div class="p-3 flex justify-between w-full">
-          <button-base color="gray" @click="dismiss('dismissed')"
+          <l-button color="gray" @click="dismiss('dismissed')"
             >Cancel<template #rightIcon
               ><i class="fas fa-times fa-fw"></i></template
-          ></button-base>
-          <button-base color="blue" @click="confirm('confirm')"
+          ></l-button>
+          <l-button
+            :disabled="!isValid"
+            :color="options.color ? options.color : 'blue'"
+            @click="confirm(updatedItem)"
             >Save<template #rightIcon
               ><i class="fas fa-save fa-fw"></i></template
-          ></button-base>
+          ></l-button>
         </div>
       </ModalFooter>
     </div>
@@ -37,9 +48,12 @@ import ModalBody from '~/components/elements/Modal/ModalBody'
 import ModalMixin from '~/components/elements/Modal/ModalMixin'
 import ButtonBase from '~/components/elements/ButtonBasic'
 import NewSurvey from '~/components/layouts/Surveys/NewSurvey'
+import LButton from '~/components/elements/LButton'
 
 export default {
+  name: 'NewItemModal',
   components: {
+    LButton,
     ButtonBase,
     ModalFooter,
     ModalBody,
@@ -57,6 +71,19 @@ export default {
       type: Object,
       required: false,
     },
+    options: {
+      type: Object,
+      required: false,
+      default: () => {
+        return {}
+      },
+    },
+  },
+  data() {
+    return {
+      updatedItem: {},
+      isValid: false,
+    }
   },
 }
 </script>

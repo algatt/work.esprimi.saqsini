@@ -8,7 +8,7 @@
       <slot name="icon"></slot>
       <i
         v-if="!$slots.icon"
-        class="fas fa-ellipsis-v text-gray-300 rounded-full h-6 w-6 bg-gray-100 flex items-center justify-center shadow-sm hover:text-gray-400 transition duration-300 text-lg"
+        class="fas fa-ellipsis-v fa-fw fa-sm text-gray-300 rounded-full border-2 border-gray-200 h-6 w-6 bg-gray-50 flex items-center justify-center shadow-sm hover:text-gray-400 transition duration-300"
       ></i>
     </button>
 
@@ -77,7 +77,7 @@ export default {
 
 <style scoped>
 .popup-menu >>> button {
-  @apply flex items-center w-full px-5 text-gray-500 py-2 hover:bg-gray-100 cursor-pointer transition duration-300;
+  @apply flex items-center w-full px-5 text-gray-500 py-2 hover:bg-gray-100 cursor-pointer transition duration-300 font-medium;
 }
 
 .popup-menu >>> button > i {

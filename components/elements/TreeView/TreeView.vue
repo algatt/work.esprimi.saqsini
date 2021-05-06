@@ -7,7 +7,7 @@
 
     <!-- start tree -->
     <TreeViewElement
-      :is-chosen="whichParentIsChosen === null"
+      :is-chosen="!whichParentIsChosen"
       :color="color"
       @click="chooseParent($event)"
       >All</TreeViewElement
@@ -19,7 +19,7 @@
       :is-chosen="
         whichParentIsChosen &&
         whichParentIsChosen.code === parent.code &&
-        whichChildIsChosen === null
+        !whichChildIsChosen
       "
       :color="color"
       :count-field="countField"
@@ -55,7 +55,7 @@
           <tree-view-element-new
             class="pl-7"
             :is-chosen="showNewChildInput === parent.code"
-            :item="{ name: `New ${childName}`, code: -1 }"
+            :item="{ name: `New ${childName}`, code: null }"
             @click="showNewChildInput = parent.code"
             @save="
               $emit('saveChild', $event)
@@ -68,12 +68,11 @@
     <tree-view-element-new
       class="pl-7"
       :is-chosen="showNewParentInput"
-      :item="{ name: `New ${parentName}`, code: -1 }"
+      :item="{ name: `New ${parentName}`, code: null }"
       @click="showNewParentInput = true"
       @save="
         $emit('saveParent', $event)
         showNewParentInput = false
-        $forceUpdate
       "
       @cancel="showNewParentInput = false"
     ></tree-view-element-new>
@@ -125,15 +124,7 @@ export default {
       }, 0)
     },
   },
-  watch: {
-    items: {
-      handler() {
-        console.log('changed')
-        this.$forceUpdate()
-      },
-      deep: true,
-    },
-  },
+
   methods: {
     chooseParent(parent) {
       this.whichParentIsChosen = parent
@@ -156,6 +147,7 @@ export default {
         msg: `You are deleting ${this.parentName} ${this.whichParentIsChosen.name}`,
       }).then(() => {
         this.$emit('deleteParent', code)
+        this.chooseParent(null)
       })
     },
     deleteChild(code) {

@@ -1,7 +1,7 @@
 <template>
   <div class="w-full">
     <div class="md:pl-5 w-full mb-10 md:mb-0">
-      <TableHeader
+      <TableHeader class="mb-4"
         ><template #left><slot name="headerLeft"></slot></template
         ><template #right
           ><selection-delete-clear-button
@@ -11,7 +11,7 @@
             :enable-delete="selectedItems.length > 0"
             @clear="selectedItems = []"
             @selectAll="selectedItems = processedTableData"
-            @deleteAll="$emit('deleteAll', selectedItems)"
+            @deleteAll="deleteAll"
           ></selection-delete-clear-button
           ><slot name="headerRight"></slot></template
       ></TableHeader>
@@ -19,9 +19,9 @@
     <div class="overflow-x-auto w-full md:pl-5">
       <table
         v-if="processedTableData.length > 0"
-        class="w-full overflow-visible mx-auto whitespace-nowrap bg-white rounded divide-y divide-gray-300"
+        class="w-full overflow-visible mx-auto whitespace-nowrap border-2 border-gray-100"
       >
-        <thead class="bg-gray-100">
+        <thead class="bg-gray-100 border-b border-gray-200">
           <tr class="text-gray-600">
             <th class="w-8">&nbsp;</th>
             <th
@@ -45,11 +45,11 @@
             </th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-200">
+        <tbody>
           <tr
             v-for="(row, rowIndex) in processedTableData"
             :key="row.code ? row.code : rowIndex"
-            class="hover:bg-gray-100 transition duration-300 cursor-pointer"
+            class="hover:bg-gray-50 transition duration-300 cursor-pointer border-b-2 border-gray-100"
             @mouseover="whichIsHovered = rowIndex"
             @mouseleave="whichIsHovered = null"
             @click="selectItem(row)"
@@ -93,6 +93,8 @@
 <script>
 import SelectionDeleteClearButton from './SelectionDeleteClearButton'
 import TableHeader from './TableHeader'
+import ModalService from '~/services/modal-services'
+import ConfirmModal from '~/components/elements/ConfirmModal'
 export default {
   name: 'DataTable',
   components: { SelectionDeleteClearButton, TableHeader },
@@ -177,6 +179,13 @@ export default {
     existsInSelectedItems(code) {
       return this.selectedItems.find((el) => {
         return el.code === code
+      })
+    },
+    deleteAll() {
+      ModalService.open(ConfirmModal, {
+        msg: `You are deleting ${this.selectedItems.length} items.`,
+      }).then(() => {
+        this.$emit('deleteAll', this.selectedItems)
       })
     },
   },

@@ -38,7 +38,7 @@ export default {
       type: Object,
       required: false,
       default: () => {
-        return { code: null, name: 'All' }
+        return null
       },
     },
   },

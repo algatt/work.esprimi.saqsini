@@ -1,188 +1,189 @@
 <template>
-  <div class="editor relative">
-    <editor-menu-bar
-      v-slot="{ commands, isActive, getMarkAttrs }"
-      :editor="editor"
-    >
-      <div class="flex flex-col mb-1">
-        <div class="flex flex-wrap py-2 px-1">
-          <button
-            class="menubarButton"
-            :class="{ 'is-active': isActive.bold() }"
-            @click="commands.bold"
-          >
-            <i class="fas fa-bold fa-fw"></i>
-          </button>
+  <!--  <div class="editor relative">-->
+  <!--    <editor-menu-bar-->
+  <!--      v-slot="{ commands, isActive, getMarkAttrs }"-->
+  <!--      :editor="editor"-->
+  <!--    >-->
+  <!--      <div class="flex flex-col mb-1">-->
+  <!--        <div class="flex flex-wrap py-2 px-1">-->
+  <!--          <button-->
+  <!--            class="menubarButton"-->
+  <!--            :class="{ 'is-active': isActive.bold() }"-->
+  <!--            @click="commands.bold"-->
+  <!--          >-->
+  <!--            <i class="fas fa-bold fa-fw"></i>-->
+  <!--          </button>-->
 
-          <button
-            class="menubarButton"
-            :class="{ 'is-active': isActive.italic() }"
-            @click="commands.italic"
-          >
-            <i class="fas fa-italic fa-fw"></i>
-          </button>
+  <!--          <button-->
+  <!--            class="menubarButton"-->
+  <!--            :class="{ 'is-active': isActive.italic() }"-->
+  <!--            @click="commands.italic"-->
+  <!--          >-->
+  <!--            <i class="fas fa-italic fa-fw"></i>-->
+  <!--          </button>-->
 
-          <button
-            class="menubarButton"
-            :class="{ 'is-active': isActive.strike() }"
-            @click="commands.strike"
-          >
-            <i class="fas fa-strikethrough fa-fw"></i>
-          </button>
+  <!--          <button-->
+  <!--            class="menubarButton"-->
+  <!--            :class="{ 'is-active': isActive.strike() }"-->
+  <!--            @click="commands.strike"-->
+  <!--          >-->
+  <!--            <i class="fas fa-strikethrough fa-fw"></i>-->
+  <!--          </button>-->
 
-          <button
-            class="menubarButton"
-            :class="{ 'is-active': isActive.underline() }"
-            @click="commands.underline"
-          >
-            <i class="fas fa-underline fa-fw"></i>
-          </button>
+  <!--          <button-->
+  <!--            class="menubarButton"-->
+  <!--            :class="{ 'is-active': isActive.underline() }"-->
+  <!--            @click="commands.underline"-->
+  <!--          >-->
+  <!--            <i class="fas fa-underline fa-fw"></i>-->
+  <!--          </button>-->
 
-          <button
-            class="menubarButton"
-            :class="{ 'is-active': isActive.paragraph() }"
-            @click="commands.paragraph"
-          >
-            <i class="fas fa-paragraph fa-fw"></i>
-          </button>
+  <!--          <button-->
+  <!--            class="menubarButton"-->
+  <!--            :class="{ 'is-active': isActive.paragraph() }"-->
+  <!--            @click="commands.paragraph"-->
+  <!--          >-->
+  <!--            <i class="fas fa-paragraph fa-fw"></i>-->
+  <!--          </button>-->
 
-          <button
-            class="menubarButton font-bold"
-            :class="{ 'is-active': isActive.heading({ level: 1 }) }"
-            @click="commands.heading({ level: 1 })"
-          >
-            H1
-          </button>
+  <!--          <button-->
+  <!--            class="menubarButton font-bold"-->
+  <!--            :class="{ 'is-active': isActive.heading({ level: 1 }) }"-->
+  <!--            @click="commands.heading({ level: 1 })"-->
+  <!--          >-->
+  <!--            H1-->
+  <!--          </button>-->
 
-          <button
-            class="menubarButton font-bold"
-            :class="{ 'is-active': isActive.heading({ level: 2 }) }"
-            @click="commands.heading({ level: 2 })"
-          >
-            H2
-          </button>
+  <!--          <button-->
+  <!--            class="menubarButton font-bold"-->
+  <!--            :class="{ 'is-active': isActive.heading({ level: 2 }) }"-->
+  <!--            @click="commands.heading({ level: 2 })"-->
+  <!--          >-->
+  <!--            H2-->
+  <!--          </button>-->
 
-          <button
-            class="menubarButton font-bold"
-            :class="{ 'is-active': isActive.heading({ level: 3 }) }"
-            @click="commands.heading({ level: 3 })"
-          >
-            H3
-          </button>
+  <!--          <button-->
+  <!--            class="menubarButton font-bold"-->
+  <!--            :class="{ 'is-active': isActive.heading({ level: 3 }) }"-->
+  <!--            @click="commands.heading({ level: 3 })"-->
+  <!--          >-->
+  <!--            H3-->
+  <!--          </button>-->
 
-          <button
-            class="menubarButton"
-            :class="{ 'is-active': isActive.bullet_list() }"
-            @click="commands.bullet_list"
-          >
-            <i class="fas fa-list-ul fa-fw"></i>
-          </button>
+  <!--          <button-->
+  <!--            class="menubarButton"-->
+  <!--            :class="{ 'is-active': isActive.bullet_list() }"-->
+  <!--            @click="commands.bullet_list"-->
+  <!--          >-->
+  <!--            <i class="fas fa-list-ul fa-fw"></i>-->
+  <!--          </button>-->
 
-          <button
-            class="menubarButton"
-            :class="{ 'is-active': isActive.ordered_list() }"
-            @click="commands.ordered_list"
-          >
-            <i class="fas fa-list-ol fa-fw"></i>
-          </button>
+  <!--          <button-->
+  <!--            class="menubarButton"-->
+  <!--            :class="{ 'is-active': isActive.ordered_list() }"-->
+  <!--            @click="commands.ordered_list"-->
+  <!--          >-->
+  <!--            <i class="fas fa-list-ol fa-fw"></i>-->
+  <!--          </button>-->
 
-          <button
-            class="menubarButton"
-            :class="{ 'is-active': isActive.blockquote() }"
-            @click="commands.blockquote"
-          >
-            <i class="fas fa-quote-right fa-fw"></i>
-          </button>
+  <!--          <button-->
+  <!--            class="menubarButton"-->
+  <!--            :class="{ 'is-active': isActive.blockquote() }"-->
+  <!--            @click="commands.blockquote"-->
+  <!--          >-->
+  <!--            <i class="fas fa-quote-right fa-fw"></i>-->
+  <!--          </button>-->
 
-          <button
-            class="menubarButton"
-            :class="{ 'is-active': isActive.code_block() }"
-            @click="commands.code_block"
-          >
-            <i class="fas fa-code fa-fw"></i>
-          </button>
+  <!--          <button-->
+  <!--            class="menubarButton"-->
+  <!--            :class="{ 'is-active': isActive.code_block() }"-->
+  <!--            @click="commands.code_block"-->
+  <!--          >-->
+  <!--            <i class="fas fa-code fa-fw"></i>-->
+  <!--          </button>-->
 
-          <button
-            class="menubarButton font-bold"
-            @click="commands.horizontal_rule"
-          >
-            HR
-          </button>
+  <!--          <button-->
+  <!--            class="menubarButton font-bold"-->
+  <!--            @click="commands.horizontal_rule"-->
+  <!--          >-->
+  <!--            HR-->
+  <!--          </button>-->
 
-          <button
-            class="menubarButton"
-            :class="{ 'is-active': isActive.link() }"
-            @click="addUrl ? (addUrl = false) : showMenu(getMarkAttrs('link'))"
-          >
-            <i class="fas fa-link fa-fw"></i>
-          </button>
+  <!--          <button-->
+  <!--            class="menubarButton"-->
+  <!--            :class="{ 'is-active': isActive.link() }"-->
+  <!--            @click="addUrl ? (addUrl = false) : showMenu(getMarkAttrs('link'))"-->
+  <!--          >-->
+  <!--            <i class="fas fa-link fa-fw"></i>-->
+  <!--          </button>-->
 
-          <button
-            class="menubarButton"
-            @click="showImagePrompt(commands.image)"
-          >
-            <i class="far fa-image fa-fw"></i>
-          </button>
+  <!--          <button-->
+  <!--            class="menubarButton"-->
+  <!--            @click="showImagePrompt(commands.image)"-->
+  <!--          >-->
+  <!--            <i class="far fa-image fa-fw"></i>-->
+  <!--          </button>-->
 
-          <button class="menubarButton" @click="commands.undo">
-            <i class="fas fa-undo fa-fw"></i>
-          </button>
+  <!--          <button class="menubarButton" @click="commands.undo">-->
+  <!--            <i class="fas fa-undo fa-fw"></i>-->
+  <!--          </button>-->
 
-          <button class="menubarButton" @click="commands.redo">
-            <i class="fas fa-redo fa-fw"></i>
-          </button>
-        </div>
-        <div v-if="addUrl" class="flex justify-between px-3 w-10/12 my-2">
-          <input
-            v-model="linkUrl"
-            placeholder="https://"
-            class="flex flex-1 bg-gray-600 text-gray-300 py-1 px-1 rounded-l"
-          />
-          <button
-            class="bg-gray-700 px-2 rounded-r"
-            @click="setLinkUrl(commands.link, linkUrl)"
-          >
-            Apply
-          </button>
-        </div>
-      </div>
-    </editor-menu-bar>
+  <!--          <button class="menubarButton" @click="commands.redo">-->
+  <!--            <i class="fas fa-redo fa-fw"></i>-->
+  <!--          </button>-->
+  <!--        </div>-->
+  <!--        <div v-if="addUrl" class="flex justify-between px-3 w-10/12 my-2">-->
+  <!--          <input-->
+  <!--            v-model="linkUrl"-->
+  <!--            placeholder="https://"-->
+  <!--            class="flex flex-1 bg-gray-600 text-gray-300 py-1 px-1 rounded-l"-->
+  <!--          />-->
+  <!--          <button-->
+  <!--            class="bg-gray-700 px-2 rounded-r"-->
+  <!--            @click="setLinkUrl(commands.link, linkUrl)"-->
+  <!--          >-->
+  <!--            Apply-->
+  <!--          </button>-->
+  <!--        </div>-->
+  <!--      </div>-->
+  <!--    </editor-menu-bar>-->
 
-    <editor-content class="editorContent" :editor="editor" />
-  </div>
+  <!--    <editor-content class="editorContent" :editor="editor" />-->
+  <!--  </div>-->
+  <div>a</div>
 </template>
 
 <script>
-import javascript from 'highlight.js/lib/languages/javascript'
-import css from 'highlight.js/lib/languages/css'
+// import javascript from 'highlight.js/lib/languages/javascript'
+// import css from 'highlight.js/lib/languages/css'
 
-import { Editor, EditorContent, EditorMenuBar } from 'tiptap'
-import {
-  Blockquote,
-  CodeBlock,
-  HardBreak,
-  Heading,
-  HorizontalRule,
-  OrderedList,
-  BulletList,
-  ListItem,
-  TodoItem,
-  TodoList,
-  Bold,
-  Italic,
-  Link,
-  Strike,
-  Underline,
-  History,
-  Image,
-  CodeBlockHighlight,
-  Focus,
-} from 'tiptap-extensions'
+// import { Editor, EditorContent, EditorMenuBar } from 'tiptap'
+// import {
+//   Blockquote,
+//   CodeBlock,
+//   HardBreak,
+//   Heading,
+//   HorizontalRule,
+//   OrderedList,
+//   BulletList,
+//   ListItem,
+//   TodoItem,
+//   TodoList,
+//   Bold,
+//   Italic,
+//   Link,
+//   Strike,
+//   Underline,
+//   History,
+//   Image,
+//   CodeBlockHighlight,
+//   Focus,
+// } from 'tiptap-extensions'
 
 export default {
   components: {
-    EditorContent,
-    EditorMenuBar,
+    // EditorContent,
+    // EditorMenuBar,
   },
   props: {
     content: {
@@ -199,45 +200,45 @@ export default {
     }
   },
   mounted() {
-    this.editor = new Editor({
-      onUpdate: ({ getHTML }) => {
-        this.$emit('updateContent', getHTML())
-      },
-      extensions: [
-        new Blockquote(),
-        new BulletList(),
-        new CodeBlock(),
-        new HardBreak(),
-        new Heading({ levels: [1, 2, 3] }),
-        new HorizontalRule(),
-        new ListItem(),
-        new OrderedList(),
-        new TodoItem(),
-        new TodoList(),
-        new Link(),
-        new Bold(),
-        new Italic(),
-        new Strike(),
-        new Underline(),
-        new History(),
-        new Image(),
-
-        new CodeBlockHighlight({
-          languages: {
-            javascript,
-            css,
-          },
-        }),
-        new Focus({
-          className: 'has-focus',
-          nested: true,
-        }),
-      ],
-      content: this.content,
-    })
+    // this.editor = new Editor({
+    //   onUpdate: ({ getHTML }) => {
+    //     this.$emit('updateContent', getHTML())
+    //   },
+    //   extensions: [
+    //     new Blockquote(),
+    //     new BulletList(),
+    //     new CodeBlock(),
+    //     new HardBreak(),
+    //     new Heading({ levels: [1, 2, 3] }),
+    //     new HorizontalRule(),
+    //     new ListItem(),
+    //     new OrderedList(),
+    //     new TodoItem(),
+    //     new TodoList(),
+    //     new Link(),
+    //     new Bold(),
+    //     new Italic(),
+    //     new Strike(),
+    //     new Underline(),
+    //     new History(),
+    //     new Image(),
+    //
+    //     new CodeBlockHighlight({
+    //       languages: {
+    //         javascript,
+    //         css,
+    //       },
+    //     }),
+    //     new Focus({
+    //       className: 'has-focus',
+    //       nested: true,
+    //     }),
+    //   ],
+    //   content: this.content,
+    // })
   },
   beforeDestroy() {
-    this.editor.destroy()
+    // this.editor.destroy()
   },
   methods: {
     showImagePrompt(command) {

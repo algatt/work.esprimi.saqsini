@@ -14,7 +14,7 @@
           <i v-else class="far fa-folder fa-fw text-gray-300"></i>
           <TreeViewInput
             id="treeViewElementInput"
-            :name="item.name"
+            :name="item ? item.name : 'All'"
             :is-editable="isEditable"
             @save="save($event)"
             @cancel="cancel"
@@ -23,7 +23,7 @@
 
       <span class="flex items-center space-x-2">
         <button
-          v-if="isChosen && !isEditable && item.code"
+          v-if="isChosen && !isEditable && item"
           class="text-gray-300 hover:text-blue-600 transition duration-300 focus:outline-none"
           :class="`hover:text-${color}-600`"
           @click.stop="setEditable"
@@ -31,13 +31,13 @@
           <i class="far fa-edit fa-sm fa-fw"></i>
         </button>
         <button
-          v-if="isChosen && !isEditable && item.code"
+          v-if="isChosen && !isEditable && item"
           class="text-gray-300 hover:text-red-600 transition duration-300 focus:outline-none"
           @click.stop="$emit('delete', item.code)"
         >
           <i class="far fa-trash-alt fa-sm fa-fw"></i>
         </button>
-        <badge-base v-if="item.code !== null" size="xs">{{
+        <badge-base v-if="item" size="xs">{{
           item[countField]
         }}</badge-base></span
       >
@@ -67,7 +67,7 @@ export default {
       type: Object,
       required: false,
       default: () => {
-        return { code: null, name: 'All' }
+        return null
       },
     },
     countField: {

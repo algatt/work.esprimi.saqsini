@@ -8,16 +8,21 @@
     <div class="flex items-center space-x-2">
       <p><slot name="leftLabel"></slot></p>
       <div
-        class="w-10 h-5 flex items-center rounded-full p-1 duration-300 ease-in-out cursor-pointer"
-        :class="buttonStyle"
+        class="bg-white transition duration-200 ease-in w-10 h-6 flex items-center"
+        style="border-radius: 2em; border-width: 3px"
+        :class="toggleActive ? `border-${bgColor}-600` : ''"
         @click.stop="
           toggleActive = !toggleActive
           $emit('clicked', toggleActive)
         "
       >
         <div
-          class="bg-white w-4 h-4 rounded-full shadow-md transform duration-300 ease-in-out"
-          :class="{ 'translate-x-4': toggleActive }"
+          class="w-4 h-3.5 transform duration-300 ease-in"
+          style="border-radius: 2em"
+          :class="[
+            { 'translate-x-4': toggleActive },
+            toggleActive ? `bg-${bgColor}-600` : 'bg-gray-200',
+          ]"
         ></div>
       </div>
       <p><slot name="rightLabel"></slot></p>
