@@ -9,7 +9,7 @@
       <p><slot name="leftLabel"></slot></p>
       <div
         class="bg-white transition duration-200 ease-in w-10 h-6 flex items-center"
-        style="border-radius: 2em; border-width: 3px"
+        style="border-radius: 2em; border-width: 2px"
         :class="toggleActive ? `border-${bgColor}-600` : ''"
         @click.stop="
           toggleActive = !toggleActive
@@ -17,10 +17,10 @@
         "
       >
         <div
-          class="w-4 h-3.5 transform duration-300 ease-in"
+          class="w-4 h-3.5 transform duration-300 ease-in ml-1"
           style="border-radius: 2em"
           :class="[
-            { 'translate-x-4': toggleActive },
+            { 'translate-x-3.5': toggleActive },
             toggleActive ? `bg-${bgColor}-600` : 'bg-gray-200',
           ]"
         ></div>

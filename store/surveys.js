@@ -11,17 +11,9 @@ export const actions = {
       this.$axios
         .get(`/builder/instance/all?limit=${limit}&offset=${offset}`)
         .then((response) => {
-          commit(
-            'setItems',
-            {
-              which: 'surveys',
-              items: response.data,
-            },
-            { root: true }
-          )
-          resolve()
+          commit('setSurveys', response.data)
+          resolve(response.data)
         })
-
         .catch((error) => {
           reject(error)
         })
@@ -108,25 +100,19 @@ export const actions = {
           }
         )
         .then((response) => {
+          const question = {
+            surveyCode: response.data.code,
+            ordinalPosition: 1,
+            questionNumber: 1,
+            surveyOptions: JSON.stringify({ branching: { rules: [] } }),
+            name: 'Page 1',
+            text: [{ language: response.data.defaultLanguage, text: 'Page 1' }],
+            flags: ['SECTION'],
+          }
+          dispatch('questions/newQuestion', question, { root: true })
           commit('newSurvey', response.data)
           resolve(response.data)
         })
-        // .then(async (response) => {
-        //   const question = {
-        //     surveyCode: response.data.code,
-        //     ordinalPosition: 1,
-        //     questionNumber: 1,
-        //     surveyOptions: JSON.stringify({ branching: { rules: [] } }),
-        //     name: 'Page 1',
-        //     text: [{ language: response.data.defaultLanguage, text: 'Page 1' }],
-        //     flags: ['SECTION'],
-        //   }
-        //
-        //   await dispatch('questions/newQuestion', question, { root: true })
-        //   await dispatch('categories/getCategories', false, { root: true })
-        //
-        //   resolve(response.data)
-        // })
         .catch((error) => {
           reject(error)
         })
@@ -459,6 +445,10 @@ export const actions = {
 // }
 
 export const mutations = {
+  setSurveys(state, surveys) {
+    state.items = surveys
+  },
+
   newSurvey(state, survey) {
     state.items.push(survey)
   },

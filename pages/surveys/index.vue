@@ -96,44 +96,29 @@
         </template></DataTable
       >
     </template>
-
-    <!--        <p class="w-full xl:w-2/12 flex xl:justify-center mb-2 md:mb-0">-->
-    <!--          <nuxt-link-->
-    :to="{ name: 'questions-id', params: { id: slotProps.item.code }, }"
-    <!--            @click.stop.native-->
-    <!--          >-->
-    <!--            <text-link>Manage Survey</text-link>-->
-    <!--          </nuxt-link>-->
-    <!--        </p>-->
-    <!--      </template>-->
   </list-layout-with-sidebar>
   <div v-else>loading</div>
 </template>
 
 <script>
-import viewMixin from '~/helpers/viewMixin'
 import SurveyCategoryTreeView from '~/components/layouts/Surveys/SurveyCategoryTreeView'
 import ListLayoutWithSidebar from '~/components/layouts/ListLayoutWithSidebar'
 import DataTable from '~/components/elements/DataTable/DataTable'
 import NewItemButton from '~/components/elements/NewItemButton'
 import ModalService from '~/services/modal-services'
 import NewItemModal from '~/components/layouts/NewItemModal'
-import LToggle from '~/components/elements/LToggle'
-import LProgress from '~/components/LProgress'
 
 export default {
   name: 'SurveyList',
   middleware: ['surveyBuilder'],
   layout: 'authlayout',
   components: {
-    LProgress,
-    LToggle,
     DataTable,
     ListLayoutWithSidebar,
     SurveyCategoryTreeView,
     NewItemButton,
   },
-  mixins: [viewMixin],
+
   data() {
     return {
       selectedCategory: null,
@@ -253,7 +238,6 @@ export default {
           this.$toasted.error('There was a problem deleting the surveys')
         })
     },
-
     flagForDeletion(survey) {
       this.$store.dispatch('surveys/flagForRemoval', survey).then(() => {
         this.$toasted.show(`${survey.name} marked for deletion`)
@@ -291,7 +275,6 @@ export default {
         })
       }
     },
-
     copyUrl(url) {
       url = `${process.env.siteUrl}survey?id=${url}`
       navigator.clipboard.writeText(url).then(() => {
