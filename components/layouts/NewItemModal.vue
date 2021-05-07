@@ -49,6 +49,7 @@ import ModalMixin from '~/components/elements/Modal/ModalMixin'
 import ButtonBase from '~/components/elements/ButtonBasic'
 import NewSurvey from '~/components/layouts/Surveys/NewSurvey'
 import LButton from '~/components/elements/LButton'
+import NewQuestion from '~/components/surveys/NewQuestion'
 
 export default {
   name: 'NewItemModal',
@@ -60,6 +61,7 @@ export default {
     ModalHeader,
     Modal,
     NewSurvey,
+    NewQuestion,
   },
   mixins: [ModalMixin],
   props: {

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="fixed top-0 left-0 w-full h-full z-30 flex justify-center items-center"
+    class="fixed top-0 left-0 w-full h-full z-30 flex justify-center items-center cursor-default"
     :class="dim ? 'bg-gray-100 bg-opacity-50' : null"
     @click.stop="$emit('click')"
   >

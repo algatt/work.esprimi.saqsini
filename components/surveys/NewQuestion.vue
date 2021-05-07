@@ -186,7 +186,7 @@ import NewQuestionMultipleChoice from '~/components/surveys/NewQuestionMultipleC
 import NewQuestionLikert from '~/components/surveys/NewQuestionLikert'
 import { QUESTION_TYPES } from '~/helpers/constants'
 import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
-import { parseQuestionToForm } from '~/helpers/parseSurveyObjects'
+// import { parseQuestionToForm } from '~/helpers/parseSurveyObjects'
 import QuestionBranching from '~/components/surveys/QuestionBranching'
 import questionMixin from '~/helpers/questionMixin'
 import PopupInfo from '~/components/layouts/PopupInfo'
@@ -218,6 +218,12 @@ export default {
     QuestionDisqualify,
   },
   mixins: [validationMixin, questionMixin],
+  props: {
+    dataItem: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     return {
       selectedSection: 'details',
@@ -250,7 +256,7 @@ export default {
   },
   computed: {
     question() {
-      return this.$store.state.currentItemToBeEdited
+      return this.dataItem
     },
     questions() {
       return this.$store.getters.getItems('questions')
@@ -266,7 +272,8 @@ export default {
     },
   },
   created() {
-    this.form = parseQuestionToForm(this.question)
+    // this.form = parseQuestionToForm(this.question)
+    this.form = this.dataItem
   },
   mounted() {
     this.$v.form.questionNumber.$touch()

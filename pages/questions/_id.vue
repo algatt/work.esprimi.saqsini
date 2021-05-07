@@ -6,76 +6,72 @@
         Right
       </div>
     </div>
-    <div
-      v-for="page in parsedQuestionsSection"
-      :key="page.code"
-      class="border-2 border-gray-200 rounded shadow-sm mb-5 w-full md:w-7/12 mx-auto bg-gray-50"
-    >
-      <div class="flex flex-col">
-        <div class="flex justify-center mt-3">
-          <h6>
-            {{ page.name }}
-          </h6>
-        </div>
-        <div
-          class="question-item transition-all duration-300 h-3 border-b-2 border-gray-200"
-          :class="dragging ? 'bg-gray-100' : 'bg-gray-50'"
-          @drop.stop="onDropQuestion($event, page)"
-          @dragenter.prevent.stop
-          @dragover.prevent.stop="overDrag($event, page)"
-          @dragleave.prevent.stop="leaveDrag($event, page)"
-        ></div>
-      </div>
 
+    <div class="w-full md:w-8/12 flex flex-col mx-auto">
       <div
-        v-for="question in getQuestionsForSection(page)"
-        :key="question.code"
-        class="bg-white flex flex-col cursor-pointer border-b border-gray-200"
-        @mouseenter="beingHovered = question"
-        @mouseleave="beingHovered = null"
+        v-for="section in sectionQuestions"
+        :key="section.code"
+        class="bg-gray-100 p-5 mb-6 container rounded shadow flex flex-col border"
+        @dragover.prevent="onDropQuestion($event, section)"
       >
+        <h4>{{ section.name }}</h4>
         <div
-          class="flex flex-col px-4 py-6"
-          draggable="true"
-          @dragstart="startDrag($event, question)"
-          @dragend.prevent="dragging = null"
-          @dragenter.prevent
+          class="flex justify-center opacity-0 hover:opacity-100 transition duration-300"
         >
-          <div class="flex">
-            <span class="font-bold font-lg mr-2 text-blue-600">{{
-              question.questionNumber
-            }}</span>
-            <span>{{ question.name }}</span>
-          </div>
+          <LPopupMenu>
+            <template v-slot:icon
+              ><LButtonCircle><i class="fas fa-plus fa-fw"></i></LButtonCircle
+            ></template>
+            <template v-slot:menu>
+              <button v-for="button in QUESTION_TYPES" :key="button.code">
+                <i :class="button.icon"></i>{{ button.text }}
+              </button>
+            </template></LPopupMenu
+          >
         </div>
         <div
-          class="question-item transition-all duration-100 flex justify-center"
-          :class="[
-            dragging ? 'bg-gray-100' : 'bg-white',
-            beingHovered && !dragging && beingHovered.code === question.code
-              ? 'h-10'
-              : 'h-3',
-          ]"
-          @drop.stop="onDropQuestion($event, question)"
-          @dragover.prevent="overDrag($event, question)"
-          @dragleave.prevent="leaveDrag($event, question)"
+          v-for="question in getQuestionsForSection(section)"
+          :key="question.code"
         >
-          <transition name="fade">
-            <LPopupMenu
-              v-if="
-                beingHovered && !dragging && beingHovered.code === question.code
-              "
-            >
+          <div
+            class="bg-white my-2 p-4 draggable cursor-move rounded border flex flex-wrap"
+            draggable="true"
+            @dragstart="startDrag($event, question)"
+            @dragend="endDrag($event, question)"
+            @dragover.prevent.stop="onDropQuestion($event, question)"
+          >
+            <div class="flex flex-1 flex-col items-start">
+              <h6 class="mb-1">{{ question.name }}</h6>
+              <badge-base>{{ getQuestionType(question) }}</badge-base>
+            </div>
+            <div class="w-20 flex justify-center">
+              <LPopupMenu
+                ><template v-slot:menu
+                  ><button>
+                    <i class="fas fa-edit fa-fw"></i>Edit
+                  </button></template
+                ></LPopupMenu
+              >
+            </div>
+          </div>
+          <div
+            class="flex justify-center opacity-0 hover:opacity-100 transition duration-300"
+          >
+            <LPopupMenu>
               <template v-slot:icon
                 ><LButtonCircle><i class="fas fa-plus fa-fw"></i></LButtonCircle
               ></template>
               <template v-slot:menu>
-                <button v-for="button in QUESTION_TYPES" :key="button.code">
+                <button
+                  v-for="button in QUESTION_TYPES"
+                  :key="button.code"
+                  @click="newQuestion(button.flag, question.ordinalPosition)"
+                >
                   <i :class="button.icon"></i>{{ button.text }}
                 </button>
               </template></LPopupMenu
-            ></transition
-          >
+            >
+          </div>
         </div>
       </div>
     </div>
@@ -86,12 +82,17 @@
 <script>
 import ListLayout from '~/components/layouts/ListLayout'
 import { QUESTION_TYPES } from '~/assets/settings/survey-settings'
-import LButtonCircle from '~/components/elements/LButtonCircle'
+import LPopupMenu from '~/components/elements/LPopupMenu'
+import BadgeBase from '~/components/elements/BadgeBase'
+import { getQuestionTypeText } from '~/services/question-helpers'
+import ModalService from '~/services/modal-services'
+import NewItemModal from '~/components/layouts/NewItemModal'
 
 export default {
   name: 'QuestionList',
-  components: { LButtonCircle, ListLayout },
+  components: { BadgeBase, LPopupMenu, ListLayout },
   middleware: ['surveyBuilder'],
+  layout: 'authlayout',
 
   data() {
     return {
@@ -119,7 +120,7 @@ export default {
         return a.ordinalPosition > b.ordinalPosition ? 1 : -1
       })
     },
-    parsedQuestionsSection() {
+    sectionQuestions() {
       return this.sortedQuestions.filter((el) => {
         return el.flags.includes('SECTION')
       })
@@ -210,19 +211,8 @@ export default {
           behavior: 'smooth',
         })
     },
-    overDrag(event) {
-      if (
-        event.target.classList &&
-        event.target.classList.contains('question-item')
-      )
-        event.target.classList.add('over-drag')
-    },
-    leaveDrag(event) {
-      if (
-        event.target.classList &&
-        event.target.classList.contains('question-item')
-      )
-        event.target.classList.remove('over-drag')
+    getQuestionType(question) {
+      return getQuestionTypeText(question.flags)
     },
     getQuestionsForSection(section) {
       const nextSection = this.sortedQuestions
@@ -244,10 +234,13 @@ export default {
       return temp
     },
     startDrag(event, item) {
-      this.dragging = item
+      event.target.classList.add('dragging')
       event.dataTransfer.dropEffect = 'move'
       event.dataTransfer.effectAllowed = 'move'
       event.dataTransfer.setData('question', JSON.stringify(item))
+    },
+    endDrag(event, item) {
+      event.target.classList.remove('dragging')
     },
 
     onDropQuestion(event, question) {
@@ -267,7 +260,6 @@ export default {
         questions[i].ordinalPosition = i + 1
 
       this.$store.dispatch('questions/setQuestions', questions)
-      this.leaveDrag(event)
 
       this.dragging = null
     },
@@ -312,27 +304,39 @@ export default {
     //       this.loading = false
     //     }
     //   },
-    //   newQuestion(flag, ordinalPosition) {
-    //     this.$store.dispatch('setCurrentItemToBeEdited', {
-    //       code: -1,
-    //       questionNumber: this.getMaxQuestionNumber(),
-    //       surveyCode: Number(this.$route.params.id),
-    //       flags: [flag],
-    //       ordinalPosition,
-    //       surveyOptions: JSON.stringify({}),
-    //     })
-    //   },
-    //   getMaxQuestionNumber() {
-    //     let max = null
-    //     this.questions.forEach((el) => {
-    //       if (Number(el.questionNumber)) {
-    //         if (!max) max = Number(el.questionNumber)
-    //         else if (max < Number(el.questionNumber))
-    //           max = Number(el.questionNumber)
-    //       }
-    //     })
-    //     return max + 1
-    //   },
+    newQuestion(flag, ordinalPosition) {
+      // this.$store.dispatch('setCurrentItemToBeEdited', {
+      //   code: -1,
+      //   questionNumber: this.getMaxQuestionNumber(),
+      //   surveyCode: Number(this.$route.params.id),
+      //   flags: [flag],
+      //   ordinalPosition,
+      //   surveyOptions: JSON.stringify({}),
+      // })
+
+      ModalService.open(NewItemModal, {
+        whichComponent: 'NewQuestion',
+        dataItem: {
+          code: -1,
+          questionNumber: this.getMaxQuestionNumber(),
+          surveyCode: Number(this.$route.params.id),
+          flags: [flag],
+          ordinalPosition,
+          surveyOptions: JSON.stringify({}),
+        },
+      })
+    },
+    getMaxQuestionNumber() {
+      let max = null
+      this.sortedQuestions.forEach((el) => {
+        if (Number(el.questionNumber)) {
+          if (!max) max = Number(el.questionNumber)
+          else if (max < Number(el.questionNumber))
+            max = Number(el.questionNumber)
+        }
+      })
+      return max + 1
+    },
     //   editQuestion(question) {
     //     this.$store.dispatch('setCurrentItemToBeEdited', question)
     //   },
@@ -457,20 +461,8 @@ export default {
 </script>
 
 <style scoped>
-.over-drag {
-  @apply bg-gray-200 transition duration-100;
-}
-
-.fade-enter-active {
-  transition: opacity 1s;
-}
-
-.fade-leave-active {
-  transition: opacity 0.2s;
-}
-
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
+.dragging {
+  @apply opacity-50;
 }
 
 .bigScreenPopup #bigScreenPopupChild {
