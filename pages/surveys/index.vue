@@ -141,10 +141,12 @@ export default {
     }
   },
   computed: {
+    loading() {
+      return this.$store.state.loading
+    },
     categories() {
       return this.$store.getters['categories/getCategoriesForTreeView']
     },
-
     surveys() {
       return this.$store.getters.getItems('surveys')
     },

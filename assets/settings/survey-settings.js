@@ -26,3 +26,55 @@ export const SURVEY_OPTIONS = {
   headerImage: '',
   footerImage: '',
 }
+
+export const QUESTION_TYPES = {
+  SECTION: {
+    code: 0,
+    text: 'Page',
+    flag: 'SECTION',
+    icon: 'fas fa-file fa-fw',
+    options: [],
+  },
+  MULTIPLE_CHOICE: {
+    code: 1,
+    text: 'Multiple Choice',
+    flag: 'MULTIPLE_CHOICE',
+    icon: 'fas fa-ellipsis-v fa-fw',
+    options: ['allowOther', 'allowMultiple'],
+  },
+  LIKERT: {
+    code: 2,
+    text: 'Likert',
+    flag: 'LIKERT',
+    icon: 'fas fa-ellipsis-h fa-fw',
+    options: ['showWeights'],
+  },
+  DROPDOWN: {
+    code: 3,
+    text: 'Dropdown',
+    flag: 'DROPDOWN',
+    icon: 'fas fa-chevron-circle-down fa-fw',
+    options: ['allowOther', 'allowMultiple'],
+  },
+  TYPE_IN: {
+    code: 4,
+    text: 'Type In',
+    flag: 'TYPE_IN',
+    icon: 'fas fa-keyboard fa-fw',
+    options: [],
+  },
+  RANKING: {
+    code: 5,
+    text: 'Ranking',
+    flag: 'RANKING',
+    icon: 'fas fa-trophy fa-fw',
+    options: [],
+  },
+  RADIO_GRID: {
+    code: 6,
+    text: 'Radio Grid',
+    flag: 'RADIO_GRID',
+    icon: 'fas fa-grip-horizontal fa-fw',
+    options: [],
+  },
+}

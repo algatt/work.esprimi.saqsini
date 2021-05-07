@@ -1,658 +1,478 @@
 <template>
-  <div v-if="!loading" class="flex flex-col flex-wrap">
-    <template v-if="!error">
-      <top-header-bar
-        :which="selectedView === 'questions' ? 'questions' : 'invites'"
-        :items="[]"
-        :hide-select-all="true"
-        :hide-delete="true"
-        :disable-menu="selectedView === 'invites'"
-      >
-        <template v-slot:title>
-          {{ survey.name }}
-          <small class="ml-2 self-baseline font-normal">
-            {{ survey.referenceDate }}
-          </small>
-        </template>
-        <template v-slot:extraContent>
-          <div class="xl:ml-6 ml-0 flex items-center">
-            <contact-book-dropdown
-              v-if="canUseContactBook"
-              :disabled="getBranchingContactBook().length > 0"
-              @changedList="updateData"
-              @clearBranching="clearBranching"
-            ></contact-book-dropdown>
-          </div>
-        </template>
-        <template v-slot:extraButtons>
-          <menu-icon-button
-            :active="selectedView === 'questions'"
-            @click="selectedView = 'questions'"
-          >
-            Questions
-            <template v-slot:icon>
-              <i class="fas fa-question fa-fw" title="Questions"></i>
-            </template>
-          </menu-icon-button>
-          <menu-icon-button
-            :active="selectedView === 'invites'"
-            @click="selectedView = 'invites'"
-          >
-            Outreach
-            <template v-slot:icon>
-              <i class="fas fa-paper-plane fa-fw" title="Outreach"></i>
-            </template>
-          </menu-icon-button>
-        </template>
-        <template
-          v-if="selectedView === 'questions'"
-          v-slot:menuButtonIfNotSelected
-        >
-          <span @click="selectMenu('settings')">
-            <i class="fas fa-sliders-h fa-fw"></i>
-            Settings
-          </span>
-          <span @click="selectMenu('language')">
-            <i class="fas fa-language fa-fw"></i>
-            Language
-          </span>
-
-          <span @click="selectMenu('collaborators')">
-            <i class="fas fa-users fa-fw"></i>
-            Collaborators
-          </span>
-
-          <span @click="selectMenu('invite_settings')">
-            <i class="fas fa-envelope-open-text fa-fw"></i>
-            Invite Settings
-          </span>
-
-          <span @click="selectMenu('preview')">
-            <i class="fas fa-eye fa-fw"></i>
-            Preview
-          </span>
-
-          <span @click="showPreviewToggle">
-            <template v-if="showPreview">
-              <i class="fas fa-question-circle fa-fw"></i>
-              Show Title Only
-            </template>
-            <template v-else>
-              <i v-if="!showPreview" class="fas fa-question-circle fa-fw"></i>
-              Show Question Content
-            </template>
-          </span>
-        </template>
-      </top-header-bar>
-
-      <div v-if="selectedView === 'invites'" class="flex flex-col w-full">
-        <invites></invites>
+  <list-layout v-if="!loading">
+    <div class="w-full my-3 flex justify-between flex-wrap">
+      <div class="w-full md:w-6/12 flex justify-start">Left</div>
+      <div class="w-full md:w-6/12 flex justify-start md:justify-end">
+        Right
       </div>
-      <div v-else class="flex flex-col w-full">
+    </div>
+    <div
+      v-for="page in parsedQuestionsSection"
+      :key="page.code"
+      class="border-2 border-gray-200 rounded shadow-sm mb-5 w-full md:w-7/12 mx-auto bg-gray-50"
+    >
+      <div class="flex flex-col">
+        <div class="flex justify-center mt-3">
+          <h6>
+            {{ page.name }}
+          </h6>
+        </div>
         <div
-          v-for="iteration in questionsNumberOfSections"
-          :key="'page' + iteration"
-          class="mt-5 w-full md:w-8/12 mx-auto flex flex-col mb-5 border border-gray-100 shadow"
+          class="question-item transition-all duration-300 h-3 border-b-2 border-gray-200"
+          :class="dragging ? 'bg-gray-100' : 'bg-gray-50'"
+          @drop.stop="onDropQuestion($event, page)"
+          @dragenter.prevent.stop
+          @dragover.prevent.stop="overDrag($event, page)"
+          @dragleave.prevent.stop="leaveDrag($event, page)"
+        ></div>
+      </div>
+
+      <div
+        v-for="question in getQuestionsForSection(page)"
+        :key="question.code"
+        class="bg-white flex flex-col cursor-pointer border-b border-gray-200"
+        @mouseenter="beingHovered = question"
+        @mouseleave="beingHovered = null"
+      >
+        <div
+          class="flex flex-col px-4 py-6"
+          draggable="true"
+          @dragstart="startDrag($event, question)"
+          @dragend.prevent="dragging = null"
+          @dragenter.prevent
         >
-          <div
-            v-for="question in getQuestionsInPage(iteration)"
-            :key="question.code"
-            class="relative bigScreenPopup cursor-pointer border-b-2 border-gray-100"
-          >
-            <div class="flex flex-col w-full bg-white p-5">
-              <div class="flex w-full">
-                <div class="flex flex-1 items-center">
-                  <span
-                    class="font-semibold text-gray-800"
-                    :class="
-                      question.flags.includes('SECTION')
-                        ? 'text-2xl'
-                        : 'text-xl'
-                    "
-                  >
-                    {{ question.name }}
-                  </span>
-                  <span class="mx-2 text-primary font-bold text-lg">
-                    {{ question.questionNumber }}
-                  </span>
-                </div>
-
-                <div class="w-16 flex items-center justify-end">
-                  <popup-menu>
-                    <template v-slot:icon>
-                      <button-icon-rounded bg-colour="gray">
-                        <i class="fas fa-ellipsis-v fa-fw"></i>
-                      </button-icon-rounded>
-                    </template>
-                    <template v-slot:menu>
-                      <span @click="editQuestion(question)">
-                        <i class="fa-fw fas fa-pencil-alt fa-sm"></i>
-                        Edit
-                      </span>
-                      <span
-                        v-if="question.ordinalPosition !== 1"
-                        @click="moveQuestion(question)"
-                      >
-                        <i class="fa-fw fas fa-arrows-alt-v fa-sm"></i>
-                        Move
-                      </span>
-                      <span
-                        v-if="question.ordinalPosition !== 1"
-                        @click="deleteQuestion(question)"
-                      >
-                        <i class="fa-fw fas fa-trash-alt fa-sm"></i>
-                        Delete
-                      </span>
-                    </template>
-                  </popup-menu>
-                </div>
-              </div>
-              <div class="flex items-center py-2">
-                <badge-base class="mr-1">
-                  {{ questionTypeText(question) }}
-                </badge-base>
-                <badge-base
-                  v-if="
-                    JSON.parse(question.surveyOptions).branching.rules
-                      .length !== 0
-                  "
-                >
-                  branching
-                </badge-base>
-              </div>
-              <display-question
-                v-if="showPreview"
-                :question="question"
-                :language-text="languageText"
-                class="w-full"
-              ></display-question>
-            </div>
-            <div
-              class="flex xl:hidden justify-center py-0.5 bg-gray-100 border-t-2 border-b-2 border-gray-100"
-            >
-              <popup-menu>
-                <template v-slot:icon>
-                  <button-icon-rounded bg-colour="blue">
-                    <i class="fas fa-plus fa-fw fa-sm"></i>
-                  </button-icon-rounded>
-                </template>
-
-                <template v-slot:menu>
-                  <span
-                    v-for="questionType in questionTypes"
-                    :key="questionType.code"
-                    @click="
-                      newQuestion(
-                        questionType.flag,
-                        question.ordinalPosition + 1
-                      )
-                    "
-                  >
-                    <i class="fa-fw fa-sm" :class="questionType.icon"></i>
-                    {{ questionType.text }}
-                  </span>
-                </template>
-              </popup-menu>
-            </div>
-            <div
-              id="bigScreenPopupChild"
-              class="hidden xl:flex h-5 duration-500"
-            >
-              <div class="flex flex-1 justify-center">
-                <popup-menu id="" class="opacity-1">
-                  <template v-slot:icon>
-                    <button-icon-rounded bg-colour="blue">
-                      <i class="fas fa-plus fa-fw fa-sm"></i>
-                    </button-icon-rounded>
-                  </template>
-
-                  <template v-slot:menu>
-                    <span
-                      v-for="questionType in questionTypes"
-                      :key="questionType.code"
-                      @click="
-                        newQuestion(
-                          questionType.flag,
-                          question.ordinalPosition + 1
-                        )
-                      "
-                    >
-                      <i class="fa-fw fa-sm" :class="questionType.icon"></i>
-                      {{ questionType.text }}
-                    </span>
-                  </template>
-                </popup-menu>
-              </div>
-            </div>
+          <div class="flex">
+            <span class="font-bold font-lg mr-2 text-blue-600">{{
+              question.questionNumber
+            }}</span>
+            <span>{{ question.name }}</span>
           </div>
         </div>
-      </div>
-
-      <transition name="fade">
-        <template
-          v-if="
-            selectedView === 'questions' &&
-            currentItemToBeEdited &&
-            currentItemToBeEdited.surveyCode
-          "
+        <div
+          class="question-item transition-all duration-100 flex justify-center"
+          :class="[
+            dragging ? 'bg-gray-100' : 'bg-white',
+            beingHovered && !dragging && beingHovered.code === question.code
+              ? 'h-10'
+              : 'h-3',
+          ]"
+          @drop.stop="onDropQuestion($event, question)"
+          @dragover.prevent="overDrag($event, question)"
+          @dragleave.prevent="leaveDrag($event, question)"
         >
-          <edit-object-modal custom-width="md:w-8/12">
-            <template v-slot:secondTitle>Question</template>
-            <template v-slot:content>
-              <new-question></new-question>
-            </template>
-          </edit-object-modal>
-        </template>
-        <template v-if="selectedMenu === 'settings' && currentItemToBeEdited">
-          <edit-object-modal
-            custom-width="md:w-6/12"
-            @modalClosed="selectedMenu = ''"
-          >
-            <template v-slot:title>Survey Settings</template>
-            <template v-slot:content>
-              <survey-settings></survey-settings>
-            </template>
-          </edit-object-modal>
-        </template>
-        <template v-if="selectedMenu === 'language' && currentItemToBeEdited">
-          <edit-object-modal
-            custom-width="md:w-6/12"
-            @modalClosed="selectedMenu = ''"
-          >
-            <template v-slot:title>Language Settings</template>
-            <template v-slot:content>
-              <survey-language-settings></survey-language-settings>
-            </template>
-          </edit-object-modal>
-        </template>
-        <template v-if="selectedMenu === 'preview' && currentItemToBeEdited">
-          <preview-survey-modal
-            :original-survey="unparsedSurvey"
-            :questions="questions"
-            @modalClosed="selectedMenu = ''"
-          ></preview-survey-modal>
-        </template>
-        <template
-          v-if="selectedMenu === 'collaborators' && currentItemToBeEdited"
-        >
-          <edit-object-modal
-            custom-width="md:w-6/12"
-            @modalClosed="selectedMenu = ''"
-          >
-            <template v-slot:title>Collaborators</template>
-            <template v-slot:content>
-              <survey-collaborators></survey-collaborators>
-            </template>
-          </edit-object-modal>
-        </template>
-        <template
-          v-if="selectedMenu === 'invite_settings' && currentItemToBeEdited"
-        >
-          <edit-object-modal @modalClosed="selectedMenu = ''">
-            <template v-slot:title>Invites Settings</template>
-            <template v-slot:content>
-              <survey-invites-settings></survey-invites-settings>
-            </template>
-          </edit-object-modal>
-        </template>
-      </transition>
-
-      <question-move-menu
-        v-if="showMoveMenu"
-        :question="showMoveMenu"
-        :questions="questions"
-        @close="showMoveMenu = false"
-      ></question-move-menu>
-
-      <modal-generic
-        v-if="cannotDeleteDueToBranching.length !== 0"
-        @cancel="cannotDeleteDueToBranching = []"
-      >
-        <template v-slot:title>Cannot Delete</template>
-        <template v-slot:body>
-          <div class="flex flex-col mb-5">
-            <p class="mb-4">
-              This question is being used for branching by the following
-              questions
-            </p>
-            <p
-              v-for="(item, index) in cannotDeleteDueToBranching"
-              :key="index"
-              class="my-2"
+          <transition name="fade">
+            <LPopupMenu
+              v-if="
+                beingHovered && !dragging && beingHovered.code === question.code
+              "
             >
-              <span>{{ item.name }}</span>
-              <span
-                class="bg-primary text-white text-sm font-semibold rounded-lg px-1 py-0.5"
-              >
-                {{ item.questionNumber }}
-              </span>
-            </p>
-          </div>
-        </template>
-      </modal-generic>
-    </template>
-    <template v-else>
-      <info-box class="mt-2">
-        <template v-slot:title>We have a problem!</template>
-        <template v-slot:content>
-          You have landed on this page incorrectly, make sure you have clicked
-          on the correct links.
-        </template>
-      </info-box>
-    </template>
-  </div>
-  <spinner v-else></spinner>
+              <template v-slot:icon
+                ><LButtonCircle><i class="fas fa-plus fa-fw"></i></LButtonCircle
+              ></template>
+              <template v-slot:menu>
+                <button v-for="button in QUESTION_TYPES" :key="button.code">
+                  <i :class="button.icon"></i>{{ button.text }}
+                </button>
+              </template></LPopupMenu
+            ></transition
+          >
+        </div>
+      </div>
+    </div>
+  </list-layout>
+  <div v-else>loading</div>
 </template>
 
 <script>
-import cookies from 'js-cookie'
-import Spinner from '~/components/layouts/Spinner'
-import DisplayQuestion from '~/components/surveys/DisplayQuestion'
-import {
-  getQuestionType,
-  parseSurveyToForm,
-  parseQuestionToForm,
-} from '~/helpers/parseSurveyObjects'
-import NewQuestion from '~/components/surveys/NewQuestion'
-import EditObjectModal from '~/components/layouts/EditObjectModal'
-import SurveySettings from '~/components/surveys/SurveySettings'
-import PreviewSurveyModal from '~/components/surveys/PreviewSurveyModal'
-import SurveyLanguageSettings from '~/components/surveys/SurveyLanguageSettings'
-import QuestionMoveMenu from '~/components/surveys/QuestionMoveMenu'
-import SurveyCollaborators from '~/components/surveys/SurveyCollaborators'
-import {
-  QUESTION_TYPES,
-  SURVEY_LANGUAGE_GENERIC_TERMS,
-} from '~/helpers/constants'
-import PopupMenu from '~/components/elements/PopupMenu'
-import Invites from '~/components/contacts/Invites'
-import TopHeaderBar from '~/components/layouts/TopHeaderBar'
-import ContactBookDropdown from '~/components/contacts/ContactBookDropdown'
-import ModalGeneric from '~/components/layouts/ModalGeneric'
-import SurveyInvitesSettings from '~/components/surveys/SurveyInvitesSettings'
-import MenuIconButton from '~/components/layouts/MenuIconButton'
-import BadgeBase from '~/components/elements/BadgeBase'
-import ButtonIconRounded from '~/components/elements/ButtonIconRounded'
-import InfoBox from '~/components/layouts/InfoBox'
+import ListLayout from '~/components/layouts/ListLayout'
+import { QUESTION_TYPES } from '~/assets/settings/survey-settings'
+import LButtonCircle from '~/components/elements/LButtonCircle'
 
 export default {
   name: 'QuestionList',
+  components: { LButtonCircle, ListLayout },
   middleware: ['surveyBuilder'],
-  components: {
-    ButtonIconRounded,
-    BadgeBase,
-    MenuIconButton,
-    SurveyInvitesSettings,
-    ModalGeneric,
-    SurveyCollaborators,
-    QuestionMoveMenu,
-    PreviewSurveyModal,
-    NewQuestion,
-    Spinner,
-    DisplayQuestion,
-    EditObjectModal,
-    SurveySettings,
-    SurveyLanguageSettings,
-    PopupMenu,
-    Invites,
-    TopHeaderBar,
-    ContactBookDropdown,
-    InfoBox,
-  },
+
   data() {
     return {
-      selectedMenu: '',
-      selectedView: 'questions',
-      showPreview: null,
-      whichSubMenu: null,
-      showMoveMenu: null,
-      error: false,
-      loading: true,
-      cannotDeleteDueToBranching: [],
+      dragging: null,
+      beingHovered: null,
+      QUESTION_TYPES,
+
+      // selectedMenu: '',
+      // selectedView: 'questions',
+      // showPreview: null,
+      // whichSubMenu: null,
+      // showMoveMenu: null,
+      // error: false,
+      // loading: true,
+      // cannotDeleteDueToBranching: [],
     }
   },
   computed: {
-    canUseContactBook() {
-      return this.$store.getters['auth/getPermissions'].includes('CONTACTBOOK')
+    loading() {
+      return this.$store.state.loading
     },
-    languageText() {
-      const data = {}
-      Object.keys(SURVEY_LANGUAGE_GENERIC_TERMS).forEach((el) => {
-        data[el] = this.survey.translatedText[
-          SURVEY_LANGUAGE_GENERIC_TERMS[el]
-        ].text
-      })
-      return data
-    },
-    questions() {
-      return this.$store.getters.getSortedItems('questions').sort((a, b) => {
+    sortedQuestions() {
+      const x = JSON.parse(JSON.stringify(this.$store.state.questions.items))
+      return x.sort((a, b) => {
         return a.ordinalPosition > b.ordinalPosition ? 1 : -1
       })
     },
-    questionsWithSections() {
-      const x = JSON.parse(JSON.stringify(this.questions))
-      let page = 0
-      x.forEach((el) => {
-        if (el.flags.includes('SECTION')) page++
-        el.page = page
+    parsedQuestionsSection() {
+      return this.sortedQuestions.filter((el) => {
+        return el.flags.includes('SECTION')
       })
-      return x
-    },
-    questionsNumberOfSections() {
-      const x = this.questionsWithSections.map((el) => {
-        return el.page
-      })
-      return new Set(x).size
-    },
-    unparsedSurvey() {
-      return this.$store.getters.getItems('surveys')[0]
-    },
-    survey() {
-      return parseSurveyToForm(this.unparsedSurvey)
     },
 
-    currentItemToBeEdited() {
-      return this.$store.state.currentItemToBeEdited
-    },
-    questionTypes() {
-      return QUESTION_TYPES
-    },
+    // canUseContactBook() {
+    //   return this.$store.getters['auth/getPermissions'].includes('CONTACTBOOK')
+    // },
+    // languageText() {
+    //   const data = {}
+    //   Object.keys(SURVEY_LANGUAGE_GENERIC_TERMS).forEach((el) => {
+    //     data[el] = this.survey.translatedText[
+    //       SURVEY_LANGUAGE_GENERIC_TERMS[el]
+    //     ].text
+    //   })
+    //   return data
+    // },
+    // questions() {
+    //   return this.$store.getters.getSortedItems('questions').sort((a, b) => {
+    //     return a.ordinalPosition > b.ordinalPosition ? 1 : -1
+    //   })
+    // },
+    // questionsWithSections() {
+    //   const x = JSON.parse(JSON.stringify(this.questions))
+    //   let page = 0
+    //   x.forEach((el) => {
+    //     if (el.flags.includes('SECTION')) page++
+    //     el.page = page
+    //   })
+    //   return x
+    // },
+    // questionsNumberOfSections() {
+    //   const x = this.questionsWithSections.map((el) => {
+    //     return el.page
+    //   })
+    //   return new Set(x).size
+    // },
+    // unparsedSurvey() {
+    //   return this.$store.getters.getItems('surveys')[0]
+    // },
+    // survey() {
+    //   return parseSurveyToForm(this.unparsedSurvey)
+    // },
+    //
+    // currentItemToBeEdited() {
+    //   return this.$store.state.currentItemToBeEdited
+    // },
+    // questionTypes() {
+    //   return QUESTION_TYPES
+    // },
   },
-  async mounted() {
-    await this.updateData()
-    this.showPreview = cookies.get('questionPreviewMode') === 'true'
-    if (this.survey.flags.includes('OUTDATED_LANGUAGE_PACK'))
-      this.$toasted.show(
-        'This survey has changed from last language generation. You need to re-generate the languages.'
-      )
+  mounted() {
+    window.addEventListener('dragover', this.checkPosition)
+    this.loadQuestions()
+    // await this.updateData()
+    // this.showPreview = cookies.get('questionPreviewMode') === 'true'
+    // if (this.survey.flags.includes('OUTDATED_LANGUAGE_PACK'))
+    //   this.$toasted.show(
+    //     'This survey has changed from last language generation. You need to re-generate the languages.'
+    //   )
+  },
+  beforeDestroy() {
+    window.removeEventListener('dragover', this.checkPosition)
   },
 
   methods: {
-    async updateData() {
-      this.error = false
-      this.loading = true
-
-      try {
-        if (this.canUseContactBook)
-          await this.$store.dispatch('contactlist/getContactLists', {
-            limit: 100,
-            offset: 0,
-          })
-
-        await this.$store.dispatch(
-          'surveys/getSurveyByCode',
-          this.$route.params.id
-        )
-
-        await this.$store.dispatch('questions/getQuestionsBySurvey', {
-          limit: 1000,
-          offset: 0,
+    loadQuestions() {
+      this.$store.dispatch('setLoading', true)
+      this.$store
+        .dispatch('questions/getQuestionsBySurvey', {
           code: this.$route.params.id,
         })
-
-        if (
-          this.canUseContactBook &&
-          this.getBranchingContactBook().length > 0
-        ) {
-          const tempLists = this.$store.getters.getItems('contactlist')
-          await this.$store.dispatch(
-            'setContactList',
-            tempLists.find((el) => {
-              return el.code === this.getBranchingContactBook()[0]
-            })
-          )
-        }
-      } catch {
-        this.error = true
-      } finally {
-        this.loading = false
-      }
-    },
-    newQuestion(flag, ordinalPosition) {
-      this.$store.dispatch('setCurrentItemToBeEdited', {
-        code: -1,
-        questionNumber: this.getMaxQuestionNumber(),
-        surveyCode: Number(this.$route.params.id),
-        flags: [flag],
-        ordinalPosition,
-        surveyOptions: JSON.stringify({}),
-      })
-    },
-    getMaxQuestionNumber() {
-      let max = null
-      this.questions.forEach((el) => {
-        if (Number(el.questionNumber)) {
-          if (!max) max = Number(el.questionNumber)
-          else if (max < Number(el.questionNumber))
-            max = Number(el.questionNumber)
-        }
-      })
-      return max + 1
-    },
-    editQuestion(question) {
-      this.$store.dispatch('setCurrentItemToBeEdited', question)
-    },
-    moveQuestion(question) {
-      this.showMoveMenu = question
-    },
-    deleteQuestion(question) {
-      this.cannotDeleteDueToBranching = []
-      this.questions.forEach((el) => {
-        const branching = JSON.parse(el.surveyOptions)
-        branching.branching.rules.forEach((rule) => {
-          rule.ruleList.forEach((rl) => {
-            if (String(rl.questionNumber) === String(question.questionNumber)) {
-              if (
-                !this.cannotDeleteDueToBranching.find((findQuestion) => {
-                  return (
-                    String(findQuestion.questionNumber) ===
-                    String(rl.questionNumber)
-                  )
-                })
-              )
-                this.cannotDeleteDueToBranching.push({
-                  questionNumber: el.questionNumber,
-                  name: el.name,
-                })
-            }
-          })
+        .then(() => {
+          this.$store.dispatch('setLoading', false)
         })
-      })
-
-      if (this.cannotDeleteDueToBranching.length === 0)
-        this.$store.dispatch('questions/deleteQuestion', question.code)
     },
-    chooseQuestion(question) {
-      this.$store.dispatch('setCurrentItemToBeEdited', question)
-    },
-    selectMenu(code) {
-      this.$store.dispatch('setCurrentItemToBeEdited', this.survey)
-      this.selectedMenu = code
-    },
-    changeSubMenu(code) {
-      this.whichSubMenu = code
-    },
-    questionTypeText(question) {
-      return QUESTION_TYPES[getQuestionType(question)].text
-    },
-    getQuestionContent(question) {
-      return parseQuestionToForm(question).text
-    },
-    showPreviewToggle() {
-      this.showPreview = !this.showPreview
-      cookies.set('questionPreviewMode', this.showPreview)
-    },
-    getBranchingContactBook() {
-      const code = []
-      for (const i in this.questions) {
-        const tempQuestion = JSON.parse(this.questions[i].surveyOptions)
-        if (tempQuestion.branching.rules.length > 0) {
-          tempQuestion.branching.rules.forEach((rule) => {
-            rule.ruleList.forEach((ruleList) => {
-              if (ruleList.contactListCode) {
-                code.push(ruleList.contactListCode)
-              }
-            })
-          })
-        }
-      }
-      return code
-    },
-    clearBranching() {
-      const promise = new Promise((resolve, reject) => {
-        this.questions.forEach((question) => {
-          const obj = JSON.parse(JSON.stringify(question))
-          const branching = JSON.parse(obj.surveyOptions).branching
-
-          if (branching.rules) {
-            branching.rules.forEach((rule) => {
-              rule.ruleList = rule.ruleList.filter((el) => {
-                return !el.contactListCode
-              })
-            })
-
-            branching.rules = branching.rules.filter((el) => {
-              return el.ruleList.length > 0
-            })
-
-            branching.rules.forEach((rule) => {
-              const len = rule.ruleList.length
-              if (len > 0 && rule.ruleList[len - 1].isAnd)
-                delete rule.ruleList[len - 1].isAnd
-            })
-
-            if (branching.rules.length > 0) {
-              delete branching.rules[branching.rules.length - 1].isAnd
-            }
-          }
-
-          const surveyOptions = JSON.parse(obj.surveyOptions)
-          surveyOptions.branching = branching
-          obj.surveyOptions = JSON.stringify(surveyOptions)
-
-          this.$store.dispatch('updateItem', {
-            which: 'questions',
-            item: obj,
-          })
-
-          if (obj.ordinalPosition === this.questions.length) resolve()
+    checkPosition(e) {
+      if (e.y > window.innerHeight - 100)
+        window.window.scrollBy({
+          top: 50,
+          left: 0,
+          behavior: 'smooth',
         })
+      if (e.y < 100)
+        window.window.scrollBy({
+          top: -50,
+          left: 0,
+          behavior: 'smooth',
+        })
+    },
+    overDrag(event) {
+      if (
+        event.target.classList &&
+        event.target.classList.contains('question-item')
+      )
+        event.target.classList.add('over-drag')
+    },
+    leaveDrag(event) {
+      if (
+        event.target.classList &&
+        event.target.classList.contains('question-item')
+      )
+        event.target.classList.remove('over-drag')
+    },
+    getQuestionsForSection(section) {
+      const nextSection = this.sortedQuestions
+        .filter((el) => {
+          return el.ordinalPosition > section.ordinalPosition
+        })
+        .find((el) => {
+          return el.flags.includes('SECTION')
+        })
+
+      let temp = this.sortedQuestions.filter((el) => {
+        return el.ordinalPosition > section.ordinalPosition
       })
 
-      promise.then(() => {
-        this.$toasted.show('Contact List branching removed')
-      })
+      if (nextSection)
+        temp = temp.filter((el) => {
+          return el.ordinalPosition < nextSection.ordinalPosition
+        })
+      return temp
     },
-    getQuestionsInPage(page) {
-      return this.questionsWithSections.filter((el) => {
-        return el.page === page
-      })
+    startDrag(event, item) {
+      this.dragging = item
+      event.dataTransfer.dropEffect = 'move'
+      event.dataTransfer.effectAllowed = 'move'
+      event.dataTransfer.setData('question', JSON.stringify(item))
     },
+
+    onDropQuestion(event, question) {
+      const movedQuestion = JSON.parse(event.dataTransfer.getData('question'))
+
+      let questions = JSON.parse(JSON.stringify(this.sortedQuestions))
+
+      questions.find((el) => {
+        return el.code === movedQuestion.code
+      }).ordinalPosition = question.ordinalPosition + 0.5
+
+      questions = questions.sort((a, b) => {
+        return a.ordinalPosition > b.ordinalPosition ? 1 : -1
+      })
+
+      for (let i = 0; i < questions.length; i++)
+        questions[i].ordinalPosition = i + 1
+
+      this.$store.dispatch('questions/setQuestions', questions)
+      this.leaveDrag(event)
+
+      this.dragging = null
+    },
+
+    //   async updateData() {
+    //     this.error = false
+    //     this.loading = true
+    //
+    //     try {
+    //       if (this.canUseContactBook)
+    //         await this.$store.dispatch('contactlist/getContactLists', {
+    //           limit: 100,
+    //           offset: 0,
+    //         })
+    //
+    //       await this.$store.dispatch(
+    //         'surveys/getSurveyByCode',
+    //         this.$route.params.id
+    //       )
+    //
+    //       await this.$store.dispatch('questions/getQuestionsBySurvey', {
+    //         limit: 1000,
+    //         offset: 0,
+    //         code: this.$route.params.id,
+    //       })
+    //
+    //       if (
+    //         this.canUseContactBook &&
+    //         this.getBranchingContactBook().length > 0
+    //       ) {
+    //         const tempLists = this.$store.getters.getItems('contactlist')
+    //         await this.$store.dispatch(
+    //           'setContactList',
+    //           tempLists.find((el) => {
+    //             return el.code === this.getBranchingContactBook()[0]
+    //           })
+    //         )
+    //       }
+    //     } catch {
+    //       this.error = true
+    //     } finally {
+    //       this.loading = false
+    //     }
+    //   },
+    //   newQuestion(flag, ordinalPosition) {
+    //     this.$store.dispatch('setCurrentItemToBeEdited', {
+    //       code: -1,
+    //       questionNumber: this.getMaxQuestionNumber(),
+    //       surveyCode: Number(this.$route.params.id),
+    //       flags: [flag],
+    //       ordinalPosition,
+    //       surveyOptions: JSON.stringify({}),
+    //     })
+    //   },
+    //   getMaxQuestionNumber() {
+    //     let max = null
+    //     this.questions.forEach((el) => {
+    //       if (Number(el.questionNumber)) {
+    //         if (!max) max = Number(el.questionNumber)
+    //         else if (max < Number(el.questionNumber))
+    //           max = Number(el.questionNumber)
+    //       }
+    //     })
+    //     return max + 1
+    //   },
+    //   editQuestion(question) {
+    //     this.$store.dispatch('setCurrentItemToBeEdited', question)
+    //   },
+    //   moveQuestion(question) {
+    //     this.showMoveMenu = question
+    //   },
+    //   deleteQuestion(question) {
+    //     this.cannotDeleteDueToBranching = []
+    //     this.questions.forEach((el) => {
+    //       const branching = JSON.parse(el.surveyOptions)
+    //       branching.branching.rules.forEach((rule) => {
+    //         rule.ruleList.forEach((rl) => {
+    //           if (String(rl.questionNumber) === String(question.questionNumber)) {
+    //             if (
+    //               !this.cannotDeleteDueToBranching.find((findQuestion) => {
+    //                 return (
+    //                   String(findQuestion.questionNumber) ===
+    //                   String(rl.questionNumber)
+    //                 )
+    //               })
+    //             )
+    //               this.cannotDeleteDueToBranching.push({
+    //                 questionNumber: el.questionNumber,
+    //                 name: el.name,
+    //               })
+    //           }
+    //         })
+    //       })
+    //     })
+    //
+    //     if (this.cannotDeleteDueToBranching.length === 0)
+    //       this.$store.dispatch('questions/deleteQuestion', question.code)
+    //   },
+    //   chooseQuestion(question) {
+    //     this.$store.dispatch('setCurrentItemToBeEdited', question)
+    //   },
+    //   selectMenu(code) {
+    //     this.$store.dispatch('setCurrentItemToBeEdited', this.survey)
+    //     this.selectedMenu = code
+    //   },
+    //   changeSubMenu(code) {
+    //     this.whichSubMenu = code
+    //   },
+    //   questionTypeText(question) {
+    //     return QUESTION_TYPES[getQuestionType(question)].text
+    //   },
+    //   getQuestionContent(question) {
+    //     return parseQuestionToForm(question).text
+    //   },
+    //   showPreviewToggle() {
+    //     this.showPreview = !this.showPreview
+    //     cookies.set('questionPreviewMode', this.showPreview)
+    //   },
+    //   getBranchingContactBook() {
+    //     const code = []
+    //     for (const i in this.questions) {
+    //       const tempQuestion = JSON.parse(this.questions[i].surveyOptions)
+    //       if (tempQuestion.branching.rules.length > 0) {
+    //         tempQuestion.branching.rules.forEach((rule) => {
+    //           rule.ruleList.forEach((ruleList) => {
+    //             if (ruleList.contactListCode) {
+    //               code.push(ruleList.contactListCode)
+    //             }
+    //           })
+    //         })
+    //       }
+    //     }
+    //     return code
+    //   },
+    //   clearBranching() {
+    //     const promise = new Promise((resolve, reject) => {
+    //       this.questions.forEach((question) => {
+    //         const obj = JSON.parse(JSON.stringify(question))
+    //         const branching = JSON.parse(obj.surveyOptions).branching
+    //
+    //         if (branching.rules) {
+    //           branching.rules.forEach((rule) => {
+    //             rule.ruleList = rule.ruleList.filter((el) => {
+    //               return !el.contactListCode
+    //             })
+    //           })
+    //
+    //           branching.rules = branching.rules.filter((el) => {
+    //             return el.ruleList.length > 0
+    //           })
+    //
+    //           branching.rules.forEach((rule) => {
+    //             const len = rule.ruleList.length
+    //             if (len > 0 && rule.ruleList[len - 1].isAnd)
+    //               delete rule.ruleList[len - 1].isAnd
+    //           })
+    //
+    //           if (branching.rules.length > 0) {
+    //             delete branching.rules[branching.rules.length - 1].isAnd
+    //           }
+    //         }
+    //
+    //         const surveyOptions = JSON.parse(obj.surveyOptions)
+    //         surveyOptions.branching = branching
+    //         obj.surveyOptions = JSON.stringify(surveyOptions)
+    //
+    //         this.$store.dispatch('updateItem', {
+    //           which: 'questions',
+    //           item: obj,
+    //         })
+    //
+    //         if (obj.ordinalPosition === this.questions.length) resolve()
+    //       })
+    //     })
+    //
+    //     promise.then(() => {
+    //       this.$toasted.show('Contact List branching removed')
+    //     })
+    //   },
+    //   getQuestionsInPage(page) {
+    //     return this.questionsWithSections.filter((el) => {
+    //       return el.page === page
+    //     })
+    //   },
   },
 }
 </script>
 
 <style scoped>
+.over-drag {
+  @apply bg-gray-200 transition duration-100;
+}
+
+.fade-enter-active {
+  transition: opacity 1s;
+}
+
+.fade-leave-active {
+  transition: opacity 0.2s;
+}
+
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+
 .bigScreenPopup #bigScreenPopupChild {
   @apply opacity-0 transition-all duration-300;
 }

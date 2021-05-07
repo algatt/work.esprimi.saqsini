@@ -3,21 +3,22 @@ export const state = () => ({
 })
 
 export const actions = {
-  getQuestionsBySurvey({ state, commit }, { limit, offset, code }) {
+  getQuestionsBySurvey({ state, commit }, { limit = 100, offset = 0, code }) {
     return new Promise((resolve, reject) => {
       this.$axios
         .get(
           `/builder/question/all?limit=${limit}&offset=${offset}&surveyCode=${code}`
         )
         .then((response) => {
-          commit(
-            'setItems',
-            {
-              which: 'questions',
-              items: response.data,
-            },
-            { root: true }
-          )
+          // commit(
+          //   'setItems',
+          //   {
+          //     which: 'questions',
+          //     items: response.data,
+          //   },
+          //   { root: true }
+          // )
+          commit('setQuestions', response.data)
           resolve(response.data)
         })
 
@@ -25,6 +26,10 @@ export const actions = {
           reject(error)
         })
     })
+  },
+
+  setQuestions({ commit }, questions) {
+    commit('setQuestions', questions)
   },
 
   newQuestion({ dispatch, commit, state }, question) {
@@ -182,6 +187,10 @@ export const actions = {
 }
 
 export const mutations = {
+  setQuestions(state, questions) {
+    state.items = questions
+  },
+
   updateLocalList(state, list) {
     state.items.forEach((el) => {
       const newNumber = list.find((el2) => {
