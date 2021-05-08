@@ -1,12 +1,12 @@
 <template>
-  <div class="flex justify-center space-x-3">
+  <div class="flex justify-center items-end">
     <slot />
   </div>
 </template>
 
 <script>
 export default {
-  name: 'ModalFooter.vue',
+  name: 'ModalFooterVue',
 }
 </script>
 

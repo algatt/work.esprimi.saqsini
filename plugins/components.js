@@ -2,15 +2,16 @@ import Vue from 'vue'
 import ButtonBasic from '~/components/elements/ButtonBasic'
 import InputBase from '~/components/elements/InputBase'
 
-import LButton from '~/components/elements/LButton'
-import LPopupMenu from '~/components/elements/LPopupMenu'
-import LToggle from '~/components/elements/LToggle'
-import LSelect from '~/components/elements/LSelect'
+import LButton from '~/components/LButton'
+import LPopupMenu from '~/components/LPopupMenu'
+import LToggle from '~/components/LToggle'
+import LSelect from '~/components/LSelect'
 import LInput from '~/components/LInput'
-import LTextArea from '~/components/elements/LTextArea'
+import LTextArea from '~/components/LTextArea'
 import LProgress from '~/components/LProgress'
 import PopupInformation from '~/components/elements/PopupInformation'
-import LButtonCircle from '~/components/elements/LButtonCircle'
+import LButtonCircle from '~/components/LButtonCircle'
+import LInputButton from '~/components/LInputButton'
 
 const components = {
   ButtonBasic,
@@ -24,6 +25,7 @@ const components = {
   PopupInformation,
   LProgress,
   LButtonCircle,
+  LInputButton,
 }
 
 Object.entries(components).forEach(([name, component]) => {

@@ -1,7 +1,7 @@
 <template>
   <Modal>
     <div
-      class="bg-white w-full md:w-8/12 border border-gray-100 shadow-lg md:rounded modalHeight"
+      class="bg-white w-full md:w-8/12 border border-gray-100 shadow-lg md:rounded modalHeight flex flex-col justify-between"
     >
       <ModalHeader class="h-14">
         <div
@@ -48,7 +48,7 @@ import ModalBody from '~/components/elements/Modal/ModalBody'
 import ModalMixin from '~/components/elements/Modal/ModalMixin'
 import ButtonBase from '~/components/elements/ButtonBasic'
 import NewSurvey from '~/components/layouts/Surveys/NewSurvey'
-import LButton from '~/components/elements/LButton'
+import LButton from '~/components/LButton'
 import NewQuestion from '~/components/surveys/NewQuestion'
 
 export default {

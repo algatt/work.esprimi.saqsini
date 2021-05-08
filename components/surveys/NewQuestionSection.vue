@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col w-full space-y-5"></div>
+  <div class="flex flex-col w-full"></div>
 </template>
 
 <script>

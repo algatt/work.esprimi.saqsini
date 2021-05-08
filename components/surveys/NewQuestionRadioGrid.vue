@@ -7,7 +7,7 @@
         class="flex-col"
         :style="{ minWidth: `${(options[0].scale.length + 2) * minElWidth}px` }"
       >
-        <div class="flex w-full flex justify-end">
+        <div class="flex w-full flex">
           <div
             :style="{
               width: `${100 / (options[0].scale.length + 2)}%`,
@@ -25,28 +25,19 @@
               minWidth: `${minElWidth}px`,
             }"
           >
-            <input-base-with-button v-model="options[0].scale[index].text">
-              <template v-slot:button>
-                <button-for-input
-                  text-colour="red"
-                  :disabled="options[0].scale.length < 3"
-                  @click="deleteScale(index)"
-                >
-                  <i class="fas fa-trash-alt fa-fw"></i>
-                </button-for-input>
-              </template>
-            </input-base-with-button>
+            <l-input-button
+              v-model="options[0].scale[index].text"
+              button-color="red"
+              :button-disabled="options[0].scale.length < 3"
+              @click="deleteScale(index)"
+            >
+              <i class="fas fa-trash-alt fa-fw"></i>
+            </l-input-button>
           </div>
-          <div
-            class="flex justify-center items-center pt-2"
-            :style="{
-              width: `${100 / (options[0].scale.length + 2)}%`,
-              minWidth: `${minElWidth}px`,
-            }"
-          >
-            <button-icon-rounded @click="addScale">
+          <div class="flex justify-center items-center pt-2 w-8">
+            <l-button-circle @click="addScale">
               <i class="fas fa-plus fa-fw"></i>
-            </button-icon-rounded>
+            </l-button-circle>
           </div>
         </div>
         <div class="flex flex-wrap w-full">
@@ -62,17 +53,14 @@
                 minWidth: `${minElWidth}px`,
               }"
             >
-              <input-base-with-button v-model="options[0].rows[index]">
-                <template v-slot:button>
-                  <button-for-input
-                    text-colour="red"
-                    :disabled="options[0].rows.length === 1"
-                    @click="deleteRow(index)"
-                  >
-                    <i class="fas fa-trash-alt fa-fw"></i>
-                  </button-for-input>
-                </template>
-              </input-base-with-button>
+              <l-input-button
+                v-model="options[0].rows[index]"
+                button-color="red"
+                :button-disabled="options[0].rows.length === 1"
+                @click="deleteRow(index)"
+              >
+                <i class="fas fa-trash-alt fa-fw"></i>
+              </l-input-button>
             </div>
             <div
               v-for="i in options[0].scale.length"
@@ -98,9 +86,9 @@
               minWidth: `${minElWidth}px`,
             }"
           >
-            <button-icon-rounded @click="addRow">
+            <l-button-circle @click="addRow">
               <i class="fas fa-plus fa-fw"></i>
-            </button-icon-rounded>
+            </l-button-circle>
           </div>
         </div>
       </div>
@@ -109,19 +97,13 @@
 </template>
 
 <script>
-import questionMixin from '~/helpers/questionMixin'
-import InputBaseWithButton from '~/components/elements/InputBaseWithButton'
-import ButtonForInput from '~/components/elements/ButtonForInput'
-import ButtonIconRounded from '~/components/elements/ButtonIconRounded'
+import LButtonCircle from '~/components/LButtonCircle'
 
 export default {
   name: 'NewQuestionRadioGrid',
   components: {
-    ButtonIconRounded,
-    InputBaseWithButton,
-    ButtonForInput,
+    LButtonCircle,
   },
-  mixins: [questionMixin],
   props: {
     form: {
       type: Object,

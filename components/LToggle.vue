@@ -10,7 +10,13 @@
       <div
         class="bg-white transition duration-200 ease-in w-10 h-6 flex items-center"
         style="border-radius: 2em; border-width: 2px"
-        :class="toggleActive ? `border-${bgColor}-600` : ''"
+        :class="
+          toggleActive
+            ? `border-${bgColor}-600`
+            : !changeColor
+            ? `border-${bgColor}-600`
+            : ''
+        "
         @click.stop="
           toggleActive = !toggleActive
           $emit('clicked', toggleActive)
@@ -21,7 +27,11 @@
           style="border-radius: 2em"
           :class="[
             { 'translate-x-3.5': toggleActive },
-            toggleActive ? `bg-${bgColor}-600` : 'bg-gray-200',
+            toggleActive
+              ? `bg-${bgColor}-600`
+              : changeColor
+              ? 'bg-gray-200'
+              : `bg-${bgColor}-600`,
           ]"
         ></div>
       </div>

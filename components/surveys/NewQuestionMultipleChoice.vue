@@ -1,9 +1,9 @@
 <template>
   <div class="flex flex-col w-full space-y-5">
-    <div class="flex flex-col w-full xl:w-6/12">
+    <div class="flex flex-col w-full">
       <div class="flex items-center">
-        <label class="font-semibold mt-4 mb-2">Options</label>
-        <span v-if="$v.options.$error">
+        <label class="font-semibold">Options</label>
+        <span v-if="$v.options.$error" class="flex items-center">
           <span class="error">all options must be filled in</span>
         </span>
       </div>
@@ -12,70 +12,56 @@
         :key="option.ordinalPosition"
         class="flex w-full mb-1"
       >
-        <input-base-with-button
+        <l-input-button
           :id="'inputOptions' + index"
           v-model="option.text"
+          :button-disabled="options.length < 3"
+          button-color="red"
           class="w-full"
           placeholder="Enter option text"
+          @click="deleteOptionAtIndex(index)"
           @keyup="updateValues"
           @input="$v.options.$touch()"
         >
-          <template v-slot:button>
-            <button-for-input
-              text-colour="red"
-              :disabled="options.length < 3"
-              @click="deleteOptionAtIndex(index)"
-              ><i class="fas fa-trash-alt fa-fw"></i
-            ></button-for-input>
-          </template>
-        </input-base-with-button>
+          <i class="fas fa-trash-alt fa-fw"></i>
+        </l-input-button>
       </div>
 
       <div class="flex justify-start mt-2 mb-4">
-        <button-basic @click="addNewOption"> Add New Option</button-basic>
+        <l-button @click="addNewOption"> Add New Option</l-button>
       </div>
     </div>
 
-    <toggle-switch :checked="allowMultiple" @clicked="allowMultiple = $event">
+    <l-toggle :checked="allowMultiple" @clicked="allowMultiple = $event">
       <template v-slot:label>
-        Allow Multiple Answers<popup-base class="ml-1 font-normal">
-          Allows the respondent to choose more than one option.</popup-base
+        Allow Multiple Answers<popup-information>
+          Allows the respondent to choose more than one
+          option.</popup-information
         ></template
       >
       <template v-slot:leftLabel>No</template>
       <template v-slot:rightLabel>Yes</template>
-    </toggle-switch>
+    </l-toggle>
 
-    <toggle-switch :checked="allowOther" @clicked="allowOther = $event">
+    <l-toggle :checked="allowOther" @clicked="allowOther = $event">
       <template v-slot:label>
-        Allow Other Entry<popup-base class="ml-1 font-normal"
+        Allow Other Entry<popup-information
           >Allow the respondent to input another answer not present in the given
-          options.</popup-base
+          options.</popup-information
         ></template
       >
       <template v-slot:leftLabel>No</template>
       <template v-slot:rightLabel>Yes</template>
-    </toggle-switch>
+    </l-toggle>
   </div>
 </template>
 
 <script>
 import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
-import ToggleSwitch from '~/components/elements/ToggleSwitch'
-import PopupBase from '~/components/elements/PopupBase'
-import InputBaseWithButton from '~/components/elements/InputBaseWithButton'
-
-import ButtonForInput from '~/components/elements/ButtonForInput'
 
 export default {
   name: 'NewQuestionMultipleChoice',
-  components: {
-    ButtonForInput,
-    PopupBase,
-    ToggleSwitch,
-    InputBaseWithButton,
-  },
   mixins: [validationMixin],
   props: {
     form: {
@@ -142,9 +128,10 @@ export default {
       })
 
       this.$nextTick(() => {
-        const el = document
-          .getElementById('inputOptions' + (this.options.length - 1))
-          .getElementsByTagName('input')[0]
+        const el = document.getElementById(
+          'inputOptions' + (this.options.length - 1)
+        )
+
         el.focus()
         el.select()
       })

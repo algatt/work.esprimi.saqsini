@@ -47,7 +47,7 @@
             <div class="w-20 flex justify-center">
               <LPopupMenu
                 ><template v-slot:menu
-                  ><button>
+                  ><button @click="editQuestion(question)">
                     <i class="fas fa-edit fa-fw"></i>Edit
                   </button></template
                 ></LPopupMenu
@@ -82,7 +82,7 @@
 <script>
 import ListLayout from '~/components/layouts/ListLayout'
 import { QUESTION_TYPES } from '~/assets/settings/survey-settings'
-import LPopupMenu from '~/components/elements/LPopupMenu'
+import LPopupMenu from '~/components/LPopupMenu'
 import BadgeBase from '~/components/elements/BadgeBase'
 import { getQuestionTypeText } from '~/services/question-helpers'
 import ModalService from '~/services/modal-services'
@@ -305,25 +305,21 @@ export default {
     //     }
     //   },
     newQuestion(flag, ordinalPosition) {
-      // this.$store.dispatch('setCurrentItemToBeEdited', {
-      //   code: -1,
-      //   questionNumber: this.getMaxQuestionNumber(),
-      //   surveyCode: Number(this.$route.params.id),
-      //   flags: [flag],
-      //   ordinalPosition,
-      //   surveyOptions: JSON.stringify({}),
-      // })
-
       ModalService.open(NewItemModal, {
         whichComponent: 'NewQuestion',
         dataItem: {
-          code: -1,
           questionNumber: this.getMaxQuestionNumber(),
           surveyCode: Number(this.$route.params.id),
           flags: [flag],
           ordinalPosition,
           surveyOptions: JSON.stringify({}),
         },
+      })
+    },
+    editQuestion(question) {
+      ModalService.open(NewItemModal, {
+        whichComponent: 'NewQuestion',
+        dataItem: question,
       })
     },
     getMaxQuestionNumber() {

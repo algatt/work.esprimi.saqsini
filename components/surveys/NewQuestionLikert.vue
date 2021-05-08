@@ -1,12 +1,12 @@
 <template>
   <div class="flex flex-col w-full space-y-5">
-    <div class="flex flex-col w-full xl:w-6/12">
-      <div class="flex items-center mt-3 mb-2">
+    <div class="flex flex-col items-start">
+      <div class="flex items-center">
         <label class="font-semibold flex items-center"
           >Options and Weights
-          <popup-base class="ml-1 font-normal">
+          <popup-information>
             Here you can set the text (option) for all options. <br />Every
-            option must be assigned a numeric weight.</popup-base
+            option must be assigned a numeric weight.</popup-information
           ></label
         >
         <span v-if="$v.options.$error">
@@ -15,68 +15,60 @@
           >
         </span>
       </div>
+
       <div
         v-for="(item, index) in options"
         :key="item.ordinalPosition"
         class="flex w-full items-start space-x-2"
       >
-        <input-base
+        <l-input
           :id="'inputOptions' + index"
           v-model="item.text"
           class="flex flex-1"
           @input="$v.options.$touch()"
         />
-        <input-base
+        <l-input-button
           v-model="item.value"
           class="input w-2/12 text-center"
+          button-color="red"
+          :button-disabled="options.length < 3"
+          @click="deleteOptionAtIndex(index)"
           @input="$v.options.$touch()"
           @blur="sortOptions()"
-        />
-        <button-for-input
-          text-colour="red"
-          class="mt-3 rounded"
-          :disabled="options.length < 3"
-          @click="deleteOptionAtIndex(index)"
-        >
-          <i class="fas fa-trash-alt fa-fw"></i>
-        </button-for-input>
+          ><i class="fas fa-trash-alt fa-fw"></i
+        ></l-input-button>
       </div>
 
       <div key="addNewButton" class="flex justify-start my-4">
-        <button-basic @click="addNewOption"> Add New Option </button-basic>
+        <l-button @click="addNewOption"> Add New Option </l-button>
       </div>
     </div>
 
-    <toggle-switch :checked="showWeights" @clicked="showWeights = $event">
+    <l-toggle
+      :checked="showWeights"
+      :change-color="false"
+      @clicked="showWeights = $event"
+    >
       <template v-slot:label
-        >Display Mode<popup-base class="ml-1 font-normal">
+        >Display Mode<popup-information>
           You can choose to display the labels or values. <br />If values are
-          chosen only the labels at each end will be displayed.</popup-base
+          chosen only the labels at each end will be
+          displayed.</popup-information
         ></template
       >
       <template v-slot:leftLabel>Labels</template>
       <template v-slot:rightLabel>Values</template>
-    </toggle-switch>
+    </l-toggle>
   </div>
 </template>
 
 <script>
 import { validationMixin } from 'vuelidate'
 import { required, numeric } from 'vuelidate/lib/validators'
-import questionMixin from '~/helpers/questionMixin'
-import PopupBase from '~/components/elements/PopupBase'
-import ToggleSwitch from '~/components/elements/ToggleSwitch'
-
-import ButtonForInput from '~/components/elements/ButtonForInput'
 
 export default {
   name: 'NewQuestionLikert',
-  components: {
-    ButtonForInput,
-    PopupBase,
-    ToggleSwitch,
-  },
-  mixins: [validationMixin, questionMixin],
+  mixins: [validationMixin],
   props: {
     form: {
       type: Object,

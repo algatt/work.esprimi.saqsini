@@ -8,6 +8,7 @@
       :disabled="disabled"
       :value="value"
       @input="updateValue($event.target.value)"
+      @blur="$emit('blur')"
     />
     <span v-if="error" class="error">
       {{ error }}

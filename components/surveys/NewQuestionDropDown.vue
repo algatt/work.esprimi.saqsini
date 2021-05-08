@@ -1,17 +1,17 @@
 <template>
   <div class="flex flex-col w-full space-y-5">
-    <toggle-switch :checked="isList" @clicked="changeView">
+    <l-toggle :checked="isList" :change-color="false" @clicked="changeView">
       <template v-slot:label
-        >Data Input<popup-base class="ml-1 font-normal"
+        >Data Input<popup-information
           >You can input data one by one (Individual) or as a comma separated
-          list (List).</popup-base
+          list (List).</popup-information
         ></template
       >
       <template v-slot:leftLabel>Individual</template>
       <template v-slot:rightLabel>List</template>
-    </toggle-switch>
+    </l-toggle>
 
-    <div class="flex flex-col w-full xl:w-6/12">
+    <div class="flex flex-col w-full">
       <div class="flex items-center mb-2">
         <label class="font-semibold">Options</label>
         <span v-if="$v.options.$error">
@@ -19,36 +19,31 @@
         </span>
       </div>
       <template v-if="!isList">
-        <input-base-with-button
+        <l-input-button
           v-for="(option, index) in options"
           :id="'inputOptions' + index"
-          :key="option.ordinalPosition"
+          :key="index"
           v-model="option.text"
+          button-color="red"
           placeholder="Enter option text"
+          :button-disabled="options.length < 3"
           @input="$v.options.$touch()"
           @keyup="updateValues"
+          @click="deleteOptionAtIndex(index)"
         >
-          <template v-slot:button>
-            <button-for-input
-              text-colour="red"
-              :disabled="options.length < 3"
-              @click="deleteOptionAtIndex(index)"
-            >
-              <i class="fas fa-trash-alt fa-fw"></i>
-            </button-for-input>
-          </template>
-        </input-base-with-button>
+          <i class="fas fa-trash-alt fa-fw"></i>
+        </l-input-button>
 
         <div class="flex justify-start mt-4 mb-4">
-          <button-basic @click="addNewOption"> Add New Option </button-basic>
+          <l-button @click="addNewOption"> Add New Option </l-button>
         </div></template
       >
       <template v-else>
-        <text-area-base
+        <l-text-area
           v-model="optionsString"
           class="w-full"
-          @input="convertFullString"
-        ></text-area-base>
+          @blur="convertFullString"
+        ></l-text-area>
       </template>
     </div>
   </div>
@@ -57,22 +52,9 @@
 <script>
 import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
-import PopupBase from '~/components/elements/PopupBase'
-import ToggleSwitch from '~/components/elements/ToggleSwitch'
-import InputBaseWithButton from '~/components/elements/InputBaseWithButton'
-import ButtonForInput from '~/components/elements/ButtonForInput'
-
-import TextAreaBase from '~/components/elements/TextAreaBase'
 
 export default {
   name: 'NewQuestionDropDown',
-  components: {
-    TextAreaBase,
-    PopupBase,
-    ToggleSwitch,
-    InputBaseWithButton,
-    ButtonForInput,
-  },
   mixins: [validationMixin],
   props: {
     form: {
@@ -134,9 +116,9 @@ export default {
       })
 
       this.$nextTick(() => {
-        const el = document
-          .getElementById('inputOptions' + (this.options.length - 1))
-          .getElementsByTagName('input')[0]
+        const el = document.getElementById(
+          'inputOptions' + (this.options.length - 1)
+        )
         el.focus()
         el.select()
       })
@@ -160,13 +142,26 @@ export default {
       this.options = []
       let position = 1
       const splitData = this.optionsString.split('; ')
-      splitData.forEach((item) => {
-        this.options.push({
-          ordinalPosition: position++,
-          text: item,
-          value: item,
-        })
-      })
+      for (const i in splitData) {
+        const item = splitData[i]
+        if (item !== '') {
+          this.options.push({
+            ordinalPosition: position++,
+            text: item,
+            value: item,
+          })
+        }
+      }
+      if (this.options.length < 2) {
+        for (let i = this.options.length; i < 2; i++) {
+          this.options.push({
+            ordinalPosition: position,
+            text: `Option ${position}`,
+            value: `Option ${position}`,
+          })
+          position++
+        }
+      }
     },
   },
 }

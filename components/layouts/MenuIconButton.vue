@@ -1,7 +1,11 @@
 <template>
   <button
     class="items-center md:flex md:justify-center font-semibold hover:text-primary transition duration-300 focus:outline-none py-3 mr-6"
-    :class="active ? 'text-primary border-b-2 border-primary' : 'text-gray-500'"
+    :class="
+      active
+        ? `text-${color}-600 border-b-2 border-${color}-600`
+        : 'text-gray-500'
+    "
     @click="$emit('click')"
   >
     <span class="xl:pr-1"><slot name="icon"></slot></span>
@@ -17,6 +21,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    color: {
+      type: String,
+      required: false,
+      default: 'blue',
     },
   },
 }
