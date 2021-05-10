@@ -8,25 +8,30 @@
     </div>
 
     <div class="w-full md:w-8/12 flex flex-col mx-auto">
-      <survey-list-page-element
+      <survey-list-question
         v-for="section in sectionQuestions"
         :key="section.code"
-        :section="section"
+        :question="section"
         :max-number="getMaxQuestionNumber"
         @dragover.prevent="onDropQuestion($event, section)"
       >
-        <survey-list-question-element
+        <div
           v-for="question in getQuestionsForSection(section)"
+          :id="`question-${question.code}`"
           :key="question.code"
-          :question="question"
-          :show-preview="showPreview"
-          :max-number="getMaxQuestionNumber"
-          @dragstart="startDrag($event, question)"
-          @dragend="endDrag($event, question)"
-          @dragleave="endDrag($event, question)"
-          @dragover.prevent.stop="onDropQuestion($event, question)"
-        ></survey-list-question-element>
-      </survey-list-page-element>
+          class="draggable-container"
+        >
+          <survey-list-question
+            :question="question"
+            :show-preview="showPreview"
+            :max-number="getMaxQuestionNumber"
+            @dragstart="startDrag($event, question)"
+            @dragend="endDrag($event, question)"
+            @dragleave="endDrag($event, question)"
+            @dragover.prevent.stop="onDropQuestion($event, question)"
+          ></survey-list-question>
+        </div>
+      </survey-list-question>
     </div>
   </list-layout>
   <div v-else>loading</div>
@@ -34,14 +39,13 @@
 
 <script>
 import ListLayout from '~/components/layouts/ListLayout'
-import SurveyListPageElement from '~/components/surveys/SurveyListPageElement'
-import SurveyListQuestionElement from '~/components/surveys/SurveyListQuestionElement'
+import SurveyListQuestion from '~/components/surveys/SurveyListQuestion'
 
 export default {
   name: 'QuestionList',
   components: {
-    SurveyListQuestionElement,
-    SurveyListPageElement,
+    SurveyListQuestion,
+
     ListLayout,
   },
   middleware: ['surveyBuilder'],
@@ -140,6 +144,7 @@ export default {
   mounted() {
     window.addEventListener('dragover', this.checkPosition)
     this.loadQuestions()
+    this.$store.dispatch('contactlist/getContactLists', {})
     this.previousPageNumbers = this.getQuestionPositions()
     window.setInterval(this.updateQuestionNumbers, 5000)
     // await this.updateData()
@@ -233,14 +238,35 @@ export default {
       event.dataTransfer.dropEffect = 'move'
       event.dataTransfer.effectAllowed = 'move'
       event.dataTransfer.setData('question', JSON.stringify(item))
+      const minPosition = this.minPosition(item)
+
+      const matches = document.getElementsByClassName('draggable-container')
+      matches.forEach((el) => {
+        const questionCode = Number(el.id.replace('question-', ''))
+        const questionPosition = this.sortedQuestions.find((el) => {
+          return el.code === questionCode
+        }).ordinalPosition
+
+        if (questionPosition <= minPosition) el.classList.add('draggable-block')
+      })
     },
     endDrag(event) {
       event.target.classList.remove('dragging')
+      const matches = document.getElementsByClassName('draggable-container')
+      matches.forEach((el) => {
+        el.classList.remove('draggable-block')
+      })
     },
     onDropQuestion(event, question) {
       const movedQuestion = JSON.parse(event.dataTransfer.getData('question'))
 
       let questions = JSON.parse(JSON.stringify(this.sortedQuestions))
+
+      if (question.ordinalPosition < this.minPosition(movedQuestion)) {
+        this.dragging = null
+        this.endDrag(event)
+        return
+      }
 
       questions.find((el) => {
         return el.code === movedQuestion.code
@@ -256,6 +282,34 @@ export default {
       this.$store.dispatch('questions/setQuestions', questions)
 
       this.dragging = null
+    },
+
+    getBranchingError(question, questionBeingMoved) {
+      let found = false
+
+      const branching = JSON.parse(questionBeingMoved.surveyOptions)
+      if (branching.branching) {
+        branching.branching.rules.forEach((rule) => {
+          rule.ruleList.forEach((rl) => {
+            if (rl.questionNumber === question.questionNumber) {
+              found = true
+            }
+          })
+        })
+      }
+
+      return found
+    },
+    minPosition(questionBeingMoved) {
+      let whichPosition = null
+      this.sortedQuestions.forEach((el) => {
+        if (this.getBranchingError(el, questionBeingMoved)) {
+          if (whichPosition && whichPosition < el.ordinalPosition)
+            whichPosition = el.ordinalPosition
+          else whichPosition = el.ordinalPosition
+        }
+      })
+      return whichPosition
     },
 
     //   async updateData() {
@@ -299,9 +353,6 @@ export default {
     //     }
     //   },
 
-    //   editQuestion(question) {
-    //     this.$store.dispatch('setCurrentItemToBeEdited', question)
-    //   },
     //   moveQuestion(question) {
     //     this.showMoveMenu = question
     //   },
@@ -423,7 +474,7 @@ export default {
 </script>
 
 <style scoped>
-.dragging {
+.draggable-block {
   @apply opacity-50;
 }
 

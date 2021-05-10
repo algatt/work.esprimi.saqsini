@@ -6,7 +6,7 @@
       @click="hideSubMenu"
     ></button>
 
-    <div class="py-1 flex flex-col">
+    <div class="flex flex-col">
       <span class="font-semibold mb-2 text-gray-700"> <slot></slot></span>
 
       <div

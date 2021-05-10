@@ -1,91 +1,32 @@
 <template>
-  <div class="flex flex-col">
+  <div v-if="!isLoading" class="flex flex-col">
     <div v-for="condition in conditions" :key="condition.groupIndex">
       <div class="flex flex-col border border-gray-100 shadow rounded p-2 mb-5">
         <div
           v-for="(rule, ruleIndex) in condition.ruleList"
-          :key="`${condition.groupIndex} ${ruleIndex}`"
+          :key="ruleIndex"
           class="flex flex-wrap"
         >
-          <div class="w-full xl:w-8/12 flex p-1 items-start pr-3">
-            <div class="flex w-full justify-between">
-              <l-select
-                v-if="rule.hasOwnProperty('questionNumber')"
-                class="input select flex flex-1"
-                :value="rule.questionNumber"
-                @input="updateQuestion(condition.groupIndex, ruleIndex, $event)"
-              >
-                <template v-slot:options>
-                  <option
-                    v-for="ques in questions"
-                    :key="`${condition.groupIndex} ${ruleIndex} ${ques.questionNumber}`"
-                    :value="String(ques.questionNumber)"
-                    :selected="
-                      String(ques.questionNumber) ===
-                      String(rule.questionNumber)
-                    "
-                  >
-                    {{ getQuestionText(ques).text }}
-                  </option>
-                </template>
-              </l-select>
-              <l-select
-                v-else
-                class="input select flex flex-1"
-                @input="updateFilter(condition.groupIndex, ruleIndex, $event)"
-              >
-                <template v-slot:options>
-                  <option
-                    v-for="filter in Object.keys(filters)"
-                    :key="`${condition.groupIndex} ${ruleIndex} ${filter}`"
-                    :value="filter"
-                    :selected="filter === rule.name"
-                  >
-                    {{ filter }}
-                  </option></template
-                >
-              </l-select>
-              <div class="w-12 flex justify-center items-center py-3.5">
-                <l-button-circle
-                  color="red"
-                  @click="deleteQuestion(condition.groupIndex, ruleIndex)"
-                >
-                  <i class="far fa-trash-alt fa-fw"></i>
-                </l-button-circle>
-              </div>
-            </div>
-          </div>
-          <div
-            v-if="rule.hasOwnProperty('questionNumber')"
-            class="w-full xl:w-4/12"
-          >
-            <multi-select
-              :key="`${condition.groupIndex} ${ruleIndex} ${rule.options.length}`"
-              class="w-full"
-              :original-list="getCurrentQuestionOptions(rule.questionNumber)"
-              :selected-list="rule.options"
-              @selectedItems="
-                manageOptions(condition.groupIndex, ruleIndex, $event)
-              "
-              ><template v-slot:title>Select</template></multi-select
-            >
-          </div>
-          <div v-else class="flex w-full xl:w-4/12 flex-col">
-            <multi-select
-              :key="`${condition.groupIndex} ${ruleIndex} ${rule.options.length}`"
-              :original-list="getCurrentFilterOptions(rule.name)"
-              :selected-list="rule.options"
-              @selectedItems="
-                manageOptions(condition.groupIndex, ruleIndex, $event)
-              "
-              ><template v-slot:title>Select</template></multi-select
-            >
-          </div>
+          <question-branching-select-filter
+            :condition="condition"
+            :rule="rule"
+            :question="question"
+            @updateQuestion="
+              updateQuestion($event, condition.groupIndex, ruleIndex)
+            "
+            @updateFilter="
+              updateFilter($event, condition.groupIndex, ruleIndex)
+            "
+            @deleteQuestion="deleteQuestion(condition.groupIndex, ruleIndex)"
+            @manageOptions="
+              manageOptions($event, condition.groupIndex, ruleIndex)
+            "
+          ></question-branching-select-filter>
 
           <l-select
             v-if="rule.hasOwnProperty('isAnd')"
             v-model="rule.isAnd"
-            class="ml-1 w-24"
+            class="w-24"
           >
             <template v-slot:options>
               <option value="false" :selected="rule.isAnd === 'false'">
@@ -101,28 +42,28 @@
         <div class="flex flex-wrap justify-between items-center">
           <div class="flex items-center px-2 py-2 w-full xl:w-auto">
             <span class="border-b border-transparent mr-1">New filter by</span>
-            <text-link
+            <l-text-link
               v-if="questions.length !== 0"
               @click="addQuestion(condition.groupIndex)"
             >
               Question
-            </text-link>
+            </l-text-link>
             <span
               v-if="questions.length !== 0 && contactlists.length !== 0"
               class="border-b border-transparent mx-1"
               >or</span
             >
-            <text-link
+            <l-text-link
               v-if="contactlists.length !== 0"
               @click="addFilter(condition.groupIndex)"
             >
               Contact List
-            </text-link>
+            </l-text-link>
           </div>
 
-          <l-button color="red" @click="deleteGroup(condition.groupIndex)">
+          <l-text-link color="red" @click="deleteGroup(condition.groupIndex)">
             Delete Group
-          </l-button>
+          </l-text-link>
         </div>
       </div>
       <l-select
@@ -159,18 +100,16 @@
 
 <script>
 import { parseQuestionToForm } from '~/helpers/parseSurveyObjects'
-import MultiSelect from '~/components/elements/MultiSelect'
-import TextLink from '~/components/elements/TextLink'
-import LButtonCircle from '~/components/LButtonCircle'
 import LSelect from '~/components/LSelect'
+import QuestionBranchingSelectFilter from '~/components/surveys/QuestionBranchingSelectFilter'
+import LTextLink from '~/components/LTextLink'
 
 export default {
   name: 'QuestionBranching',
   components: {
+    LTextLink,
+    QuestionBranchingSelectFilter,
     LSelect,
-    LButtonCircle,
-    TextLink,
-    MultiSelect,
   },
   props: {
     existingConditions: {
@@ -184,10 +123,8 @@ export default {
   },
   data() {
     return {
-      currentlySelectedQuestion: [],
       isLoading: true,
       conditions: [],
-      loadedFilters: [],
     }
   },
   computed: {
@@ -196,22 +133,19 @@ export default {
     },
 
     questions() {
-      return JSON.parse(
-        JSON.stringify(this.$store.getters.getItems('questions'))
+      const x = JSON.parse(
+        JSON.stringify(this.$store.getters['questions/sortedQuestions'])
       )
-        .sort((a, b) => {
-          return Number(a.ordinalPosition) > Number(b.ordinalPosition) ? 1 : -1
-        })
-        .filter((el) => {
-          return (
-            el.ordinalPosition < this.question.ordinalPosition &&
-            !el.flags.includes('SECTION') &&
-            el.options.length !== 0
-          )
-        })
+      return x.filter((el) => {
+        return (
+          el.ordinalPosition < this.question.ordinalPosition &&
+          !el.flags.includes('SECTION') &&
+          el.options.length !== 0
+        )
+      })
     },
     filters() {
-      return JSON.parse(JSON.stringify(this.loadedFilters))
+      return JSON.parse(JSON.stringify(this.$store.state.invitations.filters))
     },
     contactlists() {
       if (this.canUseContactBook)
@@ -233,14 +167,9 @@ export default {
     this.isLoading = true
     this.conditions = this.existingConditions.rules
     if (this.contactlists.length !== 0)
-      this.$store
-        .dispatch('invitations/getFilters')
-        .then((result) => {
-          this.loadedFilters = result
-        })
-        .finally(() => {
-          this.isLoading = false
-        })
+      this.$store.dispatch('invitations/getFilters').finally(() => {
+        this.isLoading = false
+      })
     else this.isLoading = false
   },
   methods: {
@@ -309,7 +238,7 @@ export default {
       }
       this.$forceUpdate()
     },
-    updateQuestion(groupIndex, conditionQuestionIndex, newCode) {
+    updateQuestion(newCode, groupIndex, conditionQuestionIndex) {
       for (const i in this.conditions) {
         if (this.conditions[i].groupIndex === groupIndex) {
           this.conditions[i].ruleList[
@@ -320,7 +249,7 @@ export default {
       }
       this.$forceUpdate()
     },
-    updateFilter(groupIndex, conditionQuestionIndex, newCode) {
+    updateFilter(newCode, groupIndex, conditionQuestionIndex) {
       for (const i in this.conditions) {
         if (this.conditions[i].groupIndex === groupIndex) {
           this.conditions[i].ruleList[conditionQuestionIndex] = {
@@ -334,54 +263,8 @@ export default {
       }
       this.$forceUpdate()
     },
-    getCurrentQuestionOptions(questionNumber) {
-      const x = this.questions.find((el) => {
-        return String(el.questionNumber) === String(questionNumber)
-      })
 
-      if (x.flags.includes('RANKING')) {
-        const data = []
-        x.options.forEach((el) => {
-          for (let i = 1; i <= x.options.length; i++) {
-            data.push({
-              code: `${el.value} (${i})`,
-              name: `${el.value} (${i})`,
-            })
-          }
-        })
-        return data
-      } else if (x.flags.includes('RADIO_GRID')) {
-        const data = []
-        const rows = x.options.filter((el) => {
-          return el.flags.includes('ROW')
-        })
-        const columns = x.options.filter((el) => {
-          return el.flags.includes('COLUMN')
-        })
-        rows.forEach((row) => {
-          columns.forEach((column) => {
-            data.push({
-              code: `${row.value} (${column.value})`,
-              name: `${row.value} (${column.value})`,
-            })
-          })
-        })
-        return data
-      } else {
-        return x
-          ? x.options.map((el) => {
-              return { code: el.value, name: el.value }
-            })
-          : []
-      }
-    },
-    getCurrentFilterOptions(filterName) {
-      const x = this.filters[filterName]
-
-      return x || []
-    },
-
-    manageOptions(groupIndex, questionIndex, newList) {
+    manageOptions(newList, groupIndex, questionIndex) {
       for (const i in this.conditions) {
         if (this.conditions[i].groupIndex === groupIndex) {
           this.conditions[i].ruleList[questionIndex].options = newList

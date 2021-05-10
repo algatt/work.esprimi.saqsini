@@ -1,5 +1,6 @@
 export const state = () => ({
   items: [],
+  filters: [],
 })
 
 export const actions = {
@@ -44,6 +45,7 @@ export const actions = {
           `/contact/contactbook/filters?code=${rootGetters.getSelectedContactList.code}`
         )
         .then((response) => {
+          commit('setFilters', response.data)
           resolve(response.data)
         })
         .catch((error) => {
@@ -141,5 +143,11 @@ export const actions = {
           reject(error)
         })
     })
+  },
+}
+
+export const mutations = {
+  setFilters(state, filters) {
+    state.filters = filters
   },
 }

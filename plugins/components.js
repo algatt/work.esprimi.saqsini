@@ -13,7 +13,7 @@ import PopupInformation from '~/components/elements/PopupInformation'
 import LButtonCircle from '~/components/LButtonCircle'
 import LInputButton from '~/components/LInputButton'
 import LBadge from '~/components/LBadge'
-
+import LTextLink from '~/components/LTextLink'
 const components = {
   ButtonBasic,
   InputBase,
@@ -28,6 +28,7 @@ const components = {
   LButtonCircle,
   LInputButton,
   LBadge,
+  LTextLink,
 }
 
 Object.entries(components).forEach(([name, component]) => {

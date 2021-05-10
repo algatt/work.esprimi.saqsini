@@ -134,7 +134,7 @@ export const actions = {
       this.$axios
         .delete('/builder/question/' + code)
         .then(async (response) => {
-          commit('deleteItem', { which: 'questions', code }, { root: true })
+          commit('deleteQuestion', code)
           const questions = JSON.parse(JSON.stringify(state.items))
           const newPositions = questions.map((el) => {
             return { question: el.code, position: el.ordinalPosition }
@@ -144,7 +144,7 @@ export const actions = {
             el.position = position
             el.questioNumber = position++
           })
-          await dispatch('updateQuestionList', newPositions)
+          await dispatch('updateQuestionNumbers', newPositions)
           resolve()
         })
         .catch((error) => {
@@ -181,6 +181,12 @@ export const mutations = {
     state.items.push(question)
   },
 
+  deleteQuestion(state, code) {
+    state.items = state.items.filter((el) => {
+      return el.code !== code
+    })
+  },
+
   updateQuestion(state, question) {
     const foundQuestion = state.items.find((el) => {
       return el.code === question.code
@@ -197,6 +203,15 @@ export const mutations = {
       if (newNumber) {
         el.ordinalPosition = newNumber.position
       }
+    })
+  },
+}
+
+export const getters = {
+  sortedQuestions: (state) => {
+    const x = JSON.parse(JSON.stringify(state.items))
+    return x.sort((a, b) => {
+      return a.ordinalPosition > b.ordinalPosition ? 1 : -1
     })
   },
 }

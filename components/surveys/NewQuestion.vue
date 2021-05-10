@@ -3,7 +3,7 @@
     <div class="w-full flex items-center mb-5">
       <menu-icon-button
         :active="selectedSection === 'details'"
-        @click="selectedSection = 'details'"
+        @click="selectSection('details')"
       >
         Details
         <template v-slot:icon
@@ -12,7 +12,7 @@
       </menu-icon-button>
       <menu-icon-button
         :active="selectedSection === 'branching'"
-        @click="selectedSection = 'branching'"
+        @click="selectSection('branching')"
       >
         Branching
         <template v-slot:icon
@@ -22,7 +22,7 @@
       <menu-icon-button
         v-if="questionType === 'SECTION'"
         :active="selectedSection === 'disqualify'"
-        @click="selectedSection = 'disqualify'"
+        @click="selectSection('disqualify')"
         >Disqualify
         <template v-slot:icon>
           <i class="fas fa-eraser fa-fw"></i>
@@ -119,17 +119,19 @@
 
     <question-branching
       v-else-if="selectedSection === 'branching'"
+      :key="selectedSection"
       :existing-conditions="form.branching"
       :question="question"
       @conditions="receiveConditions"
     ></question-branching>
 
-    <question-disqualify
+    <question-branching
       v-else-if="selectedSection === 'disqualify' && questionType === 'SECTION'"
+      :key="selectedSection"
       :existing-conditions="form.disqualify"
       :question="question"
       @conditions="receiveDisqualify"
-    ></question-disqualify>
+    ></question-branching>
   </div>
 </template>
 
@@ -150,7 +152,6 @@ import {
 import QuestionBranching from '~/components/surveys/QuestionBranching'
 import NewQuestionRadioGrid from '~/components/surveys/NewQuestionRadioGrid'
 import MenuIconButton from '~/components/layouts/MenuIconButton'
-import QuestionDisqualify from '~/components/surveys/QuestionDisqualify'
 
 import { convertQuestionFromApiToForm } from '~/services/question-helpers'
 
@@ -166,7 +167,6 @@ export default {
     NewQuestionSection,
     NewQuestionLikert,
     NewQuestionMultipleChoice,
-    QuestionDisqualify,
   },
   mixins: [validationMixin],
   props: {
@@ -254,6 +254,9 @@ export default {
     )
   },
   methods: {
+    selectSection(which) {
+      this.selectedSection = which
+    },
     receiveConditions(ev) {
       this.form.branching = ev
     },

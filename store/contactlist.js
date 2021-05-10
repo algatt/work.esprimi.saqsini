@@ -5,7 +5,10 @@ export const state = () => ({
 })
 
 export const actions = {
-  getContactLists({ commit, rootState, dispatch }, { limit, offset }) {
+  getContactLists(
+    { commit, rootState, dispatch },
+    { limit = 100, offset = 0 }
+  ) {
     return new Promise((resolve, reject) => {
       this.$axios
         .get(`/contact/contactbook/all?limit=${limit}&offset=${offset}`)
