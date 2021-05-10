@@ -8,72 +8,24 @@
     </div>
 
     <div class="w-full md:w-8/12 flex flex-col mx-auto">
-      <div
+      <survey-list-page-element
         v-for="section in sectionQuestions"
         :key="section.code"
-        class="bg-gray-100 p-5 mb-6 container rounded shadow flex flex-col border"
+        :section="section"
+        :max-number="getMaxQuestionNumber"
         @dragover.prevent="onDropQuestion($event, section)"
       >
-        <h4>{{ section.name }}</h4>
-        <div
-          class="flex justify-center opacity-0 hover:opacity-100 transition duration-300"
-        >
-          <LPopupMenu>
-            <template v-slot:icon
-              ><LButtonCircle><i class="fas fa-plus fa-fw"></i></LButtonCircle
-            ></template>
-            <template v-slot:menu>
-              <button v-for="button in QUESTION_TYPES" :key="button.code">
-                <i :class="button.icon"></i>{{ button.text }}
-              </button>
-            </template></LPopupMenu
-          >
-        </div>
-        <div
+        <survey-list-question-element
           v-for="question in getQuestionsForSection(section)"
           :key="question.code"
-        >
-          <div
-            class="bg-white my-2 p-4 draggable cursor-move rounded border flex flex-wrap"
-            draggable="true"
-            @dragstart="startDrag($event, question)"
-            @dragend="endDrag($event, question)"
-            @dragover.prevent.stop="onDropQuestion($event, question)"
-          >
-            <div class="flex flex-1 flex-col items-start">
-              <h6 class="mb-1">{{ question.name }}</h6>
-              <badge-base>{{ getQuestionType(question) }}</badge-base>
-            </div>
-            <div class="w-20 flex justify-center">
-              <LPopupMenu
-                ><template v-slot:menu
-                  ><button @click="editQuestion(question)">
-                    <i class="fas fa-edit fa-fw"></i>Edit
-                  </button></template
-                ></LPopupMenu
-              >
-            </div>
-          </div>
-          <div
-            class="flex justify-center opacity-0 hover:opacity-100 transition duration-300"
-          >
-            <LPopupMenu>
-              <template v-slot:icon
-                ><LButtonCircle><i class="fas fa-plus fa-fw"></i></LButtonCircle
-              ></template>
-              <template v-slot:menu>
-                <button
-                  v-for="button in QUESTION_TYPES"
-                  :key="button.code"
-                  @click="newQuestion(button.flag, question.ordinalPosition)"
-                >
-                  <i :class="button.icon"></i>{{ button.text }}
-                </button>
-              </template></LPopupMenu
-            >
-          </div>
-        </div>
-      </div>
+          :question="question"
+          :max-number="getMaxQuestionNumber"
+          @dragstart="startDrag($event, question)"
+          @dragend="endDrag($event, question)"
+          @dragleave="endDrag($event, question)"
+          @dragover.prevent.stop="onDropQuestion($event, question)"
+        ></survey-list-question-element>
+      </survey-list-page-element>
     </div>
   </list-layout>
   <div v-else>loading</div>
@@ -81,16 +33,16 @@
 
 <script>
 import ListLayout from '~/components/layouts/ListLayout'
-import { QUESTION_TYPES } from '~/assets/settings/survey-settings'
-import LPopupMenu from '~/components/LPopupMenu'
-import BadgeBase from '~/components/elements/BadgeBase'
-import { getQuestionTypeText } from '~/services/question-helpers'
-import ModalService from '~/services/modal-services'
-import NewItemModal from '~/components/layouts/NewItemModal'
+import SurveyListPageElement from '~/components/surveys/SurveyListPageElement'
+import SurveyListQuestionElement from '~/components/surveys/SurveyListQuestionElement'
 
 export default {
   name: 'QuestionList',
-  components: { BadgeBase, LPopupMenu, ListLayout },
+  components: {
+    SurveyListQuestionElement,
+    SurveyListPageElement,
+    ListLayout,
+  },
   middleware: ['surveyBuilder'],
   layout: 'authlayout',
 
@@ -98,7 +50,6 @@ export default {
     return {
       dragging: null,
       beingHovered: null,
-      QUESTION_TYPES,
 
       // selectedMenu: '',
       // selectedView: 'questions',
@@ -123,6 +74,22 @@ export default {
     sectionQuestions() {
       return this.sortedQuestions.filter((el) => {
         return el.flags.includes('SECTION')
+      })
+    },
+    getMaxQuestionNumber() {
+      let max = null
+      this.sortedQuestions.forEach((el) => {
+        if (Number(el.questionNumber)) {
+          if (!max) max = Number(el.questionNumber)
+          else if (max < Number(el.questionNumber))
+            max = Number(el.questionNumber)
+        }
+      })
+      return max + 1
+    },
+    getQuestionPositions() {
+      return this.sortedQuestions.map((el) => {
+        return { question: el.code, position: el.ordinalPosition }
       })
     },
 
@@ -172,6 +139,9 @@ export default {
     //   return QUESTION_TYPES
     // },
   },
+  watch: {
+    // working on
+  },
   mounted() {
     window.addEventListener('dragover', this.checkPosition)
     this.loadQuestions()
@@ -211,9 +181,7 @@ export default {
           behavior: 'smooth',
         })
     },
-    getQuestionType(question) {
-      return getQuestionTypeText(question.flags)
-    },
+
     getQuestionsForSection(section) {
       const nextSection = this.sortedQuestions
         .filter((el) => {
@@ -239,7 +207,7 @@ export default {
       event.dataTransfer.effectAllowed = 'move'
       event.dataTransfer.setData('question', JSON.stringify(item))
     },
-    endDrag(event, item) {
+    endDrag(event) {
       event.target.classList.remove('dragging')
     },
 
@@ -304,35 +272,7 @@ export default {
     //       this.loading = false
     //     }
     //   },
-    newQuestion(flag, ordinalPosition) {
-      ModalService.open(NewItemModal, {
-        whichComponent: 'NewQuestion',
-        dataItem: {
-          questionNumber: this.getMaxQuestionNumber(),
-          surveyCode: Number(this.$route.params.id),
-          flags: [flag],
-          ordinalPosition,
-          surveyOptions: JSON.stringify({}),
-        },
-      })
-    },
-    editQuestion(question) {
-      ModalService.open(NewItemModal, {
-        whichComponent: 'NewQuestion',
-        dataItem: question,
-      })
-    },
-    getMaxQuestionNumber() {
-      let max = null
-      this.sortedQuestions.forEach((el) => {
-        if (Number(el.questionNumber)) {
-          if (!max) max = Number(el.questionNumber)
-          else if (max < Number(el.questionNumber))
-            max = Number(el.questionNumber)
-        }
-      })
-      return max + 1
-    },
+
     //   editQuestion(question) {
     //     this.$store.dispatch('setCurrentItemToBeEdited', question)
     //   },

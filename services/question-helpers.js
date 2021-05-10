@@ -83,6 +83,7 @@ export function convertQuestionFromApiToForm(
 
 export function convertQuestionFromFormToApi(question) {
   const temp = JSON.parse(JSON.stringify(question))
+
   const whichQuestion = getQuestionType(temp)
 
   temp.text = [{ language: PREFERRED_LANGUAGE, text: temp.text }]

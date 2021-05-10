@@ -6,6 +6,7 @@
         ><template #right
           ><selection-delete-clear-button
             v-if="processedTableData.length !== 0"
+            :color="color"
             :enable-clear="selectedItems.length > 0"
             :enable-select="selectedItems.length !== processedTableData.length"
             :enable-delete="selectedItems.length > 0"

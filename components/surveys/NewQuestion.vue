@@ -120,6 +120,7 @@
     <question-branching
       v-else-if="selectedSection === 'branching'"
       :existing-conditions="form.branching"
+      :question="question"
       @conditions="receiveConditions"
     ></question-branching>
 
@@ -184,6 +185,34 @@ export default {
       infoRequired: QUESTION_HELP.REQUIRED,
     }
   },
+  computed: {
+    question() {
+      return this.dataItem
+    },
+    questions() {
+      return this.$store.getters.getItems('questions')
+    },
+    questionType() {
+      const x = this.question.flags
+
+      let questionType = null
+      Object.keys(QUESTION_TYPES).forEach((el) => {
+        if (x.includes(el)) questionType = el
+      })
+      return questionType
+    },
+    questionTypeComponent() {
+      return QUESTION_TYPES[this.questionType].component
+    },
+  },
+  watch: {
+    form: {
+      handler(value) {
+        this.$emit('update', value)
+      },
+      deep: true,
+    },
+  },
   validations: {
     form: {
       name: {
@@ -205,26 +234,6 @@ export default {
             .includes(String(value).toLowerCase().trim())
         },
       },
-    },
-  },
-  computed: {
-    question() {
-      return this.dataItem
-    },
-    questions() {
-      return this.$store.getters.getItems('questions')
-    },
-    questionType() {
-      const x = this.question.flags
-
-      let questionType = null
-      Object.keys(QUESTION_TYPES).forEach((el) => {
-        if (x.includes(el)) questionType = el
-      })
-      return questionType
-    },
-    questionTypeComponent() {
-      return QUESTION_TYPES[this.questionType].component
     },
   },
   created() {

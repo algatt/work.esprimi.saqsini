@@ -10,18 +10,9 @@ export const actions = {
           `/builder/question/all?limit=${limit}&offset=${offset}&surveyCode=${code}`
         )
         .then((response) => {
-          // commit(
-          //   'setItems',
-          //   {
-          //     which: 'questions',
-          //     items: response.data,
-          //   },
-          //   { root: true }
-          // )
           commit('setQuestions', response.data)
           resolve(response.data)
         })
-
         .catch((error) => {
           reject(error)
         })
@@ -47,18 +38,14 @@ export const actions = {
 
     return new Promise((resolve, reject) => {
       this.$axios
-        .post(
-          '/builder/question/',
-
-          question,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        )
+        .post('/builder/question/', question, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
         .then(async (response) => {
-          await dispatch('updateQuestionList', newPositions)
+          commit('addQuestion', response.data)
+          await dispatch('updateQuestionNumbers', newPositions)
           resolve(response.data)
         })
         .catch((error) => {
@@ -167,7 +154,7 @@ export const actions = {
     })
   },
 
-  updateQuestionList({ commit }, list) {
+  updateQuestionNumbers({ commit }, list) {
     return new Promise((resolve, reject) => {
       this.$axios
         .patch('/builder/question/questionSequences', list, {
@@ -176,7 +163,7 @@ export const actions = {
           },
         })
         .then((response) => {
-          commit('updateLocalList', list)
+          commit('updateQuestionNumbers', list)
           resolve()
         })
         .catch((error) => {
@@ -191,7 +178,11 @@ export const mutations = {
     state.items = questions
   },
 
-  updateLocalList(state, list) {
+  addQuestion(state, question) {
+    state.items.push(question)
+  },
+
+  updateQuestionNumbers(state, list) {
     state.items.forEach((el) => {
       const newNumber = list.find((el2) => {
         return el2.question === el.code

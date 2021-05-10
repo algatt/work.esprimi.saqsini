@@ -12,6 +12,7 @@ import LProgress from '~/components/LProgress'
 import PopupInformation from '~/components/elements/PopupInformation'
 import LButtonCircle from '~/components/LButtonCircle'
 import LInputButton from '~/components/LInputButton'
+import LBadge from '~/components/LBadge'
 
 const components = {
   ButtonBasic,
@@ -26,6 +27,7 @@ const components = {
   LProgress,
   LButtonCircle,
   LInputButton,
+  LBadge,
 }
 
 Object.entries(components).forEach(([name, component]) => {

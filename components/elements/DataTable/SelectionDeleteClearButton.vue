@@ -1,7 +1,7 @@
 <template>
   <LPopupMenu>
     <template #icon>
-      <l-button
+      <l-button :color="color"
         >Selection<template #rightIcon
           ><i class="fas fa-caret-down fa-fw"></i></template
       ></l-button>
@@ -37,6 +37,10 @@ export default {
     enableDelete: {
       type: Boolean,
       default: true,
+    },
+    color: {
+      type: String,
+      default: 'blue',
     },
   },
 }
