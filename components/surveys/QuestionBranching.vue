@@ -1,6 +1,5 @@
 <template>
-  <spinner v-if="isLoading"></spinner>
-  <div v-else class="flex flex-col">
+  <div class="flex flex-col">
     <div v-for="condition in conditions" :key="condition.groupIndex">
       <div class="flex flex-col border border-gray-100 shadow rounded p-2 mb-5">
         <div
@@ -10,9 +9,10 @@
         >
           <div class="w-full xl:w-8/12 flex p-1 items-start pr-3">
             <div class="flex w-full justify-between">
-              <select-base
+              <l-select
                 v-if="rule.hasOwnProperty('questionNumber')"
                 class="input select flex flex-1"
+                :value="rule.questionNumber"
                 @input="updateQuestion(condition.groupIndex, ruleIndex, $event)"
               >
                 <template v-slot:options>
@@ -28,8 +28,8 @@
                     {{ getQuestionText(ques).text }}
                   </option>
                 </template>
-              </select-base>
-              <select-base
+              </l-select>
+              <l-select
                 v-else
                 class="input select flex flex-1"
                 @input="updateFilter(condition.groupIndex, ruleIndex, $event)"
@@ -44,14 +44,14 @@
                     {{ filter }}
                   </option></template
                 >
-              </select-base>
+              </l-select>
               <div class="w-12 flex justify-center items-center py-3.5">
-                <button-icon-rounded-outline
-                  bg-colour="red"
+                <l-button-circle
+                  color="red"
                   @click="deleteQuestion(condition.groupIndex, ruleIndex)"
                 >
                   <i class="far fa-trash-alt fa-fw"></i>
-                </button-icon-rounded-outline>
+                </l-button-circle>
               </div>
             </div>
           </div>
@@ -82,7 +82,7 @@
             >
           </div>
 
-          <select-base
+          <l-select
             v-if="rule.hasOwnProperty('isAnd')"
             v-model="rule.isAnd"
             class="ml-1 w-24"
@@ -95,7 +95,7 @@
                 and
               </option></template
             >
-          </select-base>
+          </l-select>
         </div>
 
         <div class="flex flex-wrap justify-between items-center">
@@ -120,16 +120,12 @@
             </text-link>
           </div>
 
-          <button-basic
-            colour="red"
-            class="ml-2 xl:pl-0"
-            @click="deleteGroup(condition.groupIndex)"
-          >
+          <l-button color="red" @click="deleteGroup(condition.groupIndex)">
             Delete Group
-          </button-basic>
+          </l-button>
         </div>
       </div>
-      <select-base
+      <l-select
         v-if="condition.hasOwnProperty('isAnd')"
         v-model="condition.isAnd"
         class="ml-1 w-24 mb-5"
@@ -141,7 +137,7 @@
             and
           </option></template
         >
-      </select-base>
+      </l-select>
     </div>
 
     <div class="flex flex-col w-full items-start">
@@ -151,34 +147,30 @@
       >
         <p class="font-semibold">There is no branching available.</p>
       </div>
-      <button-basic
+      <l-button
         :disabled="questions.length === 0 && contactlists.length === 0"
         @click="addGroup"
       >
         Add Condition Group
-      </button-basic>
+      </l-button>
     </div>
   </div>
 </template>
 
 <script>
 import { parseQuestionToForm } from '~/helpers/parseSurveyObjects'
-import Spinner from '~/components/layouts/Spinner'
 import MultiSelect from '~/components/elements/MultiSelect'
-
 import TextLink from '~/components/elements/TextLink'
-import SelectBase from '~/components/elements/SelectBase'
-import ButtonIconRoundedOutline from '~/components/elements/ButtonIconRoundedOutline'
+import LButtonCircle from '~/components/LButtonCircle'
+import LSelect from '~/components/LSelect'
 
 export default {
   name: 'QuestionBranching',
   components: {
-    ButtonIconRoundedOutline,
+    LSelect,
+    LButtonCircle,
     TextLink,
-
-    Spinner,
     MultiSelect,
-    SelectBase,
   },
   props: {
     existingConditions: {

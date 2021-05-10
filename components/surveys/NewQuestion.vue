@@ -109,7 +109,7 @@
       <component
         :is="questionTypeComponent"
         :form="form"
-        @updateOptions="form.options = $event"
+        @updatedOptions="form.options = $event"
         @updateAllowOther="form.allowOther = $event"
         @updateAllowMultiple="form.allowMultiple = $event"
         @isValid="isRemainderOfFormValid = $event"
@@ -127,6 +127,7 @@
     <question-disqualify
       v-else-if="selectedSection === 'disqualify' && questionType === 'SECTION'"
       :existing-conditions="form.disqualify"
+      :question="question"
       @conditions="receiveDisqualify"
     ></question-disqualify>
   </div>

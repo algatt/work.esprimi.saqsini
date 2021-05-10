@@ -184,6 +184,10 @@ export default {
       type: Object,
       required: true,
     },
+    question: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -197,9 +201,7 @@ export default {
     canUseContactBook() {
       return this.$store.getters['auth/getPermissions'].includes('CONTACTBOOK')
     },
-    question() {
-      return this.$store.state.currentItemToBeEdited
-    },
+
     questions() {
       return JSON.parse(
         JSON.stringify(this.$store.getters.getItems('questions'))

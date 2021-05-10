@@ -67,6 +67,21 @@ export default {
         whichComponent: 'NewQuestion',
         dataItem: question,
       })
+        .then((question) => {
+          this.$store.dispatch(
+            'questions/updateQuestion',
+            convertQuestionFromFormToApi(question)
+          )
+        })
+        .then(() => {
+          this.$toasted.show(`Question updated`)
+        })
+        .catch((error) => {
+          if (error !== 'dismissed')
+            this.$toasted.error(
+              `There was a problem upating the question ${error}`
+            )
+        })
     },
     newQuestion(flag, ordinalPosition) {
       ModalService.open(NewItemModal, {
@@ -89,9 +104,10 @@ export default {
           this.$toasted.show(`Question created`)
         })
         .catch((error) => {
-          this.$toasted.error(
-            `There was a problem creating the question ${error}`
-          )
+          if (error !== 'dismissed')
+            this.$toasted.error(
+              `There was a problem creating the question ${error}`
+            )
         })
     },
   },

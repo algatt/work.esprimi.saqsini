@@ -6,11 +6,13 @@
       @dragstart="$emit('dragstart', $event)"
       @dragend="$emit('dragend', $event)"
       @dragover.prevent.stop="$emit('dragover', $event)"
+      @drop="$emit('drop', $event)"
     >
       <div class="flex flex-1 flex-col items-start">
         <h6 class="mb-1">{{ question.name }}</h6>
         <l-badge>{{ getQuestionType(question) }}</l-badge>
       </div>
+
       <div class="w-20 flex justify-center">
         <LPopupMenu
           ><template v-slot:menu
@@ -53,6 +55,7 @@ import { QUESTION_TYPES } from '~/assets/settings/survey-settings'
 
 export default {
   name: 'SurveyListQuestionElementVue',
+
   props: {
     question: {
       type: Object,
@@ -61,6 +64,11 @@ export default {
     maxNumber: {
       type: Number,
       required: true,
+    },
+    showPreview: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -77,6 +85,21 @@ export default {
         whichComponent: 'NewQuestion',
         dataItem: question,
       })
+        .then((question) => {
+          this.$store.dispatch(
+            'questions/updateQuestion',
+            convertQuestionFromFormToApi(question)
+          )
+        })
+        .then(() => {
+          this.$toasted.show(`Question updated`)
+        })
+        .catch((error) => {
+          if (error !== 'dismissed')
+            this.$toasted.error(
+              `There was a problem upating the question ${error}`
+            )
+        })
     },
     newQuestion(flag, ordinalPosition) {
       ModalService.open(NewItemModal, {
@@ -99,9 +122,10 @@ export default {
           this.$toasted.show(`Question created`)
         })
         .catch((error) => {
-          this.$toasted.error(
-            `There was a problem creating the question ${error}`
-          )
+          if (error !== 'dismissed')
+            this.$toasted.error(
+              `There was a problem creating the question ${error}`
+            )
         })
     },
   },

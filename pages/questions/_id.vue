@@ -19,6 +19,7 @@
           v-for="question in getQuestionsForSection(section)"
           :key="question.code"
           :question="question"
+          :show-preview="showPreview"
           :max-number="getMaxQuestionNumber"
           @dragstart="startDrag($event, question)"
           @dragend="endDrag($event, question)"
@@ -50,7 +51,8 @@ export default {
     return {
       dragging: null,
       beingHovered: null,
-
+      previousPageNumbers: [],
+      showPreview: true,
       // selectedMenu: '',
       // selectedView: 'questions',
       // showPreview: null,
@@ -86,11 +88,6 @@ export default {
         }
       })
       return max + 1
-    },
-    getQuestionPositions() {
-      return this.sortedQuestions.map((el) => {
-        return { question: el.code, position: el.ordinalPosition }
-      })
     },
 
     // canUseContactBook() {
@@ -139,12 +136,12 @@ export default {
     //   return QUESTION_TYPES
     // },
   },
-  watch: {
-    // working on
-  },
+
   mounted() {
     window.addEventListener('dragover', this.checkPosition)
     this.loadQuestions()
+    this.previousPageNumbers = this.getQuestionPositions()
+    window.setInterval(this.updateQuestionNumbers, 5000)
     // await this.updateData()
     // this.showPreview = cookies.get('questionPreviewMode') === 'true'
     // if (this.survey.flags.includes('OUTDATED_LANGUAGE_PACK'))
@@ -154,6 +151,7 @@ export default {
   },
   beforeDestroy() {
     window.removeEventListener('dragover', this.checkPosition)
+    window.clearInterval(this.updateQuestionNumbers)
   },
 
   methods: {
@@ -181,7 +179,36 @@ export default {
           behavior: 'smooth',
         })
     },
+    updateQuestionNumbers() {
+      let detectedChange = false
+      const currentPageNumbers = this.getQuestionPositions()
 
+      for (const i in currentPageNumbers) {
+        const page = currentPageNumbers[i]
+        if (
+          this.previousPageNumbers.find((previous) => {
+            return (
+              previous.question === page.question &&
+              previous.position !== page.position
+            )
+          })
+        ) {
+          detectedChange = true
+        }
+      }
+      if (detectedChange === true) {
+        this.$store.dispatch(
+          'questions/updateQuestionNumbers',
+          this.getQuestionPositions()
+        )
+        this.previousPageNumbers = this.getQuestionPositions()
+      }
+    },
+    getQuestionPositions() {
+      return this.sortedQuestions.map((el) => {
+        return { question: el.code, position: el.ordinalPosition }
+      })
+    },
     getQuestionsForSection(section) {
       const nextSection = this.sortedQuestions
         .filter((el) => {
@@ -210,7 +237,6 @@ export default {
     endDrag(event) {
       event.target.classList.remove('dragging')
     },
-
     onDropQuestion(event, question) {
       const movedQuestion = JSON.parse(event.dataTransfer.getData('question'))
 

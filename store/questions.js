@@ -99,6 +99,9 @@ export const actions = {
             },
           }
         )
+        .then((response) => {
+          commit('updateQuestion', response.data)
+        })
         .then((questionResponse) => {
           if (questionsToUpdate.length > 0) {
             const promises = []
@@ -110,11 +113,7 @@ export const actions = {
                     headers: { 'Content-Type': 'application/json' },
                   })
                   .then((response) => {
-                    commit(
-                      'updateItem',
-                      { which: 'questions', item: response.data },
-                      { root: true }
-                    )
+                    commit('updateQuestion', response.data)
                   })
               )
             })
@@ -180,6 +179,13 @@ export const mutations = {
 
   addQuestion(state, question) {
     state.items.push(question)
+  },
+
+  updateQuestion(state, question) {
+    const foundQuestion = state.items.find((el) => {
+      return el.code === question.code
+    })
+    Object.assign(foundQuestion, question)
   },
 
   updateQuestionNumbers(state, list) {
