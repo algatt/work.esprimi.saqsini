@@ -2,26 +2,32 @@
   <div>
     <div
       v-if="getQuestionType(question) !== 'Page'"
-      class="cursor-move flex flex-col bg-white rounded border-t border-b"
-      draggable="true"
-      @dragstart="$emit('dragstart', $event)"
-      @dragend="$emit('dragend', $event)"
-      @dragover.prevent.stop="$emit('dragover', $event)"
-      @drop="$emit('drop', $event)"
+      class="flex flex-col bg-white rounded border-t border-b"
     >
       <div class="flex flex-wrap">
         <div class="flex flex-1 flex-col items-start pl-6 py-4 space-y-2">
-          <h6>{{ question.name }}</h6>
-          <div class="flex flex-wrap space-x-2">
-            <l-badge>{{ getQuestionType(question) }}</l-badge>
-            <l-badge v-if="hasBranching">Branching</l-badge>
-          </div>
+          <template v-if="!showPreview">
+            <h6>{{ question.name }} - {{ question.ordinalPosition }}</h6>
+            <div class="flex flex-wrap space-x-2">
+              <l-badge>{{ getQuestionType(question) }}</l-badge>
+              <l-badge v-if="hasBranching">Branching</l-badge>
+            </div>
+          </template>
+          <display-question
+            v-else
+            :question="question"
+            class="w-full"
+          ></display-question>
         </div>
+
         <div class="flex w-24 justify-center">
           <LPopupMenu
             ><template v-slot:menu
               ><button @click="editQuestion(question)">
                 <i class="fas fa-edit fa-fw"></i>Edit
+              </button>
+              <button @click="moveQuestion(question)">
+                <i class="fas fa-arrows-alt fa-fw"></i>Move
               </button>
               <button @click="deleteQuestion(question)">
                 <i class="fas fa-trash-alt fa-fw"></i>Delete
@@ -51,17 +57,27 @@
     </div>
     <div
       v-else
-      class="container bg-gray-100 rounded shadow flex flex-col border pt-4 mb-4"
-      @dragover="$emit('dragover', $event)"
+      class="container rounded shadow flex flex-col border pt-4 mb-4"
+      :class="{ 'bg-gray-100': !showPreview }"
     >
       <div class="flex flex-wrap">
         <div class="flex flex-1 flex-col space-y-2 pl-4">
-          <h4 class="text-blue-600 font-bold">{{ question.name }}</h4>
-          <div class="flex flex-wrap space-x-2">
-            <l-badge v-if="hasBranching">Branching</l-badge>
-            <l-badge v-if="hasDisqualify">Disqualify</l-badge>
-          </div>
+          <template v-if="!showPreview">
+            <h4 class="text-blue-600 font-bold">
+              {{ question.name }} - {{ question.ordinalPosition }}
+            </h4>
+            <div class="flex flex-wrap space-x-2">
+              <l-badge v-if="hasBranching">Branching</l-badge>
+              <l-badge v-if="hasDisqualify">Disqualify</l-badge>
+            </div>
+          </template>
+          <display-question
+            v-else
+            :question="question"
+            class="w-full text-xl font-semibold"
+          ></display-question>
         </div>
+
         <div class="flex w-24 justify-center py-1">
           <LPopupMenu
             ><template v-slot:menu
@@ -108,10 +124,12 @@ import NewItemModal from '~/components/layouts/NewItemModal'
 import { QUESTION_TYPES } from '~/assets/settings/survey-settings'
 import CloseModal from '~/components/elements/CloseModal'
 import ConfirmModal from '~/components/elements/ConfirmModal'
+import PlainModal from '~/components/layouts/PlainModal'
+import DisplayQuestion from '~/components/surveys/DisplayQuestion'
 
 export default {
   name: 'SurveyListQuestion',
-
+  components: { DisplayQuestion },
   props: {
     question: {
       type: Object,
@@ -237,6 +255,15 @@ export default {
           header: 'Cannot delete question',
           msg: `This question can't be deleted since it's used for branching.`,
         })
+    },
+    moveQuestion(question) {
+      ModalService.open(PlainModal, {
+        whichComponent: 'QuestionMoveMenu',
+        dataItem: question,
+        options: {
+          header: `Move question ${question.name} after...`,
+        },
+      })
     },
   },
 }

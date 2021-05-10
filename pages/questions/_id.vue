@@ -1,9 +1,31 @@
 <template>
   <list-layout v-if="!loading">
     <div class="w-full my-3 flex justify-between flex-wrap">
-      <div class="w-full md:w-6/12 flex justify-start">Left</div>
-      <div class="w-full md:w-6/12 flex justify-start md:justify-end">
-        Right
+      <div class="w-full md:w-6/12 flex justify-start px-4">Left</div>
+      <div class="w-full md:w-6/12 flex justify-start md:justify-end px-4">
+        <LPopupMenu>
+          <template #icon>
+            <l-button>Settings<i class="fas fa-caret-down fa-fw"></i></l-button>
+          </template>
+          <template v-slot:menu>
+            <button @click="showSurveySettings">
+              <i class="fas fa-sliders-h fa-fw"></i>Settings
+            </button>
+            <button @click="showLanguageSettings">
+              <i class="fas fa-language fa-fw"></i>Language
+            </button>
+            <button @click="showCollaborators">
+              <i class="fas fa-users fa-fw"></i>Collaborators
+            </button>
+            <button @click="showInviteSettings">
+              <i class="fas fa-envelope-open-text fa-fw"></i>Invite Settings
+            </button>
+            <button><i class="fas fa-eye fa-fw"></i>Preview</button>
+            <button @click="showPreview = !showPreview">
+              <i class="fas fa-poll-h fa-fw"></i>Toggle View
+            </button>
+          </template>
+        </LPopupMenu>
       </div>
     </div>
 
@@ -12,23 +34,18 @@
         v-for="section in sectionQuestions"
         :key="section.code"
         :question="section"
+        :show-preview="showPreview"
         :max-number="getMaxQuestionNumber"
-        @dragover.prevent="onDropQuestion($event, section)"
       >
         <div
           v-for="question in getQuestionsForSection(section)"
           :id="`question-${question.code}`"
           :key="question.code"
-          class="draggable-container"
         >
           <survey-list-question
             :question="question"
             :show-preview="showPreview"
             :max-number="getMaxQuestionNumber"
-            @dragstart="startDrag($event, question)"
-            @dragend="endDrag($event, question)"
-            @dragleave="endDrag($event, question)"
-            @dragover.prevent.stop="onDropQuestion($event, question)"
           ></survey-list-question>
         </div>
       </survey-list-question>
@@ -40,22 +57,22 @@
 <script>
 import ListLayout from '~/components/layouts/ListLayout'
 import SurveyListQuestion from '~/components/surveys/SurveyListQuestion'
+import LPopupMenu from '~/components/LPopupMenu'
+import ModalService from '~/services/modal-services'
+import PlainModal from '~/components/layouts/PlainModal'
 
 export default {
   name: 'QuestionList',
   components: {
+    LPopupMenu,
     SurveyListQuestion,
-
     ListLayout,
   },
   middleware: ['surveyBuilder'],
   layout: 'authlayout',
-
   data() {
     return {
-      dragging: null,
       beingHovered: null,
-      previousPageNumbers: [],
       showPreview: true,
       // selectedMenu: '',
       // selectedView: 'questions',
@@ -70,6 +87,9 @@ export default {
   computed: {
     loading() {
       return this.$store.state.loading
+    },
+    survey() {
+      return this.$store.state.surveys.items
     },
     sortedQuestions() {
       const x = JSON.parse(JSON.stringify(this.$store.state.questions.items))
@@ -142,10 +162,9 @@ export default {
   },
 
   mounted() {
-    window.addEventListener('dragover', this.checkPosition)
     this.loadQuestions()
     this.$store.dispatch('contactlist/getContactLists', {})
-    this.previousPageNumbers = this.getQuestionPositions()
+    this.$store.dispatch('surveys/getSurveyByCode', this.$route.params.id)
     window.setInterval(this.updateQuestionNumbers, 5000)
     // await this.updateData()
     // this.showPreview = cookies.get('questionPreviewMode') === 'true'
@@ -153,10 +172,6 @@ export default {
     //   this.$toasted.show(
     //     'This survey has changed from last language generation. You need to re-generate the languages.'
     //   )
-  },
-  beforeDestroy() {
-    window.removeEventListener('dragover', this.checkPosition)
-    window.clearInterval(this.updateQuestionNumbers)
   },
 
   methods: {
@@ -170,50 +185,7 @@ export default {
           this.$store.dispatch('setLoading', false)
         })
     },
-    checkPosition(e) {
-      if (e.y > window.innerHeight - 100)
-        window.window.scrollBy({
-          top: 50,
-          left: 0,
-          behavior: 'smooth',
-        })
-      if (e.y < 100)
-        window.window.scrollBy({
-          top: -50,
-          left: 0,
-          behavior: 'smooth',
-        })
-    },
-    updateQuestionNumbers() {
-      let detectedChange = false
-      const currentPageNumbers = this.getQuestionPositions()
 
-      for (const i in currentPageNumbers) {
-        const page = currentPageNumbers[i]
-        if (
-          this.previousPageNumbers.find((previous) => {
-            return (
-              previous.question === page.question &&
-              previous.position !== page.position
-            )
-          })
-        ) {
-          detectedChange = true
-        }
-      }
-      if (detectedChange === true) {
-        this.$store.dispatch(
-          'questions/updateQuestionNumbers',
-          this.getQuestionPositions()
-        )
-        this.previousPageNumbers = this.getQuestionPositions()
-      }
-    },
-    getQuestionPositions() {
-      return this.sortedQuestions.map((el) => {
-        return { question: el.code, position: el.ordinalPosition }
-      })
-    },
     getQuestionsForSection(section) {
       const nextSection = this.sortedQuestions
         .filter((el) => {
@@ -233,83 +205,40 @@ export default {
         })
       return temp
     },
-    startDrag(event, item) {
-      event.target.classList.add('dragging')
-      event.dataTransfer.dropEffect = 'move'
-      event.dataTransfer.effectAllowed = 'move'
-      event.dataTransfer.setData('question', JSON.stringify(item))
-      const minPosition = this.minPosition(item)
-
-      const matches = document.getElementsByClassName('draggable-container')
-      matches.forEach((el) => {
-        const questionCode = Number(el.id.replace('question-', ''))
-        const questionPosition = this.sortedQuestions.find((el) => {
-          return el.code === questionCode
-        }).ordinalPosition
-
-        if (questionPosition <= minPosition) el.classList.add('draggable-block')
+    showSurveySettings() {
+      ModalService.open(PlainModal, {
+        whichComponent: 'SurveySettings',
+        dataItem: this.survey[0],
+      }).then((response) => {
+        this.$store.dispatch('surveys/updateSurvey', response)
       })
     },
-    endDrag(event) {
-      event.target.classList.remove('dragging')
-      const matches = document.getElementsByClassName('draggable-container')
-      matches.forEach((el) => {
-        el.classList.remove('draggable-block')
+    showLanguageSettings() {
+      ModalService.open(PlainModal, {
+        whichComponent: 'SurveyLanguageSettings',
+        dataItem: this.survey[0],
+        options: {
+          close: true,
+        },
       })
     },
-    onDropQuestion(event, question) {
-      const movedQuestion = JSON.parse(event.dataTransfer.getData('question'))
-
-      let questions = JSON.parse(JSON.stringify(this.sortedQuestions))
-
-      if (question.ordinalPosition < this.minPosition(movedQuestion)) {
-        this.dragging = null
-        this.endDrag(event)
-        return
-      }
-
-      questions.find((el) => {
-        return el.code === movedQuestion.code
-      }).ordinalPosition = question.ordinalPosition + 0.5
-
-      questions = questions.sort((a, b) => {
-        return a.ordinalPosition > b.ordinalPosition ? 1 : -1
+    showCollaborators() {
+      ModalService.open(PlainModal, {
+        whichComponent: 'SurveyCollaborators',
+        dataItem: this.survey[0],
+        options: {
+          close: true,
+        },
       })
-
-      for (let i = 0; i < questions.length; i++)
-        questions[i].ordinalPosition = i + 1
-
-      this.$store.dispatch('questions/setQuestions', questions)
-
-      this.dragging = null
     },
-
-    getBranchingError(question, questionBeingMoved) {
-      let found = false
-
-      const branching = JSON.parse(questionBeingMoved.surveyOptions)
-      if (branching.branching) {
-        branching.branching.rules.forEach((rule) => {
-          rule.ruleList.forEach((rl) => {
-            if (rl.questionNumber === question.questionNumber) {
-              found = true
-            }
-          })
-        })
-      }
-
-      return found
-    },
-    minPosition(questionBeingMoved) {
-      let whichPosition = null
-      this.sortedQuestions.forEach((el) => {
-        if (this.getBranchingError(el, questionBeingMoved)) {
-          if (whichPosition && whichPosition < el.ordinalPosition)
-            whichPosition = el.ordinalPosition
-          else whichPosition = el.ordinalPosition
-        }
+    showInviteSettings() {
+      ModalService.open(PlainModal, {
+        whichComponent: 'SurveyInvitesSettings',
+        dataItem: this.survey[0],
+      }).then((response) => {
+        console.log(response)
+        // this.$store.dispatch('surveys/updateSurvey', response)
       })
-      return whichPosition
     },
 
     //   async updateData() {
@@ -353,49 +282,6 @@ export default {
     //     }
     //   },
 
-    //   moveQuestion(question) {
-    //     this.showMoveMenu = question
-    //   },
-    //   deleteQuestion(question) {
-    //     this.cannotDeleteDueToBranching = []
-    //     this.questions.forEach((el) => {
-    //       const branching = JSON.parse(el.surveyOptions)
-    //       branching.branching.rules.forEach((rule) => {
-    //         rule.ruleList.forEach((rl) => {
-    //           if (String(rl.questionNumber) === String(question.questionNumber)) {
-    //             if (
-    //               !this.cannotDeleteDueToBranching.find((findQuestion) => {
-    //                 return (
-    //                   String(findQuestion.questionNumber) ===
-    //                   String(rl.questionNumber)
-    //                 )
-    //               })
-    //             )
-    //               this.cannotDeleteDueToBranching.push({
-    //                 questionNumber: el.questionNumber,
-    //                 name: el.name,
-    //               })
-    //           }
-    //         })
-    //       })
-    //     })
-    //
-    //     if (this.cannotDeleteDueToBranching.length === 0)
-    //       this.$store.dispatch('questions/deleteQuestion', question.code)
-    //   },
-    //   chooseQuestion(question) {
-    //     this.$store.dispatch('setCurrentItemToBeEdited', question)
-    //   },
-    //   selectMenu(code) {
-    //     this.$store.dispatch('setCurrentItemToBeEdited', this.survey)
-    //     this.selectedMenu = code
-    //   },
-    //   changeSubMenu(code) {
-    //     this.whichSubMenu = code
-    //   },
-    //   questionTypeText(question) {
-    //     return QUESTION_TYPES[getQuestionType(question)].text
-    //   },
     //   getQuestionContent(question) {
     //     return parseQuestionToForm(question).text
     //   },
@@ -474,10 +360,6 @@ export default {
 </script>
 
 <style scoped>
-.draggable-block {
-  @apply opacity-50;
-}
-
 .bigScreenPopup #bigScreenPopupChild {
   @apply opacity-0 transition-all duration-300;
 }

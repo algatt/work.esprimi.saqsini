@@ -187,6 +187,7 @@ export default {
         msg: `You are deleting ${this.selectedItems.length} items.`,
       }).then(() => {
         this.$emit('deleteAll', this.selectedItems)
+        this.selectedItems = []
       })
     },
   },

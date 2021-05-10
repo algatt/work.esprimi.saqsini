@@ -25,14 +25,7 @@ export const actions = {
       this.$axios
         .get(`/builder/instance?code=${code}`)
         .then((response) => {
-          commit(
-            'setItems',
-            {
-              which: 'surveys',
-              items: [response.data],
-            },
-            { root: true }
-          )
+          commit('setSurveys', [response.data])
           resolve(response.data)
         })
         .catch((error) => {
@@ -458,6 +451,7 @@ export const mutations = {
       return el.code === survey.code
     })
     Object.assign(foundSurvey, survey)
+    console.log(state.items)
   },
 
   deleteSurvey(state, code) {

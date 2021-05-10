@@ -1,6 +1,6 @@
 <template>
   <span class="flex relative items-center">
-    <button
+    <div
       ref="popupButton"
       class="focus:outline-none flex justify-center items-center"
       @click.stop="managePopup"
@@ -10,7 +10,7 @@
         v-if="!$slots.icon"
         class="fas fa-ellipsis-v fa-fw fa-sm text-gray-300 rounded-full border-2 border-gray-200 h-6 w-6 bg-gray-50 flex items-center justify-center shadow-sm hover:text-gray-400 transition duration-300"
       ></i>
-    </button>
+    </div>
 
     <screen-overlay v-if="showPopup" @click="closePopup">
       <div

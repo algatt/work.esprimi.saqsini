@@ -1,69 +1,54 @@
 <template>
-  <div class="frosted flex items-center justify-center z-20">
-    <div
-      class="bg-white check-height flex flex-col shadow-lg w-full md:w-6/12 justify-between overflow-y-auto"
+  <div class="flex flex-col">
+    <button
+      v-for="item in questions"
+      :key="item.code"
+      :disabled="
+        item.code === tempQuestion.code ||
+        item.ordinalPosition === tempQuestion.ordinalPosition - 1 ||
+        item.ordinalPosition < minPosition
+      "
+      class="flex mb-4 py-2 px-4 transition duration-300 rounded hover:bg-gray-100 border border-gray-200"
+      :class="[
+        item.code === tempQuestion.code ||
+        item.ordinalPosition === tempQuestion.ordinalPosition - 1 ||
+        item.ordinalPosition < minPosition
+          ? 'cursor-not-allowed'
+          : 'cursor-pointer',
+        ,
+        { 'ml-4': !item.flags.includes('SECTION') },
+        { 'bg-gray-50': item.flags.includes('SECTION') },
+      ]"
+      @click="moveCurrentQuestionAfter(item.ordinalPosition)"
     >
-      <div class="flex flex-col">
-        <h5 class="bg-primary text-white font-semibold p-2 rounded-t">
-          Move {{ tempQuestion.name }} after
-        </h5>
-        <div class="px-5 py-2">
-          <button
-            v-for="item in questions"
-            :key="item.code"
-            :disabled="
-              item.code === tempQuestion.code ||
-              item.ordinalPosition === tempQuestion.ordinalPosition - 1 ||
-              item.ordinalPosition < minPosition
-            "
-            class="flex my-2 p-2 transition duration-300 rounded hover:bg-gray-100"
-            :class="[
-              item.code === tempQuestion.code ||
-              item.ordinalPosition === tempQuestion.ordinalPosition - 1 ||
-              item.ordinalPosition < minPosition
-                ? 'cursor-not-allowed'
-                : 'cursor-pointer',
-            ]"
-            @click="moveCurrentQuestionAfter(item.ordinalPosition)"
-          >
-            <p>
-              <span
-                :class="
-                  item.flags.includes('SECTION') ? 'font-semibold' : 'ml-4'
-                "
-                >{{ item.name }}</span
-              >
-              <span class="text-primary font-semibold ml-2">{{
-                item.questionNumber
-              }}</span>
-              <badge-base
-                v-if="!item.flags.includes('SECTION')"
-                class="ml-2"
-                bg-colour="gray"
-                >{{ getQuestionType(item) }}</badge-base
-              >
-              <badge-base
-                v-if="item.code === tempQuestion.code"
-                class="ml-2"
-                bg-colour="green"
-                >current question</badge-base
-              >
-              <badge-base
-                v-if="item.ordinalPosition <= minPosition"
-                bg-colour="red"
-                title="Moving it here will cause existing branching not to work anymore."
-                >branching problem</badge-base
-              >
-            </p>
-          </button>
-        </div>
-      </div>
-      <div class="w-full p-3 justify-end w-full flex">
-        <button-basic colour="gray" @click="$emit('close')">
-          Close
-        </button-basic>
-      </div>
-    </div>
+      <p>
+        <span
+          :class="item.flags.includes('SECTION') ? 'font-semibold' : 'ml-4'"
+          >{{ item.name }}</span
+        >
+        <span class="text-primary font-semibold ml-2">{{
+          item.questionNumber
+        }}</span>
+        <badge-base
+          v-if="!item.flags.includes('SECTION')"
+          class="ml-2"
+          bg-colour="gray"
+          >{{ getQuestionType(item) }}</badge-base
+        >
+        <badge-base
+          v-if="item.code === tempQuestion.code"
+          class="ml-2"
+          bg-colour="green"
+          >current question</badge-base
+        >
+        <badge-base
+          v-if="item.ordinalPosition <= minPosition"
+          bg-colour="red"
+          title="Moving it here will cause existing branching not to work anymore."
+          >branching problem</badge-base
+        >
+      </p>
+    </button>
   </div>
 </template>
 
@@ -80,10 +65,6 @@ export default {
       type: Object,
       required: true,
     },
-    questions: {
-      type: Array,
-      required: true,
-    },
   },
   data() {
     return {
@@ -91,6 +72,9 @@ export default {
     }
   },
   computed: {
+    questions() {
+      return this.$store.getters['questions/sortedQuestions']
+    },
     minPosition() {
       let whichPosition = null
       this.questions.forEach((el) => {
@@ -106,14 +90,7 @@ export default {
   created() {
     this.tempQuestion = JSON.parse(JSON.stringify(this.question))
   },
-  mounted() {
-    document.documentElement.style.overflow = 'hidden'
-    document.body.scroll = 'no'
-  },
-  destroyed() {
-    document.documentElement.style.overflow = 'visible'
-    document.body.scroll = 'yes'
-  },
+
   methods: {
     getBranchingError(question) {
       let found = false
@@ -162,7 +139,7 @@ export default {
       })
 
       this.$store
-        .dispatch('questions/updateQuestionList', tempQuestions)
+        .dispatch('questions/updateQuestionNumbers', tempQuestions)
         .then(() => {
           this.$toasted.show('Updated Successfully')
         })

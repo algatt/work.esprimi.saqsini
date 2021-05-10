@@ -10,7 +10,7 @@ function convertSurveyFromApiToForm(survey) {
   const tempSurvey = JSON.parse(JSON.stringify(survey))
 
   // options
-  if (tempSurvey.options) tempSurvey.options = JSON.parse(tempSurvey.options)
+  tempSurvey.options = JSON.parse(tempSurvey.options)
 
   // description
   if (tempSurvey.text) {
@@ -86,7 +86,7 @@ function convertSurveyFromFormToApi(survey) {
 
   // options
   if (!tempSurvey.options) {
-    tempSurvey.options = JSON.stringify(SURVEY_OPTIONS)
+    tempSurvey.options = SURVEY_OPTIONS
   }
   tempSurvey.options = JSON.stringify(tempSurvey.options)
 

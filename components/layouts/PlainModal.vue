@@ -1,0 +1,122 @@
+<template>
+  <Modal>
+    <div
+      class="bg-white w-full md:w-8/12 border border-gray-100 shadow-lg md:rounded modalHeight flex flex-col justify-between"
+    >
+      <ModalHeader class="h-14">
+        <div
+          class="text-white p-3 md:rounded-t"
+          :class="`bg-${options.color ? options.color : 'blue'}-600`"
+        >
+          {{ options.header ? options.header : 'New' }}
+        </div></ModalHeader
+      >
+      <ModalBody class="overflow-y-auto bodyHeight">
+        <div class="p-3">
+          <component
+            :is="whichComponent"
+            :question="dataItem"
+            :survey="dataItem"
+            @update="updatedItem = $event"
+          ></component>
+        </div>
+      </ModalBody>
+      <ModalFooter class="h-14">
+        <div class="p-3 flex justify-between w-full">
+          <template v-if="!options.close">
+            <l-button color="gray" @click="dismiss('dismissed')"
+              >Cancel<template #rightIcon
+                ><i class="fas fa-times fa-fw"></i></template
+            ></l-button>
+            <l-button
+              :color="options.color ? options.color : 'blue'"
+              @click="confirm(updatedItem)"
+              >Save<template #rightIcon
+                ><i class="fas fa-save fa-fw"></i></template
+            ></l-button>
+          </template>
+          <template v-else-if="options.close">
+            <l-button color="gray" @click="confirm()"
+              >Close<template #rightIcon
+                ><i class="fas fa-times fa-fw"></i></template
+            ></l-button>
+          </template>
+        </div>
+      </ModalFooter>
+    </div>
+  </Modal>
+</template>
+
+<script>
+import ModalHeader from '@/components/elements/Modal/ModalHeader'
+import ModalFooter from '@/components/elements/Modal/ModalFooter'
+import ModalMixin from '~/components/elements/Modal/ModalMixin'
+import Modal from '~/components/elements/Modal/Modal'
+import ModalBody from '~/components/elements/Modal/ModalBody'
+import LButton from '~/components/LButton'
+import QuestionMoveMenu from '~/components/surveys/QuestionMoveMenu'
+import SurveySettings from '~/components/surveys/SurveySettings'
+import SurveyLanguageSettings from '~/components/surveys/SurveyLanguageSettings'
+import SurveyCollaborators from '~/components/surveys/SurveyCollaborators'
+import SurveyInvitesSettings from '~/components/surveys/SurveyInvitesSettings'
+
+export default {
+  name: 'PlainModal',
+  components: {
+    LButton,
+    ModalFooter,
+    ModalBody,
+    ModalHeader,
+    Modal,
+    QuestionMoveMenu,
+    SurveySettings,
+    SurveyLanguageSettings,
+    SurveyCollaborators,
+    SurveyInvitesSettings,
+  },
+  mixins: [ModalMixin],
+  props: {
+    whichComponent: {
+      type: String,
+      required: true,
+    },
+    dataItem: {
+      type: Object,
+      required: false,
+    },
+    options: {
+      type: Object,
+      required: false,
+      default: () => {
+        return {}
+      },
+    },
+  },
+  data() {
+    return {
+      updatedItem: {},
+      isValid: false,
+    }
+  },
+}
+</script>
+
+<style>
+@media only screen and (max-width: 767px) {
+  .modalHeight {
+    height: 100vh;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .modalHeight {
+    height: 95vh;
+    max-height: 95vh;
+  }
+}
+
+.bodyHeight {
+  min-height: calc(100% - 7rem - 5vh);
+  max-height: calc(100% - 7rem - 5vh);
+}
+</style>

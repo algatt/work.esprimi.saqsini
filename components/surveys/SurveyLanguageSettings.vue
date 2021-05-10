@@ -5,14 +5,14 @@
         This survey only has the default language. You can generate a file that
         allows you to translate your survey in other languages.
       </p>
-      <button-basic class="my-2" @click="generateLanguagePack">
+      <l-button class="my-2" @click="generateLanguagePack">
         Generate Language Pack
-      </button-basic>
+      </l-button>
     </div>
     <div v-else class="flex flex-col">
-      <badge-base
+      <l-badge
         v-if="survey.flags.includes('OUTDATED_LANGUAGE_PACK')"
-        bg-colour="red"
+        color="red"
       >
         <p class="px-2 py-1">
           The language pack is outdated since changes were made to the survey
@@ -23,57 +23,46 @@
           Make sure to download the existing language pack to preserve previous
           translations.
         </p>
-      </badge-base>
+      </l-badge>
       <p class="mt-3 mb-2">
         This survey is available in the following languages.
       </p>
       <div class="flex flex-wrap">
-        <badge-base v-for="item in survey.languages" :key="item">
+        <l-badge v-for="item in survey.languages" :key="item">
           <span>{{ getCountryFromLanguage(item) }}</span>
-        </badge-base>
+        </l-badge>
       </div>
       <h6 class="mt-5">Language Pack Options</h6>
       <div class="flex justify-start space-x-5">
-        <button-basic class="my-3" @click="downloadLanguagePack">
+        <l-button class="my-3" @click="downloadLanguagePack">
           Download Existing
-        </button-basic>
+        </l-button>
 
-        <button-basic class="my-3" @click="generateLanguagePack">
+        <l-button class="my-3" @click="generateLanguagePack">
           Generate New
-        </button-basic>
+        </l-button>
 
         <input id="inputFile" type="file" hidden @change="uploadFile" />
-        <button-basic class="my-3" @click="activateInputFile">
+        <l-button class="my-3" @click="activateInputFile">
           Upload New
-        </button-basic>
+        </l-button>
       </div>
     </div>
-
-    <edit-object-modal-bottom-part
-      :form="{}"
-      which="surveys"
-      :is-valid="false"
-      :show-delete="false"
-      :show-save="false"
-    ></edit-object-modal-bottom-part>
   </div>
 </template>
 
 <script>
-import moment from 'moment'
-import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
-
-import BadgeBase from '~/components/elements/BadgeBase'
+import { DateTime } from 'luxon'
 
 export default {
   name: 'SurveyLanguageSettings',
-  components: { BadgeBase, EditObjectModalBottomPart },
-  computed: {
-    survey() {
-      return this.$store.state.currentItemToBeEdited
+
+  props: {
+    survey: {
+      type: Object,
+      required: true,
     },
   },
-
   methods: {
     generateLanguagePack() {
       this.generate = false
@@ -116,7 +105,10 @@ export default {
 
           fileLink.href = fileURL
           const fileName =
-            this.survey.name + '_' + moment().format('YYYY_MM_DD') + '.xlsx'
+            this.survey.name +
+            '_' +
+            DateTime.now().toFormat('yyyy-MM-dd') +
+            '.xlsx'
           fileLink.setAttribute('download', fileName)
           document.body.appendChild(fileLink)
 
