@@ -216,13 +216,13 @@
 </template>
 
 <script>
-import DisplayQuestion from '~/components/surveys/DisplayQuestion'
-import PopupMenuVue from '~/components/layouts/PopupMenu'
-import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
 import {
   SURVEY_LANGUAGE_GENERIC_TERMS,
   PREFERRED_LANGUAGE,
-} from '~/helpers/constants'
+} from '@/assets/settings/survey-settings'
+import DisplayQuestion from '~/components/surveys/DisplayQuestion'
+import PopupMenuVue from '~/components/layouts/PopupMenu'
+import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
 
 export default {
   name: 'PreviewSurvey',

@@ -20,7 +20,9 @@
             <button @click="showInviteSettings">
               <i class="fas fa-envelope-open-text fa-fw"></i>Invite Settings
             </button>
-            <button><i class="fas fa-eye fa-fw"></i>Preview</button>
+            <button @click="showSurveyPreview = true">
+              <i class="fas fa-eye fa-fw"></i>Preview
+            </button>
             <button @click="showPreview = !showPreview">
               <i class="fas fa-poll-h fa-fw"></i>Toggle View
             </button>
@@ -50,6 +52,11 @@
         </div>
       </survey-list-question>
     </div>
+    <PreviewSurveyModal
+      v-if="showSurveyPreview"
+      :original-survey="survey[0]"
+      :questions="sortedQuestions"
+    ></PreviewSurveyModal>
   </list-layout>
   <div v-else>loading</div>
 </template>
@@ -60,10 +67,12 @@ import SurveyListQuestion from '~/components/surveys/SurveyListQuestion'
 import LPopupMenu from '~/components/LPopupMenu'
 import ModalService from '~/services/modal-services'
 import PlainModal from '~/components/layouts/PlainModal'
+import PreviewSurveyModal from '~/components/surveys/PreviewSurveyModal'
 
 export default {
   name: 'QuestionList',
   components: {
+    PreviewSurveyModal,
     LPopupMenu,
     SurveyListQuestion,
     ListLayout,
@@ -74,6 +83,7 @@ export default {
     return {
       beingHovered: null,
       showPreview: true,
+      showSurveyPreview: false,
       // selectedMenu: '',
       // selectedView: 'questions',
       // showPreview: null,
@@ -236,8 +246,7 @@ export default {
         whichComponent: 'SurveyInvitesSettings',
         dataItem: this.survey[0],
       }).then((response) => {
-        console.log(response)
-        // this.$store.dispatch('surveys/updateSurvey', response)
+        this.$store.dispatch('surveys/updateSurvey', response)
       })
     },
 

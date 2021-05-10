@@ -43,6 +43,26 @@ function convertSurveyFromApiToForm(survey) {
     tempSurvey.validToTime = validToTimestamp.toLocaleString(DateTime)
   }
 
+  if (tempSurvey.notificationTimestamp) {
+    const notificationTimestamp = DateTime.fromFormat(
+      tempSurvey.notificationTimestamp,
+      'yyyy-MM-dd hh:mm:ss ZZZ'
+    )
+
+    tempSurvey.notificationDate = notificationTimestamp.toISODate()
+    tempSurvey.notificationtime = notificationTimestamp.toLocaleString(DateTime)
+  }
+
+  if (tempSurvey.reminderTimestamp) {
+    const reminderTimestamp = DateTime.fromFormat(
+      tempSurvey.reminderTimestamp,
+      'yyyy-MM-dd hh:mm:ss ZZZ'
+    )
+
+    tempSurvey.reminderDate = reminderTimestamp.toISODate()
+    tempSurvey.reminderTime = reminderTimestamp.toLocaleString(DateTime)
+  }
+
   return tempSurvey
 }
 
@@ -78,10 +98,26 @@ function convertSurveyFromFormToApi(survey) {
 
   if (tempSurvey.validToDate) {
     tempSurvey.validToTimestamp = DateTime.fromISO(
-      `${tempSurvey.validToDate} ${tempSurvey.validToTime}`
+      `${tempSurvey.validToDate}T${tempSurvey.validToTime}`
     ).toFormat('yyyy-MM-dd hh:mm:ssZZZ')
     delete tempSurvey.validToTime
     delete tempSurvey.validToDate
+  }
+
+  if (tempSurvey.notificationDate) {
+    tempSurvey.notificationTimestamp = DateTime.fromISO(
+      `${tempSurvey.notificationDate}T${tempSurvey.notificationTime}`
+    ).toFormat('yyyy-MM-dd hh:mm:ssZZZ')
+    delete tempSurvey.notificationDate
+    delete tempSurvey.notificationTime
+  }
+
+  if (tempSurvey.reminderDate) {
+    tempSurvey.reminderTimestamp = DateTime.fromISO(
+      `${tempSurvey.reminderDate}T${tempSurvey.reminderTime}`
+    ).toFormat('yyyy-MM-dd hh:mm:ssZZZ')
+    delete tempSurvey.reminderDate
+    delete tempSurvey.reminderTime
   }
 
   // options

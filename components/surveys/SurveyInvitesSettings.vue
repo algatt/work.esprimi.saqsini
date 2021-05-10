@@ -2,7 +2,7 @@
   <div class="flex flex-col space-y-5">
     <div class="flex flex-wrap w-full">
       <div class="w-full xl:w-9/12 xl:pr-5 mb-2 xl:mb-0">
-        <input-base
+        <l-input
           v-model="form.notificationDate"
           :error="
             $v.form.notificationDate.$model !== undefined
@@ -14,26 +14,27 @@
           type="date"
           @change="
             $v.form.notificationDate.$touch()
+            $v.form.notificationTime.$touch()
             $v.form.reminderDate.$touch()
+            $v.form.reminderTime.$touch()
+            form.notificationTime = form.notificationTime
+              ? form.notificationTime
+              : '08:00'
           "
         >
           <template v-slot:default>
             <span class="flex items-center">
               Notification Date
-              <popup-base class="ml-1"
-                ><template v-slot:text>
-                  <span class="font-normal"
-                    >This is date when notifications will be sent to
-                    invitees.</span
-                  ></template
-                ></popup-base
+              <popup-information class="ml-1"
+                >This is date when notifications will be sent to
+                invitees.</popup-information
               ></span
             >
-          </template></input-base
+          </template></l-input
         >
       </div>
       <div class="w-full xl:w-3/12">
-        <input-base
+        <l-input
           v-model="form.notificationTime"
           :error="
             $v.form.notificationTime.$model !== undefined
@@ -45,8 +46,10 @@
           type="time"
           @change="$v.form.notificationTime.$touch()"
           ><span class="flex items-center"
-            >Notification Time<popup-base class="invisible"></popup-base></span
-        ></input-base>
+            >Notification Time<popup-information
+              class="invisible"
+            ></popup-information></span
+        ></l-input>
       </div>
     </div>
 
@@ -61,7 +64,7 @@
 
     <div class="flex flex-wrap w-full">
       <div class="w-full xl:w-9/12 xl:pr-5 mb-2 xl:mb-0">
-        <input-base
+        <l-input
           v-model="form.reminderDate"
           :error="
             $v.form.reminderDate.$model !== undefined
@@ -74,21 +77,24 @@
               : null
           "
           type="date"
-          @change="$v.form.reminderDate.$touch()"
+          @change="
+            $v.form.reminderDate.$touch()
+            form.reminderTime = form.reminderTime ? form.reminderTime : '08:00'
+          "
         >
           <template v-slot:default>
             <span class="flex items-center">
               Reminder Date
-              <popup-base class="ml-1 font-normal"
+              <popup-information class="ml-1"
                 >This is date when a reminder will be set to invitees who did
-                not complete the survey</popup-base
+                not complete the survey</popup-information
               ></span
             >
-          </template></input-base
+          </template></l-input
         >
       </div>
       <div class="w-full xl:w-3/12">
-        <input-base
+        <l-input
           v-model="form.reminderTime"
           :error="
             $v.form.reminderTime.$model !== undefined
@@ -103,8 +109,10 @@
           type="time"
           @change="$v.form.reminderTime.$touch()"
           ><span class="flex items-center"
-            >Reminder Time<popup-base class="invisible"></popup-base></span
-        ></input-base>
+            >Reminder Time<popup-information
+              class="invisible"
+            ></popup-information></span
+        ></l-input>
       </div>
     </div>
 
@@ -121,13 +129,8 @@
 <script>
 import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
-import moment from 'moment'
-
-import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
-import { createMomentFromDateAndTime } from '~/helpers/helpers'
 import TextEditor from '~/components/layouts/textEditor'
-
-import PopupBase from '~/components/elements/PopupBase'
+import { isDateBefore } from '~/services/date-helpers'
 
 const checkDates = (value, vm) => {
   if (
@@ -138,22 +141,16 @@ const checkDates = (value, vm) => {
   )
     return true
 
-  const dateStart = createMomentFromDateAndTime(
-    vm.notificationDate,
-    vm.notificationTime
+  return isDateBefore(
+    `${vm.notificationDate}T${vm.notificationTime}`,
+    `${vm.reminderDate}T${vm.reminderTime}`
   )
-  const dateEnd = createMomentFromDateAndTime(vm.reminderDate, vm.reminderTime)
-
-  return moment(dateEnd).isAfter(moment(dateStart))
 }
 
 export default {
   name: 'SurveyInvitesSettings',
   components: {
     TextEditor,
-    EditObjectModalBottomPart,
-
-    PopupBase,
   },
   mixins: [validationMixin],
   props: {
@@ -166,6 +163,14 @@ export default {
     return {
       form: {},
     }
+  },
+  watch: {
+    form: {
+      handler() {
+        this.$emit('update', this.form)
+      },
+      deep: true,
+    },
   },
   validations: {
     form: {
