@@ -14,7 +14,12 @@
           type="date"
           @change="
             $v.form.notificationDate.$touch()
+            $v.form.notificationTime.$touch()
             $v.form.reminderDate.$touch()
+            $v.form.reminderTime.$touch()
+            form.notificationTime = form.notificationTime
+              ? form.notificationTime
+              : '08:00'
           "
         >
           <template v-slot:default>
@@ -73,7 +78,10 @@
               : null
           "
           type="date"
-          @change="$v.form.reminderDate.$touch()"
+          @change="
+            $v.form.reminderDate.$touch()
+            form.reminderTime = form.reminderTime ? form.reminderTime : '08:00'
+          "
         >
           <template v-slot:default>
             <span class="flex items-center">
@@ -118,12 +126,12 @@
 </template>
 
 <script>
-import moment from 'moment'
 import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
-import { createMomentFromDateAndTime } from '~/helpers/helpers'
+import { DateTime } from 'luxon'
 import TextEditor from '~/components/layouts/textEditor'
 import PopupBase from '~/components/elements/PopupBase'
+import { isDateBefore } from '~/services/date-helpers'
 
 const checkDates = (value, vm) => {
   if (
@@ -134,13 +142,10 @@ const checkDates = (value, vm) => {
   )
     return true
 
-  const dateStart = createMomentFromDateAndTime(
-    vm.notificationDate,
-    vm.notificationTime
+  return isDateBefore(
+    `${vm.notificationDate}T${vm.notificationTime}`,
+    `${vm.reminderDate}T${vm.reminderTime}`
   )
-  const dateEnd = createMomentFromDateAndTime(vm.reminderDate, vm.reminderTime)
-
-  return moment(dateEnd).isAfter(moment(dateStart))
 }
 
 export default {
@@ -161,17 +166,17 @@ export default {
   computed: {
     notificationTimestamp() {
       if (this.form.notificationDate && this.form.notificationTime) {
-        const dateStringTo =
-          this.form.notificationDate + ' ' + this.form.notificationTime
-        return moment(dateStringTo).format('YYYY-MM-DD HH:mm:SSZZ')
+        return DateTime.fromISO(
+          `${this.form.notificationDate}T${this.form.notificationTime}`
+        ).toFormat('yyyy-MM-dd hh:mm:ssZZZ')
       }
       return null
     },
     reminderTimestamp() {
       if (this.form.reminderDate && this.form.reminderTime) {
-        const dateStringTo =
-          this.form.reminderDate + ' ' + this.form.reminderTime
-        return moment(dateStringTo).format('YYYY-MM-DD HH:mm:SSZZ')
+        return DateTime.fromISO(
+          `${this.form.reminderDate}T${this.form.reminderTime}`
+        ).toFormat('yyyy-MM-dd hh:mm:ssZZZ')
       }
       return null
     },

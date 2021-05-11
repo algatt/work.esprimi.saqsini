@@ -9,15 +9,8 @@ export const actions = {
       this.$axios
         .get(`/builder/invites/all?code=${code}`)
         .then((response) => {
-          commit(
-            'setItems',
-            {
-              which: 'invitations',
-              items: response.data,
-            },
-            { root: true }
-          )
-          resolve()
+          commit('setInvitations', response.data)
+          resolve(response.data)
         })
         .catch((error) => {
           reject(error)
@@ -25,11 +18,12 @@ export const actions = {
     })
   },
 
-  delete({ commit }, { code }) {
+  delete({ commit }, token) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .delete(`/builder/invites/${code}`)
+        .delete(`/builder/invites/${token}`)
         .then((response) => {
+          commit('deleteInvite', token)
           resolve()
         })
         .catch((error) => {
@@ -144,10 +138,35 @@ export const actions = {
         })
     })
   },
+
+  anonymiseResponsesByEmail({ commit }, email) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .patch(`/builder/invites/anonimiseByEmail/${email}`, null, {
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        })
+        .then(() => {
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
 }
 
 export const mutations = {
   setFilters(state, filters) {
     state.filters = filters
+  },
+
+  setInvitations(state, invitations) {
+    state.items = invitations
+  },
+
+  deleteInvite(state, token) {
+    state.items = state.items.filter((el) => {
+      return el.token !== token
+    })
   },
 }

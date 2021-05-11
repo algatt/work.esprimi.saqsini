@@ -1,15 +1,36 @@
 <template>
   <list-layout v-if="!loading">
-    <div class="w-full my-3 flex justify-between flex-wrap">
-      <div class="w-full md:w-6/12 flex justify-start px-4">Left</div>
+    <div class="w-full mt-3 mb-6 flex justify-between flex-wrap">
+      <div class="w-full md:w-6/12 flex justify-start items-center px-4">
+        <h4 class="mt-2 mr-5">{{ survey.name }}</h4>
+        <l-select
+          v-if="canUseContactBook"
+          :value="selectedContactList.code"
+          :disabled="
+            getBranchingContactBook().includes(selectedContactList.code)
+          "
+          @input="changeContactBook"
+          ><template v-slot:options
+            ><option v-for="cl in contactLists" :key="cl.code" :value="cl.code">
+              {{ cl.name }}
+            </option></template
+          ></l-select
+        >
+      </div>
       <div class="w-full md:w-6/12 flex justify-start md:justify-end px-4">
         <LPopupMenu>
           <template #icon>
-            <l-button>Settings<i class="fas fa-caret-down fa-fw"></i></l-button>
+            <l-button
+              >Settings<template v-slot:rightIcon
+                ><i class="fas fa-caret-down fa-fw"></i></template
+            ></l-button>
           </template>
           <template v-slot:menu>
             <button @click="showSurveySettings">
               <i class="fas fa-sliders-h fa-fw"></i>Settings
+            </button>
+            <button @click="manageOutreach">
+              <i class="fas fa-paper-plane fa-fw"></i>Manage Outreach
             </button>
             <button @click="showLanguageSettings">
               <i class="fas fa-language fa-fw"></i>Language
@@ -23,8 +44,11 @@
             <button @click="showSurveyPreview = true">
               <i class="fas fa-eye fa-fw"></i>Preview
             </button>
-            <button @click="showPreview = !showPreview">
+            <button @click="toggleShowPreview">
               <i class="fas fa-poll-h fa-fw"></i>Toggle View
+            </button>
+            <button @click="clearBranching">
+              <i class="fas fa-code-branch fa-fw"></i>Clear Branching
             </button>
           </template>
         </LPopupMenu>
@@ -54,7 +78,7 @@
     </div>
     <PreviewSurveyModal
       v-if="showSurveyPreview"
-      :original-survey="survey[0]"
+      :original-survey="survey"
       :questions="sortedQuestions"
       @modalClosed="showSurveyPreview = false"
     ></PreviewSurveyModal>
@@ -63,17 +87,19 @@
 </template>
 
 <script>
-import cookies from 'cookie'
+import cookies from 'js-cookie'
 import ListLayout from '~/components/layouts/ListLayout'
 import SurveyListQuestion from '~/components/surveys/SurveyListQuestion'
 import LPopupMenu from '~/components/LPopupMenu'
 import ModalService from '~/services/modal-services'
 import PlainModal from '~/components/layouts/PlainModal'
 import PreviewSurveyModal from '~/components/surveys/PreviewSurveyModal'
+import LSelect from '~/components/LSelect'
 
 export default {
   name: 'QuestionList',
   components: {
+    LSelect,
     PreviewSurveyModal,
     LPopupMenu,
     SurveyListQuestion,
@@ -86,22 +112,18 @@ export default {
       beingHovered: null,
       showPreview: true,
       showSurveyPreview: false,
-      // selectedMenu: '',
-      // selectedView: 'questions',
-      // showPreview: null,
-      // whichSubMenu: null,
-      // showMoveMenu: null,
-      // error: false,
-      // loading: true,
-      // cannotDeleteDueToBranching: [],
+      loading: true,
     }
   },
   computed: {
-    loading() {
-      return this.$store.state.loading
-    },
     survey() {
       return this.$store.state.surveys.items[0]
+    },
+    contactLists() {
+      return this.$store.state.contactlist.items
+    },
+    selectedContactList() {
+      return this.$store.state.selectedContactList
     },
     sortedQuestions() {
       const x = JSON.parse(JSON.stringify(this.$store.state.questions.items))
@@ -129,39 +151,67 @@ export default {
     canUseContactBook() {
       return this.$store.getters['auth/getPermissions'].includes('CONTACTBOOK')
     },
-    // languageText() {
-    //   const data = {}
-    //   Object.keys(SURVEY_LANGUAGE_GENERIC_TERMS).forEach((el) => {
-    //     data[el] = this.survey.translatedText[
-    //       SURVEY_LANGUAGE_GENERIC_TERMS[el]
-    //     ].text
-    //   })
-    //   return data
-    // },
   },
 
   mounted() {
-    this.loadQuestions()
-    this.$store.dispatch('contactlist/getContactLists', {})
-    this.$store.dispatch('surveys/getSurveyByCode', this.$route.params.id)
-    window.setInterval(this.updateQuestionNumbers, 5000)
-    this.showPreview = cookies.get('questionPreviewMode') === 'true'
-    if (this.survey.flags.includes('OUTDATED_LANGUAGE_PACK'))
-      this.$toasted.show(
-        'This survey has changed from last language generation. You need to re-generate the languages.'
-      )
+    this.loading = true
+    this.loadData().then(() => {
+      window.setInterval(this.updateQuestionNumbers, 5000)
+      this.showPreview = cookies.get('questionPreviewMode') === 'true'
+      if (this.survey.flags.includes('OUTDATED_LANGUAGE_PACK'))
+        this.$toasted.show(
+          'This survey has changed from last language generation. You need to re-generate the languages.'
+        )
+    })
   },
 
   methods: {
-    loadQuestions() {
-      this.$store.dispatch('setLoading', true)
-      this.$store
-        .dispatch('questions/getQuestionsBySurvey', {
-          code: this.$route.params.id,
+    loadData() {
+      return new Promise((resolve, reject) => {
+        const promises = [
+          this.$store.dispatch('contactlist/getContactLists', {}),
+          this.$store.dispatch(
+            'surveys/getSurveyByCode',
+            this.$route.params.id
+          ),
+          this.$store.dispatch('questions/getQuestionsBySurvey', {
+            code: this.$route.params.id,
+          }),
+        ]
+        if (this.canUseContactBook)
+          promises.push(this.$store.dispatch('contactlist/getContactLists', {}))
+        if (
+          this.canUseContactBook &&
+          this.getBranchingContactBook().length > 0
+        ) {
+          let tempLists = this.$store.state.contactlist.items
+          tempLists = tempLists.find((el) => {
+            return el.code === this.getBranchingContactBook()[0]
+          })
+          promises.push(this.$store.dispatch('setContactList', tempLists))
+        }
+        Promise.all(promises).then(() => {
+          this.loading = false
+          resolve()
         })
-        .then(() => {
-          this.$store.dispatch('setLoading', false)
-        })
+      })
+    },
+
+    getBranchingContactBook() {
+      const code = []
+      for (const i in this.sortedQuestions) {
+        const tempQuestion = JSON.parse(this.sortedQuestions[i].surveyOptions)
+        if (tempQuestion.branching.rules.length > 0) {
+          tempQuestion.branching.rules.forEach((rule) => {
+            rule.ruleList.forEach((ruleList) => {
+              if (ruleList.contactListCode) {
+                code.push(ruleList.contactListCode)
+              }
+            })
+          })
+        }
+      }
+      return code
     },
 
     getQuestionsForSection(section) {
@@ -187,8 +237,16 @@ export default {
       ModalService.open(PlainModal, {
         whichComponent: 'SurveySettings',
         dataItem: this.survey,
-      }).then((response) => {
-        this.$store.dispatch('surveys/updateSurvey', response)
+      })
+        .then((response) => {
+          this.$store.dispatch('surveys/updateSurvey', response)
+        })
+        .catch(() => {})
+    },
+    manageOutreach() {
+      this.$router.push({
+        name: 'surveys-invites-id',
+        params: { id: this.$route.params.id },
       })
     },
     showLanguageSettings() {
@@ -213,125 +271,67 @@ export default {
       ModalService.open(PlainModal, {
         whichComponent: 'SurveyInvitesSettings',
         dataItem: this.survey,
-      }).then((response) => {
-        this.$store.dispatch('surveys/updateSurvey', response)
       })
+        .then((response) => {
+          this.$store.dispatch('surveys/updateSurvey', response)
+        })
+        .catch(() => {})
+    },
+    toggleShowPreview() {
+      this.showPreview = !this.showPreview
+      cookies.set(
+        'questionPreviewMode',
+        this.showPreview === true ? 'true' : 'false'
+      )
+    },
+    changeContactBook(code) {
+      const contactList = this.contactLists.find((el) => {
+        return el.code === code
+      })
+      this.$store.dispatch('setContactList', contactList)
     },
 
-    //   async updateData() {
-    //     this.error = false
-    //     this.loading = true
-    //
-    //     try {
-    //       if (this.canUseContactBook)
-    //         await this.$store.dispatch('contactlist/getContactLists', {
-    //           limit: 100,
-    //           offset: 0,
-    //         })
-    //
-    //       await this.$store.dispatch(
-    //         'surveys/getSurveyByCode',
-    //         this.$route.params.id
-    //       )
-    //
-    //       await this.$store.dispatch('questions/getQuestionsBySurvey', {
-    //         limit: 1000,
-    //         offset: 0,
-    //         code: this.$route.params.id,
-    //       })
-    //
-    //       if (
-    //         this.canUseContactBook &&
-    //         this.getBranchingContactBook().length > 0
-    //       ) {
-    //         const tempLists = this.$store.getters.getItems('contactlist')
-    //         await this.$store.dispatch(
-    //           'setContactList',
-    //           tempLists.find((el) => {
-    //             return el.code === this.getBranchingContactBook()[0]
-    //           })
-    //         )
-    //       }
-    //     } catch {
-    //       this.error = true
-    //     } finally {
-    //       this.loading = false
-    //     }
-    //   },
+    clearBranching() {
+      const promise = new Promise((resolve, reject) => {
+        this.sortedQuestions.forEach((question) => {
+          const obj = JSON.parse(JSON.stringify(question))
+          const branching = JSON.parse(obj.surveyOptions).branching
 
-    //   getQuestionContent(question) {
-    //     return parseQuestionToForm(question).text
-    //   },
-    //   showPreviewToggle() {
-    //     this.showPreview = !this.showPreview
-    //     cookies.set('questionPreviewMode', this.showPreview)
-    //   },
-    //   getBranchingContactBook() {
-    //     const code = []
-    //     for (const i in this.questions) {
-    //       const tempQuestion = JSON.parse(this.questions[i].surveyOptions)
-    //       if (tempQuestion.branching.rules.length > 0) {
-    //         tempQuestion.branching.rules.forEach((rule) => {
-    //           rule.ruleList.forEach((ruleList) => {
-    //             if (ruleList.contactListCode) {
-    //               code.push(ruleList.contactListCode)
-    //             }
-    //           })
-    //         })
-    //       }
-    //     }
-    //     return code
-    //   },
-    //   clearBranching() {
-    //     const promise = new Promise((resolve, reject) => {
-    //       this.questions.forEach((question) => {
-    //         const obj = JSON.parse(JSON.stringify(question))
-    //         const branching = JSON.parse(obj.surveyOptions).branching
-    //
-    //         if (branching.rules) {
-    //           branching.rules.forEach((rule) => {
-    //             rule.ruleList = rule.ruleList.filter((el) => {
-    //               return !el.contactListCode
-    //             })
-    //           })
-    //
-    //           branching.rules = branching.rules.filter((el) => {
-    //             return el.ruleList.length > 0
-    //           })
-    //
-    //           branching.rules.forEach((rule) => {
-    //             const len = rule.ruleList.length
-    //             if (len > 0 && rule.ruleList[len - 1].isAnd)
-    //               delete rule.ruleList[len - 1].isAnd
-    //           })
-    //
-    //           if (branching.rules.length > 0) {
-    //             delete branching.rules[branching.rules.length - 1].isAnd
-    //           }
-    //         }
-    //
-    //         const surveyOptions = JSON.parse(obj.surveyOptions)
-    //         surveyOptions.branching = branching
-    //         obj.surveyOptions = JSON.stringify(surveyOptions)
-    //
-    //         this.$store.dispatch('updateItem', {
-    //           which: 'questions',
-    //           item: obj,
-    //         })
-    //
-    //         if (obj.ordinalPosition === this.questions.length) resolve()
-    //       })
-    //     })
-    //
-    //     promise.then(() => {
-    //       this.$toasted.show('Contact List branching removed')
-    //     })
-    //   },
-    //   getQuestionsInPage(page) {
-    //     return this.questionsWithSections.filter((el) => {
-    //       return el.page === page
-    //     })
-    //   },
+          if (branching.rules) {
+            branching.rules.forEach((rule) => {
+              rule.ruleList = rule.ruleList.filter((el) => {
+                return !el.contactListCode
+              })
+            })
+
+            branching.rules = branching.rules.filter((el) => {
+              return el.ruleList.length > 0
+            })
+
+            branching.rules.forEach((rule) => {
+              const len = rule.ruleList.length
+              if (len > 0 && rule.ruleList[len - 1].isAnd)
+                delete rule.ruleList[len - 1].isAnd
+            })
+
+            if (branching.rules.length > 0) {
+              delete branching.rules[branching.rules.length - 1].isAnd
+            }
+          }
+
+          const surveyOptions = JSON.parse(obj.surveyOptions)
+          surveyOptions.branching = branching
+          obj.surveyOptions = JSON.stringify(surveyOptions)
+
+          this.$store.dispatch('questions/updateQuestion', obj)
+
+          if (obj.ordinalPosition === this.sortedQuestions.length) resolve()
+        })
+      })
+      promise.then(() => {
+        this.$toasted.show('Contact List branching removed')
+      })
+    },
   },
 }
 </script>

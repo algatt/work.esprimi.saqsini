@@ -101,8 +101,6 @@ export const actions = {
         )
         .then((response) => {
           commit('updateQuestion', response.data)
-        })
-        .then((questionResponse) => {
           if (questionsToUpdate.length > 0) {
             const promises = []
 
@@ -112,16 +110,16 @@ export const actions = {
                   .put(`/builder/question/${el.code}`, el, {
                     headers: { 'Content-Type': 'application/json' },
                   })
-                  .then((response) => {
-                    commit('updateQuestion', response.data)
+                  .then((secondResponse) => {
+                    commit('updateQuestion', secondResponse.data)
                   })
               )
             })
 
             Promise.all(promises).then(() => {
-              resolve(questionResponse.data)
+              resolve(response.data)
             })
-          } else resolve(questionResponse.data)
+          } else resolve(response.data)
         })
         .catch((error) => {
           reject(error)

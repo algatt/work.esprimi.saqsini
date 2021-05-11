@@ -1,15 +1,15 @@
 <template>
   <button
-    class="items-center md:flex md:justify-center font-semibold hover:text-primary transition duration-300 focus:outline-none py-3 mr-6"
+    class="flex items-center font-semibold transition duration-300 focus:outline-none py-3 mx-2"
     :class="
       active
-        ? `text-${color}-600 border-b-2 border-${color}-600`
-        : 'text-gray-500'
+        ? `text-${color}-600 border-b-2 border-${color}-600 hover:text-${color}-700`
+        : 'text-gray-500 border-b-2 border-transparent'
     "
     @click="$emit('click')"
   >
-    <span class="xl:pr-1"><slot name="icon"></slot></span>
-    <span class="hidden md:block"><slot></slot></span>
+    <span class="mr-2"><slot name="icon"></slot></span>
+    <span class=""><slot></slot></span>
   </button>
 </template>
 

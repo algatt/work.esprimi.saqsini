@@ -58,7 +58,7 @@
     <div
       v-else
       class="container rounded shadow flex flex-col border pt-4 mb-4"
-      :class="{ 'bg-gray-100': !showPreview }"
+      :class="{ 'bg-white': !showPreview }"
     >
       <div class="flex flex-wrap">
         <div class="flex flex-1 flex-col space-y-2 pl-4">
@@ -84,7 +84,10 @@
               ><button @click="editQuestion(question)">
                 <i class="fas fa-edit fa-fw"></i>Edit
               </button>
-              <button @click="deleteQuestion(question)">
+              <button
+                v-if="question.ordinalPosition !== 1"
+                @click="deleteQuestion(question)"
+              >
                 <i class="fas fa-trash-alt fa-fw"></i>Delete
               </button>
             </template></LPopupMenu

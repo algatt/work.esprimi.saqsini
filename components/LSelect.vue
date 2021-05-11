@@ -3,7 +3,7 @@
     <span class="font-semibold mb-2 text-gray-700"> <slot></slot></span>
     <select
       v-model="selectedOption"
-      class="border-2 border-gray-200 rounded py-1.5 px-2 focus:border-primary focus:ring-0 focus:outline-none transition duration-300 disabled:border-gray-300 disabled:bg-gray-100"
+      class="border-2 border-gray-200 rounded py-1.5 pl-2 pr-7 focus:border-primary focus:ring-0 focus:outline-none transition duration-300 disabled:border-gray-300 disabled:bg-gray-100"
       :disabled="disabled"
       @input="
         $emit(

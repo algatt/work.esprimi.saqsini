@@ -13,14 +13,7 @@ export const actions = {
       this.$axios
         .get(`/contact/contactbook/all?limit=${limit}&offset=${offset}`)
         .then((response) => {
-          commit(
-            'setItems',
-            {
-              which: 'contactlist',
-              items: response.data,
-            },
-            { root: true }
-          )
+          commit('setContactList', response.data)
           if (!rootState.selectedContactList)
             dispatch('setContactList', response.data[0], {
               root: true,
@@ -251,5 +244,11 @@ export const actions = {
           reject(error)
         })
     })
+  },
+}
+
+export const mutations = {
+  setContactList(state, contactList) {
+    state.items = contactList
   },
 }

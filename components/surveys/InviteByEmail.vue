@@ -1,21 +1,19 @@
 <template>
-  <div class="flex flex-col justify-between w-full">
-    <div class="flex flex-col w-full space-y-5">
-      <text-area-base v-model="contacts" class="input text-area">
-        <span class="flex flex-col">
-          Invites
-          <p class="italic text-sm text-gray-600">
-            You can enter a list of emails separated by a semicolon.
-          </p>
+  <div class="flex flex-col mt-5 space-y-8">
+    <div class="flex flex-col space-y-3">
+      <l-text-area v-model="contacts" class="input text-area">
+        <span class="flex items-center">
+          <span class="mr-2">Invites</span>
+          <popup-information
+            >You can enter a list of emails separated by a
+            semicolon.</popup-information
+          >
         </span>
-      </text-area-base>
+      </l-text-area>
       <div class="flex items-center">
         <p class="mr-2">
           Total Invites
-          <span
-            class="ml-2 bg-primary text-white text-sm px-1 py-0.5 rounded"
-            >{{ validTotalInvites }}</span
-          >
+          <l-badge> {{ validTotalInvites }}</l-badge>
         </p>
 
         <span
@@ -33,22 +31,19 @@
           {{ item.$model }}</span
         >
       </div>
-
-      <notification-reminder-section
-        :existing-data="form"
-        @update="form = $event"
-        @error="datesError = $event"
-      ></notification-reminder-section>
     </div>
-    <div class="w-full flex py-10 flex justify-between">
-      <button-basic colour="gray" @click="cancel"
-        >Cancel<template v-slot:icon
-          ><i class="fas fa-times fa-fw"></i></template
-      ></button-basic>
-      <button-basic :disabled="!isValid" @click="sendInvites"
-        >Send Invites<template v-slot:icon
+
+    <notification-reminder-section
+      :existing-data="form"
+      @update="form = $event"
+      @error="datesError = $event"
+    ></notification-reminder-section>
+
+    <div class="w-full flex py-10 flex justify-center">
+      <l-button :disabled="!isValid" @click="sendInvites"
+        >Send Invites<template v-slot:rightIcon
           ><i class="fas fa-paper-plane fa-fw"></i></template
-      ></button-basic>
+      ></l-button>
     </div>
   </div>
 </template>
@@ -58,14 +53,12 @@ import { validationMixin } from 'vuelidate'
 import { email } from 'vuelidate/lib/validators'
 import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
 
-import TextAreaBase from '~/components/elements/TextAreaBase'
 import NotificationReminderSection from '~/components/surveys/NotificationReminderSection'
 
 export default {
   name: 'InviteByEmail',
   components: {
     NotificationReminderSection,
-    TextAreaBase,
   },
   mixins: [validationMixin],
   props: {

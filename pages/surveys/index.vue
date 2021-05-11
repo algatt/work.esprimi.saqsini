@@ -62,7 +62,18 @@
                   }"
                 >
                   <button>
-                    <i class="fas fa-question fa-fw fa-sm"></i>Manage Questions
+                    <i class="fas fa-question fa-fw fa-sm"></i>Manage Survey
+                  </button></nuxt-link
+                >
+                <nuxt-link
+                  :to="{
+                    name: 'surveys-invites-id',
+                    params: { id: slotProps.item.code },
+                  }"
+                >
+                  <button>
+                    <i class="fas fa-paper-plane fa-fw fa-sm"></i>Manage
+                    Outreach
                   </button></nuxt-link
                 >
                 <button @click="editSurvey(slotProps.item)">
@@ -121,6 +132,7 @@ export default {
 
   data() {
     return {
+      loading: true,
       selectedCategory: null,
       selectedSubcategory: null,
       selectedData: [],
@@ -141,9 +153,6 @@ export default {
     }
   },
   computed: {
-    loading() {
-      return this.$store.state.loading
-    },
     categories() {
       return this.$store.getters['categories/getCategoriesForTreeView']
     },
@@ -152,12 +161,12 @@ export default {
     },
   },
   created() {
-    this.$store.dispatch('setLoading', true)
+    this.loading = true
     Promise.all([
       this.$store.dispatch('categories/getCategories'),
       this.$store.dispatch('surveys/getSurveysAll', { limit: 100, offset: 0 }),
     ]).then(() => {
-      this.$store.dispatch('setLoading', false)
+      this.loading = false
     })
   },
   methods: {
