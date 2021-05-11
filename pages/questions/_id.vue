@@ -56,12 +56,14 @@
       v-if="showSurveyPreview"
       :original-survey="survey[0]"
       :questions="sortedQuestions"
+      @modalClosed="showSurveyPreview = false"
     ></PreviewSurveyModal>
   </list-layout>
   <div v-else>loading</div>
 </template>
 
 <script>
+import cookies from 'cookie'
 import ListLayout from '~/components/layouts/ListLayout'
 import SurveyListQuestion from '~/components/surveys/SurveyListQuestion'
 import LPopupMenu from '~/components/LPopupMenu'
@@ -99,7 +101,7 @@ export default {
       return this.$store.state.loading
     },
     survey() {
-      return this.$store.state.surveys.items
+      return this.$store.state.surveys.items[0]
     },
     sortedQuestions() {
       const x = JSON.parse(JSON.stringify(this.$store.state.questions.items))
@@ -124,9 +126,9 @@ export default {
       return max + 1
     },
 
-    // canUseContactBook() {
-    //   return this.$store.getters['auth/getPermissions'].includes('CONTACTBOOK')
-    // },
+    canUseContactBook() {
+      return this.$store.getters['auth/getPermissions'].includes('CONTACTBOOK')
+    },
     // languageText() {
     //   const data = {}
     //   Object.keys(SURVEY_LANGUAGE_GENERIC_TERMS).forEach((el) => {
@@ -136,39 +138,6 @@ export default {
     //   })
     //   return data
     // },
-    // questions() {
-    //   return this.$store.getters.getSortedItems('questions').sort((a, b) => {
-    //     return a.ordinalPosition > b.ordinalPosition ? 1 : -1
-    //   })
-    // },
-    // questionsWithSections() {
-    //   const x = JSON.parse(JSON.stringify(this.questions))
-    //   let page = 0
-    //   x.forEach((el) => {
-    //     if (el.flags.includes('SECTION')) page++
-    //     el.page = page
-    //   })
-    //   return x
-    // },
-    // questionsNumberOfSections() {
-    //   const x = this.questionsWithSections.map((el) => {
-    //     return el.page
-    //   })
-    //   return new Set(x).size
-    // },
-    // unparsedSurvey() {
-    //   return this.$store.getters.getItems('surveys')[0]
-    // },
-    // survey() {
-    //   return parseSurveyToForm(this.unparsedSurvey)
-    // },
-    //
-    // currentItemToBeEdited() {
-    //   return this.$store.state.currentItemToBeEdited
-    // },
-    // questionTypes() {
-    //   return QUESTION_TYPES
-    // },
   },
 
   mounted() {
@@ -176,12 +145,11 @@ export default {
     this.$store.dispatch('contactlist/getContactLists', {})
     this.$store.dispatch('surveys/getSurveyByCode', this.$route.params.id)
     window.setInterval(this.updateQuestionNumbers, 5000)
-    // await this.updateData()
-    // this.showPreview = cookies.get('questionPreviewMode') === 'true'
-    // if (this.survey.flags.includes('OUTDATED_LANGUAGE_PACK'))
-    //   this.$toasted.show(
-    //     'This survey has changed from last language generation. You need to re-generate the languages.'
-    //   )
+    this.showPreview = cookies.get('questionPreviewMode') === 'true'
+    if (this.survey.flags.includes('OUTDATED_LANGUAGE_PACK'))
+      this.$toasted.show(
+        'This survey has changed from last language generation. You need to re-generate the languages.'
+      )
   },
 
   methods: {
@@ -218,7 +186,7 @@ export default {
     showSurveySettings() {
       ModalService.open(PlainModal, {
         whichComponent: 'SurveySettings',
-        dataItem: this.survey[0],
+        dataItem: this.survey,
       }).then((response) => {
         this.$store.dispatch('surveys/updateSurvey', response)
       })
@@ -226,7 +194,7 @@ export default {
     showLanguageSettings() {
       ModalService.open(PlainModal, {
         whichComponent: 'SurveyLanguageSettings',
-        dataItem: this.survey[0],
+        dataItem: this.survey,
         options: {
           close: true,
         },
@@ -235,7 +203,7 @@ export default {
     showCollaborators() {
       ModalService.open(PlainModal, {
         whichComponent: 'SurveyCollaborators',
-        dataItem: this.survey[0],
+        dataItem: this.survey,
         options: {
           close: true,
         },
@@ -244,7 +212,7 @@ export default {
     showInviteSettings() {
       ModalService.open(PlainModal, {
         whichComponent: 'SurveyInvitesSettings',
-        dataItem: this.survey[0],
+        dataItem: this.survey,
       }).then((response) => {
         this.$store.dispatch('surveys/updateSurvey', response)
       })
