@@ -126,10 +126,76 @@ export const actions = {
     })
   },
 
+  sendReminder({ commit }, obj) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .put(`/builder/invites/`, obj, {
+          headers: { 'Content-Type': 'application/json' },
+        })
+        .then(() => {
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
   anonymiseResponses({ commit }, code) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .patch(`/builder/invites/anonimiseBySurveyCode/${code}`)
+        .patch(`/builder/invites/anonimiseBySurveyCode/${code}`, null, {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        })
+        .then(() => {
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  anonymiseResponsesByEmail({ commit }, email) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .patch(`/builder/invites/anonimiseByEmail/${email}`, null, {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        })
+        .then(() => {
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  anonymiseResponsesByToken({ commit }, token) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .patch(`/builder/invites/anonimiseByToken/${token}`, null, {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        })
+        .then(() => {
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  disqualify({ commit }, token) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .patch(`/builder/invites/${token}/disqualify`)
         .then(() => {
           resolve()
         })
