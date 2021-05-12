@@ -94,10 +94,10 @@
           >
             <span class="w-12 flex items-center justify-center"> </span>
             <span class="flex flex-1 flex-wrap">
-              <span class="w-full xl:w-6/12">Email</span>
-              <span class="w-full xl:w-6/12">Flags</span>
+              <span class="w-full xl:w-8/12">Email</span>
+              <span class="w-full xl:w-4/12">Flags</span>
             </span>
-            <span class="w-24 flex items-center justify-center"></span>
+            <span class="w-12 flex items-center justify-center"></span>
           </div>
           <div
             v-for="invite in invites"
@@ -116,7 +116,7 @@
                 ><i class="fas fa-check-circle fa-fw text-gray-200"></i></span
             ></span>
             <span class="flex flex-1 flex-wrap">
-              <span class="w-full xl:w-6/12">{{ invite.email }}</span>
+              <span class="w-full xl:w-8/12">{{ invite.email }}</span>
               <span class="w-full xl:w-4/12"
                 ><badge-base
                   v-for="(flag, index) in processFlags(invite.flags)"
@@ -133,20 +133,8 @@
                 ></span
               >
             </span>
-            <span class="w-24 flex justify-center space-x-2"
-              ><button
-                class="underline hover:text-blue-600 text-gray-400 transition duration-300"
-                title="Anonymise"
-                @click.stop="anonymiseResponse(invite.token)"
-              >
-                <i class="fas fa-user-secret fa-fw"></i></button
-              ><button
-                class="underline hover:text-blue-600 text-gray-400 transition duration-300"
-                title="Notify"
-                @click.stop="sendNotification(invite)"
-              >
-                <i class="fas fa-envelope fa-fw"></i></button
-            ></span>
+
+            <span class="w-12 flex items-center justify-center"> </span>
           </div>
         </div>
         <info-box v-else>
@@ -191,17 +179,6 @@
         ><InviteByContactList :survey="survey"></InviteByContactList
       ></template>
     </EditObjectModal>
-
-    <edit-object-modal v-if="notifyIndividual.length !== 0">
-      <template v-slot:title>Notify</template>
-      <template v-slot:content
-        ><NotifyByEmail
-          :survey="survey"
-          :emails="notifyIndividual"
-          @cancel="notifyIndividual = []"
-        ></NotifyByEmail
-      ></template>
-    </edit-object-modal>
   </div>
 </template>
 
@@ -214,7 +191,6 @@ import BadgeBase from '~/components/elements/BadgeBase'
 import SelectBase from '~/components/elements/SelectBase'
 import ModalConfirm from '~/components/layouts/ModalConfirm'
 import InfoBox from '~/components/layouts/InfoBox'
-import NotifyByEmail from '~/components/surveys/NotifyByEmail'
 
 export default {
   name: 'ContactsInvites',
@@ -227,7 +203,6 @@ export default {
     InviteByContacts,
     InviteByEmail,
     EditObjectModal,
-    NotifyByEmail,
   },
   data() {
     return {
@@ -237,7 +212,6 @@ export default {
       selectedInvites: [],
       selectedFlag: null,
       confirmDelete: false,
-      notifyIndividual: [],
     }
   },
   computed: {
@@ -334,19 +308,6 @@ export default {
         this.selectedInvites = []
         this.confirmDelete = false
       })
-    },
-    anonymiseResponse(token) {
-      this.$store
-        .dispatch('invitations/anonymiseResponsesByToken', token)
-        .then(() => {
-          this.$toasted.show(`Responses will be anonymised.`)
-        })
-        .catch(() => {
-          this.$toasted.error(`There was a problem anonymising responses.`)
-        })
-    },
-    sendNotification(invite) {
-      this.notifyIndividual.push(invite.email)
     },
   },
 }

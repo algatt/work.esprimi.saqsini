@@ -117,17 +117,3 @@ export const USER_META_DATA = {
   ],
   window: ['fullScreen', 'innerHeight', 'innerWidth'],
 }
-
-export const NOTIFICATION_EDITOR_FIELDS = [
-  'Gender',
-  'Age',
-  'Full Name',
-  'Sector Name',
-  'Industry Name',
-  'Company Name',
-  'Company Abbreviation',
-  'Department Name',
-  'Department Abbreviation',
-  'Role Name',
-  'Role Abbreviation',
-]
