@@ -1,43 +1,34 @@
 <template>
-  <div class="flex flex-col justify-between w-full">
-    <div class="flex flex-col w-full space-y-5">
-      <input-base
-        id="inputName"
-        v-model="form.name"
-        :error="
-          $v.form.name.$model !== undefined
-            ? !$v.form.name.required
-              ? 'required'
-              : null
+  <div class="flex flex-col w-full space-y-7">
+    <l-input
+      id="inputName"
+      v-model="form.name"
+      :error="
+        $v.form.name.$model !== undefined
+          ? !$v.form.name.required
+            ? 'required'
             : null
-        "
-        @change="$v.form.name.$touch()"
-        >Name</input-base
-      >
+          : null
+      "
+      @change="$v.form.name.$touch()"
+      >Name</l-input
+    >
 
-      <input-base
-        id="inputAbbr"
-        v-model="form.abbr"
-        :error="
-          $v.form.abbr.$model !== undefined
-            ? !$v.form.abbr.required
-              ? 'required'
-              : !$v.form.abbr.uniqueAbbr
-              ? 'this abbreviation already exists '
-              : null
+    <l-input
+      id="inputAbbr"
+      v-model="form.abbr"
+      :error="
+        $v.form.abbr.$model !== undefined
+          ? !$v.form.abbr.required
+            ? 'required'
+            : !$v.form.abbr.uniqueAbbr
+            ? 'this abbreviation already exists '
             : null
-        "
-        @change="$v.form.abbr.$touch()"
-        >Abbreviation</input-base
-      >
-    </div>
-
-    <edit-object-modal-bottom-part
-      class="pt-10 pb-5"
-      :form="form"
-      which="roles"
-      :is-valid="isValid"
-    ></edit-object-modal-bottom-part>
+          : null
+      "
+      @change="$v.form.abbr.$touch()"
+      >Abbreviation</l-input
+    >
   </div>
 </template>
 
@@ -45,26 +36,35 @@
 import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
 
-import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
-
 export default {
   name: 'NewRole',
-  components: { EditObjectModalBottomPart },
   mixins: [validationMixin],
   validations: {
     form: {
       name: {
         required,
         uniqueNames(value) {
-          return !this.uniqueNames.includes(value.trim().toLowerCase())
+          return (
+            value === undefined ||
+            !this.uniqueNames.includes(value.trim().toLowerCase())
+          )
         },
       },
       abbr: {
         required,
         uniqueAbbr(value) {
-          return !this.uniqueAbbr.includes(value.trim().toLowerCase())
+          return (
+            value === undefined ||
+            !this.uniqueAbbr.includes(value.trim().toLowerCase())
+          )
         },
       },
+    },
+  },
+  props: {
+    dataItem: {
+      required: true,
+      type: Object,
     },
   },
   data() {
@@ -76,11 +76,8 @@ export default {
     isValid() {
       return !this.$v.$invalid
     },
-    item() {
-      return this.$store.state.currentItemToBeEdited
-    },
     roles() {
-      return this.$store.getters.getItems('roles')
+      return this.$store.state.roles.items
     },
     uniqueNames() {
       return this.roles.map((el) => {
@@ -93,12 +90,28 @@ export default {
       })
     },
   },
+  watch: {
+    form: {
+      handler(value) {
+        this.$emit('update', value)
+      },
+      deep: true,
+    },
+  },
   created() {
-    this.form = JSON.parse(JSON.stringify(this.item))
+    this.form = JSON.parse(JSON.stringify(this.dataItem))
   },
   mounted() {
     document.getElementById('inputName').focus()
+    this.$watch(
+      '$v',
+      (val) => {
+        if (typeof val !== 'undefined') {
+          this.$emit('valid', !this.$v.$invalid)
+        }
+      },
+      { deep: true, immediate: true }
+    )
   },
-  methods: {},
 }
 </script>

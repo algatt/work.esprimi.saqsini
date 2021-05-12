@@ -1,149 +1,130 @@
 <template>
-  <div v-if="!loading" class="flex flex-wrap items-start">
-    <top-header-bar which="roles" :items="roles" :hide-menu="roles.length === 0"
-      ><template v-slot:title>Roles</template>
-      <template v-slot:extraContent>
-        <div class="xl:ml-6 ml-0 flex items-center">
-          <contact-book-dropdown
-            @changedList="updateData"
-          ></contact-book-dropdown>
-        </div>
+  <list-layout v-if="!loading">
+    <data-table
+      :table-data="roles"
+      :table-definition="tableRoles"
+      @deleteAll="deleteRoles"
+      ><template v-slot:headerLeft>
+        <h5 class="mt-2">Roles</h5>
       </template>
-      <template v-slot:extraButtons>
-        <button-basic
-          v-if="contactlists.length !== 0"
-          @click="setCurrentItem({ code: -1 })"
-          >New Role
-          <template v-slot:rightIcon
-            ><i class="fas fa-plus fa-fw fa-sm"></i
-          ></template> </button-basic></template
-    ></top-header-bar>
-
-    <template v-if="contactlists.length < 1">
-      <info-box type="info">
-        <template v-slot:title>No contact lists</template>
-        <template v-slot:content
-          >You do not have any contact lists set up. Make sure to create one
-          before creating any companies.</template
+      <template v-slot:headerRight>
+        <new-item-button class="ml-2" @click="newRole"
+          >New Role</new-item-button
         >
-      </info-box>
-    </template>
-
-    <template v-else>
-      <info-box v-if="roles.length === 0" class="flex-grow mt-2 md:mt-0">
-        <template v-slot:title>No Roles</template>
-        <template v-slot:content>
-          <button-basic @click="setCurrentItem({ code: -1 })">
-            Create a new one...
-          </button-basic>
-        </template></info-box
-      >
-
-      <display-table-component
-        v-else
-        class="w-full"
-        :items="roles"
-        @hovered="hovered = $event"
-        @clicked="setCurrentItem($event)"
-      >
-        <template v-slot:title>Roles</template>
-        <template v-slot:titleContent>
-          <p class="w-full">Role</p>
-        </template>
-        <template v-slot:titleContentSmall>Roles</template>
-        <template v-slot:content="slotProps"
-          ><div class="w-full flex flex-wrap items-baseline">
-            <span>
-              {{ slotProps.item.name }}
-            </span>
-            <badge-base class="ml-2">{{ slotProps.item.abbr }}</badge-base>
-          </div>
-        </template>
-        <template v-slot:popup-menu="slotProps">
-          <display-table-row-popup
-            :class="hovered === slotProps.item.code ? 'flex' : 'flex md:hidden'"
-            @close="hovered = null"
-          >
+      </template>
+      <template v-slot:name="slotProps">
+        <span class="flex items-center space-x-2">
+          <span>{{ slotProps.item.name }}</span>
+          <l-badge>{{ slotProps.item.abbr }}</l-badge>
+        </span>
+      </template>
+      <template v-slot:actions="slotProps">
+        <div class="flex justify-end">
+          <LPopupMenu>
             <template v-slot:menu>
-              <span @click="setCurrentItem(slotProps.item)"
-                ><i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit</span
-              >
+              <button @click="editRole(slotProps.item)">
+                <i class="fas fa-pencil-alt fa-fw"></i>Edit
+              </button>
             </template>
-          </display-table-row-popup>
-        </template>
-      </display-table-component>
-    </template>
-
-    <transition name="fade">
-      <edit-object-modal v-if="currentItemToBeEdited">
-        <template v-slot:secondTitle>Role</template>
-        <template v-slot:content>
-          <new-role></new-role>
-        </template>
-      </edit-object-modal>
-    </transition>
-  </div>
-  <spinner v-else></spinner>
+          </LPopupMenu>
+        </div>
+      </template></data-table
+    ></list-layout
+  >
 </template>
 
 <script>
-import EditObjectModal from '~/components/layouts/EditObjectModal'
-import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
-import NewRole from '~/components/contacts/NewRole'
-import Spinner from '~/components/layouts/Spinner'
-import viewMixin from '~/helpers/viewMixin'
-import TopHeaderBar from '~/components/layouts/TopHeaderBar'
-import ContactBookDropdown from '~/components/contacts/ContactBookDropdown'
-import InfoBox from '~/components/layouts/InfoBox'
-
-import BadgeBase from '~/components/elements/BadgeBase'
-import DisplayTableRowPopup from '~/components/layouts/DisplayTableRowPopup'
+import ListLayout from '~/components/layouts/ListLayout'
+import DataTable from '~/components/elements/DataTable/DataTable'
+import ModalService from '~/services/modal-services'
+import NewItemModal from '~/components/layouts/NewItemModal'
+import NewItemButton from '~/components/elements/NewItemButton'
 
 export default {
   name: 'RolesList',
   middleware: ['contactBook'],
+  layout: 'authlayout',
   components: {
-    DisplayTableRowPopup,
-    BadgeBase,
-    Spinner,
-    NewRole,
-    DisplayTableComponent,
-    EditObjectModal,
-    TopHeaderBar,
-    ContactBookDropdown,
-    InfoBox,
+    DataTable,
+    ListLayout,
+    NewItemButton,
   },
-  mixins: [viewMixin],
+
   data() {
-    return {}
+    return {
+      loading: true,
+      tableRoles: [
+        { title: 'Name', field: 'name', slot: 'name', sortable: true },
+        { title: '', slot: 'actions', align: 'right' },
+      ],
+    }
   },
   computed: {
     roles() {
-      return this.$store.getters.getItems('roles')
-    },
-    contactlists() {
-      return this.$store.getters.getItems('contactlist')
+      return this.$store.state.roles.items
     },
   },
   created() {
-    this.$store.dispatch('setLoading', true)
-    this.$store
-      .dispatch('contactlist/getContactLists', { limit: 100, offset: 0 })
-      .then(() => {
-        if (this.contactlists.length !== 0) this.updateData()
-      })
-      .finally(() => {
-        this.$store.dispatch('setLoading', false)
-      })
+    this.loading = true
+    this.$store.dispatch('contactlist/getContactLists', {}).then(() => {
+      if (this.$store.state.selectedContactList) {
+        this.updateData()
+        this.loading = false
+      }
+    })
   },
   methods: {
-    updateData() {
-      this.$store.dispatch('setLoading', true)
-      Promise.all([
-        this.$store.dispatch('roles/getRoles', this.$route.params.id),
-      ]).then(() => {
-        this.$store.dispatch('setLoading', false)
+    async updateData() {
+      await this.$store.dispatch('roles/getRoles', {})
+    },
+    newRole() {
+      ModalService.open(NewItemModal, {
+        whichComponent: 'NewRole',
+        dataItem: {},
+        options: {
+          header: 'New Role',
+        },
       })
+        .then((response) => {
+          this.$store.dispatch('roles/newRole', response).then((role) => {
+            this.$toasted.show(`Role ${role.name} created`)
+          })
+        })
+        .catch((error) => {
+          if (error !== 'dismissed')
+            this.$toasted.error('There was a problem creating the role')
+        })
+    },
+    editRole(role) {
+      ModalService.open(NewItemModal, {
+        whichComponent: 'NewRole',
+        dataItem: role,
+        options: {
+          header: `Edit ${role.name}`,
+        },
+      })
+        .then((response) => {
+          this.$store.dispatch('roles/updateRole', response).then((role) => {
+            this.$toasted.show(`Role ${role.name} updated`)
+          })
+        })
+        .catch((error) => {
+          if (error !== 'dismissed')
+            this.$toasted.error('There was a problem updating the role')
+        })
+    },
+    deleteRoles(roles) {
+      const calls = []
+      for (const role in roles) {
+        calls.push(this.$store.dispatch('roles/deleteRole', roles[role].code))
+      }
+      Promise.all(calls)
+        .then(() => {
+          this.$toasted.show(`${roles.length} roles deleted`)
+        })
+        .catch(() => {
+          this.$toasted.error('There was a problem deleting the roles')
+        })
     },
   },
 }
