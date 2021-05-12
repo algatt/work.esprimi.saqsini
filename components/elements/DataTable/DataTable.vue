@@ -7,11 +7,17 @@
           ><selection-delete-clear-button
             v-if="processedTableData.length !== 0"
             :color="color"
-            :enable-clear="selectedItems.length > 0"
-            :enable-select="selectedItems.length !== processedTableData.length"
-            :enable-delete="selectedItems.length > 0"
+            :enable-clear="enableClearAll && selectedItems.length > 0"
+            :enable-select="
+              enableSelectAll &&
+              selectedItems.length !== processedTableData.length
+            "
+            :enable-delete="enableDeleteAll && selectedItems.length > 0"
             @clear="selectedItems = []"
-            @selectAll="selectedItems = processedTableData"
+            @selectAll="
+              selectedItems = processedTableData
+              $emit('selectItems', selectedItems)
+            "
             @deleteAll="deleteAll"
           ></selection-delete-clear-button
           ><slot name="headerRight"></slot></template
@@ -49,7 +55,7 @@
         <tbody>
           <tr
             v-for="(row, rowIndex) in processedTableData"
-            :key="row.code ? row.code : rowIndex"
+            :key="rowIndex"
             class="hover:bg-gray-50 transition duration-300 cursor-pointer border-b-2 border-gray-100"
             @mouseover="whichIsHovered = rowIndex"
             @mouseleave="whichIsHovered = null"
@@ -113,12 +119,17 @@ export default {
       required: false,
       default: 'blue',
     },
-    selectAll: {
+    enableSelectAll: {
       type: Boolean,
       required: false,
-      default: false,
+      default: true,
     },
-    clearAll: {
+    enableClearAll: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    enableDeleteAll: {
       type: Boolean,
       required: false,
       default: true,

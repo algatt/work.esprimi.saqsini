@@ -71,6 +71,14 @@
           v-if="selectedMenu === 'email'"
           :survey="survey"
         ></invite-by-email>
+        <invite-by-contacts
+          v-if="selectedMenu === 'contacts'"
+          :survey="survey"
+        ></invite-by-contacts>
+        <invite-by-contact-list
+          v-if="selectedMenu === 'contactlist'"
+          :survey="survey"
+        ></invite-by-contact-list>
       </div>
     </div>
   </list-layout>
@@ -81,9 +89,18 @@ import ListLayout from '~/components/layouts/ListLayout'
 import MenuIconButton from '~/components/layouts/MenuIconButton'
 import InviteByEmail from '~/components/surveys/InviteByEmail'
 import InvitesList from '~/components/surveys/InvitesList'
+import InviteByContacts from '~/components/surveys/InviteByContacts'
+import InviteByContactList from '~/components/surveys/InviteByContactList'
 export default {
   name: 'InvitesView',
-  components: { InviteByEmail, MenuIconButton, ListLayout, InvitesList },
+  components: {
+    InviteByContacts,
+    InviteByEmail,
+    MenuIconButton,
+    ListLayout,
+    InvitesList,
+    InviteByContactList,
+  },
   middleware: ['surveyBuilder'],
   layout: 'authlayout',
   data() {

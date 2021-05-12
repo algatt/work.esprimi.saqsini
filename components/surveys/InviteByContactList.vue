@@ -1,6 +1,6 @@
 <template>
-  <div v-if="!loading" class="flex flex-col justify-between w-full">
-    <div class="flex flex-col w-full space-y-5">
+  <div v-if="!loading" class="flex flex-col mt-5 space-y-8">
+    <div class="flex flex-col w-full space-y-3">
       <div>
         <p class="font-semibold mb-1">Contact Book Filters</p>
         <multi-select
@@ -48,73 +48,44 @@
           ><template v-slot:title>Roles</template></multi-select
         >
         <div v-if="mergedContacts.length > 0" class="overflow-y-auto py-5">
-          <table class="table-auto w-full border border-gray-200">
-            <tr class="bg-gray-100 font-semibold border-b border-gray-200">
-              <td style="min-width: 250px" class="align-top p-2">Personal</td>
-              <td style="min-width: 250px" class="align-top p-2">
-                Sector & Industry
-              </td>
-              <td style="min-width: 250px" class="align-top p-2">
-                Company & Department
-              </td>
-
-              <td style="min-width: 150px" class="align-top p-2">Role</td>
-            </tr>
-
-            <tr
-              v-for="contact in mergedContacts"
-              :key="contact.code"
-              class="border-b border-gray-100 cursor-pointer hover:bg-gray-100"
-              :class="contactIsSelected(contact) ? 'bg-blue-50' : null"
-              @click="manageSelectedContact(contact)"
+          <data-table
+            :enable-delete-all="false"
+            :table-data="mergedContacts"
+            :table-definition="tableInvites"
+            @selectItems="selectedContacts = $event"
+          >
+            <template v-slot:personal="slotProps">
+              <span class="flex">
+                {{ slotProps.item.displayName }}
+                <template v-if="slotProps.item.age || slotProps.item.gender">
+                  (<template v-if="slotProps.item.gender"
+                    ><span v-if="slotProps.item.gender === 'M'">Male</span
+                    ><span v-else-if="slotProps.item.gender === 'F'"
+                      >Female</span
+                    ></template
+                  ><template v-if="slotProps.item.age"
+                    >&nbsp;{{ slotProps.item.age }} years</template
+                  >)
+                </template> </span
+              ><span>
+                {{ slotProps.item.email }}
+              </span>
+            </template>
+            <template #sector="slotProps"
+              ><span class="flex flex-col">
+                <span> {{ getSector(slotProps.item.companyCode) }}</span>
+                <span> {{ getIndustry(slotProps.item.companyCode) }}</span>
+              </span></template
             >
-              <td
-                class="align-top p-2"
-                :class="
-                  contactIsSelected(contact)
-                    ? 'border-l-4 border-primary'
-                    : 'border-l border-gray-100'
-                "
-              >
-                <span class="flex">
-                  {{ contact.displayName }}
-                  <template v-if="contact.age || contact.gender">
-                    (<template v-if="contact.gender"
-                      ><span v-if="contact.gender === 'M'">Male</span
-                      ><span v-else-if="contact.gender === 'F'"
-                        >Female</span
-                      ></template
-                    ><template v-if="contact.age"
-                      >&nbsp;{{ contact.age }} years</template
-                    >)
-                  </template> </span
-                ><span>
-                  {{ contact.email }}
-                </span>
-              </td>
-
-              <td class="align-top p-2">
-                <span class="flex flex-col">
-                  <span> {{ getSector(contact.companyCode) }}</span>
-                  <span> {{ getIndustry(contact.companyCode) }}</span>
-                </span>
-              </td>
-
-              <td class="align-top p-2">
-                <span class="flex flex-col"
-                  ><span>{{ contact.companyName }}</span
-                  >{{ contact.departmentName }}<span></span
-                ></span>
-              </td>
-
-              <td class="align-top p-2">{{ contact.roleName }}</td>
-            </tr>
-          </table>
+            <template #company="slotProps">
+              <span class="flex flex-col"
+                ><span>{{ slotProps.item.companyName }}</span
+                >{{ slotProps.item.departmentName }}<span></span></span
+            ></template>
+            <template #role="slotProps">{{ slotProps.item.roleName }}</template>
+          </data-table>
         </div>
-        <div
-          v-else
-          class="flex justify-center font-semibold my-2 bg-gray-100 rounded border-gray-200 border py-5"
-        >
+        <div v-else class="flex justify-center font-semibold my-2 rounded py-5">
           No Contacts!
         </div>
         <div v-if="mergedContacts.length > 0" class="flex justify-between">
@@ -125,12 +96,6 @@
               >{{ selectedContacts.length }}</span
             >
           </p>
-          <text-link
-            v-if="selectedContacts.length !== mergedContacts.length"
-            @click="selectAll"
-            >Select All</text-link
-          >
-          <text-link v-else @click="selectedContacts = []">Clear</text-link>
         </div>
       </div>
       <notification-reminder-section
@@ -139,32 +104,25 @@
         @error="datesError = $event"
       ></notification-reminder-section>
     </div>
-    <div class="w-full flex py-10 flex justify-between">
-      <button-basic colour="gray" @click="cancel"
-        >Cancel<template v-slot:icon
-          ><i class="fas fa-times fa-fw"></i></template
-      ></button-basic>
-      <button-basic :disabled="!isValid" @click="sendInvites"
-        >Send Invites<template v-slot:icon
+    <div class="w-full flex py-10 flex justify-center">
+      <l-button :disabled="!isValid" @click="sendInvites"
+        >Send Invites<template v-slot:rightIcon
           ><i class="fas fa-paper-plane fa-fw"></i></template
-      ></button-basic>
+      ></l-button>
     </div>
   </div>
-  <spinner v-else></spinner>
 </template>
 
 <script>
 import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
 import NotificationReminderSection from '~/components/surveys/NotificationReminderSection'
 import MultiSelect from '~/components/elements/MultiSelect'
-import TextLink from '~/components/elements/TextLink'
-import Spinner from '~/components/layouts/Spinner'
+import DataTable from '~/components/elements/DataTable/DataTable'
 
 export default {
   name: 'InviteByContactList',
   components: {
-    Spinner,
-    TextLink,
+    DataTable,
     NotificationReminderSection,
     MultiSelect,
   },
@@ -183,10 +141,17 @@ export default {
       selectedCompanies: [],
       selectedDepartments: [],
       selectedRoles: [],
-      filters: [],
-      jobs: [],
       loading: true,
       selectedContacts: [],
+      tableInvites: [
+        {
+          title: 'Personal',
+          slot: 'personal',
+        },
+        { title: 'Sector & Industry', slot: 'sector' },
+        { title: 'Company & Deparmtent', slot: 'company' },
+        { title: 'Role', slot: 'role' },
+      ],
     }
   },
 
@@ -196,6 +161,9 @@ export default {
     },
     parsedSurvey() {
       return parseSurveyToForm(this.survey)
+    },
+    filters() {
+      return JSON.parse(JSON.stringify(this.$store.state.invitations.filters))
     },
     sectors() {
       if (!this.filters.sectors) return []
@@ -263,6 +231,9 @@ export default {
         return a.name > b.name ? 1 : -1
       })
     },
+    jobs() {
+      return this.$store.state.jobs.items
+    },
     contacts() {
       if (!this.filters.contacts) return []
 
@@ -312,31 +283,27 @@ export default {
     },
   },
   created() {
-    this.dataIsLoading = true
+    this.loading = true
     this.$store
-      .dispatch('contactlist/getContactLists', { limit: 100, offset: 0 })
+      .dispatch('contactlist/getContactLists', {})
       .then(() => {
         if (this.contactlists.length !== 0) this.updateData()
         this.form = JSON.parse(JSON.stringify(this.parsedSurvey))
       })
       .finally(() => {
-        this.dataIsLoading = false
+        this.loading = false
       })
   },
   methods: {
     async updateData() {
       this.loading = true
-      this.filters = await this.$store.dispatch('invitations/getFilters')
-      this.jobs = await this.$store.dispatch('jobs/getAllJobs', {
+      await this.$store.dispatch('invitations/getFilters')
+      await this.$store.dispatch('jobs/getAllJobs', {
         contactList: this.$store.state.selectedContactList.code,
-        limit: 1000,
-        offset: 0,
       })
       this.loading = false
     },
-    cancel() {
-      this.$store.dispatch('setCurrentItemToBeEdited', null)
-    },
+
     getCodes(which) {
       return which.map((el) => {
         return el.code
@@ -429,7 +396,7 @@ export default {
         reminderMessage: this.form.reminderMessage,
         invites: this.selectedContacts.map((el) => {
           const sector = this.getSectorAsIs(el.companyCode)
-          const industry = this.getSectorAsIs(el.companyCode)
+          const industry = this.getIndustryAsIs(el.companyCode)
           return {
             email: el.email,
             filterData: {
@@ -461,11 +428,13 @@ export default {
         .then(() => {
           this.$toasted.show('Invitations successfully sent')
           this.$store.dispatch('invitations/getAll', { code: this.survey.code })
-          this.cancel()
         })
         .catch(() => {
           this.$toasted.show('There was a problem sending the invitations')
         })
+    },
+    selectItems(ok) {
+      console.log(ok)
     },
   },
 }

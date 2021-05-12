@@ -5,16 +5,12 @@ export const state = () => ({
 })
 
 export const actions = {
-  getAllJobs({ commit }, { contactList, limit, offset }) {
+  getAllJobs({ commit }, { contactList, limit = 100, offset = 0 }) {
     return new Promise((resolve, reject) => {
       this.$axios
         .get(`/contact/job?code=${contactList}&limit=${limit}&offset=${offset}`)
         .then((response) => {
-          commit(
-            'setItems',
-            { which: 'jobs', items: response.data },
-            { root: true }
-          )
+          commit('setJobs', response.data)
           resolve(response.data)
         })
         .catch((error) => {
@@ -141,5 +137,11 @@ export const actions = {
 
   async setJobActive({ commit }, code) {
     await this.$axios.patch(`/contact/job/${code}/setOngoing`)
+  },
+}
+
+export const mutations = {
+  setJobs(state, jobs) {
+    state.items = jobs
   },
 }

@@ -58,6 +58,7 @@
     <div class="flex flex-col">
       <label class="font-semibold mb-2">Notification Message</label>
       <text-editor
+        :enable-email-fields="canUseContactBook"
         :content="form.notificationMessage"
         @updateContent="form.notificationMessage = $event"
       ></text-editor>
@@ -118,6 +119,7 @@
     <div class="flex flex-col">
       <label class="font-semibold mb-2">Reminder Message</label>
       <text-editor
+        :enable-email-fields="canUseContactBook"
         :content="form.reminderMessage"
         @updateContent="form.reminderMessage = $event"
       ></text-editor>
@@ -164,6 +166,9 @@ export default {
     }
   },
   computed: {
+    canUseContactBook() {
+      return this.$store.getters['auth/getPermissions'].includes('CONTACTBOOK')
+    },
     notificationTimestamp() {
       if (this.form.notificationDate && this.form.notificationTime) {
         return DateTime.fromISO(

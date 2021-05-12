@@ -1,28 +1,25 @@
 <template>
-  <div v-if="!loading" class="flex flex-col justify-between w-full">
-    <div class="flex flex-col w-full space-y-5">
-      <div class="flex flex-col">
-        <p class="font-semibold mb-1">Contacts</p>
-        <input-base-with-button
-          v-if="contacts.length > 0"
-          v-model="searchField"
-          placeholder="Search..."
-          class="mb-2"
-          ><template v-slot:button>
-            <button-for-input
-              :disabled="searchField === ''"
-              @click="searchField = ''"
-              ><i class="fas fa-times fa-fw"></i
-            ></button-for-input> </template
-        ></input-base-with-button>
-        <div v-if="contacts.length !== 0" class="flex flex-wrap">
+  <div v-if="!loading" class="flex flex-col mt-5 space-y-8">
+    <div class="flex flex-col w-full space-y-3">
+      <l-input-button
+        v-model="searchField"
+        placeholder="Search..."
+        :button-disabled="searchField === ''"
+        @click="searchField = ''"
+      >
+        <template v-slot:label>Contacts</template>
+        <template v-slot> <i class="fas fa-times fa-fw"></i> </template
+      ></l-input-button>
+      <div class="flex flex-wrap space-x-2">
+        <template v-if="contacts.length !== 0">
           <div
             v-for="contact in contacts"
             :key="contact.code"
+            class="mb-1"
             @click="manageSelectedContact(contact)"
           >
             <span
-              class="flex flex-col mr-2 bg-gray-100 border-2 text-sm px-2 py-0.5 rounded cursor-pointer hover:bg-gray-200"
+              class="flex flex-col bg-gray-100 border-2 text-sm px-2 py-0.5 rounded cursor-pointer hover:bg-gray-200"
               :class="
                 contactIsSelected(contact)
                   ? 'border-primary'
@@ -31,70 +28,61 @@
             >
               <span class="font-semibold">{{ contact.displayName }}</span>
               <span>{{ contact.email }}</span>
+              <span v-if="contact.dob"
+                >{{ calculateAge(contact.dob) }} years old</span
+              >
             </span>
           </div>
-        </div>
+        </template>
         <div
           v-else
-          class="flex justify-center font-semibold my-2 bg-gray-100 rounded border-gray-200 border py-5"
+          class="flex w-full justify-center text-sm font-semibold rounded border-gray-200 py-3"
         >
           No Contacts!
         </div>
-        <div v-if="contacts.length > 0" class="flex justify-between">
-          <p class="mt-2">
-            Total Invites
-            <span
-              class="ml-2 bg-primary text-white text-sm px-1 py-0.5 rounded"
-              >{{ selectedContacts.length }}</span
-            >
-          </p>
-          <text-link
-            v-if="selectedContacts.length !== contacts.length"
-            @click="selectAll"
-            >Select All</text-link
-          >
-          <text-link v-else @click="selectedContacts = []">Clear</text-link>
-        </div>
       </div>
+
+      <div v-if="contacts.length > 0" class="flex justify-between">
+        <p class="mt-2">
+          Total Invites
+          <l-badge>{{ selectedContacts.length }}</l-badge>
+        </p>
+        <l-text-link
+          v-if="selectedContacts.length !== contacts.length"
+          @click="selectAll"
+          >Select All</l-text-link
+        >
+        <l-text-link v-else @click="selectedContacts = []">Clear</l-text-link>
+      </div>
+
       <notification-reminder-section
         :existing-data="form"
         @update="form = $event"
         @error="datesError = $event"
       ></notification-reminder-section>
     </div>
-    <div class="w-full flex py-10 flex justify-between">
-      <button-basic bg-colour="gray" @click="cancel"
-        >Cancel<template v-slot:icon
-          ><i class="fas fa-times fa-fw"></i></template
-      ></button-basic>
-      <button-basic :disabled="!isValid" @click="sendInvites"
-        >Send Invites<template v-slot:icon
+    <div class="w-full flex py-10 flex justify-center">
+      <l-button :disabled="!isValid" @click="sendInvites"
+        >Send Invites<template v-slot:rightIcon
           ><i class="fas fa-paper-plane fa-fw"></i></template
-      ></button-basic>
+      ></l-button>
     </div>
   </div>
-  <spinner v-else></spinner>
 </template>
 
 <script>
-import moment from 'moment'
-import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
-
+import { DateTime } from 'luxon'
+import { convertSurveyFromApiToForm } from '~/services/survey-helpers'
 import NotificationReminderSection from '~/components/surveys/NotificationReminderSection'
-import InputBaseWithButton from '~/components/elements/InputBaseWithButton'
-import ButtonForInput from '~/components/elements/ButtonForInput'
-import Spinner from '~/components/layouts/Spinner'
-import TextLink from '~/components/elements/TextLink'
+import LTextLink from '~/components/LTextLink'
+import LButton from '~/components/LButton'
 
 export default {
   name: 'InviteByContacts',
   components: {
-    Spinner,
-    ButtonForInput,
-    InputBaseWithButton,
+    LButton,
+    LTextLink,
     NotificationReminderSection,
-
-    TextLink,
   },
   props: {
     survey: {
@@ -117,7 +105,7 @@ export default {
       return !this.datesError && this.selectedContacts.length > 0
     },
     parsedSurvey() {
-      return parseSurveyToForm(this.survey)
+      return convertSurveyFromApiToForm(this.survey)
     },
     contactList() {
       return this.$store.state.selectedContactList
@@ -149,20 +137,12 @@ export default {
   },
   created() {
     this.loading = true
-    this.$store
-      .dispatch('contacts/getContacts', {
-        limit: 1000,
-        offset: 0,
-      })
-      .then(() => {
-        this.form = JSON.parse(JSON.stringify(this.parsedSurvey))
-        this.loading = false
-      })
+    this.$store.dispatch('contacts/getContacts', {}).then(() => {
+      this.form = JSON.parse(JSON.stringify(this.parsedSurvey))
+      this.loading = false
+    })
   },
   methods: {
-    cancel() {
-      this.$store.dispatch('setCurrentItemToBeEdited', null)
-    },
     contactIsSelected(contact) {
       return this.selectedContacts.find((el) => {
         return el.code === contact.code
@@ -179,7 +159,10 @@ export default {
       this.selectedContacts = JSON.parse(JSON.stringify(this.contacts))
     },
     calculateAge(dob) {
-      return moment().diff(moment(dob), 'y')
+      if (!dob) return null
+      return Math.round(
+        DateTime.now().diff(DateTime.fromSQL(dob), 'years').as('years')
+      )
     },
     sendInvites() {
       const list = {

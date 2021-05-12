@@ -95,7 +95,19 @@ export const QUESTION_HELP = {
     'If set to yes the respondent must answer the question before progressing.',
 }
 
-export const NOTIFICATION_EDITOR_FIELDS = {}
+export const NOTIFICATION_EDITOR_FIELDS = [
+  'Gender',
+  'Age',
+  'Full Name',
+  'Sector Name',
+  'Industry Name',
+  'Company Name',
+  'Company Abbreviation',
+  'Department Name',
+  'Department Abbreviation',
+  'Role Name',
+  'Role Abbreviation',
+]
 
 export const SURVEY_LANGUAGE_GENERIC_TERMS = {
   survey_title: 0,

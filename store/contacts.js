@@ -5,21 +5,14 @@ export const state = () => ({
 })
 
 export const actions = {
-  getContacts({ commit, rootState }, { limit, offset }) {
+  getContacts({ commit, rootState }, { limit = 100, offset = 0 }) {
     return new Promise((resolve, reject) => {
       this.$axios
         .get(
           `/contact/contact/all?limit=${limit}&offset=${offset}&contactbookCode=${rootState.selectedContactList.code}`
         )
         .then((response) => {
-          commit(
-            'setItems',
-            {
-              which: 'contacts',
-              items: response.data,
-            },
-            { root: true }
-          )
+          commit('setContacts', response.data)
           resolve()
         })
         .catch((error) => {
@@ -71,5 +64,11 @@ export const actions = {
           reject(error)
         })
     })
+  },
+}
+
+export const mutations = {
+  setContacts(state, contacts) {
+    state.items = contacts
   },
 }
