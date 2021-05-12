@@ -60,6 +60,7 @@ import SurveyLanguageSettings from '~/components/surveys/SurveyLanguageSettings'
 import SurveyCollaborators from '~/components/surveys/SurveyCollaborators'
 import SurveyInvitesSettings from '~/components/surveys/SurveyInvitesSettings'
 import ContactListCollaborators from '~/components/contacts/ContactListCollaborators'
+import ShowNotifications from '~/components/layouts/ShowNotifications'
 
 export default {
   name: 'PlainModal',
@@ -75,6 +76,7 @@ export default {
     SurveyCollaborators,
     SurveyInvitesSettings,
     ContactListCollaborators,
+    ShowNotifications,
   },
   mixins: [ModalMixin],
   props: {

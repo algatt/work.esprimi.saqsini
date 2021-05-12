@@ -6,7 +6,7 @@ export const state = () => ({
 })
 
 export const actions = {
-  getNotifications({ commit }, { limit, offset }) {
+  getNotifications({ commit }, { limit = 100, offset = 0 }) {
     return new Promise((resolve, reject) => {
       this.$axios
         .get(`/auth/notifications/all?limit=${limit}&offset=${offset}`)
@@ -14,14 +14,7 @@ export const actions = {
           response.data.forEach((el) => {
             el.code = el.id
           })
-          commit(
-            'setItems',
-            {
-              which: 'notifications',
-              items: response.data,
-            },
-            { root: true }
-          )
+          commit('setNotifications', response.data)
           resolve()
         })
         .catch((error) => reject(error))
@@ -38,6 +31,7 @@ export const actions = {
         .then((response) => {
           const newNotification = JSON.parse(JSON.stringify(notification))
           newNotification.flags.push('READ')
+          commit('updateNotification', newNotification)
           resolve(newNotification)
         })
         .catch((error) => {
@@ -51,6 +45,7 @@ export const actions = {
       this.$axios
         .$delete('/auth/notifications/' + code)
         .then(() => {
+          commit('deleteNotification', code)
           resolve()
         })
         .catch((error) => reject(error))
@@ -91,5 +86,31 @@ export const actions = {
 export const mutations = {
   setInboxStats(state, data) {
     state.notificationStats = data
+  },
+
+  setNotifications(state, notifications) {
+    state.items = notifications
+  },
+
+  updateNotification(state, notification) {
+    const found = state.items.find((el) => {
+      return el.code === notification.code
+    })
+    Object.assign(found, notification)
+  },
+
+  deleteNotification(state, code) {
+    state.items = state.items.filter((el) => {
+      return el.code !== code
+    })
+  },
+}
+
+export const getters = {
+  sortedNotifications: (state) => {
+    const temp = JSON.parse(JSON.stringify(state.items))
+    return temp.sort((a, b) => {
+      return a.createdTimestamp > b.createdTimestamp ? 1 : -1
+    })
   },
 }

@@ -25,7 +25,7 @@
             <span
               v-if="slotProps.item.flags.includes('FLAGGED_FOR_REMOVAL')"
               title="Flagged for deletion"
-              ><i class="far fa-trash-alt fa-fw text-gray-500"></i
+              ><i class="far fa-trash-alt fa-fw text-gray-400"></i
             ></span>
             <span
               v-if="slotProps.item.flags.includes('HAS_SURVEY_DATA_FILE')"
@@ -38,8 +38,8 @@
                 class="fas fa-table fa-fw"
                 :class="
                   slotProps.item.flags.includes('OUTDATED_DATA_FILE')
-                    ? 'text-red-500'
-                    : 'text-gray-500'
+                    ? 'text-red-400'
+                    : 'text-gray-400'
                 "
               ></i
             ></span>

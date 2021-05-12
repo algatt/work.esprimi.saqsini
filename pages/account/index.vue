@@ -31,31 +31,29 @@
         >
           <i class="fas fa-user fa-fw fa-5x bg-white"></i>
         </span>
-        <button-basic
+        <l-button
           :disabled="avatarImage === ''"
           class="mt-5"
           @click="resetImage"
-          >Reset</button-basic
+          >Reset</l-button
         >
       </div>
       <div class="flex flex-col p-5 w-full xl:w-8/12">
-        <input-base id="inputName" v-model="displayName"
-          >Display Name</input-base
-        >
-        <input-base id="inputEmail" v-model="email">Email</input-base>
+        <l-input id="inputName" v-model="displayName">Display Name</l-input>
+        <l-input id="inputEmail" v-model="email">Email</l-input>
       </div>
 
       <div class="w-full flex p-3 justify-center mb-4">
-        <button-basic :disabled="$v.$invalid" @click="updateDetails"
+        <l-button :disabled="$v.$invalid" @click="updateDetails"
           >Update Details<template v-slot:rightIcon
             ><i class="fas fa-save fa-fw fa-sm"></i></template
-        ></button-basic>
+        ></l-button>
       </div>
       <div class="w-full flex p-3 justify-center bg-red-100">
-        <button-basic colour="red" @click="showConfirm = true"
+        <l-button color="red" @click="showConfirm = true"
           >Delete Account<template v-slot:rightIcon
             ><i class="fas fa-exclamation-triangle fa-sm fa-fw"></i></template
-        ></button-basic>
+        ></l-button>
       </div>
     </div>
 
@@ -74,23 +72,23 @@
         <p>
           if you are sure input your email below to confirm and press Delete.
         </p>
-        <input-base
+        <l-input
           v-model="confirmEmail"
           placeholder="confirm your email"
-        ></input-base>
+        ></l-input>
 
         <div class="flex justify-between w-full">
-          <button-basic @click="showConfirm = false"
+          <l-button @click="showConfirm = false"
             >Cancel<template v-slot:rightIcon
               ><i class="fas fa-times fa-fw fa-sm"></i></template
-          ></button-basic>
-          <button-basic
-            colour="red"
+          ></l-button>
+          <l-button
+            color="red"
             :disabled="confirmEmail !== accountDetails.email"
             @click="logoutUser"
             >Delete Account<template v-slot:rightIcon
               ><i class="fas fa-exclamation-triangle fa-fw fa-sm"></i></template
-          ></button-basic>
+          ></l-button>
         </div>
       </div>
     </div>
@@ -109,6 +107,7 @@ export default {
   mixins: [validationMixin],
   data() {
     return {
+      loading: true,
       avatarImage: '',
       imageFile: '',
       displayName: '',
@@ -127,9 +126,6 @@ export default {
     },
   },
   computed: {
-    loading() {
-      return this.$store.state.loading
-    },
     accountAvatar() {
       return this.$store.state.auth.authUserAvatar
     },
@@ -138,7 +134,7 @@ export default {
     },
   },
   created() {
-    this.$store.dispatch('setLoading', true)
+    this.loading = true
     this.$store
       .dispatch('auth/getUserAvatar')
       .then(() => {
@@ -146,7 +142,7 @@ export default {
           this.avatarImage = this.accountAvatar
         this.displayName = this.accountDetails.displayName
         this.email = this.accountDetails.email
-        this.$store.dispatch('setLoading', false)
+        this.loading = false
       })
       .catch(() => {})
   },

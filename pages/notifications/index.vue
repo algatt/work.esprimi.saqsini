@@ -1,173 +1,125 @@
 <template>
-  <div v-if="!loading">
-    <top-header-bar
-      which="notifications"
-      :items="notifications"
-      :hide-menu="notifications.length === 0"
-      ><template v-slot:title>Notifications</template>
-      <template v-slot:menuButtonIfSelected>
-        <span @click="markAllAsRead">
-          <i class="far fa-envelope-open fa-fw mr-1"></i>Mark All As Read</span
-        >
-      </template></top-header-bar
+  <list-layout v-if="!loading">
+    <data-table
+      :table-data="notifications"
+      :table-definition="tableNotifications"
+      @deleteAll="deleteNotifications"
     >
-
-    <info-box v-if="notifications.length === 0" class="flex-grow mt-2 md:mt-0">
-      <template v-slot:title>No notifications!</template>
-      <template v-slot:content> You're all caught up... </template></info-box
-    >
-
-    <display-table-component
-      v-else
-      :items="notifications"
-      @hovered="hovered = $event"
-      @clicked="setCurrentItem($event)"
-    >
-      <template v-slot:title>Notifications</template>
-
-      <template v-slot:titleContent>
-        <p class="w-3/12">From</p>
-        <p class="w-6/12">Subject</p>
-        <p class="w-3/12 text-right">Date</p>
+      <template v-slot:headerLeft><h5>Notifications</h5></template>
+      <template v-slot:headerRight
+        ><l-button
+          class="ml-2"
+          :disabled="notifications.length === 0"
+          @click="markAllAsRead"
+          >Mark all as Read</l-button
+        ></template
+      >
+      <template v-slot:from="slotProps">
+        <div class="flex flex-col">
+          <span> {{ slotProps.item.author.displayName }}</span>
+          <span> {{ slotProps.item.author.email }}</span>
+        </div>
       </template>
-      <template v-slot:titleContentSmall>Notifications</template>
-      <template v-slot:content="slotProps">
-        <p
-          class="w-full xl:w-3/12 flex flex-row justify-between xl:flex-col mb-2 lg:mb-0"
-          :class="
-            slotProps.item.flags.includes('READ')
-              ? 'text-gray-400'
-              : 'text-gray-600'
-          "
+      <template v-slot:subject="slotProps">
+        <div
+          class="flex items-center"
+          @click.stop="showContent(slotProps.item)"
         >
-          <span>{{ slotProps.item.author.displayName }}</span>
-          <i class="hidden xl:flex"> {{ slotProps.item.author.email }}</i>
-        </p>
-        <p
-          class="w-full xl:w-6/12 flex items-center mb-2 lg:mb-0 text-left"
-          :class="
-            slotProps.item.flags.includes('READ')
-              ? 'text-gray-400'
-              : 'text-gray-600'
-          "
-        >
-          <i
-            v-if="slotProps.item.flags.includes('READ')"
-            class="hidden xl:flex far fa-envelope-open fa-fw text-gray-400 mr-2"
-          ></i
-          ><i
-            v-else
-            class="hidden xl:flex far fa-envelope fa-fw text-gray-700 mr-2"
-          ></i>
-          <button
-            class="subject-link flex items-center text-left"
-            :class="
-              slotProps.item.flags.includes('READ')
-                ? 'text-gray-400'
-                : 'text-gray-600'
-            "
-            @click.stop="setCurrentItem(slotProps.item)"
-          >
-            {{ slotProps.item.subject }}
-          </button>
-        </p>
-        <p
-          class="w-full xl:w-3/12 text-left xl:text-right"
-          :class="
-            slotProps.item.flags.includes('READ')
-              ? 'text-gray-400'
-              : 'text-gray-600'
-          "
-        >
-          {{ formatDate(slotProps.item.createdTimestamp) }}
-        </p>
+          <div class="flex items-center">
+            <i
+              v-if="slotProps.item.flags.includes('READ')"
+              class="far fa-envelope-open fa-fw text-gray-400 mr-2"
+            ></i
+            ><i v-else class="far fa-envelope fa-fw text-gray-700 mr-2"></i>
+            <div class="subject-link">
+              {{ slotProps.item.subject }}
+            </div>
+          </div>
+        </div>
       </template>
-    </display-table-component>
-
-    <transition name="fade">
-      <edit-object-modal v-if="currentItemToBeEdited">
-        <template v-slot:title>Notification</template>
-        <template v-slot:content>
-          <show-notifications></show-notifications>
-        </template>
-      </edit-object-modal>
-    </transition>
-  </div>
-  <spinner v-else></spinner>
+      <template v-slot:date="slotProps">
+        {{ showAsDate(slotProps.item.createdTimestamp) }}</template
+      >
+    </data-table>
+  </list-layout>
 </template>
 
 <script>
-import moment from 'moment'
-import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
-import Spinner from '~/components/layouts/Spinner'
-import ShowNotifications from '~/components/layouts/ShowNotifications'
-import TopHeaderBar from '~/components/layouts/TopHeaderBar'
-import InfoBox from '~/components/layouts/InfoBox'
-import viewMixin from '~/helpers/viewMixin'
-import EditObjectModal from '~/components/layouts/EditObjectModal'
-
+import { DateTime } from 'luxon'
+import ListLayout from '~/components/layouts/ListLayout'
+import DataTable from '~/components/elements/DataTable/DataTable'
+import ModalService from '~/services/modal-services'
+import PlainModal from '~/components/layouts/PlainModal'
 export default {
   name: 'Notifications',
-  components: {
-    ShowNotifications,
-    Spinner,
-    DisplayTableComponent,
-    TopHeaderBar,
-    InfoBox,
-    EditObjectModal,
+  components: { DataTable, ListLayout },
+  layout: 'authlayout',
+  data() {
+    return {
+      loading: true,
+      tableNotifications: [
+        { title: 'From', slot: 'from', field: 'author.email', sortable: true },
+        { title: 'Subject', slot: 'subject', field: 'subject' },
+        {
+          title: 'Date',
+          slot: 'date',
+          field: 'createdTimestamp',
+          sortable: true,
+        },
+      ],
+    }
   },
-  mixins: [viewMixin],
-
   computed: {
     notifications() {
-      const tempNotifications = JSON.parse(
-        JSON.stringify(this.$store.getters.getItems('notifications'))
-      )
-
-      tempNotifications.sort((a, b) => {
-        return moment(a.createdTimestamp.replace(' +', '+')).valueOf() <
-          moment(b.createdTimestamp.replace(' +', '+')).valueOf()
-          ? 1
-          : -1
-      })
-
-      return tempNotifications
+      return this.$store.getters['notifications/sortedNotifications']
     },
   },
   created() {
-    this.$store.dispatch('setLoading', true)
-    this.$store
-      .dispatch('notifications/getNotifications', {
-        limit: 100,
-        offset: 0,
-      })
-      .finally(() => {
-        this.$store.dispatch('setLoading', false)
-      })
+    this.loading = true
+    this.$store.dispatch('notifications/getNotifications', {}).then(() => {
+      this.loading = false
+    })
   },
   methods: {
-    setCurrentItem(item) {
+    showContent(item) {
       if (!item.flags.includes('READ'))
-        this.$store.dispatch('updateItem', { which: 'notifications', item })
-      this.$store.dispatch('setCurrentItemToBeEdited', item)
+        this.$store.dispatch('notifications/readNotification', item)
+      ModalService.open(PlainModal, {
+        whichComponent: 'ShowNotifications',
+        dataItem: item,
+        options: {
+          close: true,
+        },
+      })
     },
-    formatDate(date) {
-      date = date.replace(' +', '+')
-      // return moment(date).format('Do MMM YYYY LT')
-      return moment(date).fromNow()
+    showAsDate(date) {
+      return DateTime.fromFormat(date, 'yyyy-MM-dd hh:mm:ss ZZZ').toFormat(
+        'dd-MMM-yy'
+      )
     },
+
     markAllAsRead() {
       this.$store.dispatch('notifications/markAllAsRead').then(() => {
-        this.$store.dispatch('setLoading', true)
-        this.$store
-          .dispatch('notifications/getNotifications', {
-            limit: 100,
-            offset: 0,
-          })
-          .finally(() => {
-            this.$store.dispatch('setLoading', false)
-          })
+        this.$store.dispatch('notifications/getNotifications', {})
       })
+    },
+    deleteNotifications(notifications) {
+      const calls = []
+      for (const notification in notifications) {
+        calls.push(
+          this.$store.dispatch(
+            'notifications/deleteNotification',
+            notifications[notification].code
+          )
+        )
+      }
+      Promise.all(calls)
+        .then(() => {
+          this.$toasted.show(`${notifications.length} notifications deleted`)
+        })
+        .catch(() => {
+          this.$toasted.error('There was a problem deleting the notifications')
+        })
     },
   },
 }
