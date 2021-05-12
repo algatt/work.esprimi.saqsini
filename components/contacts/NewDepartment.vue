@@ -1,42 +1,35 @@
 <template>
-  <div class="flex flex-col justify-between w-full">
-    <div class="flex flex-col w-full space-y-5">
-      <input-base
-        id="inputName"
-        v-model="form.name"
-        :error="
-          $v.form.name.$model !== undefined
-            ? !$v.form.name.required
-              ? 'required'
-              : !$v.form.name.uniqueNames
-              ? 'this department already exists'
-              : null
+  <div class="flex flex-col w-full space-y-7">
+    <l-input
+      id="inputName"
+      v-model="form.name"
+      :error="
+        $v.form.name.$model !== undefined
+          ? !$v.form.name.required
+            ? 'required'
+            : !$v.form.name.uniqueNames
+            ? 'this department already exists'
             : null
-        "
-        @change="$v.form.name.$touch()"
-        >Name</input-base
-      >
+          : null
+      "
+      @change="$v.form.name.$touch()"
+      >Name</l-input
+    >
 
-      <input-base
-        v-model="form.abbr"
-        :error="
-          $v.form.abbr.$model !== undefined
-            ? !$v.form.abbr.required
-              ? 'required'
-              : !$v.form.abbr.uniqueAbbr
-              ? 'this abbreviation already exists'
-              : null
+    <l-input
+      v-model="form.abbr"
+      :error="
+        $v.form.abbr.$model !== undefined
+          ? !$v.form.abbr.required
+            ? 'required'
+            : !$v.form.abbr.uniqueAbbr
+            ? 'this abbreviation already exists'
             : null
-        "
-        @change="$v.form.abbr.$touch()"
-        >Abbreviation</input-base
-      >
-    </div>
-    <edit-object-modal-bottom-part
-      :form="form"
-      which="departments"
-      :is-valid="isValid"
-    ></edit-object-modal-bottom-part>
+          : null
+      "
+      @change="$v.form.abbr.$touch()"
+      >Abbreviation</l-input
+    >
   </div>
 </template>
 
@@ -44,26 +37,36 @@
 import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
 
-import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
-
 export default {
   name: 'NewDepartment',
-  components: { EditObjectModalBottomPart },
+
   mixins: [validationMixin],
   validations: {
     form: {
       name: {
         required,
         uniqueNames(value) {
-          return !this.uniqueNames.includes(value.trim().toLowerCase())
+          return (
+            value === undefined ||
+            !this.uniqueNames.includes(value.trim().toLowerCase())
+          )
         },
       },
       abbr: {
         required,
         uniqueAbbr(value) {
-          return !this.uniqueAbbr.includes(value.trim().toLowerCase())
+          return (
+            value === undefined ||
+            !this.uniqueAbbr.includes(value.trim().toLowerCase())
+          )
         },
       },
+    },
+  },
+  props: {
+    dataItem: {
+      type: Object,
+      required: true,
     },
   },
   data() {
@@ -75,11 +78,8 @@ export default {
     isValid() {
       return !this.$v.$invalid
     },
-    item() {
-      return this.$store.state.currentItemToBeEdited
-    },
     departments() {
-      return this.$store.getters.getItems('departments')
+      return this.$store.state.departments.items
     },
     uniqueNames() {
       return this.departments.map((el) => {
@@ -92,12 +92,29 @@ export default {
       })
     },
   },
+  watch: {
+    form: {
+      handler(value) {
+        this.$emit('update', value)
+      },
+      deep: true,
+    },
+  },
   created() {
-    this.form = JSON.parse(JSON.stringify(this.item))
+    this.form = JSON.parse(JSON.stringify(this.dataItem))
     if (!this.form.companyCode) this.form.companyCode = this.$route.params.id
   },
   mounted() {
     document.getElementById('inputName').focus()
+    this.$watch(
+      '$v',
+      (val) => {
+        if (typeof val !== 'undefined') {
+          this.$emit('valid', !this.$v.$invalid)
+        }
+      },
+      { deep: true, immediate: true }
+    )
   },
 }
 </script>

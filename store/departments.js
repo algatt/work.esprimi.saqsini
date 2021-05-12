@@ -12,11 +12,7 @@ export const actions = {
           `/contact/department/byCompany?code=${companyCode}&limit=100&offset=0`
         )
         .then((response) => {
-          commit(
-            'setItems',
-            { which: 'departments', items: response.data },
-            { root: true }
-          )
+          commit('setDepartments', response.data)
           resolve(response.data)
         })
         .catch((error) => {
@@ -32,11 +28,7 @@ export const actions = {
           `/contact/department?limit=${limit}&offset=${offset}&code=${rootState.selectedContactList.code}`
         )
         .then((response) => {
-          commit(
-            'setItems',
-            { which: 'departments', items: response.data },
-            { root: true }
-          )
+          commit('setDepartments', response.data)
           resolve(response.data)
         })
         .catch((error) => {
@@ -50,6 +42,7 @@ export const actions = {
       this.$axios
         .post('/contact/department/', qs.stringify(department))
         .then((response) => {
+          commit('addDepartment', response.data)
           resolve(response.data)
         })
         .catch((error) => {
@@ -65,6 +58,7 @@ export const actions = {
       this.$axios
         .put('/contact/department/' + code, qs.stringify(department))
         .then((response) => {
+          commit('updateDepartment', response.data)
           resolve(response.data)
         })
         .catch((error) => {
@@ -78,9 +72,33 @@ export const actions = {
       this.$axios
         .delete('/contact/department/' + code)
         .then(() => {
+          commit('deleteDepartment', code)
           resolve()
         })
         .catch((error) => reject(error))
+    })
+  },
+}
+
+export const mutations = {
+  setDepartments(state, departments) {
+    state.items = departments
+  },
+
+  addDepartment(state, department) {
+    state.items.push(department)
+  },
+
+  updateDepartment(state, department) {
+    const found = state.items.find((el) => {
+      return el.code === department.code
+    })
+    Object.assign(found, department)
+  },
+
+  deleteDepartment(state, code) {
+    state.items = state.items.filter((el) => {
+      return el.code !== code
     })
   },
 }

@@ -1,4 +1,5 @@
 import cookie from 'cookie'
+import cookies from 'js-cookie'
 
 const deleteCalls = {
   contacts: 'contacts/deleteContact',
@@ -75,6 +76,8 @@ export const actions = {
             }
           )
           commit('auth/setAuthUser', user.data)
+
+          commit('setContactList', JSON.parse(cookies.selectedContactList))
         } catch (e) {
           await context.store.commit('auth/setAuthToken', null, { root: true })
         }
@@ -170,6 +173,11 @@ export const actions = {
 export const mutations = {
   setContactList(state, item) {
     state.selectedContactList = item
+    cookies.set('selectedContactList', item, {
+      expires: 7,
+      sameSite: 'None',
+      secure: true,
+    })
   },
 
   setCurrentItemToBeEdited(state, item) {

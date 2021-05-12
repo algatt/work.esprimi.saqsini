@@ -1,145 +1,153 @@
 <template>
-  <div v-if="!loading" class="flex flex-wrap items-start">
-    <template v-if="company !== undefined">
-      <top-header-bar
-        which="departments"
-        :items="departments"
-        :hide-menu="departments.length === 0"
-      >
-        <template v-slot:title> Departments for {{ company.name }}</template>
-        <template v-if="departments.length !== 0" v-slot:extraButtons>
-          <button-basic @click="setCurrentItem({ code: -1 })">
-            New Department
-            <template v-slot:rightIcon
-              ><i class="fas fa-plus fa-fw fa-sm"></i>
-            </template> </button-basic></template
-      ></top-header-bar>
-
-      <info-box v-if="departments.length === 0" class="flex-grow mt-2 md:mt-0">
-        <template v-slot:title>No Departments</template>
-        <template v-slot:content>
-          <button-basic @click="setCurrentItem({ code: -1 })">
-            Create a department...
-          </button-basic>
-        </template></info-box
-      >
-
-      <div v-else class="flex flex-col w-full">
-        <display-table-component
-          :items="departments"
-          @hovered="hovered = $event"
-          @clicked="setCurrentItem($event)"
+  <list-layout v-if="!loading">
+    <data-table
+      :table-data="departments"
+      :table-definition="tableDepartments"
+      @deleteAll="deleteDepartments"
+    >
+      <template v-slot:headerLeft>
+        <h5 class="mt-2">Departments in {{ company.name }}</h5>
+      </template>
+      <template v-slot:headerRight>
+        <new-item-button class="ml-2" @click="newDepartment"
+          >New Department</new-item-button
         >
-          <template v-slot:titleContent>
-            <p class="w-full">Name</p>
-          </template>
-          <template v-slot:titleContentSmall
-            >Departments for {{ company.name }}</template
-          >
-          <template v-slot:content="slotProps"
-            ><div class="w-full flex items-baseline">
-              <span>
-                {{ slotProps.item.name }}
-              </span>
-              <badge-base class="ml-2">{{ slotProps.item.abbr }}</badge-base>
-            </div>
-          </template>
-          <template v-slot:popup-menu="slotProps">
-            <display-table-row-popup
-              :class="
-                hovered === slotProps.item.code ? 'flex' : 'flex md:hidden'
-              "
-              @closed="hovered = null"
-              ><template v-slot:menu>
-                <span @click="setCurrentItem(slotProps.item)"
-                  ><i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit</span
-                >
-              </template></display-table-row-popup
-            >
-          </template>
-        </display-table-component>
-      </div>
-
-      <transition name="fade">
-        <edit-object-modal v-if="currentItemToBeEdited">
-          <template v-slot:secondTitle>Department</template>
-          <template v-slot:content>
-            <new-department></new-department>
-          </template>
-        </edit-object-modal>
-      </transition>
-    </template>
-    <template v-else>
-      <info-box class="mt-2"
-        ><template v-slot:title>We have a problem!</template
-        ><template v-slot:content
-          >You have landed on this page incorrectly, make sure you have a
-          contact list, and some companies set up.</template
-        ></info-box
-      >
-    </template>
-  </div>
-  <spinner v-else></spinner>
+      </template>
+      <template v-slot:name="slotProps">
+        <span class="flex items-center space-x-2">
+          <span>{{ slotProps.item.name }}</span>
+          <l-badge>{{ slotProps.item.abbr }}</l-badge>
+        </span>
+      </template>
+      <template v-slot:actions="slotProps">
+        <div class="flex justify-end">
+          <LPopupMenu>
+            <template v-slot:menu>
+              <button @click="editDepartment(slotProps.item)">
+                <i class="fas fa-pencil-alt fa-fw"></i>Edit
+              </button>
+            </template>
+          </LPopupMenu>
+        </div>
+      </template>
+    </data-table>
+  </list-layout>
 </template>
 
 <script>
-import EditObjectModal from '~/components/layouts/EditObjectModal'
-import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
-import NewDepartment from '~/components/contacts/NewDepartment'
-import Spinner from '~/components/layouts/Spinner'
-import viewMixin from '~/helpers/viewMixin'
-import TopHeaderBar from '~/components/layouts/TopHeaderBar'
-import InfoBox from '~/components/layouts/InfoBox'
-
-import BadgeBase from '~/components/elements/BadgeBase'
-import DisplayTableRowPopup from '~/components/layouts/DisplayTableRowPopup'
+import ListLayout from '~/components/layouts/ListLayout'
+import DataTable from '~/components/elements/DataTable/DataTable'
+import LPopupMenu from '~/components/LPopupMenu'
+import NewItemButton from '~/components/elements/NewItemButton'
+import ModalService from '~/services/modal-services'
+import NewItemModal from '~/components/layouts/NewItemModal'
 export default {
   name: 'ContactsList',
   middleware: ['contactBook'],
+  layout: 'authlayout',
+
   components: {
-    DisplayTableRowPopup,
-    BadgeBase,
-    Spinner,
-    NewDepartment,
-    DisplayTableComponent,
-    EditObjectModal,
-    TopHeaderBar,
-    InfoBox,
+    NewItemButton,
+    LPopupMenu,
+    DataTable,
+    ListLayout,
   },
-  mixins: [viewMixin],
+  data() {
+    return {
+      loading: true,
+      tableDepartments: [
+        { title: 'Name', field: 'name', slot: 'name', sortable: true },
+        { title: '', slot: 'actions', align: 'right' },
+      ],
+    }
+  },
+
   computed: {
     departments() {
-      return this.$store.getters.getItems('departments')
+      return this.$store.state.departments.items
     },
     company() {
-      return this.$store.getters.getItems('companies').find((el) => {
+      return this.$store.state.companies.items.find((el) => {
         return Number(el.code) === Number(this.$route.params.id)
       })
     },
-    contactlists() {
-      return this.$store.getters.getItems('contactlist')
-    },
   },
   created() {
-    this.$store.dispatch('setLoading', true)
-    this.$store
-      .dispatch('contactlist/getContactLists', { limit: 100, offset: 0 })
-      .then(() => {
-        if (this.contactlists.length !== 0) this.updateData()
-      })
+    this.loading = true
+    this.updateData()
   },
   methods: {
-    async updateData() {
-      await this.$store.dispatch('setLoading', true)
-      await this.$store.dispatch('companies/getCompanies', {
-        limit: 100,
-        offset: 0,
+    updateData() {
+      Promise.all([
+        this.$store.dispatch('companies/getCompanies', {}),
+        this.$store.dispatch(
+          'departments/getDepartments',
+          this.$route.params.id
+        ),
+      ]).then(() => {
+        this.loading = false
       })
-      await this.$store.dispatch(
-        'departments/getDepartments',
-        this.$route.params.id
-      )
-      await this.$store.dispatch('setLoading', false)
+    },
+    newDepartment() {
+      const dataItem = {
+        companyCode: this.company.code,
+      }
+      ModalService.open(NewItemModal, {
+        whichComponent: 'NewDepartment',
+        dataItem,
+        options: {
+          header: 'New Department',
+        },
+      })
+        .then((response) => {
+          this.$store
+            .dispatch('departments/newDepartment', response)
+            .then((department) => {
+              this.$toasted.show(`Department ${department.name} created`)
+            })
+        })
+        .catch((error) => {
+          if (error !== 'dismissed')
+            this.$toasted.error('There was a problem creating the department')
+        })
+    },
+    editDepartment(department) {
+      ModalService.open(NewItemModal, {
+        whichComponent: 'NewDepartment',
+        dataItem: department,
+        options: {
+          header: `Edit ${department.name}`,
+        },
+      })
+        .then((response) => {
+          this.$store
+            .dispatch('departments/updateDepartment', response)
+            .then((department) => {
+              this.$toasted.show(`Department ${department.name} updated`)
+            })
+        })
+        .catch((error) => {
+          if (error !== 'dismissed')
+            this.$toasted.error('There was a problem updating the department')
+        })
+    },
+    deleteDepartments(departments) {
+      const calls = []
+      for (const department in departments) {
+        calls.push(
+          this.$store.dispatch(
+            'departments/deleteDepartment',
+            departments[department].code
+          )
+        )
+      }
+      Promise.all(calls)
+        .then(() => {
+          this.$toasted.show(`${departments.length} departments deleted`)
+        })
+        .catch(() => {
+          this.$toasted.error('There was a problem deleting the departments')
+        })
     },
   },
 }

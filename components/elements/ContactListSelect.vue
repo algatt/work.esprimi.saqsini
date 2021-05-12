@@ -32,6 +32,9 @@ export default {
       return this.$store.state.contactlist.items
     },
   },
+  created() {
+    this.$store.dispatch('contactlist/getContactLists', {})
+  },
   methods: {
     changeContactBook(code) {
       const contactList = this.contactLists.find((el) => {
