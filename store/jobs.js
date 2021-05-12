@@ -21,16 +21,14 @@ export const actions = {
     })
   },
 
-  getJobsByContact({ commit }, contactCode) {
+  getJobsByContact({ commit }, { limit = 100, offset = 0, contactCode }) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .get(`/contact/job/byContact?code=${contactCode}&limit=100&offset=0`)
+        .get(
+          `/contact/job/byContact?code=${contactCode}&limit=${limit}&offset=${offset}`
+        )
         .then((response) => {
-          commit(
-            'setItems',
-            { which: 'jobs', items: response.data },
-            { root: true }
-          )
+          commit('setJobs', response.data)
           resolve(response.data)
         })
         .catch((error) => {
@@ -53,6 +51,7 @@ export const actions = {
             })
             response.data.flags.push('PAST')
           }
+          commit('newJob', response.data)
           resolve(response.data)
         })
         .catch((error) => {
@@ -74,6 +73,7 @@ export const actions = {
           }
         )
         .then(() => {
+          commit('setPast', code)
           resolve()
         })
         .catch((error) => {
@@ -118,6 +118,7 @@ export const actions = {
           response.data.companyName = companyName
           response.data.departmentName = departmentName
           response.data.roleName = roleName
+          commit('updateJob', response.data)
           resolve(response.data)
         })
         .catch((error) => {
@@ -131,6 +132,7 @@ export const actions = {
       this.$axios
         .delete('/contact/job/' + code)
         .then(() => {
+          commit('deleteJob', code)
           resolve()
         })
         .catch((error) => reject(error))
@@ -139,11 +141,49 @@ export const actions = {
 
   async setJobActive({ commit }, code) {
     await this.$axios.patch(`/contact/job/${code}/setOngoing`)
+    commit('setActive', code)
   },
 }
 
 export const mutations = {
   setJobs(state, jobs) {
     state.items = jobs
+  },
+
+  newJob(state, job) {
+    state.items.push(job)
+  },
+
+  setPast(state, code) {
+    const obj = state.items.find((el) => {
+      return el.code === code
+    })
+    obj.flags = obj.flags.filter((el) => {
+      return el !== 'ONGOING'
+    })
+    obj.flags.push('PAST')
+  },
+
+  setActive(state, code) {
+    const obj = state.items.find((el) => {
+      return el.code === code
+    })
+    obj.flags = obj.flags.filter((el) => {
+      return el !== 'PAST'
+    })
+    obj.flags.push('ONGOING')
+  },
+
+  updateJob(state, job) {
+    const found = state.items.find((el) => {
+      return el.code === job.code
+    })
+    Object.assign(found, job)
+  },
+
+  deleteJob(state, code) {
+    state.items = state.items.filter((el) => {
+      return el.code !== code
+    })
   },
 }

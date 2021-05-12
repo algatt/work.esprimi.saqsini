@@ -102,3 +102,11 @@ export const mutations = {
     })
   },
 }
+
+export const getters = {
+  sortedDeparments: (state) => {
+    return state.items.sort((a, b) => {
+      return a.name > b.name ? 1 : -1
+    })
+  },
+}
