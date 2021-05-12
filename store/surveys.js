@@ -424,6 +424,41 @@ export const actions = {
         })
     })
   },
+
+  generateDataFile({ commit }, code) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .patch(`/builder/instance/${code}/generateDataFile`)
+        .then((response) => {
+          resolve(response.data)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  downloadDataFile({ commit }, code) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .get(`/builder/instance/dataFile?code=${code}`, {
+          responseType: 'blob',
+        })
+        .then((response) => {
+          // resolve(response.data)
+          const fileName = response.headers['content-disposition'].replace(
+            'attachment; filename=',
+            ''
+          )
+
+          const fileDownload = require('js-file-download')
+          return fileDownload(response.data, fileName)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
 }
 
 // export const getters = {

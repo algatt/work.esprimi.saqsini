@@ -20,6 +20,31 @@
             >New Survey</new-item-button
           ></template
         >
+        <template #flags="slotProps">
+          <div class="flex items-center">
+            <span
+              v-if="slotProps.item.flags.includes('FLAGGED_FOR_REMOVAL')"
+              title="Flagged for deletion"
+              ><i class="far fa-trash-alt fa-fw text-gray-500"></i
+            ></span>
+            <span
+              v-if="slotProps.item.flags.includes('HAS_SURVEY_DATA_FILE')"
+              :title="
+                slotProps.item.flags.includes('OUTDATED_DATA_FILE')
+                  ? 'Outdated data file'
+                  : 'Up to date data file'
+              "
+              ><i
+                class="fas fa-table fa-fw"
+                :class="
+                  slotProps.item.flags.includes('OUTDATED_DATA_FILE')
+                    ? 'text-red-500'
+                    : 'text-gray-500'
+                "
+              ></i
+            ></span>
+          </div>
+        </template>
         <template #Kiosk="slotProps">
           <div class="flex justify-center">
             <l-toggle
@@ -97,6 +122,15 @@
                 <button @click="anonymiseResponses(slotProps.item.code)">
                   <i class="fas fa-user-secret fa-fw"></i>Anonymise Respondents
                 </button>
+                <button @click="generateDataFile(slotProps.item.code)">
+                  <i class="fas fa-table fa-fw"></i>Generate Response Data
+                </button>
+                <button
+                  v-if="slotProps.item.flags.includes('HAS_SURVEY_DATA_FILE')"
+                  @click="downloadDataFile(slotProps.item.code)"
+                >
+                  <i class="fas fa-download fa-fw"></i>Download Response Data
+                </button>
               </template></LPopupMenu
             ></span
           >
@@ -140,6 +174,7 @@ export default {
           field: 'name',
           sortable: true,
         },
+        { title: '', slot: 'flags' },
         { title: 'Date', field: 'referenceDate', sortable: true },
         { title: 'Kiosk', slot: 'Kiosk', align: 'center' },
         { title: 'Availability', slot: 'Availability', align: 'center' },
@@ -282,6 +317,24 @@ export default {
         })
         .catch(() => {
           this.$toasted.show('There was a problem anonymising the responses')
+        })
+    },
+    generateDataFile(code) {
+      this.$store
+        .dispatch('surveys/generateDataFile', code)
+        .then(() => {
+          this.$toasted.show('Request for generating data processed')
+        })
+        .catch(() => {
+          this.$toasted.show('There was a problem generating the data file')
+        })
+    },
+    downloadDataFile(code) {
+      this.$store
+        .dispatch('surveys/downloadDataFile', code)
+        .then(() => {})
+        .catch(() => {
+          this.$toasted.show('There was a problem downloading the data file')
         })
     },
   },
