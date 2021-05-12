@@ -1,8 +1,10 @@
 <template>
   <div v-if="!loading" class="w-full flex flex-col">
-    <top-header-bar :hide-menu="true" which="">
-      <template v-slot:title>{{ responses.survey.name }}</template>
-      <template v-slot:extraButtons>
+    <div class="w-full flex items-center my-4">
+      <div class="flex flex-1">
+        <h5>{{ responses.survey.name }}</h5>
+      </div>
+      <div class="flex space-x-2">
         <menu-icon-button
           :active="selectedView === 'overall'"
           @click="selectedView = 'overall'"
@@ -27,8 +29,9 @@
           >Cross Table<template v-slot:icon
             ><i class="fas fa-table fa-fw"></i></template
         ></menu-icon-button>
-      </template>
-    </top-header-bar>
+      </div>
+    </div>
+
     <div v-if="selectedView === 'overall'">
       <survey-details :details="dataForSurveyOverall"></survey-details>
     </div>
@@ -42,12 +45,9 @@
       <cross-table-details :data="dataForCrossTab"></cross-table-details>
     </div>
   </div>
-  <spinner v-else></spinner>
 </template>
 
 <script>
-import Spinner from '~/components/layouts/Spinner'
-import TopHeaderBar from '~/components/layouts/TopHeaderBar'
 import SurveyDetails from '~/components/charts/SurveyDetails'
 import QuestionDetails from '~/components/charts/QuestionList'
 import CrossTableDetails from '~/components/charts/CrossTableDetails'
@@ -61,8 +61,6 @@ export default {
     MenuIconButton,
     QuestionDetails,
     SurveyDetails,
-    TopHeaderBar,
-    Spinner,
     CrossTableDetails,
     IndividualDetails,
   },
@@ -91,15 +89,15 @@ export default {
     },
   },
 
-  async mounted() {
+  mounted() {
     this.loading = true
-    this.responses = await this.$store.dispatch(
-      'surveys/getSurveyData',
-      this.$route.params.id
-    )
-    this.loading = false
+    this.$store
+      .dispatch('surveys/getSurveyData', this.$route.params.id)
+      .then((response) => {
+        this.responses = response
+        this.loading = false
+      })
   },
-  methods: {},
 }
 </script>
 

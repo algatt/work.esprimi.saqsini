@@ -2,24 +2,24 @@
   <div class="mt-3">
     <div class="my-5 flex flex-col xl:flex-row">
       <div class="w-auto xl:mr-10">
-        <select-base v-model="typeOfResponses">
+        <l-select v-model="typeOfResponses">
           Type of Responses
           <template v-slot:options>
             <option value="all">All Types</option>
             <option value="kiosk">Kiosk</option>
             <option value="invites">Invites</option>
           </template>
-        </select-base>
+        </l-select>
       </div>
       <div class="w-auto mt-2 xl:mt-0">
-        <select-base v-model="isComplete">
+        <l-select v-model="isComplete">
           Status
           <template v-slot:options>
             <option value="all">All</option>
             <option value="completed">Completed</option>
             <option value="incomplete">Incomplete</option>
           </template>
-        </select-base>
+        </l-select>
       </div>
     </div>
     <div
@@ -28,7 +28,7 @@
       class="p-4 flex flex-col justify-between border border-gray-200 cursor-pointer"
       :class="
         viewResponsesInvitee.token === invite.token
-          ? 'bg-gray-100'
+          ? 'bg-white'
           : 'hover:bg-gray-100'
       "
       @click="toggleViewResponses(invite)"
@@ -38,16 +38,10 @@
           <span v-if="invite.flags.includes('KIOSK')" class="mr-3"
             >Kiosk Response</span
           ><span v-else class="mr-3">Invitee Response</span>
-          <span
-            v-if="invite.flags.includes('SUBMITTED')"
-            class="bg-green-100 text-green-700 text-sm font-semibold rounded px-1 py-0.5 border border-green-200 mr-3"
-            >finished</span
+          <l-badge v-if="invite.flags.includes('SUBMITTED')" color="green"
+            >finished</l-badge
           >
-          <span
-            v-else
-            class="bg-red-100 text-red-700 text-sm font-semibold rounded px-1 py-0.5 border border-red-200 mr-3"
-            >incomplete</span
-          >
+          <l-badge v-else color="red">incomplete</l-badge>
         </div>
         <div>
           {{ invite.lastAccessed.substring(0, 16) }}
@@ -55,7 +49,7 @@
       </div>
       <div
         v-if="viewResponsesInvitee.token === invite.token"
-        class="bg-gray-50 my-2 rounded border-2 border-gray-200"
+        class="my-2 rounded border-2 border-gray-200"
       >
         <div
           v-for="(response, index) in parsedResponses"
@@ -71,23 +65,31 @@
           </div>
           <div v-else class="flex flex-wrap">
             <div class="w-full md:w-6/12 pl-5 py-2">
-              <badge-base bg-colour="blue">{{
+              <l-badge color="blue">{{
                 response.question.questionNumber
-              }}</badge-base>
-              <span>{{ response.question.name }}</span>
-              <badge-base bg-colour="gray">{{
+              }}</l-badge>
+              <span class="mx-3">{{ response.question.name }}</span>
+              <l-badge bg-colour="gray">{{
                 getQuestionType(response.question.flags).text
-              }}</badge-base>
+              }}</l-badge>
             </div>
             <div class="w-full md:w-6/12 py-2 px-5 xl:px-0 space-x-2">
-              <badge-base
+              <l-badge
                 v-for="(answer, answerIndex) in response.answers"
                 :key="answerIndex"
                 class="mt-2 xl:my-0"
-                >{{ answer }}</badge-base
+                >{{ answer }}</l-badge
               >
             </div>
           </div>
+        </div>
+        <div v-if="!invite.flags.includes('KIOSK')" class="flex w-full mt-2">
+          <a
+            class="bg-blue-600 w-full text-white text-center py-2"
+            :href="`/survey?id=${viewResponsesInvitee.surveyCode}&token=${viewResponsesInvitee.token}`"
+            target="_blank"
+            >Edit Responses <i class="fas fa-external-link-square-alt"></i
+          ></a>
         </div>
       </div>
     </div>
@@ -95,13 +97,12 @@
 </template>
 
 <script>
-import { QUESTION_TYPES } from '~/helpers/constants'
-import BadgeBase from '~/components/elements/BadgeBase'
-import SelectBase from '~/components/elements/SelectBase'
+import { QUESTION_TYPES } from '~/assets/settings/survey-settings'
+import LSelect from '~/components/LSelect'
 
 export default {
   name: 'InvidualDetailsVue',
-  components: { SelectBase, BadgeBase },
+  components: { LSelect },
   props: {
     data: {
       type: Object,

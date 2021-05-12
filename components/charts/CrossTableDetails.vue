@@ -104,7 +104,7 @@
 <script>
 import { getDifferentAnswers } from '~/helpers/chartHelpers'
 import CrossTable from '~/components/charts/CrossTable'
-import { getQuestionType } from '~/helpers/parseSurveyObjects'
+import { getQuestionType } from '~/services/question-helpers'
 
 export default {
   name: 'CrossTableDetails',

@@ -58,9 +58,11 @@
       </table>
     </div>
     <div class="flex justify-end py-5">
-      <button class="btn btn-primary" @click="copyTableToClipboard">
+      <l-button @click="copyTableToClipboard">
         Copy
-      </button>
+        <template v-slot:rightIcon
+          ><i class="fas fa-clipboard fa-fw"></i></template
+      ></l-button>
     </div>
   </div>
 </template>

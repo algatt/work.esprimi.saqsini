@@ -1,9 +1,9 @@
 <template>
   <div v-if="!loading">
-    <button-basic colour="blue" @click="print"
+    <l-button @click="print"
       >Save to PDF<template v-slot:rightIcon
         ><i class="fas fa-file-pdf fa-fw"></i></template
-    ></button-basic>
+    ></l-button>
     <div
       v-for="item in processedQuestions"
       :key="item.question.code"
@@ -35,23 +35,19 @@
       <template v-slot:body>PDF will be available shortly.</template>
     </modal-generic>
   </div>
-
-  <spinner v-else></spinner>
 </template>
 
 <script>
 import { jsPDF } from 'jspdf'
 import html2canvas from 'html2canvas'
-import Spinner from '~/components/layouts/Spinner'
-import { QUESTION_TYPES } from '~/helpers/constants'
+import { QUESTION_TYPES } from '~/assets/settings/survey-settings'
 import QuestionElement from '~/components/charts/QuestionElement'
 import { getDifferentAnswers } from '~/helpers/chartHelpers'
-import { parseQuestionToForm } from '~/helpers/parseSurveyObjects'
-import ButtonBasic from '~/components/elements/ButtonBasic'
+import { convertQuestionFromApiToForm } from '~/services/question-helpers'
 import ModalGeneric from '~/components/layouts/ModalGeneric'
 export default {
   name: 'QuestionList',
-  components: { ModalGeneric, ButtonBasic, QuestionElement, Spinner },
+  components: { ModalGeneric, QuestionElement },
   props: {
     data: {
       type: Object,
@@ -117,13 +113,14 @@ export default {
                   doc.setFont('Helvetica', 'bold')
                   doc.setFontSize(14)
                   doc.text(this.getQuestionTitle(question.question), 2, 3)
+                  const widthChange = 17 / (canvas.width * 0.0264583333)
                   resolve(
                     doc.addImage(
                       canvas,
                       2,
                       5,
-                      canvas.width * 0.0264583333,
-                      canvas.height * 0.0264583333
+                      canvas.width * 0.0264583333 * widthChange,
+                      canvas.height * 0.0264583333 * widthChange
                     )
                   )
                 })
@@ -138,7 +135,7 @@ export default {
       }, 1000)
     },
     getQuestionTitle(question) {
-      return parseQuestionToForm(question).text
+      return convertQuestionFromApiToForm(question).text
     },
     getQuestionType(question) {
       let result = ''
