@@ -52,12 +52,14 @@
           >Email</menu-icon-button
         >
         <menu-icon-button
+          v-if="canUseContactBook"
           :active="selectedMenu === 'contacts'"
           @click="selectedMenu = 'contacts'"
           ><template v-slot:icon><i class="fas fa-users fa-fw"></i></template
           >Contacts</menu-icon-button
         >
         <menu-icon-button
+          v-if="canUseContactBook"
           :active="selectedMenu === 'contactlist'"
           @click="selectedMenu = 'contactlist'"
           ><template v-slot:icon
@@ -142,7 +144,6 @@ export default {
     loadData() {
       return new Promise((resolve, reject) => {
         const promises = [
-          this.$store.dispatch('contactlist/getContactLists', {}),
           this.$store.dispatch(
             'surveys/getSurveyByCode',
             this.$route.params.id

@@ -173,7 +173,6 @@ export default {
     loadData() {
       return new Promise((resolve, reject) => {
         const promises = [
-          this.$store.dispatch('contactlist/getContactLists', {}),
           this.$store.dispatch(
             'surveys/getSurveyByCode',
             this.$route.params.id
