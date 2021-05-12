@@ -1,186 +1,177 @@
 <template>
-  <div v-if="!loading" class="flex flex-wrap items-start">
-    <top-header-bar
-      which="contacts"
-      :items="contacts"
-      :hide-menu="contacts.length === 0"
+  <list-layout v-if="!loading">
+    <data-table
+      :table-data="contacts"
+      :table-definition="tableContacts"
+      @deleteAll="deleteContacts"
     >
-      <template v-slot:title>Contacts</template>
-      <template v-slot:extraContent>
-        <div class="xl:ml-6 ml-0 flex items-center">
-          <contact-book-dropdown
-            @changedList="updateData"
-          ></contact-book-dropdown>
-        </div>
+      <template v-slot:headerLeft>
+        <h5 class="mt-2">Contacts</h5>
+        <contact-list-select></contact-list-select>
       </template>
-      <template v-slot:extraButtons>
-        <button-basic
-          v-if="contactlists.length !== 0 && contacts.length !== 0"
-          @click="setCurrentItem({ code: -1 })"
-          >New Contact
-          <template v-slot:rightIcon
-            ><i class="fas fa-plus fa-sm fa-fw"></i
-          ></template> </button-basic></template
-    ></top-header-bar>
-
-    <template v-if="contactlists.length < 1">
-      <info-box type="info">
-        <template v-slot:title>No contact lists</template>
-        <template v-slot:content
-          >You do not have any contact lists set up. Make sure to create one
-          before creating any companies.</template
+      <template v-slot:headerRight>
+        <new-item-button class="ml-2" @click="newContact"
+          >New Contact</new-item-button
         >
-      </info-box>
-    </template>
-    <template v-else>
-      <info-box
-        v-if="contacts.length === 0"
-        class="flex-grow mx-5 mt-2 md:mt-0"
+      </template>
+      <template v-slot:demographics="slotProps">
+        <span v-if="slotProps.item.gender">
+          <span v-if="slotProps.item.gender === 'M'">Male</span>
+          <span v-if="slotProps.item.gender === 'F'">Female</span>
+        </span>
+        <span v-if="slotProps.item.dob"
+          >{{ calculateAge(slotProps.item.dob) }} years</span
+        ></template
       >
-        <template v-slot:title>No Contacts</template>
-        <template v-slot:content>
-          <button-basic @click="setCurrentItem({ code: -1 })"
-            >Create a contact</button-basic
-          >
-        </template></info-box
-      >
-
-      <display-table-component
-        v-else
-        :items="contacts"
-        @hovered="hovered = $event"
-        @clicked="setCurrentItem($event)"
-      >
-        <template v-slot:title>Contact List</template>
-
-        <template v-slot:titleContent>
-          <p class="w-4/12">Name</p>
-          <p class="w-2/12">Demographics</p>
-          <p class="w-3/12">Email</p>
-          <p class="w-2/12">Phone</p>
-        </template>
-        <template v-slot:titleContentSmall>Contacts</template>
-        <template v-slot:content="slotProps"
-          ><p class="w-full xl:w-4/12">
-            {{ slotProps.item.displayName }}
-          </p>
-          <p class="w-full xl:w-2/12">
-            <span v-if="slotProps.item.gender === 'M'">Male</span>
-            <span v-else-if="slotProps.item.gender === 'F'">Female</span>
-            <span v-if="calculateAge(slotProps.item.dob) !== 0" class="ml-1"
-              >{{ calculateAge(slotProps.item.dob) }} years
-            </span>
-          </p>
-
-          <p class="w-full xl:w-3/12">
-            <span v-if="slotProps.item.email">{{ slotProps.item.email }}</span>
-          </p>
-          <p class="w-full xl:w-2/12">
-            <span v-if="slotProps.item.contactNumber !== 0"
-              >{{ slotProps.item.countryExtension }}
-              {{ slotProps.item.contactNumber }}</span
-            >
-          </p>
-        </template>
-        <template v-slot:popup-menu="slotProps">
-          <display-table-row-popup
-            :class="hovered === slotProps.item.code ? 'flex' : 'flex xl:hidden'"
-            @close="hovered = null"
-          >
-            <template v-slot:menu>
-              <span @click="setCurrentItem(slotProps.item)"
-                ><i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit</span
-              >
-
-              <nuxt-link
-                :to="{
-                  name: 'contacts-jobs-id',
-                  params: { id: slotProps.item.code },
-                }"
-                ><span
-                  ><i class="fas fa-briefcase fa-fw fa-sm"></i>Manage Jobs ({{
-                    slotProps.item.jobCount
-                  }})</span
-                ></nuxt-link
-              >
-            </template>
-          </display-table-row-popup>
-        </template>
-      </display-table-component>
-    </template>
-
-    <transition name="fade">
-      <edit-object-modal v-if="currentItemToBeEdited">
-        <template v-slot:secondTitle>Contact</template>
-        <template v-slot:content>
-          <new-contact></new-contact>
-        </template>
-      </edit-object-modal>
-    </transition>
-  </div>
-  <spinner v-else></spinner>
+      <template v-slot:phone="slotProps">
+        <span v-if="slotProps.item.contactNumber">
+          +{{ slotProps.item.countryExtension }}&nbsp;{{
+            slotProps.item.contactNumber
+          }}</span
+        >
+      </template>
+      <template v-slot:jobCount="slotProps">
+        <nuxt-link
+          :to="{
+            name: 'contacts-jobs-id',
+            params: { id: slotProps.item.code },
+          }"
+        >
+          <l-text-link>{{ slotProps.item.jobCount }}</l-text-link>
+        </nuxt-link>
+      </template>
+      <template v-slot:actions="slotProps">
+        <LPopupMenu>
+          <template v-slot:menu>
+            <button @click="editContact(slotProps.item)">
+              <i class="fas fa-pencil-alt fa-fw"></i>Edit
+            </button>
+          </template>
+        </LPopupMenu>
+      </template>
+    </data-table>
+  </list-layout>
 </template>
 
 <script>
-import moment from 'moment'
-import EditObjectModal from '~/components/layouts/EditObjectModal'
-import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
-import NewContact from '~/components/contacts/NewContact'
-import Spinner from '~/components/layouts/Spinner'
-import TopHeaderBar from '~/components/layouts/TopHeaderBar'
-import viewMixin from '~/helpers/viewMixin'
-import ContactBookDropdown from '~/components/contacts/ContactBookDropdown'
-
-import InfoBox from '~/components/layouts/InfoBox'
-
-import DisplayTableRowPopup from '~/components/layouts/DisplayTableRowPopup'
+import { DateTime } from 'luxon'
+import ListLayout from '~/components/layouts/ListLayout'
+import DataTable from '~/components/elements/DataTable/DataTable'
+import ContactListSelect from '~/components/elements/ContactListSelect'
+import NewItemButton from '~/components/elements/NewItemButton'
+import LPopupMenu from '~/components/LPopupMenu'
+import LTextLink from '~/components/LTextLink'
+import ModalService from '~/services/modal-services'
+import NewItemModal from '~/components/layouts/NewItemModal'
 
 export default {
   name: 'ContactsList',
   middleware: ['contactBook'],
+  layout: 'authlayout',
   components: {
-    DisplayTableRowPopup,
-
-    NewContact,
-    DisplayTableComponent,
-    EditObjectModal,
-    Spinner,
-    TopHeaderBar,
-    ContactBookDropdown,
-
-    InfoBox,
+    LTextLink,
+    LPopupMenu,
+    NewItemButton,
+    ContactListSelect,
+    DataTable,
+    ListLayout,
   },
-  mixins: [viewMixin],
+  data() {
+    return {
+      loading: true,
+      tableContacts: [
+        { title: 'Full Name', field: 'displayName', sortable: true },
+        { title: 'Demographics', slot: 'demographics' },
+        { title: 'Email', field: 'email' },
+        { title: 'Phone', slot: 'phone' },
+        {
+          title: 'Jobs',
+          field: 'jobCount',
+          slot: 'jobCount',
+          align: 'center',
+          sortable: true,
+        },
+        { title: '', slot: 'actions' },
+      ],
+    }
+  },
   computed: {
     contacts() {
-      return this.$store.getters.getItems('contacts')
-    },
-    contactlists() {
-      return this.$store.getters.getItems('contactlist')
+      return this.$store.state.contacts.items
     },
   },
   created() {
-    this.$store.dispatch('setLoading', true)
-    this.$store
-      .dispatch('contactlist/getContactLists', { limit: 100, offset: 0 })
-      .then(() => {
-        if (this.contactlists.length !== 0) this.updateData()
-      })
-      .finally(() => {
-        this.$store.dispatch('setLoading', false)
-      })
+    this.loading = true
+    this.$store.dispatch('contactlist/getContactLists', {}).then(() => {
+      if (this.$store.state.selectedContactList) {
+        this.updateData()
+        this.loading = false
+      }
+    })
   },
   methods: {
-    updateData() {
-      this.$store.dispatch('setLoading', true)
-      Promise.all([
-        this.$store.dispatch('contacts/getContacts', { limit: 100, offset: 0 }),
-      ]).then(() => {
-        this.$store.dispatch('setLoading', false)
-      })
+    async updateData() {
+      await this.$store.dispatch('contacts/getContacts', {})
     },
     calculateAge(dob) {
-      return moment().diff(moment(dob), 'y')
+      return Math.round(
+        DateTime.now().diff(DateTime.fromSQL(dob), 'years').as('years')
+      )
+    },
+    newContact() {
+      ModalService.open(NewItemModal, {
+        whichComponent: 'NewContact',
+        dataItem: {},
+        options: {
+          header: 'New Contact',
+        },
+      })
+        .then((response) => {
+          this.$store
+            .dispatch('contacts/newContact', response)
+            .then((contact) => {
+              this.$toasted.show(`Contacts ${contact.name} created`)
+            })
+        })
+        .catch((error) => {
+          if (error !== 'dismissed')
+            this.$toasted.error('There was a problem creating the contact')
+        })
+    },
+    editContact(contact) {
+      ModalService.open(NewItemModal, {
+        whichComponent: 'NewContact',
+        dataItem: contact,
+        options: {
+          header: `Edit ${contact.displayName}`,
+        },
+      })
+        .then((response) => {
+          this.$store
+            .dispatch('contacts/updateContact', response)
+            .then((department) => {
+              this.$toasted.show(`Contact ${contact.displayName} updated`)
+            })
+        })
+        .catch((error) => {
+          if (error !== 'dismissed')
+            this.$toasted.error('There was a problem updating the contact')
+        })
+    },
+    deleteContacts(contacts) {
+      const calls = []
+      for (const contact in contacts) {
+        calls.push(
+          this.$store.dispatch('contacts/deleteContact', contacts[contact].code)
+        )
+      }
+      Promise.all(calls)
+        .then(() => {
+          this.$toasted.show(`${contacts.length} contacts deleted`)
+        })
+        .catch(() => {
+          this.$toasted.error('There was a problem deleting the contacts')
+        })
     },
   },
 }

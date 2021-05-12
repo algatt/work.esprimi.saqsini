@@ -1,94 +1,85 @@
 <template>
-  <div class="flex flex-col justify-between w-full">
-    <div class="flex flex-col w-full space-y-5">
-      <input-base
-        id="inputName"
-        v-model="form.displayName"
-        :error="
-          $v.form.displayName.$model !== undefined
-            ? !$v.form.displayName.required
-              ? 'required'
-              : null
+  <div class="flex flex-col w-full space-y-7">
+    <l-input
+      id="inputName"
+      v-model="form.displayName"
+      :error="
+        $v.form.displayName.$model !== undefined
+          ? !$v.form.displayName.required
+            ? 'required'
             : null
-        "
-        @change="$v.form.displayName.$touch()"
-        >Full Name</input-base
-      >
+          : null
+      "
+      @change="$v.form.displayName.$touch()"
+      >Full Name</l-input
+    >
 
-      <select-base v-model="form.gender">
-        Gender
-        <template v-slot:options>
-          <option
-            v-for="genderItem in gender"
-            :key="genderItem.value"
-            :value="genderItem.value"
-          >
-            {{ genderItem.text }}
-          </option>
-        </template>
-      </select-base>
-
-      <input-base
-        id="inputDob"
-        v-model="form.dob"
-        type="date"
-        :error="
-          $v.form.dob.$model !== undefined
-            ? !$v.form.dob.between
-              ? 'data cannot be before 1900, or in the future'
-              : null
-            : null
-        "
-        @change="$v.form.dob.$touch()"
-        >Date of Birth</input-base
-      >
-
-      <input-base
-        id="inputEmail"
-        v-model="form.email"
-        :error="
-          $v.form.email.$model !== undefined
-            ? !$v.form.email.email
-              ? 'invalid email format'
-              : null
-            : null
-        "
-        @change="$v.form.email.$touch()"
-        >Email</input-base
-      >
-
-      <div class="flex flex-col">
-        <label for="inputPhone" class="font-semibold">Phone</label>
-
-        <vue-tel-input
-          id="inputPhone"
-          v-model="phoneNumber"
-          @validate="validatePhone"
-        />
-        <span v-if="!isPhoneValid" class="text-sm text-red-600 px-1 py-1"
-          >invalid phone</span
+    <l-select v-model="form.gender">
+      Gender
+      <template v-slot:options>
+        <option
+          v-for="genderItem in gender"
+          :key="genderItem.value"
+          :value="genderItem.value"
         >
-      </div>
+          {{ genderItem.text }}
+        </option>
+      </template>
+    </l-select>
+
+    <l-input
+      id="inputDob"
+      v-model="form.dob"
+      type="date"
+      :error="
+        $v.form.dob.$model !== undefined
+          ? !$v.form.dob.between
+            ? 'data cannot be before 1900, or in the future'
+            : null
+          : null
+      "
+      @change="$v.form.dob.$touch()"
+      >Date of Birth</l-input
+    >
+
+    <l-input
+      id="inputEmail"
+      v-model="form.email"
+      :error="
+        $v.form.email.$model !== undefined
+          ? !$v.form.email.email
+            ? 'invalid email format'
+            : null
+          : null
+      "
+      @change="$v.form.email.$touch()"
+      >Email</l-input
+    >
+
+    <div class="flex flex-col">
+      <label for="inputPhone" class="font-semibold">Phone</label>
+
+      <vue-tel-input
+        id="inputPhone"
+        v-model="phoneNumber"
+        @validate="validatePhone"
+      />
+      <span v-if="!isPhoneValid" class="text-sm text-red-600 px-1 py-1"
+        >invalid phone</span
+      >
     </div>
-    <edit-object-modal-bottom-part
-      class="pt-10 pb-5"
-      :form="form"
-      which="contacts"
-      :is-valid="isValid"
-    ></edit-object-modal-bottom-part>
   </div>
 </template>
 
 <script>
 import { validationMixin } from 'vuelidate'
 import { required, email } from 'vuelidate/lib/validators'
-import moment from 'moment'
-import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
-import SelectBase from '~/components/elements/SelectBase'
+import { DateTime } from 'luxon'
+import LSelect from '~/components/LSelect'
 
 export default {
   name: 'NewContact',
-  components: { SelectBase, EditObjectModalBottomPart },
+  components: { LSelect },
   mixins: [validationMixin],
   validations: {
     form: {
@@ -98,12 +89,21 @@ export default {
       dob: {
         between(value) {
           if (value === '' || value === undefined) return true
-          return !(moment(value) > moment() || moment(value).get('year') < 1900)
+          return !(
+            DateTime.fromSQL(value) > DateTime.now() ||
+            DateTime.fromSQL(value).year < 1900
+          )
         },
       },
       email: {
         email,
       },
+    },
+  },
+  props: {
+    dataItem: {
+      type: Object,
+      required: true,
     },
   },
   data() {
@@ -125,12 +125,17 @@ export default {
     isValid() {
       return !this.$v.$invalid && this.isPhoneValid
     },
-    item() {
-      return this.$store.state.currentItemToBeEdited
+  },
+  watch: {
+    form: {
+      handler(value) {
+        this.$emit('update', value)
+      },
+      deep: true,
     },
   },
   created() {
-    this.form = JSON.parse(JSON.stringify(this.item))
+    this.form = JSON.parse(JSON.stringify(this.dataItem))
     if (!this.form.gender) this.form.gender = 'X'
     if (this.form.contactNumber)
       this.phoneNumber = (
@@ -141,6 +146,15 @@ export default {
   },
   mounted() {
     document.getElementById('inputName').focus()
+    this.$watch(
+      '$v',
+      (val) => {
+        if (typeof val !== 'undefined') {
+          this.$emit('valid', !this.$v.$invalid)
+        }
+      },
+      { deep: true, immediate: true }
+    )
   },
   methods: {
     validatePhone(ev) {

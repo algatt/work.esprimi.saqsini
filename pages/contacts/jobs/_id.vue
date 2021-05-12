@@ -216,7 +216,7 @@ export default {
         limit: 1000,
         offset: 0,
       })
-      await this.$store.dispatch('roles/getRoles')
+      await this.$store.dispatch('roles/getRoles', {})
       await this.$store.dispatch('departments/getAllDepartments', {
         limit: 1000,
         offset: 0,

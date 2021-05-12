@@ -54,6 +54,7 @@ import NewContactList from '~/components/contacts/NewContactList'
 import NewCompany from '~/components/contacts/NewCompany'
 import NewDepartment from '~/components/contacts/NewDepartment'
 import NewRole from '~/components/contacts/NewRole'
+import NewContact from '~/components/contacts/NewContact'
 
 export default {
   name: 'NewItemModal',
@@ -70,6 +71,7 @@ export default {
     NewCompany,
     NewDepartment,
     NewRole,
+    NewContact,
   },
   mixins: [ModalMixin],
   props: {

@@ -26,6 +26,7 @@ export const actions = {
       this.$axios
         .delete('/contact/contact/' + code)
         .then(() => {
+          commit('deleteContact', code)
           resolve()
         })
         .catch((error) => {
@@ -41,6 +42,7 @@ export const actions = {
       this.$axios
         .post('contact/contact/', qs.stringify(contact))
         .then((response) => {
+          commit('addContact', response.data)
           resolve(response.data)
         })
         .catch((error) => {
@@ -58,6 +60,7 @@ export const actions = {
         .put('contact/contact/' + code, qs.stringify(contact))
         .then((response) => {
           response.data.jobCount = jobCount
+          commit('updateContact', response.data)
           resolve(response.data)
         })
         .catch((error) => {
@@ -70,5 +73,22 @@ export const actions = {
 export const mutations = {
   setContacts(state, contacts) {
     state.items = contacts
+  },
+
+  newContact(state, contact) {
+    state.items.push(contact)
+  },
+
+  updateContact(state, contact) {
+    const found = state.items.find((el) => {
+      return el.code === contact.code
+    })
+    Object.assign(found, contact)
+  },
+
+  deleteContact(state, code) {
+    state.items = state.items.filter((el) => {
+      return el.code !== code
+    })
   },
 }
