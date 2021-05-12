@@ -5,11 +5,11 @@ export const state = () => ({
 })
 
 export const actions = {
-  getRoles({ commit, rootState }) {
+  getRoles({ commit, rootState }, { limit = 100, offset = 0 }) {
     return new Promise((resolve, reject) => {
       this.$axios
         .get(
-          `/contact/role/all?limit=100&offset=0&code=${rootState.selectedContactList.code}`
+          `/contact/role/all?limit=${limit}&offset=${offset}&code=${rootState.selectedContactList.code}`
         )
         .then((response) => {
           commit(

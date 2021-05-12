@@ -26,8 +26,11 @@
             ></l-button>
           </template>
           <template v-slot:menu>
+            <button @click="editSurvey">
+              <i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit Survey
+            </button>
             <button @click="showSurveySettings">
-              <i class="fas fa-sliders-h fa-fw"></i>Settings
+              <i class="fas fa-sliders-h fa-fw"></i>Customisation
             </button>
             <button @click="manageOutreach">
               <i class="fas fa-paper-plane fa-fw"></i>Manage Outreach
@@ -95,6 +98,7 @@ import ModalService from '~/services/modal-services'
 import PlainModal from '~/components/layouts/PlainModal'
 import PreviewSurveyModal from '~/components/surveys/PreviewSurveyModal'
 import LSelect from '~/components/LSelect'
+import NewItemModal from '~/components/layouts/NewItemModal'
 
 export default {
   name: 'QuestionList',
@@ -289,6 +293,24 @@ export default {
         return el.code === code
       })
       this.$store.dispatch('setContactList', contactList)
+    },
+
+    editSurvey() {
+      ModalService.open(NewItemModal, {
+        whichComponent: 'NewSurvey',
+        dataItem: this.survey,
+        options: { header: `Edit ${this.survey.name}` },
+      }).then((response) => {
+        this.$store
+          .dispatch('surveys/updateSurvey', response)
+          .then((survey) => {
+            this.$store.dispatch('categories/getCategories')
+            this.$toasted.show(`Survey ${survey.name} updated`)
+          })
+          .catch(() => {
+            this.$toasted.error('There was a problem updating the survey')
+          })
+      })
     },
 
     clearBranching() {

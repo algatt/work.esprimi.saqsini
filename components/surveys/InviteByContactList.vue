@@ -396,33 +396,29 @@ export default {
         reminderMessage: this.form.reminderMessage,
         invites: this.selectedContacts.map((el) => {
           const sector = this.getSectorAsIs(el.companyCode)
-          const industry = this.getIndustryAsIs(el.companyCode)
+          const industry = this.getSectorAsIs(el.companyCode)
           return {
             email: el.email,
-            filterData: {
-              contactBookCode: this.$store.state.selectedContactList.code,
-              gender: el.gender ? el.gender : null,
-              age: el.age ? el.age : null,
-              sectorCode: sector.code ? sector.code : null,
-              sectorName: sector.name ? sector.name : null,
-              industryCode: industry.code ? industry.code : null,
-              industryName: industry.name ? industry.name : null,
-              companyCode: el.companyCode ? el.companyCode : null,
-              companyName: el.companyName ? el.companyName : null,
-              companyAbbreviation: el.companyAbbr ? el.companyAbbr : null,
-              departmentCode: el.departmentCode ? el.departmentCode : null,
-              departmentName: el.departmentName ? el.departmentName : null,
-              departmentAbbreviation: el.departmentAbbr
+            contactBookCode: this.$store.state.selectedContactList.code,
+            externalEntityCode: this.$store.state.selectedContactList.code,
+            filter: JSON.stringify({
+              Gender: el.gender ? el.gender : null,
+              Age: el.age ? el.age : null,
+              'Full Name': el.displayName,
+              'Sector Name': sector.name ? sector.name : null,
+              'Industry Name': industry.name ? industry.name : null,
+              'Company Name': el.companyName ? el.companyName : null,
+              'Company Abbreviation': el.companyAbbr ? el.companyAbbr : null,
+              'Department Name': el.departmentName ? el.departmentName : null,
+              'Department Abbreviation': el.departmentAbbr
                 ? el.departmentAbbr
                 : null,
-              roleCode: el.roleCode ? el.roleCode : null,
-              roleName: el.roleName ? el.roleName : null,
-              roleAbbreviation: el.roleAbbr ? el.roleAbbr : null,
-            },
+              'Role Name': el.roleName ? el.roleName : null,
+              'Role Abbreviation': el.roleAbbr ? el.roleAbbr : null,
+            }),
           }
         }),
       }
-
       this.$store
         .dispatch('invitations/add', list)
         .then(() => {

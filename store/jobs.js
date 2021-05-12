@@ -5,10 +5,12 @@ export const state = () => ({
 })
 
 export const actions = {
-  getAllJobs({ commit }, { contactList, limit = 100, offset = 0 }) {
+  getAllJobs({ commit, rootState }, { limit = 100, offset = 0 }) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .get(`/contact/job?code=${contactList}&limit=${limit}&offset=${offset}`)
+        .get(
+          `/contact/job?code=${rootState.selectedContactList.code}&limit=${limit}&offset=${offset}`
+        )
         .then((response) => {
           commit('setJobs', response.data)
           resolve(response.data)

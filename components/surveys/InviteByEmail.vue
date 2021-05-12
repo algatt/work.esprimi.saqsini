@@ -120,9 +120,6 @@ export default {
     this.form = JSON.parse(JSON.stringify(this.parsedSurvey))
   },
   methods: {
-    cancel() {
-      this.$store.dispatch('setCurrentItemToBeEdited', null)
-    },
     sendInvites() {
       const list = {
         surveyCode: this.survey.code,
@@ -141,7 +138,6 @@ export default {
         .then(() => {
           this.$toasted.show('Invitations successfully sent')
           this.$store.dispatch('invitations/getAll', { code: this.survey.code })
-          this.cancel()
         })
         .catch(() => {
           this.$toasted.show('There was a problem sending the invitations')

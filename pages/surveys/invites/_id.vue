@@ -27,14 +27,17 @@
           </template>
           <template v-slot:menu>
             <button @click="manageSurvey">
-              <i class="fas fa-question fa-fw"></i>Manage Survey
+              <i class="fas fa-clipboard-list fa-fw"></i>Manage Survey
+            </button>
+            <button @click="viewResponses">
+              <i class="fas fa-chart-bar fa-fw"></i>View Responses
             </button>
           </template>
         </LPopupMenu>
       </div>
     </div>
 
-    <div class="w-full flex flex-col mx-auto">
+    <div class="w-full flex flex-col mx-auto px-4">
       <div class="flex items-center">
         <menu-icon-button
           :active="selectedMenu === 'list'"
@@ -62,7 +65,7 @@
           >Contact List</menu-icon-button
         >
       </div>
-      <div class="px-5">
+      <div class="">
         <invites-list
           v-if="selectedMenu === 'list'"
           :survey="survey"
@@ -191,6 +194,12 @@ export default {
     manageSurvey() {
       this.$router.push({
         name: 'questions-id',
+        params: { id: this.$route.params.id },
+      })
+    },
+    viewResponses() {
+      this.$router.push({
+        name: 'surveys-responses-id',
         params: { id: this.$route.params.id },
       })
     },

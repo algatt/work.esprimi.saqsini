@@ -5,7 +5,7 @@ export const state = () => ({
 })
 
 export const actions = {
-  getSectors({ commit, rootState }, { limit, offset }) {
+  getSectors({ commit, rootState }, { limit = 100, offset = 0 }) {
     return new Promise((resolve, reject) => {
       this.$axios
         .get(

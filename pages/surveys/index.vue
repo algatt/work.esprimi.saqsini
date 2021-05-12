@@ -62,7 +62,7 @@
                   }"
                 >
                   <button>
-                    <i class="fas fa-question fa-fw fa-sm"></i>Manage Survey
+                    <i class="fas fa-clipboard-list fa-fw"></i>Manage Survey
                   </button></nuxt-link
                 >
                 <nuxt-link
@@ -72,15 +72,12 @@
                   }"
                 >
                   <button>
-                    <i class="fas fa-paper-plane fa-fw fa-sm"></i>Manage
-                    Outreach
+                    <i class="fas fa-paper-plane fa-fw"></i>Manage Outreach
                   </button></nuxt-link
                 >
-                <button @click="editSurvey(slotProps.item)">
-                  <i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit Survey
-                </button>
+
                 <button @click="duplicateSurvey(slotProps.item)">
-                  <i class="fas fa-copy fa-fw fa-sm"></i>Duplicate
+                  <i class="fas fa-copy fa-fw"></i>Duplicate
                 </button>
                 <button
                   v-if="slotProps.item.flags.includes('FLAGGED_FOR_REMOVAL')"
@@ -89,17 +86,16 @@
                   <i class="fas fa-trash-restore-alt fa-fw fa-sm"></i>Restore
                 </button>
                 <button v-else @click="flagForDeletion(slotProps.item)">
-                  <i class="fas fa-flag fa-fw fa-sm"></i>Mark for Deletion
+                  <i class="fas fa-flag fa-fw"></i>Mark for Deletion
                 </button>
                 <button
                   v-if="slotProps.item.flags.includes('KIOSK')"
                   @click="copyUrl(slotProps.item.publicIdentifier)"
                 >
-                  <i class="fas fa-globe-europe fa-sm fa-fw"></i>Public URL
+                  <i class="fas fa-globe-europe fa-fw"></i>Public URL
                 </button>
                 <button @click="anonymiseResponses(slotProps.item.code)">
-                  <i class="fas fa-user-secret fa-fw fa-sm"></i>Anonymise
-                  Respondents
+                  <i class="fas fa-user-secret fa-fw"></i>Anonymise Respondents
                 </button>
               </template></LPopupMenu
             ></span
@@ -197,23 +193,7 @@ export default {
           })
       })
     },
-    editSurvey(dataItem) {
-      ModalService.open(NewItemModal, {
-        whichComponent: 'NewSurvey',
-        dataItem,
-        options: { header: `Edit ${dataItem.name}` },
-      }).then((response) => {
-        this.$store
-          .dispatch('surveys/updateSurvey', response)
-          .then((survey) => {
-            this.$store.dispatch('categories/getCategories')
-            this.$toasted.show(`Survey ${survey.name} updated`)
-          })
-          .catch(() => {
-            this.$toasted.error('There was a problem updating the survey')
-          })
-      })
-    },
+
     changedOption(newOption) {
       this.selectedCategory = newOption.parent
       this.selectedSubcategory = newOption.child

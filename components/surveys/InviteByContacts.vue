@@ -175,12 +175,13 @@ export default {
         invites: this.selectedContacts.map((el) => {
           return {
             email: el.email,
-            filterData: {
-              contactBookCode: this.contactList.code,
-              contactCode: el.code,
-              gender: el.gender ? el.gender : null,
-              age: el.dob ? this.calculateAge(el.dob) : null,
-            },
+            contactBookCode: this.contactList.code,
+            externalEntityCode: this.contactList.code,
+            filter: JSON.stringify({
+              Gender: el.gender ? el.gender : null,
+              Age: el.dob ? this.calculateAge(el.dob) : null,
+              'Full Name': el.displayName,
+            }),
           }
         }),
       }

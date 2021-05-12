@@ -82,8 +82,15 @@ export const actions = {
     }
   },
 
-  setContactList({ commit }, item) {
+  setContactList({ dispatch, commit }, item) {
+    // TODO
     commit('setContactList', item)
+    dispatch('contacts/getContacts', {}, { root: true })
+    dispatch('departments/getAllDepartments', {}, { root: true })
+    dispatch('industries/getIndustries', {}, { root: true })
+    dispatch('jobs/getAllJobs', {}, { root: true })
+    dispatch('roles/getRoles', {}, { root: true })
+    dispatch('sectors/getSectors', {}, { root: true })
   },
 
   setCurrentItemToBeEdited({ commit }, item) {
