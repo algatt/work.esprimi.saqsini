@@ -117,7 +117,7 @@ import { SURVEY_COLOURS } from '~/assets/settings/survey-settings'
 export default {
   name: 'SurveySettings',
   props: {
-    survey: {
+    dataItem: {
       type: Object,
       required: true,
     },
@@ -140,7 +140,7 @@ export default {
     },
   },
   created() {
-    this.form = convertSurveyFromApiToForm(this.survey)
+    this.form = convertSurveyFromApiToForm(this.dataItem)
   },
   methods: {
     activateInput(which) {

@@ -61,7 +61,7 @@ export default {
   name: 'QuestionMoveMenu',
   components: { BadgeBase },
   props: {
-    question: {
+    dataItem: {
       type: Object,
       required: true,
     },
@@ -88,14 +88,14 @@ export default {
     },
   },
   created() {
-    this.tempQuestion = JSON.parse(JSON.stringify(this.question))
+    this.tempQuestion = JSON.parse(JSON.stringify(this.dataItem))
   },
 
   methods: {
     getBranchingError(question) {
       let found = false
 
-      const branching = JSON.parse(this.question.surveyOptions)
+      const branching = JSON.parse(this.dataItem.surveyOptions)
       if (branching.branching) {
         branching.branching.rules.forEach((rule) => {
           rule.ruleList.forEach((rl) => {
@@ -120,12 +120,12 @@ export default {
           break
         }
       }
-      const tempQuestion = JSON.parse(JSON.stringify(this.question))
+      const tempQuestion = JSON.parse(JSON.stringify(this.dataItem))
       tempQuestion.new = true
       tempQuestions.splice(indexToInsert, 0, tempQuestion)
 
       tempQuestions = tempQuestions.filter((el) => {
-        return el.new === true || el.code !== this.question.code
+        return el.new === true || el.code !== this.dataItem.code
       })
       let ordinalPosition = 1
       tempQuestions.forEach((el) => {

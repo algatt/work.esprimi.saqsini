@@ -37,6 +37,7 @@ export const actions = {
           ) {
             dispatch('setContactList', null, { root: true })
           }
+          commit('deleteContactList', code)
           resolve()
         })
         .catch((error) => {
@@ -59,6 +60,7 @@ export const actions = {
           },
         })
         .then((response) => {
+          commit('addContactList', response.data)
           resolve(response.data)
         })
         .catch((error) => {
@@ -81,6 +83,7 @@ export const actions = {
           },
         })
         .then((response) => {
+          commit('updateContactList', response.data)
           resolve(response.data)
         })
         .catch((error) => {
@@ -250,5 +253,22 @@ export const actions = {
 export const mutations = {
   setContactList(state, contactList) {
     state.items = contactList
+  },
+
+  addContactList(state, contactList) {
+    state.items.push(contactList)
+  },
+
+  deleteContactList(state, code) {
+    state.items = state.items.filter((el) => {
+      return el.code !== code
+    })
+  },
+
+  updateContactList(state, contactList) {
+    const foundList = state.items.find((el) => {
+      return el.code === contactList.code
+    })
+    Object.assign(foundList, contactList)
   },
 }

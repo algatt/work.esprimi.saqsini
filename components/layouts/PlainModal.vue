@@ -15,8 +15,7 @@
         <div class="p-3">
           <component
             :is="whichComponent"
-            :question="dataItem"
-            :survey="dataItem"
+            :data-item="dataItem"
             @update="updatedItem = $event"
           ></component>
         </div>
@@ -36,7 +35,7 @@
             ></l-button>
           </template>
           <template v-else-if="options.close">
-            <l-button color="gray" @click="confirm()"
+            <l-button color="gray" @click="confirm('')"
               >Close<template #rightIcon
                 ><i class="fas fa-times fa-fw"></i></template
             ></l-button>
@@ -54,11 +53,13 @@ import ModalMixin from '~/components/elements/Modal/ModalMixin'
 import Modal from '~/components/elements/Modal/Modal'
 import ModalBody from '~/components/elements/Modal/ModalBody'
 import LButton from '~/components/LButton'
+
 import QuestionMoveMenu from '~/components/surveys/QuestionMoveMenu'
 import SurveySettings from '~/components/surveys/SurveySettings'
 import SurveyLanguageSettings from '~/components/surveys/SurveyLanguageSettings'
 import SurveyCollaborators from '~/components/surveys/SurveyCollaborators'
 import SurveyInvitesSettings from '~/components/surveys/SurveyInvitesSettings'
+import ContactListCollaborators from '~/components/contacts/ContactListCollaborators'
 
 export default {
   name: 'PlainModal',
@@ -73,6 +74,7 @@ export default {
     SurveyLanguageSettings,
     SurveyCollaborators,
     SurveyInvitesSettings,
+    ContactListCollaborators,
   },
   mixins: [ModalMixin],
   props: {

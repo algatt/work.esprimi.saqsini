@@ -154,7 +154,7 @@ export default {
   },
   mixins: [validationMixin],
   props: {
-    survey: {
+    dataItem: {
       type: Object,
       required: true,
     },
@@ -206,7 +206,7 @@ export default {
   },
 
   created() {
-    this.form = JSON.parse(JSON.stringify(this.survey))
+    this.form = JSON.parse(JSON.stringify(this.dataItem))
   },
   methods: {
     activateInput(which) {

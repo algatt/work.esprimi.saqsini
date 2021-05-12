@@ -1,65 +1,38 @@
 <template>
-  <div class="frosted">
-    <div
-      class="check-height mx-auto bg-white rounded-none md:border md:border-gray-100 shadow-md overflow-y-auto relative w-full w-full md:w-6/12 flex flex-col justify-between"
-      @click.stop
+  <div class="flex flex-col w-full space-y-7">
+    <l-input-button
+      id="inputEmail"
+      v-model="email"
+      class="flex flex-1"
+      type="email"
+      button-color="green"
+      :button-disabled="$v.$invalid"
+      @blur="$v.email.$touch()"
+      @click="addCollaborator"
     >
-      <div>
-        <div class="bg-primary p-3 text-white text-lg">
-          <h5 class="pl-2">Collaborators</h5>
-        </div>
-        <div class="flex flex-col p-5 overflow-y-auto">
-          <div class="flex flex-col w-full space-y-5">
-            <input-base-with-button
-              id="inputEmail"
-              v-model="email"
-              class="flex flex-1"
-              type="email"
-              @blur="$v.email.$touch()"
-              >Collaborator's Email
-              <template v-slot:button>
-                <button-for-input
-                  text-colour="green"
-                  :disabled="$v.$invalid"
-                  @click="addCollaborator"
-                  ><i
-                    class="fas fa-check fa-fw"
-                  ></i> </button-for-input></template
-            ></input-base-with-button>
+      <template v-slot:label>Collaborator's Email</template>
+      <template> <i class="fas fa-check fa-fw"></i></template
+    ></l-input-button>
 
-            <div
-              v-if="filteredCollaborators.length !== 0"
-              class="flex flex-col"
-            >
-              <p class="font-semibold mb-3">Existing Collaborators</p>
+    <div v-if="filteredCollaborators.length !== 0" class="flex flex-col">
+      <p class="font-semibold mb-3">Existing Collaborators</p>
 
-              <div
-                v-for="collab in filteredCollaborators"
-                :key="collab.account.code"
-                class="flex justify-between items-center rounded py-3 border border-gray-100 shadow w-full my-1"
-              >
-                <div class="flex flex-col px-5">
-                  <p>{{ collab.account.displayName }}</p>
-                  <p>{{ collab.account.email }}</p>
-                </div>
-                <div class="flex items-center pr-3">
-                  <button-icon-rounded-outline
-                    bg-colour="red"
-                    @click="removeCollaborator(collab.account.email)"
-                    ><i class="far fa-trash-alt fa-fw"></i
-                  ></button-icon-rounded-outline>
-                </div>
-              </div>
-            </div>
-          </div>
+      <div
+        v-for="collab in filteredCollaborators"
+        :key="collab.account.code"
+        class="flex justify-between items-center rounded py-3 border border-gray-100 shadow w-full my-1"
+      >
+        <div class="flex flex-col px-5">
+          <p>{{ collab.account.displayName }}</p>
+          <p>{{ collab.account.email }}</p>
         </div>
-      </div>
-      <div class="w-full flex justify-end p-5 px-3">
-        <button-basic colour="gray" @click="cancelModal">
-          Cancel<template v-slot:rightIcon
-            ><i class="fas fa-times fa-fw fa-sm"></i
-          ></template>
-        </button-basic>
+        <div class="flex items-center pr-3">
+          <l-button-circle
+            color="red"
+            @click="removeCollaborator(collab.account.email)"
+            ><i class="far fa-trash-alt fa-fw"></i
+          ></l-button-circle>
+        </div>
       </div>
     </div>
   </div>
@@ -68,20 +41,16 @@
 <script>
 import { validationMixin } from 'vuelidate'
 import { required, email } from 'vuelidate/lib/validators'
-import InputBaseWithButton from '~/components/elements/InputBaseWithButton'
-import ButtonIconRoundedOutline from '~/components/elements/ButtonIconRoundedOutline'
-import ButtonForInput from '~/components/elements/ButtonForInput'
+import LButtonCircle from '~/components/LButtonCircle'
 
 export default {
   name: 'ContactListCollaborators',
   components: {
-    ButtonIconRoundedOutline,
-    ButtonForInput,
-    InputBaseWithButton,
+    LButtonCircle,
   },
   mixins: [validationMixin],
   props: {
-    item: {
+    dataItem: {
       required: true,
       type: Object,
     },
@@ -107,7 +76,7 @@ export default {
     },
   },
   created() {
-    this.form = JSON.parse(JSON.stringify(this.item))
+    this.form = JSON.parse(JSON.stringify(this.dataItem))
     this.$store
       .dispatch('contactlist/getCollaborators', this.form.code)
       .then((response) => {
@@ -115,20 +84,10 @@ export default {
       })
   },
   mounted() {
-    this.$store.dispatch('emptySelectedItems')
-    document.documentElement.style.overflow = 'hidden'
-    document.body.scroll = 'no'
     document.getElementById('inputEmail').focus()
   },
-  destroyed() {
-    document.documentElement.style.overflow = 'visible'
-    document.body.scroll = 'yes'
-    this.$emit('modalClosed')
-  },
+
   methods: {
-    cancelModal() {
-      this.$emit('cancel')
-    },
     addCollaborator() {
       this.$store
         .dispatch('contactlist/addCollaborator', {

@@ -306,7 +306,7 @@ export default {
     }
   },
   mounted() {
-    // document.getElementById('inputName').focus()
+    document.getElementById('inputName').focus()
     this.$watch(
       '$v',
       (val) => {

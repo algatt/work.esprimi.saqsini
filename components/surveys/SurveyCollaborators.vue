@@ -52,7 +52,7 @@ export default {
   },
   mixins: [validationMixin],
   props: {
-    survey: {
+    dataItem: {
       type: Object,
       required: true,
     },
@@ -78,9 +78,9 @@ export default {
     },
   },
   mounted() {
-    this.form = JSON.parse(JSON.stringify(this.survey))
+    this.form = JSON.parse(JSON.stringify(this.dataItem))
     this.$store
-      .dispatch('surveys/getCollaborators', this.survey.code)
+      .dispatch('surveys/getCollaborators', this.dataItem.code)
       .then((response) => {
         this.collaborators = response
       })
@@ -89,12 +89,12 @@ export default {
     addCollaborator() {
       this.$store
         .dispatch('surveys/addCollaborator', {
-          code: this.survey.code,
+          code: this.dataItem.code,
           email: this.email,
         })
         .then(() => {
           this.$store
-            .dispatch('surveys/getCollaborators', this.survey.code)
+            .dispatch('surveys/getCollaborators', this.dataItem.code)
             .then((response) => {
               this.collaborators = response
             })
@@ -108,7 +108,7 @@ export default {
     removeCollaborator(email) {
       this.$store
         .dispatch('surveys/removeCollaborator', {
-          code: this.survey.code,
+          code: this.dataItem.code,
           email,
         })
         .then(() => {

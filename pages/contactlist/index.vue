@@ -1,186 +1,128 @@
 <template>
-  <div v-if="!loading" class="flex flex-wrap items-start">
-    <top-header-bar
-      which="contactlist"
-      :items="contactlists"
-      :hide-select-all="true"
+  <list-layout v-if="!loading">
+    <data-table
+      :table-data="contactlists"
+      :table-definition="tableContactList"
+      @deleteAll="deleteAll"
     >
-      <template v-slot:title> Contact Lists </template>
-      <template v-slot:extraButtons>
-        <button-basic @click="setCurrentItem({ code: -1 })">
-          Contact List
-          <template v-slot:rightIcon
-            ><i class="fas fa-plus fa-fw fa-sm"></i
-          ></template>
-        </button-basic>
-      </template>
-      <template v-slot:menuButtonIfNotSelected>
-        <span @click="downloadTemplate">
-          <i class="fas fa-download fa-fw mr-1"></i>Download Template</span
-        >
-      </template>
-    </top-header-bar>
-
-    <info-box v-if="contactlists.length === 0" type="info">
-      <template v-slot:title>No Contact Lists</template>
-      <template v-slot:content
-        >You do not have any contact lists you can create one, or a default one
-        will be created in a few moments.</template
+      <template #headerLeft><h6>Contact Lists</h6></template>
+      <template #headerRight
+        ><new-item-button class="ml-2" @click="showNewItem"
+          >New Contact List</new-item-button
+        ></template
       >
-    </info-box>
-
-    <display-table-component
-      v-else
-      :items="contactlists"
-      @hovered="hovered = $event"
-      @clicked="setCurrentItem($event)"
-    >
-      <template v-slot:title>Contact Lists</template>
-
-      <template v-slot:titleContent>
-        <p class="w-6/12">List Name</p>
-        <p class="w-6/12 text-right pr-4">Validity</p>
+      <template #deleteBy="slotProps">
+        {{ slotProps.item.deleteBy }}
       </template>
-      <template v-slot:titleContentSmall>Contacts</template>
-      <template v-slot:content="slotProps"
-        ><p class="w-full lg:w-6/12">
-          <span>{{ slotProps.item.name }}</span
+      <template #flags="slotProps">
+        <span class="flex items-center space-x-3"
           ><span
             v-if="slotProps.item.flags.includes('FLAGGED_FOR_REMOVAL')"
-            class="text-gray-400 ml-3"
+            class="text-gray-400"
             title="Flagged for Deletion"
-            ><i class="fas fa-trash-alt"></i
+            ><i class="fas fa-trash-alt fa-fw"></i
           ></span>
           <span
             v-if="slotProps.item.flags.includes('HAS_IMPORT_DATA')"
-            class="text-gray-400 ml-3"
+            class="text-gray-400"
             title="Importing Data"
           >
-            <i class="far fa-clock"></i>
+            <i class="far fa-clock fa-fw"></i>
+          </span>
+          <span
+            v-if="slotProps.item.flags.includes('HAS_EXPORT_DATA')"
+            class="text-gray-400"
+            title="Can donwload data"
+          >
+            <i class="fas fa-table fa-fw"></i>
           </span>
           <span
             v-if="slotProps.item.flags.includes('GENERATE_EXPORT_DATA')"
-            class="text-gray-400 ml-3"
+            class="text-gray-400"
             title="Generating Export Data"
           >
-            <i class="fas fa-cloud-download-alt"></i>
-          </span>
-        </p>
-        <p class="w-full lg:w-6/12 text-left lg:text-right pr-4">
-          <span
-            v-if="slotProps.item.deleteBy"
-            class="flex flex-col xl:flex-row items-start xl:justify-end"
+            <i class="fas fa-cloud-download-alt fa-fw"></i> </span></span
+      ></template>
+      <template #actions="slotProps">
+        <span class="flex justify-center">
+          <LPopupMenu>
+            <template v-slot:menu>
+              <button @click="editContactList(slotProps.item)">
+                <i class="fas fa-pencil-alt fa-sm fa-fw"></i>Edit
+              </button>
+              <button @click="showCollaborators(slotProps.item)">
+                <i class="fas fa-users fa-sm fa-fw"></i>Collaborators
+              </button>
+              <button
+                v-if="!slotProps.item.flags.includes('GENERATE_EXPORT_DATA')"
+                @click="exportContactBook(slotProps.item)"
+              >
+                <i class="fas fa-file-export fa-fw fa-sm"></i>Start Export
+              </button>
+              <button
+                v-if="
+                  slotProps.item.flags.includes('HAS_EXPORT_DATA') &&
+                  !slotProps.item.flags.includes('GENERATE_EXPORT_DATA')
+                "
+                @click="getExportData(slotProps.item)"
+              >
+                <i class="fas fa-download fa-fw fa-sm"></i>Download Data
+              </button>
+              <button
+                v-if="!slotProps.item.flags.includes('FLAGGED_FOR_REMOVAL')"
+                @click="flagForRemoval(slotProps.item)"
+              >
+                <i class="fas fa-flag fa-fw fa-sm"></i>Flag for Removal
+              </button>
+              <button v-else @click="unflagForRemoval(slotProps.item)">
+                <i class="far fa-flag fa-fw fa-sm"></i>Remove from Deletion
+              </button>
+              <button @click="anonymiseContacts(slotProps.item)">
+                <i class="fas fa-user-secret fa-fw fa-sm"></i>Anonymise Contacts
+              </button>
+            </template></LPopupMenu
           >
-            <template
-              >Scheduled for Deletion
-              <badge-base bg-colour="blue" class="xl:ml-2">
-                {{
-                  calculateRemainingTime(slotProps.item.deleteBy)
-                }}</badge-base
-              ></template
-            ></span
-          >
-
-          <span v-else>Indefinite</span>
-        </p>
+        </span>
       </template>
-      <template v-slot:popup-menu="slotProps">
-        <display-table-row-popup
-          :class="hovered === slotProps.item.code ? 'flex' : 'flex xl:hidden'"
-          @close="hovered = null"
-        >
-          <template v-slot:menu>
-            <span @click="setCurrentItem(slotProps.item)"
-              ><i class="fas fa-pencil-alt fa-sm fa-fw"></i>Edit</span
-            >
-            <span @click="showCollaborators(slotProps.item)"
-              ><i class="fas fa-users fa-sm fa-fw"></i>Collaborators</span
-            >
-            <span
-              v-if="!slotProps.item.flags.includes('GENERATE_EXPORT_DATA')"
-              @click="exportContactBook(slotProps.item)"
-            >
-              <i class="fas fa-file-export fa-fw fa-sm"></i>Start Export
-            </span>
-            <span
-              v-if="
-                slotProps.item.flags.includes('HAS_EXPORT_DATA') &&
-                !slotProps.item.flags.includes('GENERATE_EXPORT_DATA')
-              "
-              @click="getExportData(slotProps.item)"
-            >
-              <i class="fas fa-download fa-fw fa-sm"></i>Download Data
-            </span>
-            <span
-              v-if="!slotProps.item.flags.includes('FLAGGED_FOR_REMOVAL')"
-              @click="flagForRemoval(slotProps.item)"
-            >
-              <i class="fas fa-flag fa-fw fa-sm"></i>Flag for Removal
-            </span>
-            <span v-else @click="unflagForRemoval(slotProps.item)">
-              <i class="far fa-flag fa-fw fa-sm"></i>Remove from Deletion
-            </span>
-            <span
-              ><i class="fas fa-user-secret fa-fw fa-sm"></i>Anonymise
-              Contacts</span
-            >
-          </template>
-        </display-table-row-popup>
-      </template>
-    </display-table-component>
-
-    <transition name="fade">
-      <edit-object-modal v-if="currentItemToBeEdited">
-        <template v-slot:secondTitle>Contact List</template>
-        <template v-slot:content>
-          <new-contact-list></new-contact-list>
-        </template>
-      </edit-object-modal>
-
-      <contact-list-collaborators
-        v-if="showCollaboratorsModal"
-        :item="selectedContactListForCollaboration"
-        @cancel="showCollaboratorsModal = false"
-      ></contact-list-collaborators>
-    </transition>
-  </div>
-  <spinner v-else></spinner>
+    </data-table>
+  </list-layout>
 </template>
 
 <script>
-import moment from 'moment'
-import EditObjectModal from '~/components/layouts/EditObjectModal'
-import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
-import Spinner from '~/components/layouts/Spinner'
-import TopHeaderBar from '~/components/layouts/TopHeaderBar'
-import ContactListCollaborators from '~/components/contacts/ContactListCollaborators'
-import viewMixin from '~/helpers/viewMixin'
-
-import NewContactList from '~/components/contacts/NewContactList'
-import BadgeBase from '~/components/elements/BadgeBase'
-import DisplayTableRowPopup from '~/components/layouts/DisplayTableRowPopup'
-import InfoBox from '~/components/layouts/InfoBox'
+import ListLayout from '~/components/layouts/ListLayout'
+import DataTable from '~/components/elements/DataTable/DataTable'
+import NewItemButton from '~/components/elements/NewItemButton'
+import ModalService from '~/services/modal-services'
+import NewItemModal from '~/components/layouts/NewItemModal'
+import PlainModal from '~/components/layouts/PlainModal'
 
 export default {
   name: 'ContactLists',
   middleware: ['contactBook'],
+  layout: 'authlayout',
   components: {
-    DisplayTableRowPopup,
-    BadgeBase,
-    DisplayTableComponent,
-    EditObjectModal,
-    Spinner,
-    TopHeaderBar,
-    ContactListCollaborators,
-
-    NewContactList,
-    InfoBox,
+    NewItemButton,
+    DataTable,
+    ListLayout,
   },
-  mixins: [viewMixin],
+
   data() {
     return {
-      selectedContactListForCollaboration: null,
-      showCollaboratorsModal: false,
+      loading: true,
+      tableContactList: [
+        {
+          title: 'Name',
+          field: 'name',
+          sortable: 'true',
+        },
+        {
+          title: 'Available Until',
+          field: 'deleteBy',
+          slot: 'deleteBy',
+        },
+        { title: 'Statuses', slot: 'flags' },
+        { title: '', slot: 'actions' },
+      ],
     }
   },
   computed: {
@@ -189,25 +131,57 @@ export default {
     },
   },
   created() {
-    this.$store.dispatch('setLoading', true)
-    this.$store
-      .dispatch('contactlist/getContactLists', {
-        limit: 100,
-        offset: 0,
-      })
-      .finally(() => {
-        this.$store.dispatch('setLoading', false)
-      })
+    this.loading = true
+    this.$store.dispatch('contactlist/getContactLists', {}).finally(() => {
+      this.loading = false
+    })
   },
   methods: {
+    showNewItem() {
+      const dataItem = {}
+
+      ModalService.open(NewItemModal, {
+        whichComponent: 'NewContactList',
+        dataItem,
+        options: { header: 'New Contact List' },
+      }).then((response) => {
+        this.$store
+          .dispatch('contactlist/newContactList', response)
+          .then((contactList) => {
+            this.$toasted.show(`Contact List ${contactList.name} created`)
+          })
+          .catch(() => {
+            this.$toasted.error('There was a problem creating the contact list')
+          })
+      })
+    },
+    editContactList(contactList) {
+      ModalService.open(NewItemModal, {
+        whichComponent: 'NewContactList',
+        dataItem: contactList,
+        options: { header: `Editing ${contactList.name}` },
+      }).then((response) => {
+        this.$store
+          .dispatch('contactlist/updateContactList', response)
+          .then((contactList) => {
+            this.$toasted.show(`Contact List ${contactList.name} updated`)
+          })
+          .catch(() => {
+            this.$toasted.error('There was a problem updating the contact list')
+          })
+      })
+    },
     showCollaborators(contactList) {
-      this.selectedContactListForCollaboration = contactList
-      this.showCollaboratorsModal = true
+      ModalService.open(PlainModal, {
+        whichComponent: 'ContactListCollaborators',
+        dataItem: contactList,
+        options: {
+          close: true,
+          header: `Contact List ${contactList.name} collaborators`,
+        },
+      })
     },
-    calculateRemainingTime(deleteBy) {
-      const days = moment(deleteBy).diff(moment(), 'd')
-      return `${days} days left`
-    },
+
     flagForRemoval(contactList) {
       this.$store
         .dispatch('contactlist/flagForRemoval', contactList)
@@ -240,6 +214,36 @@ export default {
     },
     getExportData(contactList) {
       this.$store.dispatch('contactlist/getExportData', contactList)
+    },
+    anonymiseContacts(contactList) {
+      this.$store
+        .dispatch('invitations/anonymiseResponsesByEntity', contactList.code)
+        .then(() => {
+          this.$toasted.show('Anonymisation in process...')
+        })
+        .catch(() => {
+          this.$toasted.error(
+            'There was a problem submitting your anonimisation request'
+          )
+        })
+    },
+    deleteAll(contactLists) {
+      const calls = []
+      for (const contactList in contactLists) {
+        calls.push(
+          this.$store.dispatch(
+            'contactlist/deleteContactList',
+            contactLists[contactList].code
+          )
+        )
+      }
+      Promise.all(calls)
+        .then(() => {
+          this.$toasted.show(`${contactLists.length} lists deleted`)
+        })
+        .catch(() => {
+          this.$toasted.error('There was a problem deleting the contact lists')
+        })
     },
   },
 }

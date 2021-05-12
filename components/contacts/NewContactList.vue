@@ -1,57 +1,48 @@
 <template>
-  <div class="flex flex-col justify-between w-full">
-    <div class="flex flex-col w-full space-y-5">
-      <input-base
-        id="inputName"
-        v-model="form.name"
-        :error="
-          $v.form.name.$model !== undefined && !$v.form.name.required
-            ? 'required'
-            : null
-        "
-        placeholder="Enter list reference name"
-        @change="$v.form.name.$touch"
-        >List Name</input-base
-      >
+  <div class="flex flex-col w-full space-y-7">
+    <l-input
+      id="inputName"
+      v-model="form.name"
+      :error="
+        $v.form.name.$model !== undefined && !$v.form.name.required
+          ? 'required'
+          : null
+      "
+      placeholder="Enter list reference name"
+      @change="$v.form.name.$touch"
+      >List Name</l-input
+    >
 
-      <p class="font-semibold">Contact List</p>
-      <input
-        v-if="form.code === -1"
-        id="inputData"
-        type="file"
-        @change="fileSelected"
-      />
+    <p class="font-semibold">Contact List</p>
+    <input
+      v-if="!form.code"
+      id="inputData"
+      type="file"
+      @change="fileSelected"
+    />
 
-      <input-base
-        id="inputValidity"
-        v-model="form.deleteBy"
-        :error="
-          $v.form.deleteBy.$model !== undefined && !$v.form.deleteBy.check
-            ? 'date cannot be in the past'
-            : null
-        "
-        type="date"
-        @change="$v.form.deleteBy.$touch()"
-        >Valid Until</input-base
-      >
-    </div>
-    <edit-object-modal-bottom-part
-      :form="form"
-      which="contactlist"
-      :is-valid="isValid"
-    ></edit-object-modal-bottom-part>
+    <l-input
+      id="inputValidity"
+      v-model="form.deleteBy"
+      :error="
+        $v.form.deleteBy.$model !== undefined && !$v.form.deleteBy.check
+          ? 'date cannot be in the past'
+          : null
+      "
+      type="date"
+      @change="$v.form.deleteBy.$touch()"
+      >Valid Until</l-input
+    >
   </div>
 </template>
 
 <script>
 import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
-import moment from 'moment'
-import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
+import { DateTime } from 'luxon'
 
 export default {
   name: 'NewContactList',
-  components: { EditObjectModalBottomPart },
   mixins: [validationMixin],
   validations: {
     form: {
@@ -61,9 +52,15 @@ export default {
       deleteBy: {
         check(value) {
           if (value === '' || value === undefined) return true
-          return moment(value) > moment()
+          return DateTime.fromSQL(value) > DateTime.now()
         },
       },
+    },
+  },
+  props: {
+    dataItem: {
+      type: Object,
+      required: true,
     },
   },
   data() {
@@ -75,15 +72,29 @@ export default {
     isValid() {
       return !this.$v.$invalid
     },
-    item() {
-      return this.$store.state.currentItemToBeEdited
+  },
+  watch: {
+    form: {
+      handler(value) {
+        this.$emit('update', value)
+      },
+      deep: true,
     },
   },
   created() {
-    this.form = JSON.parse(JSON.stringify(this.item))
+    this.form = JSON.parse(JSON.stringify(this.dataItem))
   },
   mounted() {
     document.getElementById('inputName').focus()
+    this.$watch(
+      '$v',
+      (val) => {
+        if (typeof val !== 'undefined') {
+          this.$emit('valid', !this.$v.$invalid)
+        }
+      },
+      { deep: true, immediate: true }
+    )
   },
   methods: {
     fileSelected(event) {

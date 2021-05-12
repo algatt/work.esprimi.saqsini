@@ -58,7 +58,7 @@ export default {
   name: 'SurveyLanguageSettings',
 
   props: {
-    survey: {
+    dataItem: {
       type: Object,
       required: true,
     },
@@ -67,7 +67,7 @@ export default {
     generateLanguagePack() {
       this.generate = false
       this.$store
-        .dispatch('surveys/generateLanguagePack', this.survey)
+        .dispatch('surveys/generateLanguagePack', this.dataItem)
         .then(() => {
           this.$toasted.show(
             `Your request is being processed. Check your notifications to know when it's ready.`
@@ -83,7 +83,7 @@ export default {
       const file = document.getElementById('inputFile').files[0]
       this.$store
         .dispatch('surveys/uploadLanguagePack', {
-          survey: this.survey,
+          survey: this.dataItem,
           file,
         })
         .then(() => {
@@ -98,14 +98,14 @@ export default {
     },
     downloadLanguagePack() {
       this.$store
-        .dispatch('surveys/downloadLanguagePack', this.survey)
+        .dispatch('surveys/downloadLanguagePack', this.dataItem)
         .then((response) => {
           const fileURL = window.URL.createObjectURL(new Blob([response]))
           const fileLink = document.createElement('a')
 
           fileLink.href = fileURL
           const fileName =
-            this.survey.name +
+            this.dataItem.name +
             '_' +
             DateTime.now().toFormat('yyyy-MM-dd') +
             '.xlsx'
