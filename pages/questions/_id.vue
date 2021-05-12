@@ -3,19 +3,11 @@
     <div class="w-full mt-3 mb-6 flex justify-between flex-wrap">
       <div class="w-full md:w-6/12 flex justify-start items-center px-4">
         <h4 class="mt-2 mr-5">{{ survey.name }}</h4>
-        <l-select
-          v-if="canUseContactBook"
-          :value="selectedContactList.code"
+        <contact-list-select
           :disabled="
             getBranchingContactBook().includes(selectedContactList.code)
           "
-          @input="changeContactBook"
-          ><template v-slot:options
-            ><option v-for="cl in contactLists" :key="cl.code" :value="cl.code">
-              {{ cl.name }}
-            </option></template
-          ></l-select
-        >
+        ></contact-list-select>
       </div>
       <div class="w-full md:w-6/12 flex justify-start md:justify-end px-4">
         <LPopupMenu>
@@ -97,13 +89,15 @@ import LPopupMenu from '~/components/LPopupMenu'
 import ModalService from '~/services/modal-services'
 import PlainModal from '~/components/layouts/PlainModal'
 import PreviewSurveyModal from '~/components/surveys/PreviewSurveyModal'
-import LSelect from '~/components/LSelect'
+
 import NewItemModal from '~/components/layouts/NewItemModal'
+import ContactListSelect from '~/components/elements/ContactListSelect'
 
 export default {
   name: 'QuestionList',
   components: {
-    LSelect,
+    ContactListSelect,
+
     PreviewSurveyModal,
     LPopupMenu,
     SurveyListQuestion,

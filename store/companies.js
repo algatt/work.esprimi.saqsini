@@ -18,22 +18,15 @@ export const state = () => ({
 })
 
 export const actions = {
-  getCompanies({ commit, rootState }, { limit, offset }) {
+  getCompanies({ commit, rootState }, { limit = 100, offset = 0 }) {
     return new Promise((resolve, reject) => {
       this.$axios
         .get(
           `/contact/company?&limit=${limit}&offset=${offset}&code=${rootState.selectedContactList.code}`
         )
         .then((response) => {
-          commit(
-            'setItems',
-            {
-              which: 'companies',
-              items: response.data,
-            },
-            { root: true }
-          )
-          resolve()
+          commit('setCompanies', response.data)
+          resolve(response.data)
         })
         .catch((error) => {
           reject(error)
@@ -41,21 +34,14 @@ export const actions = {
     })
   },
 
-  getCompaniesByIndustry({ commit }, { limit, offset, code }) {
+  getCompaniesByIndustry({ commit }, { limit = 100, offset = 0, code }) {
     return new Promise((resolve, reject) => {
       this.$axios
         .get(
           `/contact/company/byIndustry?code=${code}&limit=${limit}&offset=${offset}`
         )
         .then((response) => {
-          commit(
-            'setItems',
-            {
-              which: 'companies',
-              items: response.data,
-            },
-            { root: true }
-          )
+          commit('setCompanies', response.data)
           resolve()
         })
         .catch((error) => {
@@ -64,21 +50,14 @@ export const actions = {
     })
   },
 
-  getCompaniesBySector({ commit }, { limit, offset, code }) {
+  getCompaniesBySector({ commit }, { limit = 100, offset = 0, code }) {
     return new Promise((resolve, reject) => {
       this.$axios
         .get(
           `/contact/company/bySector?code=${code}&limit=${limit}&offset=${offset}`
         )
         .then((response) => {
-          commit(
-            'setItems',
-            {
-              which: 'companies',
-              items: response.data,
-            },
-            { root: true }
-          )
+          commit('setCompanies', response.data)
           resolve()
         })
         .catch((error) => {
@@ -90,13 +69,9 @@ export const actions = {
   deleteCompany({ dispatch, commit }, code) {
     return new Promise((resolve, reject) => {
       this.$axios
-        .delete('/contact/company/' + code)
-        .then(async () => {
-          await dispatch(
-            'sectors/getSectors',
-            { limit: 1000, offset: 0 },
-            { root: true }
-          )
+        .delete(`/contact/company/${code}`)
+        .then(() => {
+          commit('deleteCompany', code)
           resolve()
         })
         .catch((error) => {
@@ -120,12 +95,8 @@ export const actions = {
             'Content-Type': 'multipart/form-data',
           },
         })
-        .then(async (response) => {
-          await dispatch(
-            'sectors/getSectors',
-            { limit: 1000, offset: 0 },
-            { root: true }
-          )
+        .then((response) => {
+          commit('addCompany', response.data)
           resolve(response.data)
         })
         .catch((error) => {
@@ -148,14 +119,38 @@ export const actions = {
     delete company.code
     return new Promise((resolve, reject) => {
       this.$axios
-        .put('contact/company/' + code, data)
+        .put(`contact/company/${code}`, data)
         .then((response) => {
           response.data.departmentCount = departmentCount
+          commit('updateCompany', response.data)
           resolve(response.data)
         })
         .catch((error) => {
           reject(error)
         })
+    })
+  },
+}
+
+export const mutations = {
+  setCompanies(state, companies) {
+    state.items = companies
+  },
+
+  addCompany(state, company) {
+    state.items.push(company)
+  },
+
+  updateCompany(state, company) {
+    const foundCompany = state.items.find((el) => {
+      return el.code === company.code
+    })
+    Object.assign(foundCompany, company)
+  },
+
+  deleteCompany(state, code) {
+    state.items = state.items.filter((el) => {
+      return el.code !== code
     })
   },
 }

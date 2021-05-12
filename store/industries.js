@@ -10,11 +10,7 @@ export const actions = {
       this.$axios
         .get(`/contact/industry/all?code=${rootState.selectedContactList.code}`)
         .then((response) => {
-          commit(
-            'setItems',
-            { which: 'industries', items: response.data },
-            { root: true }
-          )
+          commit('setIndustries', response.data)
           resolve(response.data)
         })
         .catch((error) => {
@@ -28,6 +24,7 @@ export const actions = {
       this.$axios
         .post('/contact/industry/', qs.stringify(industry))
         .then((response) => {
+          commit('addIndustry', response.data)
           resolve(response.data)
         })
         .catch((error) => {
@@ -36,15 +33,23 @@ export const actions = {
     })
   },
 
-  updateIndustry({ commit }, industry) {
-    const code = industry.code
-    const companyCount = industry.companyCount
-    delete industry.code
+  updateIndustry({ state, commit }, { code, name }) {
+    const existingIndustry = state.items.find((el) => {
+      return el.code === code
+    })
+
+    const industry = {
+      name,
+      abbr: existingIndustry.abbr,
+      sectorCode: existingIndustry.sectorCode,
+    }
+
     return new Promise((resolve, reject) => {
       this.$axios
         .put('/contact/industry/' + code, qs.stringify(industry))
         .then((response) => {
-          response.data.companyCount = companyCount
+          response.data.companyCount = existingIndustry.companyCount
+          commit('updateIndustry', response.data)
           resolve(response.data)
         })
         .catch((error) => {
@@ -58,11 +63,35 @@ export const actions = {
       this.$axios
         .delete('/contact/industry/' + code)
         .then(() => {
+          commit('deleteIndustry', code)
           resolve()
         })
         .catch((error) => {
           reject(error)
         })
     })
+  },
+}
+
+export const mutations = {
+  setIndustries(state, industries) {
+    state.items = industries
+  },
+
+  updateIndustry(state, industry) {
+    const foundIndustry = state.items.find((el) => {
+      return el.code === industry.code
+    })
+    Object.assign(foundIndustry, industry)
+  },
+
+  deleteIndustry(state, code) {
+    state.items = state.items.filter((el) => {
+      return el.code !== code
+    })
+  },
+
+  addIndustry(state, industry) {
+    state.items.push(industry)
   },
 }

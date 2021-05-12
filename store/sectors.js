@@ -25,13 +25,18 @@ export const actions = {
     })
   },
 
-  newSector({ commit, rootState }, sector) {
-    sector.contactbookCode = rootState.selectedContactList.code
-    delete sector.code
+  newSector({ commit, rootState }, name) {
+    const sector = {
+      name,
+      abbr: name,
+      contactbookCode: rootState.selectedContactList.code,
+    }
+
     return new Promise((resolve, reject) => {
       this.$axios
         .post('/contact/sector/', qs.stringify(sector))
         .then((response) => {
+          commit('addSector', response.data)
           resolve(response.data)
         })
         .catch((error) => {
@@ -40,15 +45,23 @@ export const actions = {
     })
   },
 
-  updateSector({ commit }, sector) {
-    const code = sector.code
-    const companyCount = sector.companyCount
-    delete sector.code
+  updateSector({ commit, state }, { code, name }) {
+    const existingSector = state.items.find((el) => {
+      return el.code === code
+    })
+
+    const sector = {
+      name,
+      abbr: existingSector.name,
+      contactbookCode: existingSector.contactbookCode,
+    }
+
     return new Promise((resolve, reject) => {
       this.$axios
         .put('/contact/sector/' + code, qs.stringify(sector))
         .then((response) => {
-          response.data.companyCount = companyCount
+          response.data.companyCount = existingSector.companyCount
+          commit('updateSector', response.data)
           resolve(response.data)
         })
         .catch((error) => {
@@ -62,9 +75,29 @@ export const actions = {
       this.$axios
         .delete('/contact/sector/' + code)
         .then(() => {
+          commit('deleteSector', code)
           resolve()
         })
         .catch((error) => reject(error))
     })
+  },
+}
+
+export const mutations = {
+  updateSector(state, item) {
+    const foundSector = state.items.find((el) => {
+      return el.code === item.code
+    })
+    Object.assign(foundSector, item)
+  },
+
+  deleteSector(state, code) {
+    state.items = state.items.filter((el) => {
+      return el.code !== code
+    })
+  },
+
+  addSector(state, sector) {
+    state.items.push(sector)
   },
 }

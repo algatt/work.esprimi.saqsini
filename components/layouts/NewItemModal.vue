@@ -51,6 +51,7 @@ import NewSurvey from '~/components/layouts/Surveys/NewSurvey'
 import LButton from '~/components/LButton'
 import NewQuestion from '~/components/surveys/NewQuestion'
 import NewContactList from '~/components/contacts/NewContactList'
+import NewCompany from '~/components/contacts/NewCompany'
 
 export default {
   name: 'NewItemModal',
@@ -64,6 +65,7 @@ export default {
     NewSurvey,
     NewQuestion,
     NewContactList,
+    NewCompany,
   },
   mixins: [ModalMixin],
   props: {

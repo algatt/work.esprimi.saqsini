@@ -2,7 +2,9 @@
   <div class="w-full">
     <div class="md:pl-5 w-full mb-10 md:mb-0">
       <TableHeader class="mb-4"
-        ><template #left><slot name="headerLeft"></slot></template
+        ><template #left
+          ><div class="flex items-center space-x-2">
+            <slot name="headerLeft"></slot></div></template
         ><template #right
           ><selection-delete-clear-button
             v-if="processedTableData.length !== 0"

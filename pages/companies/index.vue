@@ -1,310 +1,232 @@
 <template>
-  <div v-if="!loading" class="flex flex-wrap items-start">
-    <top-header-bar
-      which="companies"
-      :items="companies"
-      :hide-menu="companies.length === 0"
-      ><template v-slot:title>Companies</template>
-      <template v-slot:extraContent>
-        <div class="xl:ml-6 ml-0 flex items-center">
-          <contact-book-dropdown
-            @changedList="updateData"
-          ></contact-book-dropdown>
-        </div>
-      </template>
-      <template v-slot:extraButtons>
-        <button-basic
-          v-if="!disableNewButton && companies.length !== 0"
-          @click="setCurrentItem({ code: -1 })"
-        >
-          New Company
-          <template v-slot:rightIcon
-            ><i
-              class="fas fa-plus fa-fw fa-sm"
-            ></i> </template></button-basic></template
-    ></top-header-bar>
-
-    <template v-if="contactlists.length < 1">
-      <info-box type="info">
-        <template v-slot:title>No contact lists</template>
-        <template v-slot:content
-          >You do not have any contact lists set up. Make sure to create one
-          before creating any companies.</template
-        >
-      </info-box>
+  <list-layout-with-sidebar v-if="!loading">
+    <template #sidebar>
+      <div class="px-3 py-3">
+        <company-sector-tree-view
+          :sectors="sectors"
+          @changedOption="changedOption"
+        ></company-sector-tree-view>
+      </div>
     </template>
-    <template v-else>
-      <side-tree-nav
-        class="w-full xl:w-3/12"
-        :parents="sectors"
-        :children="industries"
-        parent-code-name="sectorCode"
-        count-name="companyCount"
-        @parentChanged="parentChanged"
-        @childChanged="childChanged"
-        @newParent="newParent"
-        @newChild="newChild"
+    <template #content>
+      <DataTable
+        :table-data="companies"
+        :table-definition="tableCompanies"
+        @deleteAll="deleteMultipleCompanies"
       >
-        <template v-slot:title>Sectors and Industries</template>
-        <template v-slot:newText>New Sector</template>
-      </side-tree-nav>
-
-      <info-box v-if="disableNewButton" class="flex-grow mt-2 md:mt-0">
-        <template v-slot:title>We have a problem...</template>
-        <template v-slot:content>
-          You cannot create a company right now. Make sure to have at least one
-          sector with one industry in it.
+        <template v-slot:headerLeft
+          ><h6 class="mt-2">Companies</h6>
+          <contact-list-select></contact-list-select>
         </template>
-      </info-box>
+        <template v-slot:headerRight
+          ><new-item-button class="ml-2" @click="showNewItem"
+            >Company</new-item-button
+          ></template
+        >
+        <template #company="slotProps">
+          <span class="flex items-center">
+            <img
+              v-if="slotProps.item.logo"
+              :src="slotProps.item.logo"
+              class="w-8 h-8 rounded bg-cover mr-2"
+            />
+            <span v-else class="w-8 h-8 mr-2">&nbsp;</span>
 
-      <info-box
-        v-else-if="companies.length === 0"
-        class="flex-grow mx-5 mt-2 md:mt-0"
-      >
-        <template v-slot:title>No Companies</template>
-        <template v-slot:content>
-          <button-basic @click="setCurrentItem({ code: -1 })">
-            Create one...
-          </button-basic>
-        </template></info-box
-      >
-
-      <display-table-component
-        v-else
-        class="w-full xl:w-9/12"
-        :items="companies"
-        @hovered="hovered = $event"
-        @clicked="setCurrentItem($event)"
-      >
-        <template v-slot:title>Company List</template>
-        <template v-slot:sideNav> </template>
-        <template v-slot:titleContent>
-          <p class="w-7/12">Name</p>
-          <p class="w-3/12 text-center">Size</p>
-          <p class="w-2/12 text-center">Departments</p>
-        </template>
-        <template v-slot:titleContentSmall>Companies</template>
-        <template v-slot:content="slotProps">
-          <p class="w-full xl:w-7/12 flex items-center justify-start">
-            <span class="hidden xl:flex mr-2">
-              <img
-                v-if="slotProps.item.logo"
-                :src="slotProps.item.logo"
-                class="w-8 h-8 rounded bg-cover"
-              />
-              <span v-else class="w-8 h-8 hidden xl:flex">&nbsp;</span>
-            </span>
-            <span class="flex items-baseline">
-              <span> {{ slotProps.item.name }}</span>
-              <badge-base class="ml-2">{{ slotProps.item.abbr }}</badge-base>
-            </span>
-          </p>
-
-          <p class="w-full xl:w-3/12 flex xl:justify-center">
-            <template v-if="slotProps.item.size !== 0">
-              <span>{{ slotProps.item.size }}</span
-              ><span class="block xl:hidden">&nbsp;employees </span>
-            </template>
-          </p>
-
-          <p class="w-full xl:w-2/12 flex xl:justify-center">
-            <text-link class="px-0 xl:px-3">
-              <nuxt-link
-                :to="{
-                  name: 'companies-departments-id',
-                  params: { id: slotProps.item.code },
-                }"
-                @click.stop.native
-                >{{ slotProps.item.departmentCount
-                }}<span class="visible xl:hidden"
-                  >&nbsp; departments
-                </span></nuxt-link
-              ></text-link
-            >
-          </p>
-        </template>
-        <template v-slot:popup-menu="slotProps">
-          <display-table-row-popup
-            :class="hovered === slotProps.item.code ? 'flex' : 'flex xl:hidden'"
-            @close="hovered = null"
-            ><template v-slot:menu>
-              <span @click="setCurrentItem(slotProps.item)">
-                <i class="fas fa-pencil-alt"></i> Edit
-              </span>
-            </template></display-table-row-popup
+            <span> {{ slotProps.item.name }}</span>
+            <l-badge class="ml-2">{{ slotProps.item.abbr }}</l-badge>
+          </span></template
+        >
+        <template #department="slotProps">
+          <nuxt-link
+            :to="{
+              name: 'companies-departments-id',
+              params: { id: slotProps.item.code },
+            }"
+            class="flex justify-center"
+            @click.stop.native
+            ><l-text-link>{{
+              slotProps.item.departmentCount
+            }}</l-text-link></nuxt-link
           >
         </template>
-      </display-table-component>
+        <template #actions="slotProps">
+          <l-popup-menu>
+            <template v-slot:menu>
+              <button @click="editCompany(slotProps.item)">
+                <i class="fas fa-pencil-alt fa-fw"></i>Edit
+              </button>
+            </template>
+          </l-popup-menu>
+        </template>
+      </DataTable>
     </template>
-
-    <transition name="fade">
-      <edit-object-modal
-        v-if="currentItemToBeEdited"
-        @modalClosed="modalClosed"
-      >
-        <template v-slot:secondTitle
-          ><span v-if="!objectToCreate">Company</span
-          ><span v-else-if="objectToCreate === 'industry'">Industry</span
-          ><span v-else-if="objectToCreate === 'sector'">Sector</span>
-        </template>
-        <template v-slot:content>
-          <new-company
-            v-if="!objectToCreate"
-            :selected-sector-code="selectedParentCode"
-            :selected-industry-code="selectedChildCode"
-          ></new-company>
-          <new-industry
-            v-else-if="objectToCreate === 'industry'"
-          ></new-industry>
-          <new-sector v-else-if="objectToCreate === 'sector'"></new-sector>
-        </template>
-      </edit-object-modal>
-    </transition>
-  </div>
-  <spinner v-else></spinner>
+  </list-layout-with-sidebar>
 </template>
 
 <script>
-import EditObjectModal from '~/components/layouts/EditObjectModal'
-import DisplayTableComponent from '~/components/layouts/DisplayTableComponent'
-import NewCompany from '~/components/contacts/NewCompany'
-import SideTreeNav from '~/components/layouts/SideTreeNav'
-import NewIndustry from '~/components/contacts/NewIndustry'
-import NewSector from '~/components/contacts/NewSector'
-import Spinner from '~/components/layouts/Spinner'
-import viewMixin from '~/helpers/viewMixin'
-import TopHeaderBar from '~/components/layouts/TopHeaderBar'
-import ContactBookDropdown from '~/components/contacts/ContactBookDropdown'
-
-import InfoBox from '~/components/layouts/InfoBox'
-import TextLink from '~/components/elements/TextLink'
-import DisplayTableRowPopup from '~/components/layouts/DisplayTableRowPopup'
-
-import BadgeBase from '~/components/elements/BadgeBase'
+import ListLayoutWithSidebar from '~/components/layouts/ListLayoutWithSidebar'
+import DataTable from '~/components/elements/DataTable/DataTable'
+import LTextLink from '~/components/LTextLink'
+import LPopupMenu from '~/components/LPopupMenu'
+import NewItemButton from '~/components/elements/NewItemButton'
+import ContactListSelect from '~/components/elements/ContactListSelect'
+import CompanySectorTreeView from '~/components/contacts/CompanySectorTreeView'
+import ModalService from '~/services/modal-services'
+import NewItemModal from '~/components/layouts/NewItemModal'
 export default {
   name: 'CompaniesList',
   middleware: ['contactBook'],
+  layout: 'authlayout',
   components: {
-    BadgeBase,
-    DisplayTableRowPopup,
-
-    TextLink,
-    Spinner,
-    NewSector,
-    NewIndustry,
-    SideTreeNav,
-    NewCompany,
-    DisplayTableComponent,
-    EditObjectModal,
-    TopHeaderBar,
-    ContactBookDropdown,
-
-    InfoBox,
+    CompanySectorTreeView,
+    ContactListSelect,
+    NewItemButton,
+    LPopupMenu,
+    LTextLink,
+    DataTable,
+    ListLayoutWithSidebar,
   },
-  mixins: [viewMixin],
   data() {
     return {
-      selectedParentCode: -1,
-      selectedChildCode: null,
-      objectToCreate: null,
+      selectedSector: null,
+      selectedIndustry: null,
+      loading: true,
+      tableCompanies: [
+        { title: 'Company', field: 'name', slot: 'company', sortable: true },
+        { title: 'Size', field: 'size', align: 'center' },
+        {
+          title: 'Departments',
+          field: 'departmentCount',
+          slot: 'department',
+          sortable: true,
+          align: 'center',
+        },
+        { title: '', slot: 'actions' },
+      ],
     }
   },
   computed: {
     sectors() {
-      return this.$store.getters.getItems('sectors')
+      const sectors = JSON.parse(
+        JSON.stringify(this.$store.state.sectors.items)
+      )
+
+      sectors.forEach((sector) => {
+        sector.children = this.industries.filter((industry) => {
+          return industry.sectorCode === sector.code
+        })
+      })
+
+      return sectors
     },
     industries() {
-      return this.$store.getters.getItems('industries')
+      return this.$store.state.industries.items
     },
-    disableNewButton() {
-      return (
-        this.contactlists.length === 0 ||
-        this.sectors.length === 0 ||
-        (this.sectors.length !== 0 && this.industries.length === 0)
-      )
-    },
-
     companies() {
-      let tempResults = this.$store.getters.getItems('companies')
-
-      if (this.selectedParentCode === -1) return tempResults
-
-      if (this.selectedChildCode) {
-        tempResults = tempResults.filter((el) => {
-          return el.industryCode === this.selectedChildCode
-        })
-      } else {
-        tempResults = tempResults.filter((el) => {
-          return el.sectorCode === this.selectedParentCode
-        })
-      }
-
-      return tempResults
+      return this.$store.state.companies.items
     },
-    contactlists() {
-      return this.$store.getters.getItems('contactlist')
+    contactLists() {
+      return this.$store.state.contactlist.items
     },
   },
   created() {
-    this.$store.dispatch('setLoading', true)
-    this.$store
-      .dispatch('contactlist/getContactLists', { limit: 100, offset: 0 })
-      .then(() => {
-        if (this.contactlists.length !== 0) this.updateData()
-        else this.$store.dispatch('setLoading', false)
-      })
+    this.loading = true
+    this.$store.dispatch('contactlist/getContactLists', {}).then(() => {
+      if (this.contactLists.length !== 0) this.updateData()
+      this.loading = false
+    })
   },
   methods: {
     async updateData() {
-      await this.$store.dispatch('setLoading', true)
-
-      await this.$store.dispatch('sectors/getSectors', {
-        limit: 1000,
-        offset: 0,
-      })
+      await this.$store.dispatch('sectors/getSectors', {})
       await this.$store.dispatch('industries/getIndustries')
-      await this.$store.dispatch('companies/getCompanies', {
-        limit: 100,
-        offset: 0,
-      })
-
-      await this.$store.dispatch('setLoading', false)
+      await this.$store.dispatch('companies/getCompanies', {})
     },
 
-    parentChanged(ev) {
-      this.selectedParentCode = ev
-      this.selectedChildCode = null
-      if (this.selectedParentCode !== null && this.selectedParentCode !== -1)
+    changedOption(newOption) {
+      this.selectedSector = newOption.parent
+      this.selectedIndustry = newOption.child
+      if (!this.selectedSector)
+        this.$store.dispatch('companies/getCompanies', {})
+      else if (this.selectedSector && !this.selectedIndustry)
         this.$store.dispatch('companies/getCompaniesBySector', {
-          limit: 1000,
-          offset: 0,
-          code: this.selectedParentCode,
+          code: this.selectedSector.code,
         })
-      else if (this.selectedParentCode === -1)
-        this.$store.dispatch('companies/getCompanies', {
-          limit: 1000,
-          offset: 0,
-        })
-    },
-    childChanged(ev) {
-      this.selectedChildCode = ev
-      if (this.selectedChildCode !== null && this.selectedChildCode !== -1)
+      else {
         this.$store.dispatch('companies/getCompaniesByIndustry', {
-          limit: 1000,
-          offset: 0,
-          code: this.selectedChildCode,
+          code: this.selectedIndustry.code,
         })
+      }
     },
-    newParent(ev) {
-      this.objectToCreate = 'sector'
-      this.setCurrentItem(ev)
+    showNewItem() {
+      const dataItem = {}
+      if (this.selectedSector) dataItem.sectorCode = this.selectedSector.code
+      if (this.selectedIndustry)
+        dataItem.industryCode = this.selectedIndustry.code
+
+      ModalService.open(NewItemModal, {
+        whichComponent: 'NewCompany',
+        dataItem,
+        options: { header: 'New Company' },
+      }).then((response) => {
+        this.$store
+          .dispatch('companies/newCompany', response)
+          .then(async (company) => {
+            await this.updateData()
+            this.changedOption({
+              parent: this.selectedSector,
+              child: this.selectedIndustry,
+            })
+            this.$toasted.show(`Company ${company.name} created`)
+          })
+          .catch(() => {
+            this.$toasted.error('There was a problem creating the company')
+          })
+      })
     },
-    newChild(ev) {
-      this.objectToCreate = 'industry'
-      this.setCurrentItem(ev)
+    editCompany(dataItem) {
+      ModalService.open(NewItemModal, {
+        whichComponent: 'NewCompany',
+        dataItem,
+        options: { header: `Edit ${dataItem.name}` },
+      }).then((response) => {
+        this.$store
+          .dispatch('companies/updateCompany', response)
+          .then(async (company) => {
+            await this.updateData()
+            this.changedOption({
+              parent: this.selectedSector,
+              child: this.selectedIndustry,
+            })
+            this.$toasted.show(`Company ${company.name} updated`)
+          })
+          .catch(() => {
+            this.$toasted.error('There was a problem creating the company')
+          })
+      })
     },
-    modalClosed() {
-      this.objectToCreate = null
+    deleteMultipleCompanies(companies) {
+      const calls = []
+      for (const company in companies) {
+        calls.push(
+          this.$store.dispatch(
+            'companies/deleteCompany',
+            companies[company].code
+          )
+        )
+      }
+      Promise.all(calls)
+        .then(async () => {
+          await this.updateData()
+          this.changedOption({
+            parent: this.selectedSector,
+            child: this.selectedIndustry,
+          })
+          this.$toasted.show(`${companies.length} companies deleted`)
+        })
+        .catch(() => {
+          this.$toasted.error('There was a problem deleting the company')
+        })
     },
   },
 }

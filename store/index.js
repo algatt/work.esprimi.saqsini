@@ -91,6 +91,7 @@ export const actions = {
     dispatch('jobs/getAllJobs', {}, { root: true })
     dispatch('roles/getRoles', {}, { root: true })
     dispatch('sectors/getSectors', {}, { root: true })
+    dispatch('companies/getCompanies', {}, { root: true })
   },
 
   setCurrentItemToBeEdited({ commit }, item) {

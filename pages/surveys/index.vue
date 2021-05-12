@@ -188,7 +188,7 @@ export default {
       return this.$store.getters['categories/getCategoriesForTreeView']
     },
     surveys() {
-      return this.$store.getters.getItems('surveys')
+      return this.$store.state.surveys.items
     },
   },
   created() {
