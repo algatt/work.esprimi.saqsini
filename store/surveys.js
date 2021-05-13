@@ -486,7 +486,6 @@ export const mutations = {
       return el.code === survey.code
     })
     Object.assign(foundSurvey, survey)
-    console.log(state.items)
   },
 
   deleteSurvey(state, code) {

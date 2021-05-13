@@ -90,7 +90,9 @@ export const mutations = {
 
 export const getters = {
   sortedRoles: (state) => {
-    return state.items.sort((a, b) => {
+    const x = JSON.parse(JSON.stringify(state.items))
+
+    return x.sort((a, b) => {
       return a.name > b.name ? 1 : -1
     })
   },

@@ -3,6 +3,7 @@ export default function ({ $axios, store, redirect }) {
   $axios.setHeader('Content-Type', 'application/x-www-form-urlencoded', [
     'post',
   ])
+  $axios.setHeader('token', store.state.auth.authToken)
 
   $axios.onError((err) => {
     if (err.response && err.response.status === 403) {

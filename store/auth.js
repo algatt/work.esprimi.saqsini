@@ -1,5 +1,6 @@
 import qs from 'qs'
 import cookies from 'js-cookie'
+import convertBinaryDataToImage from '~/services/image-helpers'
 
 export const state = () => ({
   authUser: null,
@@ -13,21 +14,23 @@ export const actions = {
       this.$axios
         .post('/auth/auth/login', qs.stringify({ email, password }))
         .then((response) => {
-          commit('setAuthToken', response.headers.token)
-
-          cookies.set('x-access-token', response.headers.token, {
-            expires: 7,
-            sameSite: 'None',
-            secure: true,
-          })
-        })
-        .then(async () => {
-          await dispatch('getUserDetails')
-          // await dispatch('getUserAvatar')
-          resolve()
+          if (response.headers.token) {
+            commit('setAuthToken', response.headers.token)
+            Promise.all([
+              dispatch('getUserDetails'),
+              dispatch('getUserAvatar'),
+            ]).then(() => {
+              resolve()
+            })
+          }
         })
         .catch((error) => reject(error))
     })
+  },
+
+  async loginWithoutPassword({ dispatch }) {
+    await dispatch('getUserDetails')
+    await dispatch('getUserAvatar')
   },
 
   resetPassword({ commit }, email) {
@@ -65,12 +68,6 @@ export const actions = {
     })
   },
 
-  async loginWithToken({ dispatch, commit }, token) {
-    commit('setAuthToken', token)
-    await dispatch('getUserDetails')
-    await dispatch('getUserAvatar')
-  },
-
   getUserDetails({ commit, rootState }) {
     return new Promise((resolve, reject) => {
       this.$axios
@@ -94,18 +91,13 @@ export const actions = {
             commit('setAuthAvatar', null)
             resolve()
           }
-          const blob = new Blob([response.data], {
-            type: response.headers['content-type'],
+          convertBinaryDataToImage(
+            response.data,
+            response.headers['content-type']
+          ).then((image) => {
+            commit('setAuthAvatar', image)
+            resolve(image)
           })
-          let avatar = {}
-          const reader = new FileReader()
-
-          reader.readAsDataURL(blob)
-          reader.onloadend = function () {
-            avatar = reader.result
-            commit('setAuthAvatar', avatar)
-            resolve(avatar)
-          }
         })
         .catch((error) => reject(error))
     })
@@ -219,12 +211,18 @@ export const actions = {
 
 export const mutations = {
   setAuthToken(state, token) {
-    this.$axios.setHeader('token', token)
     state.authToken = token
+    if (token && token !== '') {
+      this.$axios.setHeader('token', token)
+      cookies.set('x-access-token', token, { expires: 7, secure: true })
+    } else {
+      cookies.remove('x-access-token')
+      this.$axios.setHeader('token', null)
+    }
   },
 
-  setAuthUser(state, user) {
-    state.authUser = user
+  setAuthUser(state, details) {
+    state.authUser = details
   },
 
   setAuthAvatar(state, avatar) {

@@ -429,9 +429,6 @@ export default {
           this.$toasted.show('There was a problem sending the invitations')
         })
     },
-    selectItems(ok) {
-      console.log(ok)
-    },
   },
 }
 </script>

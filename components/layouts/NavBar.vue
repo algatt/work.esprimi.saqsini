@@ -203,6 +203,9 @@ export default {
       })
     },
   },
+  mounted() {
+    this.$store.dispatch('auth/getUserAvatar')
+  },
   methods: {
     showSubMenu(id) {
       const thisMenu = id === '' ? '' : document.getElementById(id)

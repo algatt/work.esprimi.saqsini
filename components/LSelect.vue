@@ -31,6 +31,7 @@ export default {
       default: false,
     },
     value: {
+      type: undefined,
       default: () => {
         return undefined
       },

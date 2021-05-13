@@ -199,9 +199,6 @@ export default {
     this.editor.destroy()
   },
   methods: {
-    insertTag(item) {
-      console.log(this.editor)
-    },
     setLink() {
       const url = window.prompt('URL')
       this.editor.chain().focus().setLink({ href: url }).run()

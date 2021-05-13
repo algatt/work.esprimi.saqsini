@@ -148,6 +148,7 @@ export default {
   mounted() {
     window.addEventListener('scroll', this.updateScroll)
     window.addEventListener('resize', this.updateResize)
+    this.$store.dispatch('auth/getUserAvatar')
   },
   destroyed() {
     window.removeEventListener('scroll', this.updateScroll)

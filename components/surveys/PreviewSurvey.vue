@@ -546,7 +546,7 @@ export default {
         return el.page === whichPage && el.flags.includes('SECTION')
       })
 
-      console.log(this.getConditionState(question.surveyOptions, 'disqualify'))
+      // console.log(this.getConditionState(question.surveyOptions, 'disqualify'))
 
       if (this.getConditionState(question.surveyOptions, 'disqualify')) {
         this.disqualify = true

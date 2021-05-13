@@ -84,6 +84,9 @@ export default {
     dataItem: {
       type: Object,
       required: false,
+      default: () => {
+        return {}
+      },
     },
     options: {
       type: Object,

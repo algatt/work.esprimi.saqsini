@@ -37,6 +37,7 @@ export default {
   name: 'LoginVue',
   components: { TextLink, ButtonAnimated },
   layout: 'defaultLogin',
+  middleware: 'auth',
   mixins: [validationMixin],
   data() {
     return {
