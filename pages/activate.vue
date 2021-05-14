@@ -1,56 +1,47 @@
 <template>
-  <div
-    v-if="!loading"
-    class="bg-white flex flex-col px-8 md:px-16 py-5 rounded shadow-lg items-center space-y-5"
-    style="max-width: 350px"
-  >
-    <text-link>
-      <h4 class="text-primary">
-        <nuxt-link to="/">
-          saqsini<i class="far fa-comments fa-fw ml-1"></i>
-        </nuxt-link></h4
-    ></text-link>
+  <div v-if="!loading" class="login-dialog">
+    <app-logo></app-logo>
 
     <template v-if="!emailRoute || !tokenRoute || !activated">
-      <p class="mb-4">
+      <p>
         Oh no! We have a problem with this link. Click below so we send you
         another email.
       </p>
 
-      <input-base id="email" v-model="email" type="email">Email</input-base>
+      <l-input id="email" v-model="email" type="email" class="w-full"
+        >Email</l-input
+      >
 
-      <button-animated :disabled="$v.$invalid" @click="sendAnotherToken"
-        >Send Another Token<template v-slot:icon
-          ><i class="fas fa-spinner fa-fw animate-spin"></i></template
-      ></button-animated>
+      <l-button :disabled="$v.$invalid" class="w-full" @click="sendAnotherToken"
+        >Send Another Token<template v-slot:rightIcon
+          ><i v-if="inProgress" class="fas fa-spinner fa-fw animate-spin"></i>
+          <i v-else class="fas fa-ticket-alt fa-fw"></i></template
+      ></l-button>
     </template>
 
     <template v-else>
-      <input-base id="password" v-model="password" type="password"
-        >Password</input-base
+      <l-input id="password" v-model="password" type="password"
+        >Password</l-input
       >
 
-      <button-animated :disabled="$v.$invalid" @click="setPassword"
-        >Set Password<template v-slot:icon
-          ><i class="fas fa-spinner fa-fw animate-spin"></i></template
-      ></button-animated>
+      <l-button :disabled="$v.$invalid" @click="setPassword"
+        >Set Password<template v-slot:rightIcon
+          ><i v-if="inProgress" class="fas fa-spinner fa-fw animate-spin"></i>
+          <i v-else class="far fa-thumbs-up fa-fw"></i></template
+      ></l-button>
     </template>
   </div>
-  <spinner v-else></spinner>
 </template>
 
 <script>
 import { validationMixin } from 'vuelidate'
 import { email, required, minLength } from 'vuelidate/lib/validators'
-import spinner from '@/components/layouts/Spinner'
-
-import ButtonAnimated from '~/components/elements/ButtonAnimated'
-import TextLink from '~/components/elements/TextLink'
+import AppLogo from '~/components/elements/AppLogo'
 
 export default {
   name: 'ActivateVue',
   layout: 'defaultLogin',
-  components: { ButtonAnimated, spinner, TextLink },
+  components: { AppLogo },
   mixins: [validationMixin],
   data() {
     return {
@@ -58,6 +49,7 @@ export default {
       password: '',
       activated: false,
       loading: true,
+      inProgress: false,
     }
   },
   computed: {
@@ -110,12 +102,14 @@ export default {
       }
     },
     sendAnotherToken() {
+      this.inProgress = true
       this.$store
         .dispatch('auth/resendToken', { email: this.email })
         .then(() => {
           this.$toasted.show(
             'If we find your email, we will send you an email with new details.'
           )
+          this.inProgress = false
         })
         .catch(() => {
           this.$toasted.show('There was a problem with resending the token.')

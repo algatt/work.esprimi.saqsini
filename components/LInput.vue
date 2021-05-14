@@ -3,8 +3,11 @@
     <span class="font-semibold mb-2 text-gray-700"> <slot></slot></span>
     <input
       v-bind="$attrs"
-      class="border-2 border-gray-200 rounded py-1.5 px-2 focus:border-primary focus:ring-0 focus:outline-none transition duration-300 disabled:border-gray-300 disabled:bg-gray-100"
-      :class="error ? 'border-red-600' : null"
+      class="border-2 border-gray-200 rounded py-1.5 px-2 focus:ring-0 focus:outline-none transition duration-300 disabled:border-gray-300 disabled:bg-gray-100"
+      :class="[
+        error ? 'border-red-600' : null,
+        color ? `focus:border-${color}-600` : `focus:border-primary`,
+      ]"
       :value="value"
       v-on="$listeners"
       @input="$emit('update', $event.target.value)"
@@ -27,6 +30,10 @@ export default {
     error: {
       type: String,
       required: false,
+      default: null,
+    },
+    color: {
+      type: String,
       default: null,
     },
     value: {

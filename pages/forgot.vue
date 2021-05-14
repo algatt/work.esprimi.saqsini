@@ -1,46 +1,39 @@
 <template>
-  <div
-    class="bg-white flex flex-col px-8 md:px-16 py-5 rounded shadow-lg items-center space-y-5"
-    style="max-width: 350px"
-  >
-    <text-link>
-      <h4 class="text-primary">
-        <nuxt-link to="/">
-          saqsini<i class="far fa-comments fa-fw ml-1"></i>
-        </nuxt-link></h4
-    ></text-link>
+  <div class="login-dialog">
+    <app-logo></app-logo>
 
     <p>
       Type in your email and we'll send you an email to reset your password.
     </p>
 
-    <input-base
+    <l-input
       id="email"
       v-model="email"
+      class="w-full"
       @keyup="$v.email.$touch"
-    ></input-base>
+    ></l-input>
 
-    <button-animated :disabled="$v.$invalid" @click="resetPassword"
-      >Reset Password<template v-slot:icon
-        ><i class="fas fa-spinner fa-fw animate-spin"></i></template
-    ></button-animated>
+    <l-button :disabled="$v.$invalid" class="w-full" @click="resetPassword"
+      >Reset Password<template v-slot:rightIcon
+        ><i v-if="inProgress" class="fas fa-spinner fa-fw animate-spin"></i>
+        <i v-else class="far fa-thumbs-up fa-fw"></i></template
+    ></l-button>
   </div>
 </template>
 
 <script>
 import { validationMixin } from 'vuelidate'
 import { required, email } from 'vuelidate/lib/validators'
-import TextLink from '~/components/elements/TextLink'
-
-import ButtonAnimated from '~/components/elements/ButtonAnimated'
+import AppLogo from '~/components/elements/AppLogo'
 export default {
   name: 'Reset',
-  components: { TextLink, ButtonAnimated },
+  components: { AppLogo },
   layout: 'defaultLogin',
   mixins: [validationMixin],
   data() {
     return {
       email: '',
+      inProgress: false,
     }
   },
   validations: {
@@ -62,6 +55,7 @@ export default {
       }
     },
     resetPassword() {
+      this.inProgress = true
       this.$store
         .dispatch('auth/resetPassword', this.email)
         .then(() => {
@@ -78,6 +72,9 @@ export default {
             position: 'bottom-center',
           })
           this.email = ''
+        })
+        .finally(() => {
+          this.inProgress = false
         })
     },
   },

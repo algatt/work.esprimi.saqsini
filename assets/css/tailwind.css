@@ -64,6 +64,11 @@ h1{
   opacity: 0;
 }
 
+.login-dialog {
+  @apply bg-white flex flex-col px-8 md:px-16 py-5 rounded shadow-lg items-center space-y-5;
+  max-width: 350px
+}
+
 
 .frosted {
   @apply flex fixed top-0 left-0 w-full h-screen z-40 justify-center items-center;

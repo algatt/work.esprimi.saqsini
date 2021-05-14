@@ -1,46 +1,40 @@
 <template>
-  <div
-    class="bg-white w-auto rounded border border-primary shadow-xl py-4 px-14 mb-20 flex flex-col"
-  >
-    <nuxt-link to="/" class="text-2xl text-primary font-bold text-center mb-4">
-      saqsini<i class="far fa-comments fa-fw ml-1"></i>
-    </nuxt-link>
+  <div class="login-dialog">
+    <app-logo></app-logo>
 
-    <label class="mb-1 font-semibold" for="password">Password</label>
-
-    <input
+    <l-input
       id="password"
       v-model="password"
-      class="input-login mb-3"
       type="password"
       @keyup="$v.password.$touch"
-    />
+      >Password</l-input
+    >
 
-    <label class="mb-1 font-semibold" for="password">Confirm Password</label>
-
-    <input
+    <l-input
       id="passwordConfirm"
       v-model="passwordConfirm"
-      class="input-login mb-3"
       type="password"
       @keyup="$v.passwordConfirm.$touch"
-    />
-
-    <button
-      class="btn btn-primary my-3 py-2"
-      :disabled="$v.$invalid || inProgress"
-      @click="resetPassword"
+      >Confirm Password</l-input
     >
-      Confirm Password
-    </button>
+
+    <l-button :disabled="$v.$invalid || inProgress" @click="resetPassword">
+      Reset Password
+      <template v-slot:rightIcon>
+        <i v-if="inProgress" class="fas fa-spinner fa-fw animate-spin"></i>
+        <i v-else class="far fa-thumbs-up fa-fw"></i
+      ></template>
+    </l-button>
   </div>
 </template>
 
 <script>
 import { validationMixin } from 'vuelidate'
 import { required, sameAs } from 'vuelidate/lib/validators'
+import AppLogo from '~/components/elements/AppLogo'
 export default {
   name: 'Reset',
+  components: { AppLogo },
   layout: 'defaultLogin',
   mixins: [validationMixin],
   data() {
@@ -107,9 +101,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-.input-login {
-  @apply border-2 border-gray-200 rounded-sm px-3 py-1 focus:bg-gray-100 focus:border-primary transition duration-300 ring-offset-2 focus:outline-none;
-}
-</style>

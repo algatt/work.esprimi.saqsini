@@ -49,11 +49,10 @@
 </template>
 
 <script>
-import BadgeBase from '~/components/elements/BadgeBase'
 import TreeViewInput from '~/components/elements/TreeView/TreeViewInput'
 export default {
   name: 'TreeViewElement',
-  components: { TreeViewInput, BadgeBase },
+  components: { TreeViewInput },
   props: {
     isChosen: {
       type: Boolean,

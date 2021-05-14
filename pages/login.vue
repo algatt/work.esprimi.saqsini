@@ -1,41 +1,36 @@
 <template>
-  <div
-    class="bg-white flex flex-col px-8 md:px-16 py-5 rounded shadow-lg items-center space-y-5"
-    style="max-width: 350px"
-  >
-    <text-link>
-      <h4 class="text-primary">
-        <nuxt-link to="/">
-          saqsini<i class="far fa-comments fa-fw ml-1"></i
-        ></nuxt-link>
-      </h4>
-    </text-link>
+  <form class="login-dialog" @submit.prevent>
+    <app-logo></app-logo>
 
-    <input-base v-model="email" @keyup="$v.email.$touch">Email</input-base>
+    <l-input v-model="email" @keyup="$v.email.$touch">Email</l-input>
 
-    <input-base v-model="password" type="password" @keyup="$v.password.$touch"
-      >Password</input-base
+    <l-input v-model="password" type="password" @keyup="$v.password.$touch"
+      >Password</l-input
     >
 
-    <button-animated colour="blue" :disabled="$v.$invalid" @click="attemptLogin"
+    <l-button :disabled="$v.$invalid" @click="attemptLogin"
       >Login<template v-slot:rightIcon
-        ><i class="fas fa-spinner fa-fw animate-spin"></i></template
-    ></button-animated>
+        ><i v-if="inProgress" class="fas fa-spinner fa-fw animate-spin"></i>
+        <i v-else class="fas fa-sign-in-alt fa-fw"></i></template
+    ></l-button>
 
-    <text-link>
-      <nuxt-link :to="{ name: 'forgot' }">Forgot Password</nuxt-link></text-link
+    <l-text-link>
+      <nuxt-link :to="{ name: 'forgot' }"
+        >Forgot Password</nuxt-link
+      ></l-text-link
     >
-  </div>
+  </form>
 </template>
 
 <script>
 import { validationMixin } from 'vuelidate'
 import { required, email } from 'vuelidate/lib/validators'
-import TextLink from '~/components/elements/TextLink'
-import ButtonAnimated from '~/components/elements/ButtonAnimated'
+
+import AppLogo from '~/components/elements/AppLogo'
+import LTextLink from '~/components/LTextLink'
 export default {
-  name: 'LoginVue',
-  components: { TextLink, ButtonAnimated },
+  name: 'LoginPage',
+  components: { LTextLink, AppLogo },
   layout: 'defaultLogin',
   middleware: 'auth',
   mixins: [validationMixin],
@@ -43,6 +38,7 @@ export default {
     return {
       email: '',
       password: '',
+      inProgress: false,
     }
   },
   validations: {
@@ -67,18 +63,20 @@ export default {
       }
     },
     attemptLogin() {
+      this.inProgress = true
       this.$store
         .dispatch('auth/loginWithEmailAndPassword', {
           email: this.email,
           password: this.password,
         })
         .then(() => {
-          this.$router.push('surveys')
+          this.$router.push({ name: 'surveys' })
         })
         .catch(() => {
-          this.$toasted.error('Invalid Credentials', {
-            position: 'bottom-center',
-          })
+          this.$toasted.error('Invalid Credentials')
+        })
+        .finally(() => {
+          this.inProgress = false
         })
     },
   },
