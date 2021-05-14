@@ -21,31 +21,26 @@
       ]"
       @click="moveCurrentQuestionAfter(item.ordinalPosition)"
     >
-      <p>
+      <p class="flex items-center space-x-3">
         <span
           :class="item.flags.includes('SECTION') ? 'font-semibold' : 'ml-4'"
           >{{ item.name }}</span
         >
-        <span class="text-primary font-semibold ml-2">{{
+        <span class="text-primary font-semibold">{{
           item.questionNumber
         }}</span>
-        <badge-base
-          v-if="!item.flags.includes('SECTION')"
-          class="ml-2"
-          bg-colour="gray"
-          >{{ getQuestionType(item) }}</badge-base
+        <l-badge v-if="!item.flags.includes('SECTION')">{{
+          getQuestionType(item)
+        }}</l-badge>
+        <l-badge v-if="item.code === tempQuestion.code" color="green"
+          >current question</l-badge
         >
-        <badge-base
-          v-if="item.code === tempQuestion.code"
-          class="ml-2"
-          bg-colour="green"
-          >current question</badge-base
-        >
-        <badge-base
+
+        <l-badge
           v-if="item.ordinalPosition <= minPosition"
-          bg-colour="red"
+          color="red"
           title="Moving it here will cause existing branching not to work anymore."
-          >branching problem</badge-base
+          >branching problem</l-badge
         >
       </p>
     </button>
@@ -54,12 +49,11 @@
 
 <script>
 import { getQuestionType } from '~/helpers/parseSurveyObjects'
-import BadgeBase from '~/components/elements/BadgeBase'
 import { QUESTION_TYPES } from '~/helpers/constants'
 
 export default {
   name: 'QuestionMoveMenu',
-  components: { BadgeBase },
+
   props: {
     dataItem: {
       type: Object,

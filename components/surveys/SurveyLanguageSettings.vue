@@ -10,20 +10,6 @@
       </l-button>
     </div>
     <div v-else class="flex flex-col">
-      <l-badge
-        v-if="dataItem.flags.includes('OUTDATED_LANGUAGE_PACK')"
-        color="red"
-      >
-        <p class="px-2 py-1">
-          The language pack is outdated since changes were made to the survey
-          after the languages were uploaded. You need to generate the language
-          pack again, and re-upload.
-        </p>
-        <p class="px-2 py-1">
-          Make sure to download the existing language pack to preserve previous
-          translations.
-        </p>
-      </l-badge>
       <p class="mt-3 mb-2">
         This survey is available in the following languages.
       </p>
@@ -46,6 +32,20 @@
         <l-button class="my-3" @click="activateInputFile">
           Upload New
         </l-button>
+      </div>
+      <div
+        v-if="dataItem.flags.includes('OUTDATED_LANGUAGE_PACK')"
+        class="bg-red-100 border border-red-200 rounded space-y-2 p-4 mt-5"
+      >
+        <p>
+          The language pack is outdated since changes were made to the survey
+          after the languages were uploaded. You need to generate the language
+          pack again, and re-upload.
+        </p>
+        <p>
+          Make sure to download the existing language pack to preserve previous
+          translations.
+        </p>
       </div>
     </div>
   </div>
@@ -72,7 +72,6 @@ export default {
           this.$toasted.show(
             `Your request is being processed. Check your notifications to know when it's ready.`
           )
-          this.$store.dispatch('setCurrentItemToBeEdited', null)
         })
     },
     activateInputFile() {

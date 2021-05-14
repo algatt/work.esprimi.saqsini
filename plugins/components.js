@@ -1,6 +1,4 @@
 import Vue from 'vue'
-import ButtonBasic from '~/components/elements/ButtonBasic'
-import InputBase from '~/components/elements/InputBase'
 
 import LButton from '~/components/LButton'
 import LPopupMenu from '~/components/LPopupMenu'
@@ -15,8 +13,6 @@ import LInputButton from '~/components/LInputButton'
 import LBadge from '~/components/LBadge'
 import LTextLink from '~/components/LTextLink'
 const components = {
-  ButtonBasic,
-  InputBase,
   LButton,
   LPopupMenu,
   LToggle,

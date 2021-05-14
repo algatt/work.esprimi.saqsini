@@ -40,15 +40,12 @@
 <script>
 import { validationMixin } from 'vuelidate'
 import { required, email } from 'vuelidate/lib/validators'
-import ButtonForInput from '~/components/elements/ButtonForInput'
 import LButtonCircle from '~/components/LButtonCircle'
 
 export default {
   name: 'SurveyCollaborators',
   components: {
     LButtonCircle,
-
-    ButtonForInput,
   },
   mixins: [validationMixin],
   props: {

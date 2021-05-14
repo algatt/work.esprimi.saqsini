@@ -1,7 +1,8 @@
 <template>
-  <div class="frosted p-0 md:p-8 z-20" @click="$emit('modalClosed')">
+  <screen-overlay :dim="true" @click="$emit('modalClosed')">
     <div
-      class="w-full check-height md:w-8/12 mx-auto flex flex-col relative shadow-md overflow-y-auto"
+      class="w-full md:w-8/12 mx-auto flex flex-col relative shadow-md overflow-y-auto"
+      style="height: 90vh"
       :style="{ backgroundColor: survey.options.backgroundColour }"
       @click.stop
     >
@@ -13,22 +14,23 @@
       ></preview-survey>
 
       <div class="absolute" style="top: 10px; right: 10px">
-        <button-icon-rounded bg-colour="blue" @click="$emit('modalClosed')">
-          <i class="fas fa-times fa-fw fa-3xl text-white"></i>
-        </button-icon-rounded>
+        <l-button-circle @click="$emit('modalClosed')">
+          <i class="fas fa-times fa-fw fa-3xl text-white"></i
+        ></l-button-circle>
       </div>
     </div>
-  </div>
+  </screen-overlay>
 </template>
 
 <script>
 import PreviewSurvey from '~/components/surveys/PreviewSurvey'
 import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
-import ButtonIconRounded from '~/components/elements/ButtonIconRounded'
+import LButtonCircle from '~/components/LButtonCircle'
+import ScreenOverlay from '~/components/layouts/ScreenOverlay'
 
 export default {
   name: 'PreviewSurveyModal',
-  components: { ButtonIconRounded, PreviewSurvey },
+  components: { ScreenOverlay, LButtonCircle, PreviewSurvey },
   props: {
     originalSurvey: {
       type: Object,
@@ -55,25 +57,3 @@ export default {
   },
 }
 </script>
-
-<!--<style scoped>-->
-<!--.frosted {-->
-<!--  @apply flex fixed top-0 left-0 w-full h-screen;-->
-<!--  background: rgba(255, 255, 255, 0.5);-->
-<!--  /*box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);*/-->
-<!--  /*backdrop-filter: blur(2px);*/-->
-<!--  /*-webkit-backdrop-filter: blur(2px);*/-->
-<!--}-->
-
-<!--@media only screen and (min-width: 768px) {-->
-<!--  .check-height {-->
-<!--    max-height: 90%;-->
-<!--  }-->
-<!--}-->
-
-<!--@media only screen and (max-width: 768px) {-->
-<!--  .check-height {-->
-<!--    max-height: 100%;-->
-<!--  }-->
-<!--}-->
-<!--</style>-->

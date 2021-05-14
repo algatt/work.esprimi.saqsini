@@ -132,7 +132,6 @@ import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
 import { DateTime } from 'luxon'
 import TextEditor from '~/components/layouts/textEditor'
-import PopupBase from '~/components/elements/PopupBase'
 import { isDateBefore } from '~/services/date-helpers'
 
 const checkDates = (value, vm) => {
@@ -152,7 +151,7 @@ const checkDates = (value, vm) => {
 
 export default {
   name: 'NotificationReminderSection',
-  components: { TextEditor, PopupBase },
+  components: { TextEditor },
   mixins: [validationMixin],
   props: {
     existingData: {

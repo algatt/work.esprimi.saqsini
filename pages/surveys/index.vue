@@ -141,7 +141,7 @@
 </template>
 
 <script>
-import SurveyCategoryTreeView from '~/components/layouts/Surveys/SurveyCategoryTreeView'
+import SurveyCategoryTreeView from '~/components/surveys/SurveyCategoryTreeView'
 import ListLayoutWithSidebar from '~/components/layouts/ListLayoutWithSidebar'
 import DataTable from '~/components/elements/DataTable/DataTable'
 import NewItemButton from '~/components/elements/NewItemButton'

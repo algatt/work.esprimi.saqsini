@@ -46,8 +46,7 @@ import ModalFooter from '@/components/elements/Modal/ModalFooter'
 import Modal from '~/components/elements/Modal/Modal'
 import ModalBody from '~/components/elements/Modal/ModalBody'
 import ModalMixin from '~/components/elements/Modal/ModalMixin'
-import ButtonBase from '~/components/elements/ButtonBasic'
-import NewSurvey from '~/components/layouts/Surveys/NewSurvey'
+import NewSurvey from '~/components/surveys/NewSurvey'
 import LButton from '~/components/LButton'
 import NewQuestion from '~/components/surveys/NewQuestion'
 import NewContactList from '~/components/contacts/NewContactList'
@@ -61,7 +60,6 @@ export default {
   name: 'NewItemModal',
   components: {
     LButton,
-    ButtonBase,
     ModalFooter,
     ModalBody,
     ModalHeader,

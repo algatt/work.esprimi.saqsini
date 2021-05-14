@@ -221,12 +221,11 @@ import {
   PREFERRED_LANGUAGE,
 } from '@/assets/settings/survey-settings'
 import DisplayQuestion from '~/components/surveys/DisplayQuestion'
-import PopupMenuVue from '~/components/layouts/PopupMenu'
 import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
 
 export default {
   name: 'PreviewSurvey',
-  components: { PopupMenuVue, DisplayQuestion },
+  components: { DisplayQuestion },
   props: {
     originalSurvey: {
       type: Object,

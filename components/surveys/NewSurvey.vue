@@ -1,201 +1,188 @@
 <template>
-  <div class="flex flex-col justify-between w-full">
-    <div class="flex flex-col w-full space-y-5">
-      <select-base
-        v-model="form.categoryCode"
-        @input="form.subCategoryCode = subcategories[0].code"
-      >
-        Category
-        <template v-slot:options>
-          <option
-            v-for="category in categories"
-            :key="category.code"
-            :value="category.code"
-            :selected="category.code === form.categoryCode"
-          >
-            {{ category.name }}
-          </option></template
+  <div class="flex flex-col space-y-7 w-full">
+    <l-select v-model="form.categoryCode" @input="changedCategory">
+      Category
+      <template v-slot:options>
+        <option
+          v-for="category in categories"
+          :key="category.code"
+          :value="category.code"
         >
-      </select-base>
+          {{ category.name }}
+        </option></template
+      >
+    </l-select>
 
-      <select-base v-model="form.subCategoryCode">
-        Subcategory
-        <template v-slot:options>
-          <option
-            v-for="subcategory in subcategories"
-            :key="subcategory.code"
-            :value="subcategory.code"
-            :selected="subcategory.code === form.subCategoryCode"
-          >
-            {{ subcategory.name }}
-          </option></template
+    <l-select v-model="form.subCategoryCode" :disabled="!form.categoryCode">
+      Subcategory
+      <template v-slot:options>
+        <option
+          v-for="subcategory in subcategories"
+          :key="subcategory.code"
+          :value="subcategory.code"
         >
-      </select-base>
+          {{ subcategory.name }}
+        </option></template
+      >
+    </l-select>
 
-      <input-base
-        id="inputName"
-        v-model="form.name"
-        :error="
-          $v.form.name.$model !== undefined
-            ? !$v.form.name.required
+    <l-input
+      id="inputName"
+      v-model="form.name"
+      :error="
+        $v.form.name.$model !== undefined
+          ? !$v.form.name.required
+            ? 'required'
+            : null
+          : null
+      "
+      @input="$v.form.name.$touch()"
+      >Survey Name</l-input
+    >
+
+    <l-text-area
+      v-model="form.textConverted"
+      :error="
+        $v.form.textConverted.$model !== undefined &&
+        !$v.form.textConverted.required
+          ? 'required'
+          : null
+      "
+      @input="$v.form.textConverted.$touch()"
+      >Survey Description</l-text-area
+    >
+
+    <l-input
+      v-model="form.referenceDate"
+      type="date"
+      :error="
+        $v.form.referenceDate.$model !== undefined &&
+        !$v.form.referenceDate.required
+          ? 'required'
+          : null
+      "
+    >
+      <template v-slot:default>
+        <span class="flex items-center">
+          Reference Date
+          <popup-information>
+            This date will tell you when your survey was
+            created</popup-information
+          ></span
+        >
+      </template>
+    </l-input>
+
+    <div class="flex flex-wrap w-full">
+      <div class="w-full xl:w-9/12 xl:pr-5 mb-2 xl:mb-0">
+        <l-input
+          v-model="form.validFromDate"
+          :error="
+            $v.form.validFromDate.$model !== undefined &&
+            !$v.form.validFromDate.required
               ? 'required'
               : null
-            : null
-        "
-        @input="$v.form.name.$touch()"
-        >Survey Name</input-base
-      >
-
-      <text-area-base
-        v-model="form.text"
-        :error="
-          $v.form.text.$model !== undefined
-            ? !$v.form.text.required
-              ? 'required'
-              : null
-            : null
-        "
-        @input="$v.form.text.$touch()"
-        >Survey Description</text-area-base
-      >
-
-      <input-base
-        v-model="form.referenceDate"
-        type="date"
-        :error="
-          $v.form.referenceDate.$model !== undefined
-            ? !$v.form.referenceDate.required
-              ? 'required'
-              : null
-            : null
-        "
-      >
-        <template v-slot:default>
-          <span class="flex items-center">
-            Reference Date
-            <popup-base class="ml-1 font-normal">
-              This date will tell you when your survey was created</popup-base
-            ></span
-          >
-        </template>
-      </input-base>
-
-      <div class="flex flex-wrap w-full">
-        <div class="w-full xl:w-9/12 xl:pr-5 mb-2 xl:mb-0">
-          <input-base
-            v-model="form.validFromDate"
-            :error="
-              $v.form.validFromDate.$model !== undefined
-                ? !$v.form.validFromDate.required
-                  ? 'required'
-                  : null
-                : null
-            "
-            type="date"
-            @change="
-              $v.form.validFromDate.$touch()
-              $v.form.validToDate.$touch()
-            "
-          >
-            <template v-slot:default>
-              <span class="flex items-center">
-                Valid From Date
-                <popup-base class="ml-1 font-normal"
-                  >This date will open the survey for responses</popup-base
-                ></span
-              >
-            </template></input-base
-          >
-        </div>
-        <div class="w-full xl:w-3/12">
-          <input-base
-            v-model="form.validFromTime"
-            :error="
-              $v.form.validFromTime.$model !== undefined
-                ? !$v.form.validFromTime.required
-                  ? 'required'
-                  : null
-                : null
-            "
-            type="time"
-            @change="$v.form.validFromTime.$touch()"
-            ><span class="flex items-center"
-              >Valid From Time<popup-base class="invisible"></popup-base></span
-          ></input-base>
-        </div>
+          "
+          type="date"
+          @change="
+            $v.form.validFromDate.$touch()
+            $v.form.validFromTime.$touch()
+            $v.form.validToDate.$touch()
+            $v.form.validToTime.$touch()
+            form.validFromTime = form.validFromTime
+              ? form.validFromTime
+              : '08:00'
+          "
+        >
+          <template v-slot:default>
+            <span class="flex items-center">
+              Valid From Date
+              <popup-information
+                >This date will open the survey for responses</popup-information
+              ></span
+            >
+          </template></l-input
+        >
       </div>
-
-      <div class="flex flex-wrap w-full">
-        <div class="w-full xl:w-9/12 xl:pr-5 mb-2 xl:mb-0">
-          <input-base
-            v-model="form.validToDate"
-            :error="
-              $v.form.validToDate.$model !== undefined
-                ? !$v.form.validToDate.checkDates
-                  ? 'this date must be after the valid from date'
-                  : null
-                : $v.form.validToTime.$model !== undefined &&
-                  !$v.form.validToTime.dateRequiredIfTime
-                ? 'required'
-                : null
-            "
-            type="date"
-            @change="$v.form.validToDate.$touch()"
-          >
-            <template v-slot:default>
-              <span class="flex items-center">
-                Valid To Date
-                <popup-base class="ml-1 font-normal"
-                  >This date will close the survey for any future
-                  responses</popup-base
-                ></span
-              >
-            </template></input-base
-          >
-        </div>
-        <div class="w-full xl:w-3/12">
-          <input-base
-            v-model="form.validToTime"
-            :error="
-              $v.form.validToTime.$model !== undefined
-                ? !$v.form.validToTime.checkDates
-                  ? 'this date must be after the valid from date'
-                  : null
-                : $v.form.validToDate.$model !== undefined &&
-                  !$v.form.validToDate.timeRequiredIfDate
-                ? 'required'
-                : null
-            "
-            type="time"
-            @change="$v.form.validToTime.$touch()"
-            ><span class="flex items-center"
-              >Valid To Time<popup-base class="invisible"></popup-base></span
-          ></input-base>
-        </div>
+      <div class="w-full xl:w-3/12">
+        <l-input
+          v-model="form.validFromTime"
+          :error="
+            $v.form.validFromDate.$model !== undefined &&
+            !$v.form.validFromTime.required
+              ? 'required'
+              : null
+          "
+          type="time"
+          @change="$v.form.validFromTime.$touch()"
+          ><span class="flex items-center"
+            >Valid From Time<popup-information
+              class="invisible"
+            ></popup-information></span
+        ></l-input>
       </div>
     </div>
 
-    <edit-object-modal-bottom-part
-      class="pt-10 pb-5"
-      :form="form"
-      which="surveys"
-      :is-valid="isValid"
-    ></edit-object-modal-bottom-part>
+    <div class="flex flex-wrap w-full">
+      <div class="w-full xl:w-9/12 xl:pr-5 mb-2 xl:mb-0">
+        <l-input
+          v-model="form.validToDate"
+          :error="
+            $v.form.validToDate.$model !== undefined &&
+            !$v.form.validToDate.checkDates
+              ? 'this date must be after the valid from date'
+              : $v.form.validToTime.$model !== undefined &&
+                !$v.form.validToTime.dateRequiredIfTime
+              ? 'required'
+              : null
+          "
+          type="date"
+          @change="
+            $v.form.validToDate.$touch()
+            form.validToTime = form.validToTime ? form.validToTime : '08:00'
+          "
+        >
+          <template v-slot:default>
+            <span class="flex items-center">
+              Valid To Date
+              <popup-information class="ml-1 font-normal"
+                >This date will close the survey for any future
+                responses</popup-information
+              ></span
+            >
+          </template></l-input
+        >
+      </div>
+      <div class="w-full xl:w-3/12">
+        <l-input
+          v-model="form.validToTime"
+          :error="
+            $v.form.validToTime.$model !== undefined &&
+            !$v.form.validToTime.checkDates
+              ? 'this date must be after the valid from date'
+              : $v.form.validToDate.$model !== undefined &&
+                !$v.form.validToDate.timeRequiredIfDate
+              ? 'required'
+              : null
+          "
+          type="time"
+          @change="$v.form.validToTime.$touch()"
+          ><span class="flex items-center"
+            >Valid To Time<popup-information
+              class="invisible"
+            ></popup-information></span
+        ></l-input>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import { convertSurveyFromApiToForm } from '@/services/survey-helpers'
 import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
-import moment from 'moment'
-import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
-
-import EditObjectModalBottomPart from '~/components/layouts/EditObjectModalBottomPart'
-import { createMomentFromDateAndTime } from '~/helpers/helpers'
-import PopupBase from '~/components/elements/PopupBase'
-import SelectBase from '~/components/elements/SelectBase'
-
-import TextAreaBase from '~/components/elements/TextAreaBase'
+import { isDateBefore } from '@/services/date-helpers'
+import { DateTime } from 'luxon'
 
 const checkDates = (value, vm) => {
   if (
@@ -206,35 +193,20 @@ const checkDates = (value, vm) => {
   )
     return true
 
-  const dateStart = createMomentFromDateAndTime(
-    vm.validFromDate,
-    vm.validFromTime
+  return isDateBefore(
+    `${vm.validFromDate}T${vm.validFromTime}`,
+    `${vm.validToDate}T${vm.validToTime}`
   )
-  const dateEnd = createMomentFromDateAndTime(vm.validToDate, vm.validToTime)
-
-  return moment(dateEnd).isAfter(moment(dateStart))
 }
 
 export default {
   name: 'NewSurvey',
-  components: {
-    TextAreaBase,
 
-    SelectBase,
-    PopupBase,
-    EditObjectModalBottomPart,
-  },
   mixins: [validationMixin],
   props: {
-    selectedCategoryCode: {
-      type: Number,
-      required: false,
-      default: -1,
-    },
-    selectedSubcategoryCode: {
-      type: Number,
-      required: false,
-      default: -1,
+    dataItem: {
+      type: Object,
+      required: true,
     },
   },
   validations: {
@@ -242,7 +214,7 @@ export default {
       name: {
         required,
       },
-      text: {
+      textConverted: {
         required,
       },
       referenceDate: {
@@ -281,17 +253,14 @@ export default {
       form: null,
     }
   },
-  computed: {
-    isValid() {
-      return !this.$v.$invalid
-    },
-    item() {
-      return this.$store.state.currentItemToBeEdited
-    },
-    categories() {
-      let x = JSON.parse(JSON.stringify(this.$store.state.categories.items))
 
-      let allSubcategories = this.$store.state.subcategories.items
+  computed: {
+    categories() {
+      let x = JSON.parse(
+        JSON.stringify(this.$store.state.categories.categories)
+      )
+
+      let allSubcategories = this.$store.state.categories.subcategories
       allSubcategories = allSubcategories.map((el) => {
         return el.categoryCode
       })
@@ -305,7 +274,9 @@ export default {
       })
     },
     subcategories() {
-      let x = JSON.parse(JSON.stringify(this.$store.state.subcategories.items))
+      let x = JSON.parse(
+        JSON.stringify(this.$store.state.categories.subcategories)
+      )
       if (this.form.categoryCode)
         x = x.filter((el) => {
           return el.categoryCode === this.form.categoryCode
@@ -315,29 +286,43 @@ export default {
       })
     },
   },
-  created() {
-    this.form = JSON.parse(JSON.stringify(this.item))
-    if (this.form.subCategoryCode) {
-      const getSubcategory = this.subcategories.find((el) => {
-        return Number(el.code) === Number(this.form.subCategoryCode)
-      })
-      this.form.categoryCode = getSubcategory.categoryCode
-    } else if (this.selectedSubcategoryCode) {
-      this.form.categoryCode = this.selectedCategoryCode
-      this.form.subCategoryCode = this.selectedSubcategoryCode
-    } else if (
-      Number(this.selectedCategoryCode) === -1 ||
-      (Number(this.selectedCategoryCode) !== -1 &&
-        this.selectedSubcategoryCode === null)
-    ) {
-      this.form.categoryCode = this.categories[0].code
-      this.form.subCategoryCode = this.subcategories[0].code
-    }
 
-    this.form = parseSurveyToForm(this.form)
+  watch: {
+    form: {
+      handler(value) {
+        this.$emit('update', value)
+      },
+      deep: true,
+    },
+  },
+  created() {
+    this.form = convertSurveyFromApiToForm(this.dataItem)
+    if (!this.form.referenceDate)
+      this.form.referenceDate = DateTime.now().toISODate()
+
+    if (!this.form.validFromDate) {
+      this.form.validFromDate = DateTime.now().toISODate()
+      this.form.validFromTime = '08:00'
+    }
   },
   mounted() {
-    // document.getElementById('inputName').focus()
+    document.getElementById('inputName').focus()
+    this.$watch(
+      '$v',
+      (val) => {
+        if (typeof val !== 'undefined') {
+          this.$emit('valid', !this.$v.$invalid)
+        }
+      },
+      { deep: true, immediate: true }
+    )
+  },
+  methods: {
+    changedCategory() {
+      delete this.form.subCategoryCode
+      if (this.subcategories.length > 0)
+        this.form.subCategoryCode = this.subcategories[0].code
+    },
   },
 }
 </script>
