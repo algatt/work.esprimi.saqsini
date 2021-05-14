@@ -26,14 +26,14 @@ module.exports = {
   purge: {
     options: {
       safelist: [
-        /blue/,
-        /red/,
-        /green/,
-        /primary/,
-        /yellow/,
-        /green/,
-        /gray/,
-        /indigo/,
+        '/blue/',
+        '/red/',
+        '/green/',
+        '/primary/',
+        '/yellow/',
+        '/green/',
+        ' /gray/',
+        '/indigo/',
       ],
     },
   },
