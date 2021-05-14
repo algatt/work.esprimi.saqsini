@@ -1,7 +1,15 @@
 <template>
   <button
     class="font-medium mr-3 px-3 py-1 transition duration-300 rounded hover:text-white"
-    :class="isChosen ? `bg-${color}-600 text-white` : `hover:bg-${color}-600`"
+    :class="
+      isChosen
+        ? color
+          ? `bg-${color}-600 text-white`
+          : `bg-primary`
+        : color
+        ? `hover:bg-${color}-600`
+        : `hover:bg-primary`
+    "
     @click="$emit('click')"
   >
     {{ item.text }}
@@ -23,7 +31,7 @@ export default {
     color: {
       type: String,
       required: false,
-      default: 'blue',
+      default: null,
     },
   },
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col justify-between w-full">
-    <div v-if="!survey.flags.includes('HAS_LANGUAGE_PACK_FILE')">
+    <div v-if="!dataItem.flags.includes('HAS_LANGUAGE_PACK_FILE')">
       <p class="mb-3">
         This survey only has the default language. You can generate a file that
         allows you to translate your survey in other languages.
@@ -11,7 +11,7 @@
     </div>
     <div v-else class="flex flex-col">
       <l-badge
-        v-if="survey.flags.includes('OUTDATED_LANGUAGE_PACK')"
+        v-if="dataItem.flags.includes('OUTDATED_LANGUAGE_PACK')"
         color="red"
       >
         <p class="px-2 py-1">
@@ -28,7 +28,7 @@
         This survey is available in the following languages.
       </p>
       <div class="flex flex-wrap">
-        <l-badge v-for="item in survey.languages" :key="item">
+        <l-badge v-for="item in dataItem.languages" :key="item">
           <span>{{ getCountryFromLanguage(item) }}</span>
         </l-badge>
       </div>

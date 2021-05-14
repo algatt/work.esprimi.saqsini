@@ -3,19 +3,13 @@
     class="fixed w-full h-12 md:bg-white transition duration-500 flex flex-col md:flex-row md:items-stretch md:justify-between z-10"
     :class="[
       scrollPosition > 50 ? `shadow bg-opacity-65` : '',
-      `bg-${baseColor}`,
+      color ? `bg-${color}-600` : `bg-primary`,
     ]"
     style="font-family: Poppins, serif"
   >
-    <div class="flex flex-1 pl-3">
-      <nuxt-link
-        to="/"
-        class="flex flex-1 items-center text-white"
-        :class="`md:text-${baseColor}`"
-      >
-        <i class="fas fa-comments fa-fw mr-2"></i>
-        <h6 class="font-semibold">Saqsini</h6>
-      </nuxt-link>
+    <div class="flex flex-1 pl-3 items-center justify-between">
+      <app-logo class="hidden md:block"></app-logo>
+      <app-logo class="block md:hidden" color="white"></app-logo>
       <div class="flex md:hidden pr-3">
         <button
           class="text-white transition duration-300"
@@ -52,7 +46,11 @@
           <div
             v-if="whichMenuIsChosen === menuItem.id"
             class="absolute shadow-md rounded z-40 flex flex-col px-2 py-1"
-            :class="[`bg-${baseColor}`, `border-${darkColor}`]"
+            :class="[
+              color
+                ? `bg-${color}-600 border-${color}-700`
+                : `bg-primary border-primary-darker`,
+            ]"
             style="top: 40px; right: 10px"
           >
             <div
@@ -76,7 +74,7 @@
     <div
       v-if="showSmallMenu"
       class="flex md:hidden absolute w-full h-screen text-white flex-col"
-      :class="`bg-${baseColor}`"
+      :class="color ? `bg-${color}-600` : `bg-primary`"
       style="margin-top: 3rem"
     >
       <div
@@ -112,9 +110,10 @@ import MenuAccount from '@/components/layouts/TopNavigation/MenuAccount'
 import menu from '@/assets/settings/menuStructure.json'
 import MenuItem from './MenuItem'
 import MenuChild from './MenuChild'
+import AppLogo from '~/components/elements/AppLogo'
 
 export default {
-  components: { MenuAccount, ScreenOverlay, MenuChild, MenuItem },
+  components: { AppLogo, MenuAccount, ScreenOverlay, MenuChild, MenuItem },
 
   props: {
     color: {
@@ -138,12 +137,6 @@ export default {
     permissions() {
       const permissions = this.user?.appFlags
       return permissions || []
-    },
-    baseColor() {
-      return `${this.color}-600`
-    },
-    darkColor() {
-      return `${this.color}-700`
     },
   },
   mounted() {

@@ -4,12 +4,28 @@
       v-if="avatar && avatar !== ''"
       :src="avatar"
       class="h-8 w-8 rounded-full cursor-pointer border-2 transition duration-300"
-      :class="[isChosen ? `border-${color}-600` : `hover:border-${color}-600`]"
+      :class="[
+        isChosen
+          ? color
+            ? `border-${color}-600`
+            : `border-primary`
+          : color
+          ? `hover:border-${color}-600`
+          : `hover:border-primary`,
+      ]"
     />
     <div
       v-else
       class="h-8 w-8 flex items-center border-2 cursor-pointer justify-center rounded-full transition duration-300"
-      :class="[isChosen ? `border-${color}-600` : `hover:border-${color}-600`]"
+      :class="[
+        isChosen
+          ? color
+            ? `border-${color}-600`
+            : `border-primary`
+          : color
+          ? `hover:border-${color}-600`
+          : `hover:border-primary`,
+      ]"
     >
       <i class="fas fa-user"></i>
     </div>
@@ -33,7 +49,7 @@ export default {
     color: {
       type: String,
       required: false,
-      default: 'blue',
+      default: null,
     },
   },
   computed: {

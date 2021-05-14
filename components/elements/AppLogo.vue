@@ -1,6 +1,14 @@
 <template>
   <div class="hover:animate-pulse" @click="$router.push({ name: 'index' })">
-    <h4 :class="color ? `text-${color}-600` : 'text-primary'">
+    <h4
+      :class="
+        color
+          ? color === 'white'
+            ? `text-white`
+            : `text-${color}-600`
+          : 'text-primary'
+      "
+    >
       <nuxt-link to="/">
         saqsini<i class="far fa-comments fa-fw ml-1"></i
       ></nuxt-link>

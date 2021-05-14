@@ -3,7 +3,7 @@
     <nuxt-link
       :to="{ name: item.link }"
       class="hidden px-4 py-2 md:flex flex-col text-white text-sm my-1 hover:bg-white rounded transition duration-300"
-      :class="`hover:text-${color}-600`"
+      :class="color ? `hover:text-${color}-600` : `hover:text-primary`"
       @click.native="$emit('click')"
     >
       <span class="flex items-center"
@@ -16,7 +16,7 @@
     <nuxt-link
       :to="{ name: item.link }"
       class="block md:hidden mb-2 py-1 px-2 rounded hover:bg-white transition duration-300 flex justify-between items-center"
-      :class="`hover:text-${color}-600`"
+      :class="color ? `hover:text-${color}-600` : `hover:text-primary`"
       style="min-width: 10rem"
       @click.native="$emit('click')"
     >
@@ -37,7 +37,7 @@ export default {
     color: {
       type: String,
       required: false,
-      default: 'blue',
+      default: null,
     },
   },
 }
