@@ -1,7 +1,7 @@
 <template>
   <span
-    class="text-xs rounded-full h-5 w-5 flex items-center justify-center"
-    :class="`text-${color}-300 bg-${color}-50`"
+    class="text-xs rounded-full h-5 w-5 flex items-center justify-center text-white"
+    :class="color ? `bg-${color}-400` : `bg-primary-lighter`"
     ><slot></slot
   ></span>
 </template>
@@ -12,7 +12,7 @@ export default {
   props: {
     color: {
       type: String,
-      default: 'blue',
+      default: 'primary',
     },
   },
 }

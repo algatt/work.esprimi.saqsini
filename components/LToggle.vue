@@ -8,14 +8,18 @@
     <div class="flex items-center space-x-2">
       <p><slot name="leftLabel"></slot></p>
       <div
-        class="bg-white transition duration-200 ease-in w-10 h-6 flex items-center"
+        class="bg-white transition duration-200 ease-in w-10 h-6 flex items-center border-gray-200"
         style="border-radius: 2em; border-width: 2px"
         :class="
-          toggleActive
-            ? `border-${bgColor}-600`
-            : !changeColor
-            ? `border-${bgColor}-600`
-            : ''
+          !changeColor
+            ? color
+              ? `border-${color}-600`
+              : `border-primary`
+            : toggleActive
+            ? color
+              ? `border-${color}-600`
+              : `border-primary`
+            : null
         "
         @click.stop="
           toggleActive = !toggleActive
@@ -27,11 +31,15 @@
           style="border-radius: 2em"
           :class="[
             { 'translate-x-3.5': toggleActive },
-            toggleActive
-              ? `bg-${bgColor}-600`
-              : changeColor
-              ? 'bg-gray-200'
-              : `bg-${bgColor}-600`,
+            changeColor && toggleActive && color ? `bg-${color}-600` : null,
+            changeColor && toggleActive && !color ? `bg-primary` : null,
+            !changeColor ? (color ? `bg-${color}-600` : `bg-primary`) : null,
+            !toggleActive && changeColor ? 'bg-gray-200' : null,
+            !toggleActive && !changeColor
+              ? color
+                ? `bg-${color}-600`
+                : `bg-primary`
+              : null,
           ]"
         ></div>
       </div>
@@ -54,10 +62,9 @@ export default {
       type: Boolean,
       default: true,
     },
-    bgColor: {
-      required: false,
+    color: {
       type: String,
-      default: 'blue',
+      default: null,
     },
   },
   data() {
@@ -66,22 +73,22 @@ export default {
     }
   },
   computed: {
-    colorNumber() {
-      return this.bgColor === 'gray' ? 300 : 600
-    },
-    color() {
-      return `${this.bgColor}-${this.colorNumber}`
-    },
-    colorDarker() {
-      return `${this.bgColor}-${this.colorNumber + 100}`
-    },
-    buttonStyle() {
-      if (this.disabled) return `bg-gray-300 border-gray-300 text-gray-200`
-      else
-        return `bg-${this.toggleActive ? this.color : 'gray-300'} border-${
-          this.colorDarker
-        } focus:ring-${this.color}  focus:bg-${this.colorDarker}`
-    },
+    // colorNumber() {
+    //   return this.bgColor === 'gray' ? 300 : 600
+    // },
+    // color() {
+    //   return `${this.bgColor}-${this.colorNumber}`
+    // },
+    // colorDarker() {
+    //   return `${this.bgColor}-${this.colorNumber + 100}`
+    // },
+    // buttonStyle() {
+    //   if (this.disabled) return `bg-gray-300 border-gray-300 text-gray-200`
+    //   else
+    //     return `bg-${this.toggleActive ? this.color : 'gray-300'} border-${
+    //       this.colorDarker
+    //     } focus:ring-${this.color}  focus:bg-${this.colorDarker}`
+    // },
   },
   mounted() {
     this.toggleActive = this.checked

@@ -289,11 +289,9 @@ export default {
       return this.$store.state.currentItemToBeEdited
     },
     categories() {
-      let x = JSON.parse(
-        JSON.stringify(this.$store.getters.getItems('categories'))
-      )
+      let x = JSON.parse(JSON.stringify(this.$store.state.categories.items))
 
-      let allSubcategories = this.$store.getters.getItems('subcategories')
+      let allSubcategories = this.$store.state.subcategories.items
       allSubcategories = allSubcategories.map((el) => {
         return el.categoryCode
       })
@@ -307,9 +305,7 @@ export default {
       })
     },
     subcategories() {
-      let x = JSON.parse(
-        JSON.stringify(this.$store.getters.getItems('subcategories'))
-      )
+      let x = JSON.parse(JSON.stringify(this.$store.state.subcategories.items))
       if (this.form.categoryCode)
         x = x.filter((el) => {
           return el.categoryCode === this.form.categoryCode

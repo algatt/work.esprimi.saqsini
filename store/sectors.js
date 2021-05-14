@@ -12,11 +12,7 @@ export const actions = {
           `/contact/sector/all?contactbookCode=${rootState.selectedContactList.code}&limit=${limit}&offset=${offset}`
         )
         .then((response) => {
-          commit(
-            'setItems',
-            { which: 'sectors', items: response.data },
-            { root: true }
-          )
+          commit('setSectors', response.data)
           resolve(response.data)
         })
         .catch((error) => {
@@ -99,5 +95,9 @@ export const mutations = {
 
   addSector(state, sector) {
     state.items.push(sector)
+  },
+
+  setSectors(state, sectors) {
+    state.items = sectors
   },
 }

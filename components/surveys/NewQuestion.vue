@@ -191,7 +191,7 @@ export default {
       return this.dataItem
     },
     questions() {
-      return this.$store.getters.getItems('questions')
+      return this.$store.state.questions.items
     },
     questionType() {
       const x = this.question.flags

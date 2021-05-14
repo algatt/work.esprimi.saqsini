@@ -3,7 +3,6 @@
     <template #sidebar>
       <div class="px-3 py-3">
         <SurveyCategoryTreeView
-          color="blue"
           :categories="categories"
           @changedOption="changedOption"
         ></SurveyCategoryTreeView></div

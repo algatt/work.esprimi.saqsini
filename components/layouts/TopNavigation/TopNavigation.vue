@@ -98,7 +98,7 @@
             v-if="checkRole(menuChild.role)"
             :item="menuChild"
             :color="color"
-            @click="showSmallMenu = false"
+            @click="triggerShowSmallScreenMenu"
           ></menu-child>
         </div>
       </div>
@@ -115,6 +115,7 @@ import MenuChild from './MenuChild'
 
 export default {
   components: { MenuAccount, ScreenOverlay, MenuChild, MenuItem },
+
   props: {
     color: {
       type: String,

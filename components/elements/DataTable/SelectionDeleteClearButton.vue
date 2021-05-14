@@ -40,7 +40,7 @@ export default {
     },
     color: {
       type: String,
-      default: 'blue',
+      default: null,
     },
   },
 }

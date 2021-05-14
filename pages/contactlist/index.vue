@@ -127,7 +127,7 @@ export default {
   },
   computed: {
     contactlists() {
-      return this.$store.getters.getItems('contactlist')
+      return this.$store.state.contactlist.items
     },
   },
   created() {

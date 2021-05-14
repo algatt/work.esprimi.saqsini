@@ -41,14 +41,7 @@ export const actions = {
           `/builder/instance/all?limit=${limit}&offset=${offset}&categoryCode=${code}`
         )
         .then((response) => {
-          commit(
-            'setItems',
-            {
-              which: 'surveys',
-              items: response.data,
-            },
-            { root: true }
-          )
+          commit('setSurveys', response.data)
           resolve()
         })
         .catch((error) => {
@@ -64,14 +57,8 @@ export const actions = {
           `/builder/instance/all?limit=${limit}&offset=${offset}&subCategoryCode=${code}`
         )
         .then((response) => {
-          commit(
-            'setItems',
-            {
-              which: 'surveys',
-              items: response.data,
-            },
-            { root: true }
-          )
+          commit('setSurveys', response.data)
+          resolve(response.data)
         })
         .catch((error) => {
           reject(error)

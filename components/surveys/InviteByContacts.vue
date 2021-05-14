@@ -111,8 +111,7 @@ export default {
       return this.$store.state.selectedContactList
     },
     originalContacts() {
-      return this.$store.getters
-        .getItems('contacts')
+      return this.$store.state.contacts.items
         .filter((el) => {
           return el.email && el.email !== ''
         })

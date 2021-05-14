@@ -3,13 +3,13 @@
     <div class="flex justify-between items-center">
       <span
         class="flex flex-1 cursor-pointer transition duration-300 font-medium"
-        :class="`hover:text-${color}-600`"
+        :class="color ? `hover:text-${color}-600` : `hover:text-primary`"
         @click="$emit('click', item)"
         ><span class="flex items-center relative flex-1">
           <i
             v-if="isChosen"
             class="far fa-folder-open fa-fw"
-            :class="`text-${color}-600`"
+            :class="color ? `text-${color}-600` : `text-primary`"
           ></i>
           <i v-else class="far fa-folder fa-fw text-gray-300"></i>
           <TreeViewInput
@@ -24,8 +24,8 @@
       <span class="flex items-center space-x-2">
         <button
           v-if="isChosen && !isEditable && item"
-          class="text-gray-300 hover:text-blue-600 transition duration-300 focus:outline-none"
-          :class="`hover:text-${color}-600`"
+          class="text-gray-300 transition duration-300 focus:outline-none"
+          :class="color ? `hover:text-${color}-600` : `hover:text-primary`"
           @click.stop="setEditable"
         >
           <i class="far fa-edit fa-sm fa-fw"></i>
@@ -37,9 +37,7 @@
         >
           <i class="far fa-trash-alt fa-sm fa-fw"></i>
         </button>
-        <badge-base v-if="item" size="xs">{{
-          item[countField]
-        }}</badge-base></span
+        <l-badge v-if="item" size="xs">{{ item[countField] }}</l-badge></span
       >
     </div>
     <div>
@@ -60,7 +58,7 @@ export default {
     },
     color: {
       type: String,
-      default: 'blue',
+      default: null,
     },
     item: {
       type: Object,

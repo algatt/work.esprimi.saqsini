@@ -96,15 +96,13 @@ export default {
       return this.$store.state.currentItemToBeEdited
     },
     sectors() {
-      const x = JSON.parse(
-        JSON.stringify(this.$store.getters.getItems('sectors'))
-      )
+      const x = JSON.parse(JSON.stringify(this.$store.state.sectors.items))
       return x.sort((a, b) => {
         return a.name > b.name ? 1 : -1
       })
     },
     industries() {
-      return this.$store.getters.getItems('industries')
+      return this.$store.state.industries.items
     },
     uniqueNames() {
       return this.industries.map((el) => {

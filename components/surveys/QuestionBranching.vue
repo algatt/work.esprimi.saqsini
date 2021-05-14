@@ -148,8 +148,7 @@ export default {
       return JSON.parse(JSON.stringify(this.$store.state.invitations.filters))
     },
     contactlists() {
-      if (this.canUseContactBook)
-        return this.$store.getters.getItems('contactlist')
+      if (this.canUseContactBook) return this.$store.state.contactlist.items
       return []
     },
     contactList() {

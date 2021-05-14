@@ -1,7 +1,8 @@
 <template>
   <span
-    class="text-sm rounded px-1.5 py-0.5 border"
-    :class="`bg-${color}-200 border-${color}-300 text-${color}-700`"
+    class="text-xs rounded px-1.5 py-0.5 border flex justify-center"
+    style="min-width: 1.5rem"
+    :class="`bg-${color}-100 border-${color}-200 text-${color}-600`"
     ><slot></slot
   ></span>
 </template>

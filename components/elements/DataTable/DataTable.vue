@@ -41,7 +41,7 @@
                 { 'cursor-pointer': column.sortable },
                 column.align ? `text-${column.align}` : 'text-left',
               ]"
-              @click="sort(column.field)"
+              @click="column.sortable ? sort(column.field) : null"
             >
               <span>{{ column.title }}</span>
               <span v-if="column.sortable && fieldToSort == column.field">
@@ -76,7 +76,7 @@
                   ><i
                     v-else-if="existsInSelectedItems(row.code)"
                     class="fas fa-check-circle fa-sm fa-fw"
-                    :class="`text-${color}-600`"
+                    :class="color ? `text-${color}-600` : `text-primary`"
                   ></i> </transition
               ></span>
             </td>
@@ -119,7 +119,7 @@ export default {
     color: {
       type: String,
       required: false,
-      default: 'blue',
+      default: null,
     },
     enableSelectAll: {
       type: Boolean,

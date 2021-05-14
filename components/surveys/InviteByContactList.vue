@@ -237,7 +237,7 @@ export default {
     contacts() {
       if (!this.filters.contacts) return []
 
-      const temp = this.$store.getters.getItems('jobs')
+      const temp = this.$store.state.jobs.items
       const whichCompanies = this.getAvailableCodes(
         this.companies,
         this.selectedCompanies
@@ -279,7 +279,7 @@ export default {
       return result
     },
     contactlists() {
-      return this.$store.getters.getItems('contactlist')
+      return this.$store.state.contactlist.items
     },
   },
   created() {

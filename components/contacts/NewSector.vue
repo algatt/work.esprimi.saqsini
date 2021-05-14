@@ -80,7 +80,7 @@ export default {
       return this.$store.state.currentItemToBeEdited
     },
     sectors() {
-      return this.$store.getters.getItems('sectors')
+      return this.$store.state.sectors.items
     },
     uniqueNames() {
       return this.sectors.map((el) => {

@@ -3,10 +3,14 @@
     <div class="flex justify-between items-center">
       <span
         class="flex flex-1 cursor-pointer transition duration-300 font-medium"
-        :class="`hover:text-${color}-600`"
+        :class="color ? `hover:text-${color}-600` : `hover-text-primary`"
         @click="$emit('click', item.code)"
         ><span class="flex items-center relative" @click="setEditable">
-          <i v-if="isChosen" class="fas fa-plus fa-fw text-blue-600"></i>
+          <i
+            v-if="isChosen"
+            class="fas fa-plus fa-fw"
+            :class="color ? `text-${color}-600` : `text-primary`"
+          ></i>
           <i v-else class="fas fa-plus fa-fw text-gray-300"></i>
           <TreeViewInput
             id="treeViewElementInput"
@@ -32,7 +36,7 @@ export default {
     },
     color: {
       type: String,
-      default: 'blue',
+      default: null,
     },
     item: {
       type: Object,

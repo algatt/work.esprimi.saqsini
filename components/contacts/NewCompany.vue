@@ -121,11 +121,9 @@ export default {
     },
 
     sectors() {
-      let x = JSON.parse(
-        JSON.stringify(this.$store.getters.getItems('sectors'))
-      )
+      let x = JSON.parse(JSON.stringify(this.$store.state['sectors/items']))
 
-      let allIndustries = this.$store.getters.getItems('industries')
+      let allIndustries = this.$store.state.industries.items
       allIndustries = allIndustries.map((el) => {
         return el.sectorCode
       })
@@ -139,9 +137,7 @@ export default {
       })
     },
     industries() {
-      let x = JSON.parse(
-        JSON.stringify(this.$store.getters.getItems('industries'))
-      )
+      let x = JSON.parse(JSON.stringify(this.$store.state.industries.items))
 
       if (this.sectorCode)
         x = x.filter((el) => {

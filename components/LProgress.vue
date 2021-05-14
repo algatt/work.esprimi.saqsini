@@ -1,19 +1,21 @@
 <template>
   <div
-    class="flex relative items-center w-full bg-white h-6 rounded-l-md rounded-r-md border-2"
-    :class="`border-${color}-600`"
+    class="flex relative items-center w-full bg-white h-6 border-2 rounded"
+    :class="color ? `border-${color}-600` : `border-primary`"
   >
     <div
-      class="relative shadow text-sm"
-      style="min-height: 100%"
-      :style="{ width: `${barWidth}%` }"
-      :class="`bg-${color}-600`"
+      class="absolute shadow text-sm left-0"
+      style="top: -1px; height: calc(100% + 1px)"
+      :style="{ width: `calc(${barWidth}% + 1px)` }"
+      :class="color ? `bg-${color}-600` : `bg-primary`"
     ></div>
     <span
-      class="font-bold h-full absolute w-full flex justify-center items-center left-0 top-0 text-sm"
-      :class="barWidth < 60 ? `text-${color}-600` : 'text-white'"
+      :title="`${currentValue} / ${totalValue}`"
+      class="font-bold h-full absolute w-full flex justify-center items-center left-0 top-0 text-xs h-4"
     >
-      {{ currentValue }}/{{ totalValue }}
+      <span class="bg-white px-1 rounded-md bg-opacity-50"
+        >{{ barWidth }}%
+      </span>
     </span>
   </div>
 </template>
@@ -32,7 +34,7 @@ export default {
     },
     color: {
       type: String,
-      default: 'blue',
+      default: null,
     },
   },
   computed: {
