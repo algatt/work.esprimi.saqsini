@@ -121,7 +121,7 @@ export default {
     },
 
     sectors() {
-      let x = JSON.parse(JSON.stringify(this.$store.state['sectors/items']))
+      let x = JSON.parse(JSON.stringify(this.$store.state.sectors.items))
 
       let allIndustries = this.$store.state.industries.items
       allIndustries = allIndustries.map((el) => {

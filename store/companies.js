@@ -19,6 +19,7 @@ export const state = () => ({
 
 export const actions = {
   getCompanies({ commit, rootState }, { limit = 100, offset = 0 }) {
+    if (!rootState.selectedContactList) return []
     return new Promise((resolve, reject) => {
       this.$axios
         .get(

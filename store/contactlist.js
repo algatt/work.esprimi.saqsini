@@ -33,7 +33,7 @@ export const actions = {
         .then(() => {
           if (
             rootState.selectedContactList &&
-            rootState.selectedContactList.code === code
+            rootState.selectedContactList?.code === code
           ) {
             dispatch('setContactList', null, { root: true })
           }

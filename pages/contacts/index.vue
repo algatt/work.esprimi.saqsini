@@ -1,5 +1,5 @@
 <template>
-  <list-layout v-if="!loading">
+  <list-layout v-if="!loading && contactLists.length !== 0">
     <data-table
       :table-data="contacts"
       :table-definition="tableContacts"
@@ -51,6 +51,12 @@
       </template>
     </data-table>
   </list-layout>
+  <div
+    v-else-if="!loading && contactLists.length === 0"
+    class="flex justify-center w-full"
+  >
+    <p class="pt-20 font-semibold">You do not have any contact lists set up.</p>
+  </div>
 </template>
 
 <script>
@@ -99,15 +105,22 @@ export default {
     contacts() {
       return this.$store.state.contacts.items
     },
+    contactLists() {
+      return this.$store.state.contactlist.items
+    },
   },
   created() {
     this.loading = true
-    this.$store.dispatch('contactlist/getContactLists', {}).then(() => {
-      if (this.$store.state.selectedContactList) {
-        this.updateData()
+    this.$store
+      .dispatch('contactlist/getContactLists', {})
+      .then(() => {
+        if (this.$store.state.selectedContactList) {
+          this.updateData()
+        }
+      })
+      .finally(() => {
         this.loading = false
-      }
-    })
+      })
   },
   methods: {
     async updateData() {

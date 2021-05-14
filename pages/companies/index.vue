@@ -1,5 +1,5 @@
 <template>
-  <list-layout-with-sidebar v-if="!loading">
+  <list-layout-with-sidebar v-if="!loading && contactLists.length !== 0">
     <template #sidebar>
       <div class="px-3 py-3">
         <company-sector-tree-view
@@ -16,7 +16,9 @@
       >
         <template v-slot:headerLeft
           ><h6 class="mt-2">Companies</h6>
-          <contact-list-select></contact-list-select>
+          <contact-list-select
+            v-if="contactLists.length > 0"
+          ></contact-list-select>
         </template>
         <template v-slot:headerRight
           ><new-item-button class="ml-2" @click="showNewItem"
@@ -61,6 +63,12 @@
       </DataTable>
     </template>
   </list-layout-with-sidebar>
+  <div
+    v-else-if="!loading && contactLists.length === 0"
+    class="flex justify-center w-full"
+  >
+    <p class="pt-20 font-semibold">You do not have any contact lists set up.</p>
+  </div>
 </template>
 
 <script>
@@ -129,6 +137,7 @@ export default {
       return this.$store.state.contactlist.items
     },
   },
+
   created() {
     this.loading = true
     this.$store.dispatch('contactlist/getContactLists', {}).then(() => {

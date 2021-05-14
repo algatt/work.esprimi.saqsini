@@ -116,7 +116,10 @@ export default {
   },
   computed: {
     canUseContactBook() {
-      return this.$store.getters['auth/getPermissions'].includes('CONTACTBOOK')
+      return (
+        this.$store.getters['auth/getPermissions'].includes('CONTACTBOOK') &&
+        this.$store.state.contactlist.items.length > 0
+      )
     },
     survey() {
       return this.$store.state.surveys.items[0]

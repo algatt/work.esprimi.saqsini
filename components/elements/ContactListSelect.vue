@@ -23,7 +23,10 @@ export default {
   },
   computed: {
     canUseContactBook() {
-      return this.$store.getters['auth/getPermissions'].includes('CONTACTBOOK')
+      return (
+        this.$store.getters['auth/getPermissions'].includes('CONTACTBOOK') &&
+        this.contactLists.length > 0
+      )
     },
     selectedContactList() {
       return this.$store.state.selectedContactList

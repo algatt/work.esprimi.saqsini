@@ -1,5 +1,5 @@
 <template>
-  <list-layout v-if="!loading">
+  <list-layout v-if="!loading && company">
     <data-table
       :table-data="departments"
       :table-definition="tableDepartments"

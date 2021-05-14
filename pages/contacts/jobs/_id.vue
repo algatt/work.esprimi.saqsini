@@ -1,5 +1,5 @@
 <template>
-  <list-layout v-if="!loading">
+  <list-layout v-if="!loading && contact">
     <data-table
       :table-data="jobs"
       :table-definition="tableJobs"
@@ -93,6 +93,11 @@ export default {
     departments() {
       return this.$store.state.departments.items
     },
+    contact() {
+      return this.contacts.find((el) => {
+        return el.code === this.$route.params.id
+      })
+    },
   },
   created() {
     this.loading = true
@@ -109,9 +114,10 @@ export default {
       await this.$store.dispatch('companies/getCompanies', {})
       await this.$store.dispatch('roles/getRoles', {})
       await this.$store.dispatch('departments/getAllDepartments', {})
-      await this.$store.dispatch('jobs/getJobsByContact', {
-        contactCode: this.$route.params.id,
-      })
+      if (this.$route.params.id)
+        await this.$store.dispatch('jobs/getJobsByContact', {
+          contactCode: this.$route.params.id,
+        })
     },
     getValueFromObject(whichObject, whichField, whichCode) {
       if (whichCode === undefined) return

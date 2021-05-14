@@ -4,6 +4,7 @@
       <div class="w-full md:w-6/12 flex justify-start items-center px-4">
         <h4 class="mt-2 mr-5">{{ survey.name }}</h4>
         <contact-list-select
+          v-if="contactLists.length > 0"
           :disabled="
             getBranchingContactBook().includes(selectedContactList.code)
           "

@@ -6,6 +6,7 @@ export const state = () => ({
 
 export const actions = {
   getContacts({ commit, rootState }, { limit = 100, offset = 0 }) {
+    if (!rootState.selectedContactList) return []
     return new Promise((resolve, reject) => {
       this.$axios
         .get(
@@ -36,13 +37,13 @@ export const actions = {
   },
 
   newContact({ commit, dispatch, state, rootState }, contact) {
-    contact.contactbookCode = rootState.selectedContactList.code
+    contact.contactbookCode = rootState.selectedContactList?.code
     delete contact.code
     return new Promise((resolve, reject) => {
       this.$axios
         .post('contact/contact/', qs.stringify(contact))
         .then((response) => {
-          commit('addContact', response.data)
+          commit('newContact', response.data)
           resolve(response.data)
         })
         .catch((error) => {

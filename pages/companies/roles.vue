@@ -1,11 +1,12 @@
 <template>
-  <list-layout v-if="!loading">
+  <list-layout v-if="!loading && contactLists.length !== 0">
     <data-table
       :table-data="roles"
       :table-definition="tableRoles"
       @deleteAll="deleteRoles"
       ><template v-slot:headerLeft>
         <h5 class="mt-2">Roles</h5>
+        <contact-list-select></contact-list-select>
       </template>
       <template v-slot:headerRight>
         <new-item-button class="ml-2" @click="newRole"
@@ -31,6 +32,12 @@
       </template></data-table
     ></list-layout
   >
+  <div
+    v-else-if="!loading && contactLists.length === 0"
+    class="flex justify-center w-full"
+  >
+    <p class="pt-20 font-semibold">You do not have any contact lists set up.</p>
+  </div>
 </template>
 
 <script>
@@ -39,12 +46,14 @@ import DataTable from '~/components/elements/DataTable/DataTable'
 import ModalService from '~/services/modal-services'
 import NewItemModal from '~/components/layouts/NewItemModal'
 import NewItemButton from '~/components/elements/NewItemButton'
+import ContactListSelect from '~/components/elements/ContactListSelect'
 
 export default {
   name: 'RolesList',
   middleware: ['contactBook'],
   layout: 'authlayout',
   components: {
+    ContactListSelect,
     DataTable,
     ListLayout,
     NewItemButton,
@@ -63,14 +72,17 @@ export default {
     roles() {
       return this.$store.state.roles.items
     },
+    contactLists() {
+      return this.$store.state.contactlist.items
+    },
   },
   created() {
     this.loading = true
     this.$store.dispatch('contactlist/getContactLists', {}).then(() => {
       if (this.$store.state.selectedContactList) {
         this.updateData()
-        this.loading = false
       }
+      this.loading = false
     })
   },
   methods: {

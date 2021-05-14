@@ -6,6 +6,7 @@ export const state = () => ({
 
 export const actions = {
   getIndustries({ commit, rootState }) {
+    if (!rootState.selectedContactList) return []
     return new Promise((resolve, reject) => {
       this.$axios
         .get(`/contact/industry/all?code=${rootState.selectedContactList.code}`)
