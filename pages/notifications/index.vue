@@ -1,5 +1,5 @@
 <template>
-  <list-layout v-if="!loading">
+  <list-layout v-if="!loading && !error">
     <data-table
       :table-data="notifications"
       :table-definition="tableNotifications"
@@ -42,6 +42,8 @@
       >
     </data-table>
   </list-layout>
+  <page-load-error v-else-if="!loading && error"></page-load-error>
+  <spinner v-else-if="loading"></spinner>
 </template>
 
 <script>
@@ -50,13 +52,17 @@ import ListLayout from '~/components/layouts/ListLayout'
 import DataTable from '~/components/elements/DataTable/DataTable'
 import ModalService from '~/services/modal-services'
 import PlainModal from '~/components/layouts/PlainModal'
+import PageLoadError from '~/components/layouts/PageLoadError'
+import Spinner from '~/components/layouts/Spinner'
 export default {
   name: 'Notifications',
-  components: { DataTable, ListLayout },
+  components: { Spinner, PageLoadError, DataTable, ListLayout },
   layout: 'authlayout',
+  middleware: 'auth',
   data() {
     return {
       loading: true,
+      error: false,
       tableNotifications: [
         { title: 'From', slot: 'from', field: 'author.email', sortable: true },
         { title: 'Subject', slot: 'subject', field: 'subject' },
@@ -76,9 +82,14 @@ export default {
   },
   created() {
     this.loading = true
-    this.$store.dispatch('notifications/getNotifications', {}).then(() => {
-      this.loading = false
-    })
+    this.$store
+      .dispatch('notifications/getNotifications', {})
+      .catch(() => {
+        this.error = true
+      })
+      .finally(() => {
+        this.loading = false
+      })
   },
   methods: {
     showContent(item) {

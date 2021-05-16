@@ -1,5 +1,6 @@
 <template>
-  <list-layout v-if="!loading">
+  <spinner v-if="loading"></spinner>
+  <list-layout v-else-if="!loading && !error">
     <data-table
       :table-data="contactlists"
       :table-definition="tableContactList"
@@ -7,8 +8,9 @@
     >
       <template #headerLeft><h6>Contact Lists</h6></template>
       <template #headerRight
-        ><new-item-button class="ml-2" @click="showNewItem"
-          >New Contact List</new-item-button
+        ><new-item-button @click="showNewItem"
+          ><span class="hidden md:flex">New Contact List</span
+          ><span class="flex md:hidden">New</span></new-item-button
         ></template
       >
       <template #deleteBy="slotProps">
@@ -44,7 +46,7 @@
             <i class="fas fa-cloud-download-alt fa-fw"></i> </span></span
       ></template>
       <template #actions="slotProps">
-        <span class="flex justify-center">
+        <span class="flex justify-end">
           <LPopupMenu>
             <template v-slot:menu>
               <button @click="editContactList(slotProps.item)">
@@ -86,6 +88,7 @@
       </template>
     </data-table>
   </list-layout>
+  <page-load-error v-else-if="!loading && error"></page-load-error>
 </template>
 
 <script>
@@ -95,12 +98,16 @@ import NewItemButton from '~/components/elements/NewItemButton'
 import ModalService from '~/services/modal-services'
 import NewItemModal from '~/components/layouts/NewItemModal'
 import PlainModal from '~/components/layouts/PlainModal'
+import PageLoadError from '~/components/layouts/PageLoadError'
+import Spinner from '~/components/layouts/Spinner'
 
 export default {
   name: 'ContactLists',
   middleware: ['contactBook'],
   layout: 'authlayout',
   components: {
+    Spinner,
+    PageLoadError,
     NewItemButton,
     DataTable,
     ListLayout,
@@ -109,6 +116,7 @@ export default {
   data() {
     return {
       loading: true,
+      error: false,
       tableContactList: [
         {
           title: 'Name',
@@ -132,9 +140,14 @@ export default {
   },
   created() {
     this.loading = true
-    this.$store.dispatch('contactlist/getContactLists', {}).finally(() => {
-      this.loading = false
-    })
+    this.$store
+      .dispatch('contactlist/getContactLists', {})
+      .catch(() => {
+        this.error = true
+      })
+      .finally(() => {
+        this.loading = false
+      })
   },
   methods: {
     showNewItem() {
@@ -144,32 +157,40 @@ export default {
         whichComponent: 'NewContactList',
         dataItem,
         options: { header: 'New Contact List' },
-      }).then((response) => {
-        this.$store
-          .dispatch('contactlist/newContactList', response)
-          .then((contactList) => {
-            this.$toasted.show(`Contact List ${contactList.name} created`)
-          })
-          .catch(() => {
-            this.$toasted.error('There was a problem creating the contact list')
-          })
       })
+        .then((response) => {
+          this.$store
+            .dispatch('contactlist/newContactList', response)
+            .then((contactList) => {
+              this.$toasted.show(`Contact List ${contactList.name} created`)
+            })
+            .catch(() => {
+              this.$toasted.error(
+                'There was a problem creating the contact list'
+              )
+            })
+        })
+        .catch(() => {})
     },
     editContactList(contactList) {
       ModalService.open(NewItemModal, {
         whichComponent: 'NewContactList',
         dataItem: contactList,
         options: { header: `Editing ${contactList.name}` },
-      }).then((response) => {
-        this.$store
-          .dispatch('contactlist/updateContactList', response)
-          .then((contactList) => {
-            this.$toasted.show(`Contact List ${contactList.name} updated`)
-          })
-          .catch(() => {
-            this.$toasted.error('There was a problem updating the contact list')
-          })
       })
+        .then((response) => {
+          this.$store
+            .dispatch('contactlist/updateContactList', response)
+            .then((contactList) => {
+              this.$toasted.show(`Contact List ${contactList.name} updated`)
+            })
+            .catch(() => {
+              this.$toasted.error(
+                'There was a problem updating the contact list'
+              )
+            })
+        })
+        .catch(() => {})
     },
     showCollaborators(contactList) {
       ModalService.open(PlainModal, {
@@ -239,10 +260,18 @@ export default {
       }
       Promise.all(calls)
         .then(() => {
-          this.$toasted.show(`${contactLists.length} lists deleted`)
+          this.$toasted.show(
+            `${contactLists.length} ${
+              contactLists.length === 1 ? 'list' : 'lists'
+            } deleted`
+          )
         })
         .catch(() => {
-          this.$toasted.error('There was a problem deleting the contact lists')
+          this.$toasted.error(
+            `There was a problem deleting the contact ${
+              contactLists.length === 1 ? 'list' : 'lists'
+            }`
+          )
         })
     },
   },

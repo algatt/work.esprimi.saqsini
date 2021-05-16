@@ -1,8 +1,16 @@
-<template><div class="spinner"></div></template>
+<template>
+  <div class="w-full">
+    <div
+      class="spinner"
+      :class="color ? `bg-${color}-600` : `bg-primary`"
+    ></div>
+  </div>
+</template>
 
 <script>
 export default {
   name: 'Spinner',
+  props: { color: { type: String, default: null } },
 }
 </script>
 
@@ -11,7 +19,6 @@ export default {
   width: 40px;
   height: 40px;
   margin: 100px auto;
-  @apply bg-primary;
 
   border-radius: 100%;
   -webkit-animation: sk-scaleout 1s infinite ease-in-out;

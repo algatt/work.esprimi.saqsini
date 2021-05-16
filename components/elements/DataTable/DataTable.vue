@@ -1,31 +1,29 @@
 <template>
-  <div class="w-full">
-    <div class="md:pl-5 w-full mb-10 md:mb-0">
-      <TableHeader class="mb-4"
-        ><template #left
-          ><div class="flex items-center space-x-2">
-            <slot name="headerLeft"></slot></div></template
-        ><template #right
-          ><selection-delete-clear-button
-            v-if="processedTableData.length !== 0"
-            :color="color"
-            :enable-clear="enableClearAll && selectedItems.length > 0"
-            :enable-select="
-              enableSelectAll &&
-              selectedItems.length !== processedTableData.length
-            "
-            :enable-delete="enableDeleteAll && selectedItems.length > 0"
-            @clear="selectedItems = []"
-            @selectAll="
-              selectedItems = processedTableData
-              $emit('selectItems', selectedItems)
-            "
-            @deleteAll="deleteAll"
-          ></selection-delete-clear-button
-          ><slot name="headerRight"></slot></template
-      ></TableHeader>
-    </div>
-    <div class="overflow-x-auto w-full md:pl-5">
+  <div class="w-full flex flex-col">
+    <TableHeader
+      ><template #left> <slot name="headerLeft"></slot></template
+      ><template #right>
+        <selection-delete-clear-button
+          v-if="processedTableData.length !== 0"
+          :color="color"
+          :enable-clear="enableClearAll && selectedItems.length > 0"
+          :enable-select="
+            enableSelectAll &&
+            selectedItems.length !== processedTableData.length
+          "
+          :enable-delete="enableDeleteAll && selectedItems.length > 0"
+          :how-many-selected="selectedItems.length"
+          @clear="selectedItems = []"
+          @selectAll="
+            selectedItems = processedTableData
+            $emit('selectItems', selectedItems)
+          "
+          @deleteAll="deleteAll"
+        ></selection-delete-clear-button
+        ><slot name="headerRight"></slot></template
+    ></TableHeader>
+
+    <div class="overflow-x-auto w-full">
       <table
         v-if="processedTableData.length > 0"
         class="w-full overflow-visible mx-auto whitespace-nowrap border-2 border-gray-100"
@@ -197,7 +195,9 @@ export default {
     },
     deleteAll() {
       ModalService.open(ConfirmModal, {
-        msg: `You are deleting ${this.selectedItems.length} items.`,
+        msg: `You are deleting ${this.selectedItems.length} ${
+          this.selectedItems.length === 1 ? 'item' : 'items'
+        }.`,
       }).then(() => {
         this.$emit('deleteAll', this.selectedItems)
         this.selectedItems = []

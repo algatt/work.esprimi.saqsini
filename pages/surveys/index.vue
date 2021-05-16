@@ -1,5 +1,5 @@
 <template>
-  <list-layout-with-sidebar v-if="!loading">
+  <list-layout-with-sidebar v-if="!loading && !error">
     <template #sidebar>
       <div class="px-3 py-3">
         <SurveyCategoryTreeView
@@ -137,7 +137,8 @@
       >
     </template>
   </list-layout-with-sidebar>
-  <div v-else>loading</div>
+  <page-load-error v-else-if="!loading && error"></page-load-error>
+  <spinner v-else-if="loading"></spinner>
 </template>
 
 <script>
@@ -147,12 +148,16 @@ import DataTable from '~/components/elements/DataTable/DataTable'
 import NewItemButton from '~/components/elements/NewItemButton'
 import ModalService from '~/services/modal-services'
 import NewItemModal from '~/components/layouts/NewItemModal'
+import PageLoadError from '~/components/layouts/PageLoadError'
+import Spinner from '~/components/layouts/Spinner'
 
 export default {
   name: 'SurveyList',
   middleware: ['surveyBuilder'],
   layout: 'authlayout',
   components: {
+    Spinner,
+    PageLoadError,
     DataTable,
     ListLayoutWithSidebar,
     SurveyCategoryTreeView,
@@ -162,6 +167,7 @@ export default {
   data() {
     return {
       loading: true,
+      error: false,
       selectedCategory: null,
       selectedSubcategory: null,
       selectedData: [],
@@ -194,10 +200,14 @@ export default {
     this.loading = true
     Promise.all([
       this.$store.dispatch('categories/getCategories'),
-      this.$store.dispatch('surveys/getSurveysAll', { limit: 100, offset: 0 }),
-    ]).then(() => {
-      this.loading = false
-    })
+      this.$store.dispatch('surveys/getSurveysAll', {}),
+    ])
+      .catch(() => {
+        this.error = true
+      })
+      .finally(() => {
+        this.loading = false
+      })
   },
   methods: {
     showNewItem() {

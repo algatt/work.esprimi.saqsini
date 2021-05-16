@@ -1,9 +1,11 @@
 <template>
-  <div class="w-full mb-2 flex flex-wrap h-12">
-    <div class="flex items-center w-full md:flex-1 mb-2 md:mb-0">
+  <div class="w-full flex flex-wrap items-center">
+    <div class="flex items-center w-full md:w-6/12 space-x-2 mb-4">
       <slot name="left"></slot>
     </div>
-    <div class="flex items-center w-full md:w-auto justify-end">
+    <div
+      class="flex items-center w-full md:w-6/12 space-x-2 justify-start md:justify-end mb-4"
+    >
       <slot name="right"></slot>
     </div>
   </div>

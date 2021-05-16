@@ -1,8 +1,10 @@
 <template>
-  <div class="min-h-screen flex flex-grow">
+  <div class="min-h-screen flex flex-col w-full">
     <modal-root></modal-root>
     <top-navigation></top-navigation>
-    <nuxt style="padding-top: 3rem"></nuxt>
+    <div class="w-full flex flex-col">
+      <nuxt style="padding-top: 3rem"></nuxt>
+    </div>
   </div>
 </template>
 

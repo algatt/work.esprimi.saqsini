@@ -1,17 +1,17 @@
 <template>
-  <list-layout v-if="!loading && contactLists.length !== 0">
+  <list-layout v-if="!loading && !error && contactLists.length !== 0">
     <data-table
       :table-data="contacts"
       :table-definition="tableContacts"
       @deleteAll="deleteContacts"
     >
       <template v-slot:headerLeft>
-        <h5 class="mt-2">Contacts</h5>
+        <h5>Contacts</h5>
         <contact-list-select></contact-list-select>
       </template>
       <template v-slot:headerRight>
         <new-item-button class="ml-2" @click="newContact"
-          >New Contact</new-item-button
+          >New&nbsp;<span class="hidden md:flex">Contact</span></new-item-button
         >
       </template>
       <template v-slot:demographics="slotProps">
@@ -41,22 +41,22 @@
         </nuxt-link>
       </template>
       <template v-slot:actions="slotProps">
-        <LPopupMenu>
-          <template v-slot:menu>
-            <button @click="editContact(slotProps.item)">
-              <i class="fas fa-pencil-alt fa-fw"></i>Edit
-            </button>
-          </template>
-        </LPopupMenu>
+        <div class="flex justify-end">
+          <LPopupMenu>
+            <template v-slot:menu>
+              <button @click="editContact(slotProps.item)">
+                <i class="fas fa-pencil-alt fa-fw"></i>Edit
+              </button>
+            </template>
+          </LPopupMenu>
+        </div>
       </template>
     </data-table>
   </list-layout>
-  <div
-    v-else-if="!loading && contactLists.length === 0"
-    class="flex justify-center w-full"
-  >
-    <p class="pt-20 font-semibold">You do not have any contact lists set up.</p>
-  </div>
+  <contact-list-error
+    v-else-if="!loading && !error && contactLists.length === 0"
+  ></contact-list-error>
+  <page-load-error v-else-if="!loading && error"></page-load-error>
 </template>
 
 <script>
@@ -69,12 +69,16 @@ import LPopupMenu from '~/components/LPopupMenu'
 import LTextLink from '~/components/LTextLink'
 import ModalService from '~/services/modal-services'
 import NewItemModal from '~/components/layouts/NewItemModal'
+import PageLoadError from '~/components/layouts/PageLoadError'
+import ContactListError from '~/components/contacts/ContactListError'
 
 export default {
   name: 'ContactsList',
   middleware: ['contactBook'],
   layout: 'authlayout',
   components: {
+    ContactListError,
+    PageLoadError,
     LTextLink,
     LPopupMenu,
     NewItemButton,
@@ -85,6 +89,7 @@ export default {
   data() {
     return {
       loading: true,
+      error: false,
       tableContacts: [
         { title: 'Full Name', field: 'displayName', sortable: true },
         { title: 'Demographics', slot: 'demographics' },
@@ -111,12 +116,16 @@ export default {
   },
   created() {
     this.loading = true
+
     this.$store
       .dispatch('contactlist/getContactLists', {})
       .then(() => {
         if (this.$store.state.selectedContactList) {
           this.updateData()
         }
+      })
+      .catch(() => {
+        this.error = true
       })
       .finally(() => {
         this.loading = false

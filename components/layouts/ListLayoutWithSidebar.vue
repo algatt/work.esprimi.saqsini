@@ -1,9 +1,9 @@
 <template>
-  <div class="w-full flex flex-wrap">
-    <div class="sidebar-width">
+  <div class="flex flex-wrap">
+    <div class="flex flex-col sidebar-width p-3">
       <slot name="sidebar"></slot>
     </div>
-    <div class="w-full md:w-auto md:flex-grow p-2 md:pr-5">
+    <div class="flex flex-col md:flex-grow w-full md:w-auto p-3">
       <slot name="content"></slot>
     </div>
   </div>

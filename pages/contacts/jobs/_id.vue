@@ -1,5 +1,11 @@
 <template>
-  <list-layout v-if="!loading && contact">
+  <company-error
+    v-if="!loading && !error && companies.length === 0"
+  ></company-error>
+  <roles-error
+    v-else-if="!loading && !error && roles.length === 0"
+  ></roles-error>
+  <list-layout v-else-if="!loading && !error && contact">
     <data-table
       :table-data="jobs"
       :table-definition="tableJobs"
@@ -12,25 +18,34 @@
         </h5>
       </template>
       <template v-slot:headerRight>
-        <new-item-button class="ml-2" @click="newJob">New Job</new-item-button>
+        <new-item-button @click="newJob"
+          ><span>New</span><span class="hidden md:flex">&nbsp;Job</span>
+        </new-item-button>
       </template>
       <template v-slot:status="slotProps">
-        <l-badge v-if="slotProps.item.flags.includes('ONGOING')" color="green"
-          >active</l-badge
-        >
-        <l-badge v-else color="red">stopped</l-badge>
+        <div class="flex justify-start">
+          <l-badge v-if="slotProps.item.flags.includes('ONGOING')" color="green"
+            >active</l-badge
+          >
+          <l-badge v-else color="red">stopped</l-badge>
+        </div>
       </template>
       <template v-slot:actions="slotProps">
-        <LPopupMenu>
-          <template v-slot:menu>
-            <button @click="editJob(slotProps.item)">
-              <i class="fas fa-pencil-alt fa-fw"></i>Edit
-            </button>
-          </template>
-        </LPopupMenu>
+        <div class="flex justify-end">
+          <LPopupMenu>
+            <template v-slot:menu>
+              <button @click="editJob(slotProps.item)">
+                <i class="fas fa-pencil-alt fa-fw"></i>Edit
+              </button>
+            </template>
+          </LPopupMenu>
+        </div>
       </template>
     </data-table>
   </list-layout>
+  <page-load-error
+    v-else-if="(!loading && error) || (!loading && !contact)"
+  ></page-load-error>
 </template>
 
 <script>
@@ -40,11 +55,17 @@ import NewItemButton from '~/components/elements/NewItemButton'
 import ModalService from '~/services/modal-services'
 import NewItemModal from '~/components/layouts/NewItemModal'
 import LPopupMenu from '~/components/LPopupMenu'
+import PageLoadError from '~/components/layouts/PageLoadError'
+import CompanyError from '~/components/contacts/CompanyError'
+import RolesError from '~/components/contacts/JobError'
 export default {
   name: 'JobsList',
   middleware: ['contactBook'],
   layout: 'authlayout',
   components: {
+    RolesError,
+    CompanyError,
+    PageLoadError,
     LPopupMenu,
     NewItemButton,
     DataTable,
@@ -53,6 +74,7 @@ export default {
   data() {
     return {
       loading: true,
+      error: false,
       tableJobs: [
         {
           title: 'Company',
@@ -101,12 +123,20 @@ export default {
   },
   created() {
     this.loading = true
-    this.$store.dispatch('contactlist/getContactLists', {}).then(() => {
-      if (this.$store.state.selectedContactList) {
-        this.updateData()
+    this.$store
+      .dispatch('contactlist/getContactLists', {})
+      .then(() => {
+        if (this.$store.state.selectedContactList) {
+          this.updateData()
+        }
+      })
+      .catch((error) => {
+        console.log(error)
+        this.error = true
+      })
+      .finally(() => {
         this.loading = false
-      }
-    })
+      })
   },
   methods: {
     async updateData() {

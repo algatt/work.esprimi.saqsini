@@ -1,6 +1,8 @@
 <template>
-  <div class="w-full flex flex-col p-2">
-    <slot></slot>
+  <div class="w-full flex flex-col">
+    <div class="w-full px-3 py-4">
+      <slot></slot>
+    </div>
   </div>
 </template>
 

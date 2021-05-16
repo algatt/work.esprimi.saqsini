@@ -5,7 +5,7 @@
       :table-definition="tableRoles"
       @deleteAll="deleteRoles"
       ><template v-slot:headerLeft>
-        <h5 class="mt-2">Roles</h5>
+        <h5>Roles</h5>
         <contact-list-select></contact-list-select>
       </template>
       <template v-slot:headerRight>

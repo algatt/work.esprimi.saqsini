@@ -5,6 +5,7 @@
 <script>
 export default {
   name: 'Contact',
+  layout: 'authlayout',
 }
 </script>
 

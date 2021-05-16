@@ -1,5 +1,5 @@
 <template>
-  <list-layout v-if="!loading && company">
+  <list-layout v-if="!loading && !error && company">
     <data-table
       :table-data="departments"
       :table-definition="tableDepartments"
@@ -10,7 +10,9 @@
       </template>
       <template v-slot:headerRight>
         <new-item-button class="ml-2" @click="newDepartment"
-          >New Department</new-item-button
+          >New&nbsp;<span class="hidden md:flex"
+            >Department</span
+          ></new-item-button
         >
       </template>
       <template v-slot:name="slotProps">
@@ -32,6 +34,9 @@
       </template>
     </data-table>
   </list-layout>
+  <page-load-error
+    v-else-if="(!loading && error) || (!loading && !company)"
+  ></page-load-error>
 </template>
 
 <script>
@@ -41,12 +46,14 @@ import LPopupMenu from '~/components/LPopupMenu'
 import NewItemButton from '~/components/elements/NewItemButton'
 import ModalService from '~/services/modal-services'
 import NewItemModal from '~/components/layouts/NewItemModal'
+import PageLoadError from '~/components/layouts/PageLoadError'
 export default {
-  name: 'ContactsList',
+  name: 'Departments',
   middleware: ['contactBook'],
   layout: 'authlayout',
 
   components: {
+    PageLoadError,
     NewItemButton,
     LPopupMenu,
     DataTable,
@@ -55,6 +62,7 @@ export default {
   data() {
     return {
       loading: true,
+      error: false,
       tableDepartments: [
         { title: 'Name', field: 'name', slot: 'name', sortable: true },
         { title: '', slot: 'actions', align: 'right' },
@@ -77,16 +85,22 @@ export default {
     this.updateData()
   },
   methods: {
-    updateData() {
+    async updateData() {
+      await this.$store.dispatch('contactlist/getContactLists', {})
+
       Promise.all([
         this.$store.dispatch('companies/getCompanies', {}),
         this.$store.dispatch(
           'departments/getDepartments',
           this.$route.params.id
         ),
-      ]).then(() => {
-        this.loading = false
-      })
+      ])
+        .catch(() => {
+          this.error = true
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
     newDepartment() {
       const dataItem = {

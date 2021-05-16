@@ -1,12 +1,12 @@
 <template>
-  <list-layout-with-sidebar v-if="!loading && contactLists.length !== 0">
+  <list-layout-with-sidebar
+    v-if="!loading && !error && contactLists.length !== 0"
+  >
     <template #sidebar>
-      <div class="px-3 py-3">
-        <company-sector-tree-view
-          :sectors="sectors"
-          @changedOption="changedOption"
-        ></company-sector-tree-view>
-      </div>
+      <company-sector-tree-view
+        :sectors="sectors"
+        @changedOption="changedOption"
+      ></company-sector-tree-view>
     </template>
     <template #content>
       <DataTable
@@ -15,14 +15,21 @@
         @deleteAll="deleteMultipleCompanies"
       >
         <template v-slot:headerLeft
-          ><h6 class="mt-2">Companies</h6>
+          ><h6>Companies</h6>
           <contact-list-select
             v-if="contactLists.length > 0"
           ></contact-list-select>
         </template>
         <template v-slot:headerRight
-          ><new-item-button class="ml-2" @click="showNewItem"
-            >Company</new-item-button
+          ><popup-information
+            v-if="sectors.length === 0 || industries.length === 0"
+            >Cannot create companies right now, since you need to have at least
+            one sector, and one industry.</popup-information
+          ><new-item-button
+            :disabled="sectors.length === 0 || industries.length == 0"
+            @click="showNewItem"
+            ><span>New</span
+            ><span class="hidden md:flex">&nbsp;Company</span></new-item-button
           ></template
         >
         <template #company="slotProps">
@@ -52,23 +59,24 @@
           >
         </template>
         <template #actions="slotProps">
-          <l-popup-menu>
-            <template v-slot:menu>
-              <button @click="editCompany(slotProps.item)">
-                <i class="fas fa-pencil-alt fa-fw"></i>Edit
-              </button>
-            </template>
-          </l-popup-menu>
+          <div class="flex justify-end">
+            <l-popup-menu>
+              <template v-slot:menu>
+                <button @click="editCompany(slotProps.item)">
+                  <i class="fas fa-pencil-alt fa-fw"></i>Edit
+                </button>
+              </template>
+            </l-popup-menu>
+          </div>
         </template>
       </DataTable>
     </template>
   </list-layout-with-sidebar>
-  <div
-    v-else-if="!loading && contactLists.length === 0"
-    class="flex justify-center w-full"
-  >
-    <p class="pt-20 font-semibold">You do not have any contact lists set up.</p>
-  </div>
+  <contact-list-error
+    v-else-if="!loading && !error && contactLists.length === 0"
+  ></contact-list-error>
+  <page-load-error v-else-if="!loading && error"></page-load-error>
+  <spinner v-else-if="loading"></spinner>
 </template>
 
 <script>
@@ -81,11 +89,17 @@ import ContactListSelect from '~/components/elements/ContactListSelect'
 import CompanySectorTreeView from '~/components/contacts/CompanySectorTreeView'
 import ModalService from '~/services/modal-services'
 import NewItemModal from '~/components/layouts/NewItemModal'
+import ContactListError from '~/components/contacts/ContactListError'
+import PageLoadError from '~/components/layouts/PageLoadError'
+import Spinner from '~/components/layouts/Spinner'
 export default {
   name: 'CompaniesList',
   middleware: ['contactBook'],
   layout: 'authlayout',
   components: {
+    Spinner,
+    PageLoadError,
+    ContactListError,
     CompanySectorTreeView,
     ContactListSelect,
     NewItemButton,
@@ -99,6 +113,7 @@ export default {
       selectedSector: null,
       selectedIndustry: null,
       loading: true,
+      error: false,
       tableCompanies: [
         { title: 'Company', field: 'name', slot: 'company', sortable: true },
         { title: 'Size', field: 'size', align: 'center' },
@@ -140,10 +155,17 @@ export default {
 
   created() {
     this.loading = true
-    this.$store.dispatch('contactlist/getContactLists', {}).then(() => {
-      if (this.contactLists.length !== 0) this.updateData()
-      this.loading = false
-    })
+    this.$store
+      .dispatch('contactlist/getContactLists', {})
+      .then(() => {
+        if (this.contactLists.length !== 0) this.updateData()
+      })
+      .catch(() => {
+        this.error = true
+      })
+      .finally(() => {
+        this.loading = false
+      })
   },
   methods: {
     async updateData() {
@@ -177,42 +199,46 @@ export default {
         whichComponent: 'NewCompany',
         dataItem,
         options: { header: 'New Company' },
-      }).then((response) => {
-        this.$store
-          .dispatch('companies/newCompany', response)
-          .then(async (company) => {
-            await this.updateData()
-            this.changedOption({
-              parent: this.selectedSector,
-              child: this.selectedIndustry,
-            })
-            this.$toasted.show(`Company ${company.name} created`)
-          })
-          .catch(() => {
-            this.$toasted.error('There was a problem creating the company')
-          })
       })
+        .then((response) => {
+          this.$store
+            .dispatch('companies/newCompany', response)
+            .then(async (company) => {
+              await this.updateData()
+              this.changedOption({
+                parent: this.selectedSector,
+                child: this.selectedIndustry,
+              })
+              this.$toasted.show(`Company ${company.name} created`)
+            })
+            .catch(() => {
+              this.$toasted.error('There was a problem creating the company')
+            })
+        })
+        .catch(() => {})
     },
     editCompany(dataItem) {
       ModalService.open(NewItemModal, {
         whichComponent: 'NewCompany',
         dataItem,
         options: { header: `Edit ${dataItem.name}` },
-      }).then((response) => {
-        this.$store
-          .dispatch('companies/updateCompany', response)
-          .then(async (company) => {
-            await this.updateData()
-            this.changedOption({
-              parent: this.selectedSector,
-              child: this.selectedIndustry,
-            })
-            this.$toasted.show(`Company ${company.name} updated`)
-          })
-          .catch(() => {
-            this.$toasted.error('There was a problem creating the company')
-          })
       })
+        .then((response) => {
+          this.$store
+            .dispatch('companies/updateCompany', response)
+            .then(async (company) => {
+              await this.updateData()
+              this.changedOption({
+                parent: this.selectedSector,
+                child: this.selectedIndustry,
+              })
+              this.$toasted.show(`Company ${company.name} updated`)
+            })
+            .catch(() => {
+              this.$toasted.error('There was a problem updating the company')
+            })
+        })
+        .catch(() => {})
     },
     deleteMultipleCompanies(companies) {
       const calls = []
@@ -231,10 +257,18 @@ export default {
             parent: this.selectedSector,
             child: this.selectedIndustry,
           })
-          this.$toasted.show(`${companies.length} companies deleted`)
+          this.$toasted.show(
+            `${companies.length} ${
+              companies.length === 1 ? 'company' : 'companies'
+            } deleted`
+          )
         })
         .catch(() => {
-          this.$toasted.error('There was a problem deleting the company')
+          this.$toasted.error(
+            `There was a problem deleting the ${
+              companies.length === 1 ? 'company' : 'companies'
+            }`
+          )
         })
     },
   },
