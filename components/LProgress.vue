@@ -1,13 +1,15 @@
 <template>
-  <div
-    class="flex relative items-center w-full bg-white h-6 border-2 rounded"
-    :class="color ? `border-${color}-600` : `border-primary`"
-  >
+  <div class="flex relative items-center w-full h-6 border border-gray-300">
     <div
-      class="absolute shadow text-sm left-0"
-      style="top: -1px; height: calc(100% + 1px)"
+      class="h-full"
+      :class="
+        barWidth === 100
+          ? color
+            ? `bg-${color}-600`
+            : `bg-primary`
+          : `bg-gray-200`
+      "
       :style="{ width: `calc(${barWidth}% + 1px)` }"
-      :class="color ? `bg-${color}-600` : `bg-primary`"
     ></div>
     <span
       :title="`${currentValue} / ${totalValue}`"
@@ -40,7 +42,7 @@ export default {
   computed: {
     barWidth() {
       const width = this.currentValue / this.totalValue
-      return isNaN(width) ? 0 : width * 100
+      return isNaN(width) ? 0 : Math.round(width * 100)
     },
   },
 }
