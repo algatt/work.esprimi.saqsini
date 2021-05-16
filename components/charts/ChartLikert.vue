@@ -1,9 +1,6 @@
 <template>
   <div class="flex flex-col items-center">
-    <horizontal-bar-chart
-      :chart-data="datasets"
-      :options="options"
-    ></horizontal-bar-chart>
+    <horizontal-bar-chart :chart-data="datasets"></horizontal-bar-chart>
     <div class="w-full flex justify-center items-center mb-5">
       <h6>Average Score</h6>
 
@@ -50,7 +47,7 @@
 
 <script>
 import HorizontalBarChart from '~/components/charts/HorizontalBarChart'
-import { getDataAggregate } from '~/helpers/chartHelpers'
+import { getDataAggregate } from '~/services/question-helpers'
 
 export default {
   name: 'ChartLikert',
@@ -64,42 +61,6 @@ export default {
       type: Array,
       required: true,
     },
-  },
-  data() {
-    return {
-      options: {
-        responsive: false,
-        maintainAspectRatio: false,
-        legend: {
-          display: false,
-        },
-
-        scales: {
-          xAxes: [
-            {
-              gridLines: {
-                display: true,
-                drawBorder: true,
-                drawOnChartArea: false,
-              },
-              ticks: {
-                beginAtZero: true,
-                precision: 0,
-              },
-            },
-          ],
-          yAxes: [
-            {
-              gridLines: {
-                display: true,
-                drawBorder: true,
-                drawOnChartArea: false,
-              },
-            },
-          ],
-        },
-      },
-    }
   },
   computed: {
     legendData() {

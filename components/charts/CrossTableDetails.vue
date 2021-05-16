@@ -102,19 +102,16 @@
 </template>
 
 <script>
-import { getDifferentAnswers } from '~/helpers/chartHelpers'
+import {
+  getDifferentAnswers,
+  getQuestionType,
+} from '~/services/question-helpers'
 import CrossTable from '~/components/charts/CrossTable'
-import { getQuestionType } from '~/services/question-helpers'
 
 export default {
   name: 'CrossTableDetails',
   components: { CrossTable },
-  props: {
-    data: {
-      type: Object,
-      required: true,
-    },
-  },
+
   data() {
     return {
       crossTabX: null,
@@ -125,6 +122,9 @@ export default {
     }
   },
   computed: {
+    surveyData() {
+      return this.$store.state.surveys.surveyData
+    },
     details() {
       return {
         xTitle: this.crossTabX.name,
@@ -153,7 +153,7 @@ export default {
       return this.validCrossTabXSelection && this.validCrossTabYSelection
     },
     questionsX() {
-      let x = this.data.questions
+      let x = this.surveyData.questions
         .filter((el) => {
           return !el.flags.includes('SECTION')
         })
@@ -167,7 +167,7 @@ export default {
       return x
     },
     questionsY() {
-      let x = this.data.questions
+      let x = this.surveyData.questions
         .filter((el) => {
           return !el.flags.includes('SECTION')
         })
@@ -183,11 +183,11 @@ export default {
   },
   methods: {
     getCrossTabData() {
-      const xResponses = this.data.responses.filter((el) => {
+      const xResponses = this.surveyData.responses.filter((el) => {
         return el.questionCode === this.crossTabX.code
       })
 
-      const yResponses = this.data.responses.filter((el) => {
+      const yResponses = this.surveyData.responses.filter((el) => {
         return el.questionCode === this.crossTabY.code
       })
 
@@ -283,7 +283,7 @@ export default {
     getDifferentAnswers(question) {
       return getDifferentAnswers(
         question,
-        this.data.responses.filter((el) => {
+        this.surveyData.responses.filter((el) => {
           return el.questionCode === question.code
         })
       )

@@ -1,12 +1,12 @@
 <template>
   <div class="flex flex-col items-center">
-    <bar-chart :chart-data="datasets" :options="options"></bar-chart>
+    <bar-chart :chart-data="datasets"></bar-chart>
   </div>
 </template>
 
 <script>
 import BarChart from '~/components/charts/BarChart'
-import { getDataAggregate } from '~/helpers/chartHelpers'
+import { getDataAggregate } from '~/services/question-helpers'
 
 export default {
   name: 'ChartMultipleChoice',
@@ -21,42 +21,7 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      options: {
-        responsive: false,
-        maintainAspectRatio: false,
-        legend: {
-          display: false,
-        },
 
-        scales: {
-          xAxes: [
-            {
-              gridLines: {
-                display: true,
-                drawBorder: true,
-                drawOnChartArea: false,
-              },
-            },
-          ],
-          yAxes: [
-            {
-              gridLines: {
-                display: true,
-                drawBorder: true,
-                drawOnChartArea: false,
-              },
-              ticks: {
-                beginAtZero: true,
-                precision: 0,
-              },
-            },
-          ],
-        },
-      },
-    }
-  },
   computed: {
     legendData() {
       return this.data.availableAnswers.map((el) => {

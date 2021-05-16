@@ -1,8 +1,8 @@
 <template>
-  <list-layout v-if="!loading">
+  <list-layout v-if="!loading && !error">
     <div class="w-full mt-3 mb-6 flex justify-between flex-wrap">
       <div class="w-full md:w-6/12 flex justify-start items-center px-4">
-        <h4 class="mt-2 mr-5">{{ survey.name }}</h4>
+        <h4 class="mr-5">{{ survey.name }}</h4>
         <l-select
           v-if="canUseContactBook"
           :value="selectedContactList.code"
@@ -38,25 +38,27 @@
     </div>
 
     <div class="w-full flex flex-col mx-auto px-4">
-      <div class="flex items-center">
+      <div
+        class="flex flex-col md:flex-row md:flex-wrap md:items-center items-start"
+      >
         <menu-icon-button
           :active="selectedMenu === 'list'"
           @click="selectedMenu = 'list'"
           ><template v-slot:icon><i class="fas fa-th-list fa-fw"></i></template
-          >Invites</menu-icon-button
+          >Existing Invites</menu-icon-button
         >
         <menu-icon-button
           :active="selectedMenu === 'email'"
           @click="selectedMenu = 'email'"
           ><template v-slot:icon><i class="fas fa-envelope fa-fw"></i></template
-          >Email</menu-icon-button
+          >Invite by Email</menu-icon-button
         >
         <menu-icon-button
           v-if="canUseContactBook"
           :active="selectedMenu === 'contacts'"
           @click="selectedMenu = 'contacts'"
           ><template v-slot:icon><i class="fas fa-users fa-fw"></i></template
-          >Contacts</menu-icon-button
+          >Invite by Contacts</menu-icon-button
         >
         <menu-icon-button
           v-if="canUseContactBook"
@@ -64,10 +66,10 @@
           @click="selectedMenu = 'contactlist'"
           ><template v-slot:icon
             ><i class="fas fa-address-book fa-fw"></i></template
-          >Contact List</menu-icon-button
+          >Invite by Contact List</menu-icon-button
         >
       </div>
-      <div class="">
+      <div>
         <invites-list
           v-if="selectedMenu === 'list'"
           :survey="survey"
@@ -87,6 +89,8 @@
       </div>
     </div>
   </list-layout>
+  <page-load-error v-else-if="!loading && error"></page-load-error>
+  <spinner v-else-if="loading"></spinner>
 </template>
 
 <script>
@@ -96,9 +100,13 @@ import InviteByEmail from '~/components/surveys/InviteByEmail'
 import InvitesList from '~/components/surveys/InvitesList'
 import InviteByContacts from '~/components/surveys/InviteByContacts'
 import InviteByContactList from '~/components/surveys/InviteByContactList'
+import PageLoadError from '~/components/layouts/PageLoadError'
+import Spinner from '~/components/layouts/Spinner'
 export default {
   name: 'InvitesView',
   components: {
+    Spinner,
+    PageLoadError,
     InviteByContacts,
     InviteByEmail,
     MenuIconButton,
@@ -111,6 +119,7 @@ export default {
   data() {
     return {
       loading: true,
+      error: false,
       selectedMenu: 'list',
     }
   },
@@ -139,9 +148,25 @@ export default {
   },
   mounted() {
     this.loading = true
-    this.loadData().then(() => {
-      this.loading = false
-    })
+    this.loadData()
+      .then(() => {
+        if (
+          this.canUseContactBook &&
+          this.getBranchingContactBook().length > 0
+        ) {
+          let tempLists = this.$store.state.contactlist.items
+          tempLists = tempLists.find((el) => {
+            return el.code === this.getBranchingContactBook()[0]
+          })
+          this.$store.dispatch('setContactList', tempLists)
+        }
+      })
+      .catch(() => {
+        this.error = true
+      })
+      .finally(() => {
+        this.loading = false
+      })
   },
   methods: {
     loadData() {
@@ -155,20 +180,10 @@ export default {
             code: this.$route.params.id,
           }),
         ]
-        if (this.canUseContactBook)
+        if (this.$store.getters['auth/getPermissions'].includes('CONTACTBOOK'))
           promises.push(this.$store.dispatch('contactlist/getContactLists', {}))
-        if (
-          this.canUseContactBook &&
-          this.getBranchingContactBook().length > 0
-        ) {
-          let tempLists = this.$store.state.contactlist.items
-          tempLists = tempLists.find((el) => {
-            return el.code === this.getBranchingContactBook()[0]
-          })
-          promises.push(this.$store.dispatch('setContactList', tempLists))
-        }
+
         Promise.all(promises).then(() => {
-          this.loading = false
           resolve()
         })
       })

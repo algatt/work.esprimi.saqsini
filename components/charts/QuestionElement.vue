@@ -5,7 +5,7 @@
         <multi-select
           v-if="
             data.availableAnswers.length !== 0 &&
-            !data.question.type.flag.includes('TYPE_IN')
+            data.question.type !== 'TYPE_IN'
           "
           :original-list="data.availableAnswers"
           :selected-list="selectedList"
@@ -19,34 +19,11 @@
         :id="`question_graph_${data.question.code}`"
         class="w-full md:w-auto mx-auto flex flex-col p-5"
       >
-        <chart-multiple-choice
-          v-if="
-            data.question.type.flag === 'MULTIPLE_CHOICE' ||
-            data.question.type.flag === 'DROPDOWN'
-          "
+        <component
+          :is="CHART_TYPE_COMPONENT[data.question.type]"
           :data="data"
           :selected-list="selectedList"
-        ></chart-multiple-choice>
-        <chart-likert
-          v-else-if="data.question.type.flag === 'LIKERT'"
-          :data="data"
-          :selected-list="selectedList"
-        ></chart-likert>
-        <chart-ranking
-          v-else-if="data.question.type.flag === 'RANKING'"
-          :data="data"
-          :selected-list="selectedList"
-        ></chart-ranking>
-        <chart-type-in
-          v-else-if="data.question.type.flag === 'TYPE_IN'"
-          :data="data"
-          :selected-list="selectedList"
-        ></chart-type-in>
-        <chart-radio-grid
-          v-else-if="data.question.type.flag === 'RADIO_GRID'"
-          :data="data"
-          :selected-list="selectedList"
-        ></chart-radio-grid>
+        ></component>
       </div>
     </template>
     <div v-else class="flex justify-center w-full pt-5">No Responses</div>
@@ -55,6 +32,7 @@
 
 <script>
 import MultiSelect from '~/components/elements/MultiSelect'
+import { CHART_TYPE_COMPONENT } from '~/assets/settings/charts-settings'
 import ChartMultipleChoice from '~/components/charts/ChartMultipleChoice'
 import ChartLikert from '~/components/charts/ChartLikert'
 import ChartRanking from '~/components/charts/ChartRanking'
@@ -81,6 +59,7 @@ export default {
     return {
       selectedList: [],
       loading: true,
+      CHART_TYPE_COMPONENT,
     }
   },
 
@@ -93,7 +72,6 @@ export default {
       this.selectedList = newSelectedList.sort((a, b) => {
         return a.code > b.code ? 1 : -1
       })
-      this.$forceUpdate()
     },
     updateChartRanking(newList) {
       this.selectedListForRanking = newList

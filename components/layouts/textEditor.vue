@@ -1,7 +1,7 @@
 <template>
   <Div>
     <div v-if="editor">
-      <div class="space-x-2 flex items-center mb-2">
+      <div class="space-x-2 flex flex-wrap items-center mb-2">
         <div v-if="enableEmailFields" class="relative">
           <button @click="showTagMenu = true">
             <i class="fas fa-user-tag fa-fw"></i>
@@ -154,7 +154,7 @@
 
 <script>
 import { Editor, EditorContent } from '@tiptap/vue-2'
-import { defaultExtensions } from '@tiptap/starter-kit'
+import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
 import Underline from '@tiptap/extension-underline'
 import Link from '@tiptap/extension-link'
@@ -187,7 +187,7 @@ export default {
   mounted() {
     this.localContent = this.content
     this.editor = new Editor({
-      extensions: [Link, Image, Underline, ...defaultExtensions()],
+      extensions: [Link, Image, Underline, StarterKit],
       content: this.localContent,
       onUpdate: () => {
         this.localContent = this.editor.getHTML()

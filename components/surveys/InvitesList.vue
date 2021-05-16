@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!loading">
     <data-table
       :table-data="invites"
       :table-definition="tableInvites"
@@ -38,14 +38,16 @@
       </template>
     </data-table>
   </div>
+  <spinner v-else></spinner>
 </template>
 
 <script>
 import DataTable from '~/components/elements/DataTable/DataTable'
 import LPopupMenu from '~/components/LPopupMenu'
+import Spinner from '~/components/layouts/Spinner'
 export default {
   name: 'InvitesList',
-  components: { LPopupMenu, DataTable },
+  components: { Spinner, LPopupMenu, DataTable },
   props: {
     survey: {
       type: Object,

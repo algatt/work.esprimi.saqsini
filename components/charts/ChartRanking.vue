@@ -1,11 +1,11 @@
 <template>
   <div class="flex flex-col items-center">
-    <bar-chart :chart-data="datasets" :options="options"></bar-chart>
+    <bar-chart :chart-data="datasets"></bar-chart>
   </div>
 </template>
 
 <script>
-import { getDataAggregateRanking } from '~/helpers/chartHelpers'
+import { getDataAggregateRanking } from '~/services/question-helpers'
 import BarChart from '~/components/charts/BarChart'
 
 export default {
@@ -21,44 +21,7 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      options: {
-        responsive: false,
-        maintainAspectRatio: false,
-        legend: {
-          display: true,
-        },
 
-        scales: {
-          xAxes: [
-            {
-              stacked: true,
-              gridLines: {
-                display: true,
-                drawBorder: true,
-                drawOnChartArea: false,
-              },
-            },
-          ],
-          yAxes: [
-            {
-              stacked: true,
-              gridLines: {
-                display: true,
-                drawBorder: true,
-                drawOnChartArea: false,
-              },
-              ticks: {
-                beginAtZero: true,
-                precision: 0,
-              },
-            },
-          ],
-        },
-      },
-    }
-  },
   computed: {
     legendData() {
       return this.data.availableAnswers.map((el) => {

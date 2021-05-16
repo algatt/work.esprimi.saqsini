@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-col space-y-5">
     <div v-if="form" class="flex flex-wrap w-full">
-      <div class="w-full xl:w-9/12 xl:pr-5">
-        <input-base
+      <div class="w-full md:w-9/12 md:pr-3">
+        <l-input
           v-model="form.notificationDate"
           :error="
             $v.form.notificationDate.$model !== undefined
@@ -12,7 +12,7 @@
               : null
           "
           type="date"
-          @change="
+          @update="
             $v.form.notificationDate.$touch()
             $v.form.notificationTime.$touch()
             $v.form.reminderDate.$touch()
@@ -22,23 +22,17 @@
               : '08:00'
           "
         >
-          <template v-slot:default>
-            <span class="flex items-center">
-              Notification Date
-              <popup-base class="ml-1"
-                ><template v-slot:text>
-                  <span class="font-normal"
-                    >This is date when notifications will be sent to
-                    invitees.</span
-                  ></template
-                ></popup-base
-              ></span
-            >
-          </template></input-base
-        >
+          <span class="flex items-center">
+            Notification Date
+            <popup-information
+              >This is date when notifications will be sent to
+              invitees.</popup-information
+            ></span
+          >
+        </l-input>
       </div>
-      <div class="w-full xl:w-3/12 mt-2 xl:mt-0">
-        <input-base
+      <div class="w-full md:w-3/12">
+        <l-input
           v-model="form.notificationTime"
           :error="
             $v.form.notificationTime.$model !== undefined
@@ -48,10 +42,12 @@
               : null
           "
           type="time"
-          @change="$v.form.notificationTime.$touch()"
+          @update="$v.form.notificationTime.$touch()"
           ><span class="flex items-center"
-            >Notification Time<popup-base class="invisible"></popup-base></span
-        ></input-base>
+            >Notification Time<popup-information
+              class="invisible"
+            ></popup-information></span
+        ></l-input>
       </div>
     </div>
 
@@ -65,8 +61,8 @@
     </div>
 
     <div class="flex w-full flex-wrap">
-      <div class="w-full xl:w-9/12 xl:pr-5">
-        <input-base
+      <div class="w-full md:w-9/12 md:pr-3">
+        <l-input
           v-model="form.reminderDate"
           :error="
             $v.form.reminderDate.$model !== undefined
@@ -79,24 +75,19 @@
               : null
           "
           type="date"
-          @change="
-            $v.form.reminderDate.$touch()
-            form.reminderTime = form.reminderTime ? form.reminderTime : '08:00'
-          "
+          @update="$v.form.reminderDate.$touch()"
         >
-          <template v-slot:default>
-            <span class="flex items-center">
-              Reminder Date
-              <popup-base class="ml-1 font-normal"
-                >This is date when a reminder will be set to invitees who did
-                not complete the survey</popup-base
-              ></span
-            >
-          </template></input-base
-        >
+          <span class="flex items-center">
+            Reminder Date
+            <popup-information
+              >This is date when a reminder will be set to invitees who did not
+              complete the survey</popup-information
+            ></span
+          >
+        </l-input>
       </div>
-      <div class="w-full xl:w-3/12 mt-2 xl:mt-0">
-        <input-base
+      <div class="w-full md:w-3/12">
+        <l-input
           v-model="form.reminderTime"
           :error="
             $v.form.reminderTime.$model !== undefined
@@ -109,10 +100,12 @@
               : null
           "
           type="time"
-          @change="$v.form.reminderTime.$touch()"
+          @update="$v.form.reminderTime.$touch()"
           ><span class="flex items-center"
-            >Reminder Time<popup-base class="invisible"></popup-base></span
-        ></input-base>
+            >Reminder Time<popup-information
+              class="invisible"
+            ></popup-information></span
+        ></l-input>
       </div>
     </div>
 

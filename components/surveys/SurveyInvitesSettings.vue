@@ -77,10 +77,7 @@
               : null
           "
           type="date"
-          @change="
-            $v.form.reminderDate.$touch()
-            form.reminderTime = form.reminderTime ? form.reminderTime : '08:00'
-          "
+          @change="$v.form.reminderDate.$touch()"
         >
           <template v-slot:default>
             <span class="flex items-center">

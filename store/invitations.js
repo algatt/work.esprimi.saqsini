@@ -56,7 +56,7 @@ export const actions = {
 
       const axios = require('axios')
       const instance = axios.create()
-
+      console.log(url)
       instance
         .get(url, {
           headers: { Authorization: process.env.authorization },

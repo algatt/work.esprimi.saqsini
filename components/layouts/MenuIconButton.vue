@@ -1,11 +1,14 @@
 <template>
   <button
     class="flex items-center font-semibold transition duration-300 focus:outline-none py-3 mx-2"
-    :class="
+    :class="[
       active
-        ? `text-${color}-600 border-b-2 border-${color}-600 hover:text-${color}-700`
-        : 'text-gray-500 border-b-2 border-transparent'
-    "
+        ? color
+          ? `text-${color}-600 border-b-2 border-${color}-600 `
+          : `text-primary border-b-2 border-primary `
+        : 'text-gray-500 border-b-2 border-transparent',
+      color ? `hover:text-${color}-700` : `hover:text-primary`,
+    ]"
     @click="$emit('click')"
   >
     <span class="mr-2"><slot name="icon"></slot></span>
@@ -25,7 +28,7 @@ export default {
     color: {
       type: String,
       required: false,
-      default: 'blue',
+      default: null,
     },
   },
 }

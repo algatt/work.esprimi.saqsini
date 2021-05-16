@@ -130,8 +130,7 @@ export default {
           this.updateData()
         }
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
         this.error = true
       })
       .finally(() => {

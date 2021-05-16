@@ -1,15 +1,16 @@
 <template>
   <div class="flex flex-col w-full space-y-5">
-    <l-input-button v-model="email" type="email" @blur="$v.email.$touch()">
+    <l-input-button
+      v-model="email"
+      type="email"
+      button-color="green"
+      :button-disabled="$v.$invalid"
+      @blur="$v.email.$touch()"
+      @click="addCollaborator"
+    >
       <template v-slot:label>Collaborator Email</template>
 
-      <button-for-input
-        text-colour="green"
-        :disabled="$v.$invalid"
-        @click="addCollaborator"
-      >
-        <i class="fas fa-check fa-fw"></i>
-      </button-for-input>
+      <i class="fas fa-check fa-fw"></i>
     </l-input-button>
 
     <div v-if="filteredCollaborators.length !== 0" class="flex flex-col">

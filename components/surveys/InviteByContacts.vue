@@ -68,6 +68,7 @@
       ></l-button>
     </div>
   </div>
+  <spinner v-else></spinner>
 </template>
 
 <script>
@@ -76,10 +77,12 @@ import { convertSurveyFromApiToForm } from '~/services/survey-helpers'
 import NotificationReminderSection from '~/components/surveys/NotificationReminderSection'
 import LTextLink from '~/components/LTextLink'
 import LButton from '~/components/LButton'
+import Spinner from '~/components/layouts/Spinner'
 
 export default {
   name: 'InviteByContacts',
   components: {
+    Spinner,
     LButton,
     LTextLink,
     NotificationReminderSection,

@@ -1,35 +1,39 @@
 <template>
-  <div v-if="!loading">
-    <l-button @click="print"
-      >Save to PDF<template v-slot:rightIcon
-        ><i class="fas fa-file-pdf fa-fw"></i></template
-    ></l-button>
-    <div
-      v-for="item in processedQuestions"
-      :key="item.question.code"
-      class="flex flex-col mb-16"
-    >
-      <div class="flex justify-center items-center w-full space-x-2">
-        <h6>{{ item.question.name }}</h6>
-        <p class="bg-gray-100 rounded-xl px-2 py-0.5 text-gray-700">
-          {{ item.question.questionNumber }}
-        </p>
-
-        <span class="text-gray-700 font-semibold"
-          >{{ item.question.type.text }}
-        </span>
-      </div>
-      <div class="flex justify-center items-center w-full space-x-2 my-2">
-        {{ getQuestionTitle(item.question) }}
-      </div>
-
-      <div class="flex flex-wrap w-full">
-        <question-element
-          :key="item.question.questionCode"
-          :data="item"
-        ></question-element>
-      </div>
+  <div class="flex flex-col">
+    <div class="flex justify-start">
+      <l-button @click="print"
+        >Save to PDF<template v-slot:rightIcon
+          ><i class="fas fa-file-pdf fa-fw"></i></template
+      ></l-button>
     </div>
+
+    <template v-if="true">
+      <div
+        v-for="item in processedQuestions"
+        :key="item.question.code"
+        class="flex flex-col mb-16"
+      >
+        <div class="flex justify-center items-center w-full space-x-2">
+          <h6>{{ item.question.name }}</h6>
+          <p class="bg-gray-100 rounded-xl px-2 py-0.5 text-gray-700">
+            {{ item.question.questionNumber }}
+          </p>
+
+          <span class="text-gray-700 font-semibold"
+            >{{ item.question.type.text }}
+          </span>
+        </div>
+        <div class="flex justify-center items-center w-full space-x-2 my-2">
+          {{ getQuestionTitle(item.question) }}
+        </div>
+
+        <div class="flex flex-wrap w-full">
+          <question-element
+            :key="item.question.questionCode"
+            :data="item"
+          ></question-element>
+        </div></div
+    ></template>
     <modal-generic v-if="startPrint">
       <template v-slot:title>Setting up PDF</template>
       <template v-slot:body>PDF will be available shortly.</template>
@@ -40,46 +44,45 @@
 <script>
 import { jsPDF } from 'jspdf'
 import html2canvas from 'html2canvas'
-import { QUESTION_TYPES } from '~/assets/settings/survey-settings'
 import QuestionElement from '~/components/charts/QuestionElement'
-import { getDifferentAnswers } from '~/helpers/chartHelpers'
-import { convertQuestionFromApiToForm } from '~/services/question-helpers'
+import {
+  getDifferentAnswers,
+  convertQuestionFromApiToForm,
+  getQuestionType,
+} from '~/services/question-helpers'
+
 import ModalGeneric from '~/components/layouts/ModalGeneric'
+
 export default {
-  name: 'QuestionList',
+  name: 'ChartsQuestionList',
   components: { ModalGeneric, QuestionElement },
-  props: {
-    data: {
-      type: Object,
-      required: true,
-    },
-  },
+
   data() {
     return {
-      loading: true,
-      workingData: null,
-      processedQuestions: [],
       startPrint: false,
     }
   },
-  mounted() {
-    this.workingData = JSON.parse(JSON.stringify(this.data))
-
-    let questions = JSON.parse(JSON.stringify(this.data.questions))
-    questions = questions
-      .sort((a, b) => {
-        return a.ordinalPosition > b.ordinalPosition ? 1 : -1
-      })
-      .filter((el) => {
-        return !el.flags.includes('SECTION')
-      })
-
-    questions.forEach((el) => {
-      this.processedQuestions.push(this.processQuestion(el))
-    })
-
-    this.loading = false
+  computed: {
+    surveyData() {
+      return this.$store.state.surveys.surveyData
+    },
+    processedQuestions() {
+      let temp = JSON.parse(JSON.stringify(this.surveyData.questions))
+      temp = temp
+        .filter((el) => {
+          return !el.flags.includes('SECTION')
+        })
+        .sort((a, b) => {
+          return a.ordinalPosition > b.ordinalPosition ? 1 : -1
+        })
+      const result = []
+      for (const i in temp) {
+        result.push(this.processQuestion(temp[i]))
+      }
+      return result
+    },
   },
+
   methods: {
     print() {
       this.startPrint = true
@@ -93,9 +96,9 @@ export default {
 
           doc.setFont('Helvetica', 'bold')
           doc.setFontSize(24)
-          doc.text(this.data.survey.name, 3, 3)
+          doc.text(this.surveyData.survey.name, 3, 3)
           doc.setFontSize(18)
-          doc.text(this.data.survey.referenceDate, 3, 5)
+          doc.text(this.surveyData.survey.referenceDate, 3, 5)
 
           const promises = []
 
@@ -113,7 +116,9 @@ export default {
                   doc.setFont('Helvetica', 'bold')
                   doc.setFontSize(14)
                   doc.text(this.getQuestionTitle(question.question), 2, 3)
-                  const widthChange = 17 / (canvas.width * 0.0264583333)
+                  let widthChange = 1
+                  if (canvas.width * 0.0264583333 > 17)
+                    widthChange = 17 / (canvas.width * 0.0264583333)
                   resolve(
                     doc.addImage(
                       canvas,
@@ -128,7 +133,7 @@ export default {
             )
           })
           Promise.all(promises).then(() => {
-            doc.save(`${this.data.survey.name}.pdf`)
+            doc.save(`${this.surveyData.survey.name}.pdf`)
             this.startPrint = false
           })
         }
@@ -137,33 +142,27 @@ export default {
     getQuestionTitle(question) {
       return convertQuestionFromApiToForm(question).text
     },
-    getQuestionType(question) {
-      let result = ''
-      question.flags.forEach((el) => {
-        if (Object.keys(QUESTION_TYPES).includes(el))
-          result = QUESTION_TYPES[el]
-      })
-      return result
-    },
+
     processQuestion(question) {
       const data = {}
-      const surveyYear = this.workingData.survey.referenceDate.substring(0, 4)
-      const responses = this.workingData.responses.filter((el) => {
+      const surveyYear = this.surveyData.survey.referenceDate.substring(0, 4)
+
+      const responses = this.surveyData.responses.filter((el) => {
         return el.questionCode === question.code
       })
       const availableInvitees = responses.map((el) => {
         return el.token
       })
-      const invitees = this.workingData.invitations.filter((el) => {
+      const invitees = this.surveyData.invitations.filter((el) => {
         return availableInvitees.includes(el.token)
       })
 
       data.surveyYear = surveyYear
       data.question = question
-      data.question.type = this.getQuestionType(question)
+      data.question.type = getQuestionType(question)
       data.responses = responses
       data.invitees = invitees
-      data.availableAnswers = this.getDifferentAnswers(question, responses)
+      data.availableAnswers = getDifferentAnswers(question, responses)
       data.demographicLabels = this.getDifferentDemographicLabels(invitees)
       data.demographics = this.getDifferentDemographicValues(
         data.demographicLabels,
@@ -172,9 +171,7 @@ export default {
 
       return data
     },
-    getDifferentAnswers(question, responses) {
-      return getDifferentAnswers(question, responses)
-    },
+
     getDifferentDemographicLabels(invitees) {
       let data = []
       invitees.forEach((invitee) => {

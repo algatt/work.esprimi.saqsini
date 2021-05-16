@@ -4,7 +4,7 @@
       ><template #left> <slot name="headerLeft"></slot></template
       ><template #right>
         <selection-delete-clear-button
-          v-if="processedTableData.length !== 0"
+          v-if="processedTableData.length !== 0 && enableSelection"
           :color="color"
           :enable-clear="enableClearAll && selectedItems.length > 0"
           :enable-select="
@@ -62,7 +62,7 @@
             @click="selectItem(row)"
           >
             <td class="w-8" style="min-width: 2rem">
-              <span class="flex justify-center">
+              <span v-if="enableSelection" class="flex justify-center">
                 <transition name="fade"
                   ><i
                     v-if="
@@ -134,6 +134,11 @@ export default {
       required: false,
       default: true,
     },
+    enableSelection: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -175,6 +180,7 @@ export default {
       }
     },
     selectItem(row) {
+      if (!this.enableSelection) return
       if (
         this.selectedItems.find((el) => {
           return el.code === row.code

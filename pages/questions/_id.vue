@@ -1,8 +1,8 @@
 <template>
-  <list-layout v-if="!loading">
+  <list-layout v-if="!loading && !error">
     <div class="w-full mt-3 mb-6 flex justify-between flex-wrap">
       <div class="w-full md:w-6/12 flex justify-start items-center px-4">
-        <h4 class="mt-2 mr-5">{{ survey.name }}</h4>
+        <h4 class="mr-5">{{ survey.name }}</h4>
         <contact-list-select
           v-if="contactLists.length > 0"
           :disabled="
@@ -79,7 +79,8 @@
       @modalClosed="showSurveyPreview = false"
     ></PreviewSurveyModal>
   </list-layout>
-  <div v-else>loading</div>
+  <page-load-error v-else-if="!loading && error"></page-load-error>
+  <spinner v-else-if="loading"></spinner>
 </template>
 
 <script>
@@ -93,12 +94,15 @@ import PreviewSurveyModal from '~/components/surveys/PreviewSurveyModal'
 
 import NewItemModal from '~/components/layouts/NewItemModal'
 import ContactListSelect from '~/components/elements/ContactListSelect'
+import PageLoadError from '~/components/layouts/PageLoadError'
+import Spinner from '~/components/layouts/Spinner'
 
 export default {
   name: 'QuestionList',
   components: {
+    Spinner,
+    PageLoadError,
     ContactListSelect,
-
     PreviewSurveyModal,
     LPopupMenu,
     SurveyListQuestion,
@@ -112,6 +116,7 @@ export default {
       showPreview: true,
       showSurveyPreview: false,
       loading: true,
+      error: false,
     }
   },
   computed: {
@@ -154,14 +159,20 @@ export default {
 
   mounted() {
     this.loading = true
-    this.loadData().then(() => {
-      window.setInterval(this.updateQuestionNumbers, 5000)
-      this.showPreview = cookies.get('questionPreviewMode') === 'true'
-      if (this.survey.flags.includes('OUTDATED_LANGUAGE_PACK'))
-        this.$toasted.show(
-          'This survey has changed from last language generation. You need to re-generate the languages.'
-        )
-    })
+    this.loadData()
+      .then(() => {
+        this.showPreview = cookies.get('questionPreviewMode') === 'true'
+        if (this.survey.flags.includes('OUTDATED_LANGUAGE_PACK'))
+          this.$toasted.show(
+            'This survey has changed from last language generation. You need to re-generate the languages.'
+          )
+      })
+      .catch(() => {
+        this.error = true
+      })
+      .finally(() => {
+        this.loading = false
+      })
   },
 
   methods: {
@@ -189,7 +200,6 @@ export default {
           promises.push(this.$store.dispatch('setContactList', tempLists))
         }
         Promise.all(promises).then(() => {
-          this.loading = false
           resolve()
         })
       })
@@ -294,17 +304,19 @@ export default {
         whichComponent: 'NewSurvey',
         dataItem: this.survey,
         options: { header: `Edit ${this.survey.name}` },
-      }).then((response) => {
-        this.$store
-          .dispatch('surveys/updateSurvey', response)
-          .then((survey) => {
-            this.$store.dispatch('categories/getCategories')
-            this.$toasted.show(`Survey ${survey.name} updated`)
-          })
-          .catch(() => {
-            this.$toasted.error('There was a problem updating the survey')
-          })
       })
+        .then((response) => {
+          this.$store
+            .dispatch('surveys/updateSurvey', response)
+            .then((survey) => {
+              this.$store.dispatch('categories/getCategories')
+              this.$toasted.show(`Survey ${survey.name} updated`)
+            })
+            .catch(() => {
+              this.$toasted.error('There was a problem updating the survey')
+            })
+        })
+        .catch(() => {})
     },
 
     clearBranching() {
@@ -345,7 +357,7 @@ export default {
         })
       })
       promise.then(() => {
-        this.$toasted.show('Contact List branching removed')
+        this.$toasted.show('Branching removed')
       })
     },
   },

@@ -137,10 +137,7 @@
               : null
           "
           type="date"
-          @change="
-            $v.form.validToDate.$touch()
-            form.validToTime = form.validToTime ? form.validToTime : '08:00'
-          "
+          @change="$v.form.validToDate.$touch()"
         >
           <template v-slot:default>
             <span class="flex items-center">

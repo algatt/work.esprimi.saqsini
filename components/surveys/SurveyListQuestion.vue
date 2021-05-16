@@ -7,7 +7,7 @@
       <div class="flex flex-wrap">
         <div class="flex flex-1 flex-col items-start pl-6 py-4 space-y-2">
           <template v-if="!showPreview">
-            <h6>{{ question.name }} - {{ question.ordinalPosition }}</h6>
+            <h6>{{ question.name }}</h6>
             <div class="flex flex-wrap space-x-2">
               <l-badge>{{ getQuestionType(question) }}</l-badge>
               <l-badge v-if="hasBranching">Branching</l-badge>
@@ -64,7 +64,7 @@
         <div class="flex flex-1 flex-col space-y-2 pl-4">
           <template v-if="!showPreview">
             <h4 class="text-blue-600 font-bold">
-              {{ question.name }} - {{ question.ordinalPosition }}
+              {{ question.name }}
             </h4>
             <div class="flex flex-wrap space-x-2">
               <l-badge v-if="hasBranching">Branching</l-badge>

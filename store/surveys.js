@@ -3,6 +3,7 @@ import { convertSurveyFromFormToApi } from '~/services/survey-helpers'
 
 export const state = () => ({
   items: [],
+  surveyData: null,
 })
 
 export const actions = {
@@ -404,6 +405,7 @@ export const actions = {
       this.$axios
         .get(`/builder/instance/data?code=${code}`)
         .then((response) => {
+          commit('setSurveyData', response.data)
           resolve(response.data)
         })
         .catch((error) => {
@@ -479,5 +481,9 @@ export const mutations = {
     state.items = state.items.filter((el) => {
       return el.code !== code
     })
+  },
+
+  setSurveyData(state, data) {
+    state.surveyData = data
   },
 }

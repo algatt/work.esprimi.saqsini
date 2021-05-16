@@ -1,7 +1,11 @@
 <template>
   <div class="flex flex-col mt-5 space-y-8">
     <div class="flex flex-col space-y-3">
-      <l-text-area v-model="contacts" class="input text-area">
+      <l-text-area
+        v-model="contacts"
+        class="input text-area"
+        @input="contacts = contacts.toLowerCase()"
+      >
         <span class="flex items-center">
           <span class="mr-2">Invites</span>
           <popup-information
@@ -10,25 +14,16 @@
           >
         </span>
       </l-text-area>
-      <div class="flex items-center">
-        <p class="mr-2">
-          Total Invites
-          <l-badge> {{ validTotalInvites }}</l-badge>
-        </p>
+      <div class="flex items-center justify-start space-x-2">
+        <p>Total Invites</p>
+        <l-badge> {{ validTotalInvites }}</l-badge>
 
-        <span
+        <l-badge
           v-for="(item, index) in $v.totalInvites.$each.$iter"
           :key="index"
-          class="rounded px-2 py-0.5 text-sm mr-2"
-          :class="
-            item.$invalid
-              ? !item.email
-                ? 'bg-red-100 text-red-800'
-                : 'bg-yellow-100 text-yellow-800'
-              : 'bg-green-100 text-green-800'
-          "
+          :color="item.$invalid ? (!item.email ? 'red' : 'yellow') : 'green'"
         >
-          {{ item.$model }}</span
+          {{ item.$model }}</l-badge
         >
       </div>
     </div>
@@ -52,7 +47,6 @@
 import { validationMixin } from 'vuelidate'
 import { email } from 'vuelidate/lib/validators'
 import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
-
 import NotificationReminderSection from '~/components/surveys/NotificationReminderSection'
 
 export default {

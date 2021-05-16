@@ -13,8 +13,8 @@
       <p class="mt-3 mb-2">
         This survey is available in the following languages.
       </p>
-      <div class="flex flex-wrap">
-        <l-badge v-for="item in dataItem.languages" :key="item">
+      <div class="flex flex-wrap space-x-2">
+        <l-badge v-for="(item, index) in dataItem.languages" :key="index">
           <span>{{ getCountryFromLanguage(item) }}</span>
         </l-badge>
       </div>

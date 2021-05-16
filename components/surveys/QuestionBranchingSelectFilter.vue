@@ -1,6 +1,6 @@
 <template>
   <div class="w-full flex">
-    <div class="flex w-full justify-between items-start">
+    <div class="flex w-full md:w-8/12 justify-between items-start">
       <l-select
         v-if="rule.hasOwnProperty('questionNumber')"
         class="flex flex-1"
@@ -37,13 +37,13 @@
           </option></template
         >
       </l-select>
-      <div class="w-12 flex items-start justify-center pt-4">
+      <div class="w-12 flex justify-center pt-2">
         <l-button-circle color="red" @click="$emit('deleteQuestion')">
           <i class="far fa-trash-alt fa-fw"></i>
         </l-button-circle>
       </div>
     </div>
-    <div class="w-full xl:w-4/12 flex items-start">
+    <div class="w-full md:w-4/12 flex items-start">
       <multi-select
         v-if="rule.hasOwnProperty('questionNumber')"
         class="w-full"

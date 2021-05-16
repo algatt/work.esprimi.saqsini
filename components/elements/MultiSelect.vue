@@ -7,10 +7,13 @@
     ></button>
 
     <div class="flex flex-col">
-      <span class="font-semibold mb-2 text-gray-700"> <slot></slot></span>
+      <span v-if="$slots.default" class="font-semibold mb-2 text-gray-700">
+        <slot></slot
+      ></span>
 
       <div
-        class="flex w-full border-2 border-gray-200 rounded-l py-1.5 px-2 focus:border-primary focus:ring-0 focus:outline-none transition duration-300 disabled:border-gray-300 disabled:bg-gray-100"
+        class="flex w-full border-2 border-gray-200 rounded-l py-1.5 px-2 focus:ring-0 focus:outline-none transition duration-300 disabled:border-gray-300 disabled:bg-gray-100"
+        :class="color ? `focus:border-${color}-700` : `focus:border-primary`"
         @click="toggleMenu"
       >
         <span class="flex flex-grow text-gray-800 px-1"
@@ -33,13 +36,14 @@
               class="flex flex-col bg-white border border-gray-100 shadow"
             >
               <button
-                class="flex flex-grow text-left px-3 py-2 hover:bg-gray-100 transition duration-300 cursor-pointer"
+                class="flex flex-grow text-left items-center px-3 py-2 hover:bg-gray-100 transition duration-300 cursor-pointer"
                 @click="selectAll"
               >
                 <span class="flex w-8 justify-center items-center"
                   ><i
                     v-if="list.length === originalList.length"
-                    class="fas fa-check-circle fa-fw text-primary"
+                    class="fas fa-check-circle fa-fw"
+                    :class="color ? `text-${color}-600` : `text-primary`"
                   ></i
                 ></span>
                 <span class="flex flex-grow"> Select all</span>
@@ -47,13 +51,14 @@
               <button
                 v-for="item in originalList"
                 :key="item.code"
-                class="flex flex-grow text-left px-3 py-2 hover:bg-gray-100 transition duration-300 cursor-pointer"
+                class="flex flex-grow items-center text-left px-3 py-2 hover:bg-gray-100 transition duration-300 cursor-pointer"
                 @click="addOrRemoveItem(item)"
               >
                 <span class="flex w-8 justify-center items-center"
                   ><i
                     v-if="includesItem(item)"
-                    class="fas fa-check-circle fa-fw text-primary"
+                    class="fas fa-check-circle fa-fw"
+                    :class="color ? `text-${color}-600` : `text-primary`"
                   ></i
                 ></span>
                 <span class="flex flex-grow"> {{ item[displayField] }}</span>
@@ -81,7 +86,8 @@
               </span>
               <span v-if="list.length > 0" class="px-2 my-1 mr-1">
                 <button
-                  class="text-primary hover:text-gray-500"
+                  class="hover:text-gray-500"
+                  :class="color ? `text-${color}-600` : `text-primary`"
                   @click="clearAll"
                 >
                   clear all
@@ -110,6 +116,10 @@ export default {
     displayField: {
       type: String,
       default: 'name',
+    },
+    color: {
+      type: String,
+      default: null,
     },
   },
   data() {

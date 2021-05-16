@@ -1,11 +1,15 @@
 <template>
   <div v-if="!isLoading" class="flex flex-col">
-    <div v-for="condition in conditions" :key="condition.groupIndex">
-      <div class="flex flex-col border border-gray-100 shadow rounded p-2 mb-5">
+    <div
+      v-for="condition in conditions"
+      :key="condition.groupIndex"
+      class="flex flex-col"
+    >
+      <div class="flex flex-col border border-gray-100 shadow rounded p-2">
         <div
           v-for="(rule, ruleIndex) in condition.ruleList"
           :key="ruleIndex"
-          class="flex flex-wrap"
+          class="flex flex-col"
         >
           <question-branching-select-filter
             :condition="condition"
@@ -26,7 +30,7 @@
           <l-select
             v-if="rule.hasOwnProperty('isAnd')"
             v-model="rule.isAnd"
-            class="w-24"
+            class="w-24 my-4"
           >
             <template v-slot:options>
               <option value="false" :selected="rule.isAnd === 'false'">
@@ -40,8 +44,10 @@
         </div>
 
         <div class="flex flex-wrap justify-between items-center">
-          <div class="flex items-center px-2 py-2 w-full xl:w-auto">
-            <span class="border-b border-transparent mr-1">New filter by</span>
+          <div class="flex items-center px-2 py-2 w-full md:w-auto">
+            <span class="border-b-2 border-transparent mr-1"
+              >New filter by</span
+            >
             <l-text-link
               v-if="questions.length !== 0"
               @click="addQuestion(condition.groupIndex)"
@@ -69,7 +75,7 @@
       <l-select
         v-if="condition.hasOwnProperty('isAnd')"
         v-model="condition.isAnd"
-        class="ml-1 w-24 mb-5"
+        class="ml-1 w-24 my-4"
         ><template v-slot:options>
           <option value="false" :selected="condition.isAnd === 'false'">
             or
@@ -81,11 +87,8 @@
       </l-select>
     </div>
 
-    <div class="flex flex-col w-full items-start">
-      <div
-        v-if="questions.length === 0 && contactlists.length === 0"
-        class="mb-6"
-      >
+    <div class="flex flex-col w-full items-start mt-4">
+      <div v-if="questions.length === 0 && contactlists.length === 0">
         <p class="font-semibold">There is no branching available.</p>
       </div>
       <l-button

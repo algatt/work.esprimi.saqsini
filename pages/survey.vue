@@ -81,15 +81,14 @@ export default {
     },
   },
   mounted() {
-    this.$store
-      .dispatch('invitations/redeem', {
-        id: this.$route.query.id,
-        token: this.$route.query.token,
-      })
-      .then((response) => {
-        this.surveyData = response
-        this.loading = false
-      })
+    const properties = {
+      id: this.$route.query.id,
+    }
+    if (this.$route.query.token) properties.token = this.$route.query.token
+    this.$store.dispatch('invitations/redeem', properties).then((response) => {
+      this.surveyData = response
+      this.loading = false
+    })
     this.generateSessionDetails()
   },
   methods: {
