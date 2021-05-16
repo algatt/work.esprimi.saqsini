@@ -85,17 +85,18 @@
 
 <script>
 import cookies from 'js-cookie'
-import ListLayout from '~/components/layouts/ListLayout'
+import ListLayout from '~/components/elements/ListLayout'
 import SurveyListQuestion from '~/components/surveys/SurveyListQuestion'
 import LPopupMenu from '~/components/LPopupMenu'
 import ModalService from '~/services/modal-services'
-import PlainModal from '~/components/layouts/PlainModal'
+import PlainModal from '~/components/elements/PlainModal'
 import PreviewSurveyModal from '~/components/surveys/PreviewSurveyModal'
 
-import NewItemModal from '~/components/layouts/NewItemModal'
+import NewItemModal from '~/components/elements/NewItemModal'
 import ContactListSelect from '~/components/elements/ContactListSelect'
-import PageLoadError from '~/components/layouts/PageLoadError'
-import Spinner from '~/components/layouts/Spinner'
+import PageLoadError from '~/components/elements/PageLoadError'
+import Spinner from '~/components/elements/Spinner'
+import survey from '~/pages/survey'
 
 export default {
   name: 'QuestionList',
@@ -179,6 +180,7 @@ export default {
     loadData() {
       return new Promise((resolve, reject) => {
         const promises = [
+          this.$store.dispatch('categories/getCategories', {}),
           this.$store.dispatch(
             'surveys/getSurveyByCode',
             this.$route.params.id
@@ -248,6 +250,7 @@ export default {
       })
         .then((response) => {
           this.$store.dispatch('surveys/updateSurvey', response)
+          this.$toasted.show(`Survey ${survey.name} updated`)
         })
         .catch(() => {})
     },

@@ -24,9 +24,9 @@
 
 <script>
 import PreviewSurvey from '~/components/surveys/PreviewSurvey'
-import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
+import { convertSurveyFromApiToForm } from '~/services/survey-helpers'
 import LButtonCircle from '~/components/LButtonCircle'
-import ScreenOverlay from '~/components/layouts/ScreenOverlay'
+import ScreenOverlay from '~/components/elements/ScreenOverlay'
 
 export default {
   name: 'PreviewSurveyModal',
@@ -43,7 +43,7 @@ export default {
   },
   computed: {
     survey() {
-      return parseSurveyToForm(this.originalSurvey)
+      return convertSurveyFromApiToForm(this.originalSurvey)
     },
   },
   mounted() {

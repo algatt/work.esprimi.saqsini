@@ -49,13 +49,13 @@
 </template>
 
 <script>
-import ListLayout from '~/components/layouts/ListLayout'
+import ListLayout from '~/components/elements/ListLayout'
 import DataTable from '~/components/elements/DataTable/DataTable'
 import NewItemButton from '~/components/elements/NewItemButton'
 import ModalService from '~/services/modal-services'
-import NewItemModal from '~/components/layouts/NewItemModal'
+import NewItemModal from '~/components/elements/NewItemModal'
 import LPopupMenu from '~/components/LPopupMenu'
-import PageLoadError from '~/components/layouts/PageLoadError'
+import PageLoadError from '~/components/elements/PageLoadError'
 import CompanyError from '~/components/contacts/CompanyError'
 import RolesError from '~/components/contacts/JobError'
 export default {

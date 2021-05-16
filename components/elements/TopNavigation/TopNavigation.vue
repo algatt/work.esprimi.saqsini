@@ -105,9 +105,9 @@
 </template>
 
 <script>
-import ScreenOverlay from '@/components/layouts/ScreenOverlay'
-import MenuAccount from '@/components/layouts/TopNavigation/MenuAccount'
+import ScreenOverlay from '@/components/elements/ScreenOverlay'
 import menu from '@/assets/settings/menuStructure.json'
+import MenuAccount from './MenuAccount'
 import MenuItem from './MenuItem'
 import MenuChild from './MenuChild'
 import AppLogo from '~/components/elements/AppLogo'

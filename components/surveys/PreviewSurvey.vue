@@ -221,7 +221,7 @@ import {
   PREFERRED_LANGUAGE,
 } from '@/assets/settings/survey-settings'
 import DisplayQuestion from '~/components/surveys/DisplayQuestion'
-import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
+import { convertSurveyFromApiToForm } from '~/services/survey-helpers'
 
 export default {
   name: 'PreviewSurvey',
@@ -344,7 +344,7 @@ export default {
     },
   },
   mounted() {
-    this.survey = parseSurveyToForm(
+    this.survey = convertSurveyFromApiToForm(
       JSON.parse(JSON.stringify(this.originalSurvey))
     )
     if (this.existingAnswers.length > 0) {
@@ -568,7 +568,7 @@ export default {
     },
     changeLanguage(language) {
       this.currentLanguage = language
-      this.survey = parseSurveyToForm(this.originalSurvey, language)
+      this.survey = convertSurveyFromApiToForm(this.originalSurvey, language)
     },
     getCountryFromLanguage(code) {
       const CountryLanguage = require('country-language')

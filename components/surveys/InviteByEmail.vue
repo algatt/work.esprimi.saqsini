@@ -46,7 +46,7 @@
 <script>
 import { validationMixin } from 'vuelidate'
 import { email } from 'vuelidate/lib/validators'
-import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
+import { convertSurveyFromApiToForm } from '~/services/survey-helpers'
 import NotificationReminderSection from '~/components/surveys/NotificationReminderSection'
 
 export default {
@@ -87,7 +87,7 @@ export default {
       return !this.datesError && this.totalInvites.length > 0
     },
     parsedSurvey() {
-      return parseSurveyToForm(this.survey)
+      return convertSurveyFromApiToForm(this.survey)
     },
     totalInvites() {
       const temp = this.contacts

@@ -31,11 +31,11 @@
 </template>
 
 <script>
-import Spinner from '~/components/layouts/Spinner'
+import Spinner from '~/components/elements/Spinner'
 import PreviewSurvey from '~/components/surveys/PreviewSurvey'
-import ModalGeneric from '~/components/layouts/ModalGeneric'
-import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
-import { USER_META_DATA } from '~/helpers/constants'
+import ModalGeneric from '~/components/elements/ModalGeneric'
+import { convertSurveyFromApiToForm } from '~/services/survey-helpers'
+import { USER_META_DATA } from '~/assets/settings/survey-settings'
 
 export default {
   name: 'SurveyVue',
@@ -56,7 +56,9 @@ export default {
       return this.surveyData
     },
     parsedSurvey() {
-      return parseSurveyToForm(JSON.parse(JSON.stringify(this.survey.survey)))
+      return convertSurveyFromApiToForm(
+        JSON.parse(JSON.stringify(this.survey.survey))
+      )
     },
     hasToken() {
       return this.$route.query.token !== undefined

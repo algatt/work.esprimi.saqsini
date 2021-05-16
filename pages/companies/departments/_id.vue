@@ -40,13 +40,13 @@
 </template>
 
 <script>
-import ListLayout from '~/components/layouts/ListLayout'
+import ListLayout from '~/components/elements/ListLayout'
 import DataTable from '~/components/elements/DataTable/DataTable'
 import LPopupMenu from '~/components/LPopupMenu'
 import NewItemButton from '~/components/elements/NewItemButton'
 import ModalService from '~/services/modal-services'
-import NewItemModal from '~/components/layouts/NewItemModal'
-import PageLoadError from '~/components/layouts/PageLoadError'
+import NewItemModal from '~/components/elements/NewItemModal'
+import PageLoadError from '~/components/elements/PageLoadError'
 export default {
   name: 'Departments',
   middleware: ['contactBook'],

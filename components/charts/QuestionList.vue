@@ -51,7 +51,7 @@ import {
   getQuestionType,
 } from '~/services/question-helpers'
 
-import ModalGeneric from '~/components/layouts/ModalGeneric'
+import ModalGeneric from '~/components/elements/ModalGeneric'
 
 export default {
   name: 'ChartsQuestionList',

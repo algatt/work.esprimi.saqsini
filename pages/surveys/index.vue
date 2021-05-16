@@ -143,13 +143,13 @@
 
 <script>
 import SurveyCategoryTreeView from '~/components/surveys/SurveyCategoryTreeView'
-import ListLayoutWithSidebar from '~/components/layouts/ListLayoutWithSidebar'
+import ListLayoutWithSidebar from '~/components/elements/ListLayoutWithSidebar'
 import DataTable from '~/components/elements/DataTable/DataTable'
 import NewItemButton from '~/components/elements/NewItemButton'
 import ModalService from '~/services/modal-services'
-import NewItemModal from '~/components/layouts/NewItemModal'
-import PageLoadError from '~/components/layouts/PageLoadError'
-import Spinner from '~/components/layouts/Spinner'
+import NewItemModal from '~/components/elements/NewItemModal'
+import PageLoadError from '~/components/elements/PageLoadError'
+import Spinner from '~/components/elements/Spinner'
 
 export default {
   name: 'SurveyList',

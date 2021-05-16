@@ -75,7 +75,7 @@ import LSelect from '~/components/LSelect'
 import DataTable from '~/components/elements/DataTable/DataTable'
 import LPopupMenu from '~/components/LPopupMenu'
 import ModalService from '~/services/modal-services'
-import PlainModal from '~/components/layouts/PlainModal'
+import PlainModal from '~/components/elements/PlainModal'
 
 export default {
   name: 'InvidualDetailsVue',

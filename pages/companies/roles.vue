@@ -41,10 +41,10 @@
 </template>
 
 <script>
-import ListLayout from '~/components/layouts/ListLayout'
+import ListLayout from '~/components/elements/ListLayout'
 import DataTable from '~/components/elements/DataTable/DataTable'
 import ModalService from '~/services/modal-services'
-import NewItemModal from '~/components/layouts/NewItemModal'
+import NewItemModal from '~/components/elements/NewItemModal'
 import NewItemButton from '~/components/elements/NewItemButton'
 import ContactListSelect from '~/components/elements/ContactListSelect'
 

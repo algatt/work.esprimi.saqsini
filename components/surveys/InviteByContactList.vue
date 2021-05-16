@@ -114,7 +114,7 @@
 </template>
 
 <script>
-import { parseSurveyToForm } from '~/helpers/parseSurveyObjects'
+import { convertSurveyFromApiToForm } from '~/services/survey-helpers'
 import NotificationReminderSection from '~/components/surveys/NotificationReminderSection'
 import MultiSelect from '~/components/elements/MultiSelect'
 import DataTable from '~/components/elements/DataTable/DataTable'
@@ -160,7 +160,7 @@ export default {
       return !this.datesError && this.selectedContacts.length > 0
     },
     parsedSurvey() {
-      return parseSurveyToForm(this.survey)
+      return convertSurveyFromApiToForm(this.survey)
     },
     filters() {
       return JSON.parse(JSON.stringify(this.$store.state.invitations.filters))

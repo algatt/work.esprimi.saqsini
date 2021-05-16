@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import TopNavigation from '~/components/layouts/TopNavigation/TopNavigation'
+import TopNavigation from '~/components/elements/TopNavigation/TopNavigation'
 import ModalRoot from '~/components/elements/Modal/ModalRoot'
 export default {
   name: 'AuthLayout',

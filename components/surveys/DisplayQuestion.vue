@@ -61,16 +61,17 @@
 <script>
 import ShowMultipleChoice from '~/components/surveys/ShowMultipleChoice'
 import {
-  parseQuestionToForm,
+  convertQuestionFromApiToForm,
   getQuestionType,
-} from '~/helpers/parseSurveyObjects'
+} from '~/services/question-helpers'
+
 import ShowSection from '~/components/surveys/ShowSection'
 import ShowDropdown from '~/components/surveys/ShowDropdown'
 import ShowTypeIn from '~/components/surveys/ShowTypeIn'
 import ShowRanking from '~/components/surveys/ShowRanking'
 import ShowLikert from '~/components/surveys/ShowLikert'
 import ShowRadioGrid from '~/components/surveys/ShowRadioGrid'
-import { SURVEY_OPTIONS } from '~/helpers/constants'
+import { SURVEY_OPTIONS } from '~/assets/settings/survey-settings'
 
 export default {
   name: 'DisplayQuestion',
@@ -116,7 +117,7 @@ export default {
 
   computed: {
     parsedQuestion() {
-      return parseQuestionToForm(this.question, this.language)
+      return convertQuestionFromApiToForm(this.question, this.language)
     },
     questionType() {
       return getQuestionType(this.question)

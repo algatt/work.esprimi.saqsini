@@ -60,7 +60,7 @@ import SurveyLanguageSettings from '~/components/surveys/SurveyLanguageSettings'
 import SurveyCollaborators from '~/components/surveys/SurveyCollaborators'
 import SurveyInvitesSettings from '~/components/surveys/SurveyInvitesSettings'
 import ContactListCollaborators from '~/components/contacts/ContactListCollaborators'
-import ShowNotifications from '~/components/layouts/ShowNotifications'
+import ShowNotifications from '~/components/elements/ShowNotifications'
 import ViewResponses from '~/components/charts/ViewResponses'
 
 export default {

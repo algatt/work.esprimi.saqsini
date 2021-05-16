@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import ScreenOverlay from '~/components/layouts/ScreenOverlay'
+import ScreenOverlay from '~/components/elements/ScreenOverlay'
 export default {
   name: 'Modal',
   components: { ScreenOverlay },

@@ -151,7 +151,7 @@ import {
 
 import QuestionBranching from '~/components/surveys/QuestionBranching'
 import NewQuestionRadioGrid from '~/components/surveys/NewQuestionRadioGrid'
-import MenuIconButton from '~/components/layouts/MenuIconButton'
+import MenuIconButton from '~/components/elements/MenuIconButton'
 
 import { convertQuestionFromApiToForm } from '~/services/question-helpers'
 

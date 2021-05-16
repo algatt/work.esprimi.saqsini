@@ -102,7 +102,7 @@
 </template>
 
 <script>
-import { parseQuestionToForm } from '~/helpers/parseSurveyObjects'
+import { convertQuestionFromApiToForm } from '~/services/question-helpers'
 import LSelect from '~/components/LSelect'
 import QuestionBranchingSelectFilter from '~/components/surveys/QuestionBranchingSelectFilter'
 import LTextLink from '~/components/LTextLink'
@@ -276,7 +276,7 @@ export default {
     },
 
     getQuestionText(question) {
-      return parseQuestionToForm(question)
+      return convertQuestionFromApiToForm(question)
     },
   },
 }

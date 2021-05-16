@@ -55,10 +55,10 @@ import SurveyDetails from '~/components/charts/SurveyDetails'
 import QuestionDetails from '~/components/charts/QuestionList'
 import CrossTableDetails from '~/components/charts/CrossTableDetails'
 import IndividualDetails from '~/components/charts/InvidualDetails'
-import MenuIconButton from '~/components/layouts/MenuIconButton'
-import ListLayout from '~/components/layouts/ListLayout'
-import Spinner from '~/components/layouts/Spinner'
-import PageLoadError from '~/components/layouts/PageLoadError'
+import MenuIconButton from '~/components/elements/MenuIconButton'
+import ListLayout from '~/components/elements/ListLayout'
+import Spinner from '~/components/elements/Spinner'
+import PageLoadError from '~/components/elements/PageLoadError'
 
 export default {
   name: 'SurveyResponses',

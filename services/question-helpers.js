@@ -1,5 +1,8 @@
-import { QUESTION_TYPES } from '~/assets/settings/survey-settings'
-import { PREFERRED_LANGUAGE } from '~/helpers/constants'
+import {
+  QUESTION_TYPES,
+  PREFERRED_LANGUAGE,
+} from '~/assets/settings/survey-settings'
+
 import colours from '~/assets/settings/colours.json'
 
 export function getQuestionTypeText(flags) {

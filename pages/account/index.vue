@@ -97,8 +97,8 @@
 <script>
 import { validationMixin } from 'vuelidate'
 import { required, email } from 'vuelidate/lib/validators'
-import Spinner from '~/components/layouts/Spinner'
-import PageLoadError from '~/components/layouts/PageLoadError'
+import Spinner from '~/components/elements/Spinner'
+import PageLoadError from '~/components/elements/PageLoadError'
 import LTextLink from '~/components/LTextLink'
 
 export default {

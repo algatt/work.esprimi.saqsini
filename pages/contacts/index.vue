@@ -61,15 +61,15 @@
 
 <script>
 import { DateTime } from 'luxon'
-import ListLayout from '~/components/layouts/ListLayout'
+import ListLayout from '~/components/elements/ListLayout'
 import DataTable from '~/components/elements/DataTable/DataTable'
 import ContactListSelect from '~/components/elements/ContactListSelect'
 import NewItemButton from '~/components/elements/NewItemButton'
 import LPopupMenu from '~/components/LPopupMenu'
 import LTextLink from '~/components/LTextLink'
 import ModalService from '~/services/modal-services'
-import NewItemModal from '~/components/layouts/NewItemModal'
-import PageLoadError from '~/components/layouts/PageLoadError'
+import NewItemModal from '~/components/elements/NewItemModal'
+import PageLoadError from '~/components/elements/PageLoadError'
 import ContactListError from '~/components/contacts/ContactListError'
 
 export default {

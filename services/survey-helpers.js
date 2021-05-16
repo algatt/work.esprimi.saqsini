@@ -4,13 +4,15 @@ import {
 } from '@/assets/settings/survey-settings'
 import { DateTime } from 'luxon'
 
-function convertSurveyFromApiToForm(survey) {
+function convertSurveyFromApiToForm(survey, language = PREFERRED_LANGUAGE) {
   if (Object.keys(survey).length === 0) return {}
 
   const tempSurvey = JSON.parse(JSON.stringify(survey))
 
+  if (!tempSurvey.defaultLanguage) tempSurvey.defaultLanguage = language
   // options
-  tempSurvey.options = JSON.parse(tempSurvey.options)
+  if (tempSurvey.options) tempSurvey.options = JSON.parse(tempSurvey.options)
+  else tempSurvey.options = SURVEY_OPTIONS
 
   // description
   if (tempSurvey.text) {
@@ -18,6 +20,17 @@ function convertSurveyFromApiToForm(survey) {
       return el.language === PREFERRED_LANGUAGE
     })
     if (text && text.text) tempSurvey.textConverted = text.text
+  }
+
+  tempSurvey.translatedText = {}
+
+  if (tempSurvey.standardText) {
+    tempSurvey.standardText.forEach((el) => {
+      const value = el.languages.find((langs) => {
+        return langs.language === language
+      })
+      tempSurvey.translatedText[el.code] = value
+    })
   }
 
   // dates

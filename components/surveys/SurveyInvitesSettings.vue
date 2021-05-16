@@ -126,7 +126,7 @@
 <script>
 import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
-import TextEditor from '~/components/layouts/textEditor'
+import TextEditor from '~/components/elements/textEditor'
 import { isDateBefore } from '~/services/date-helpers'
 
 const checkDates = (value, vm) => {

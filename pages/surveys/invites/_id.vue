@@ -94,14 +94,14 @@
 </template>
 
 <script>
-import ListLayout from '~/components/layouts/ListLayout'
-import MenuIconButton from '~/components/layouts/MenuIconButton'
+import ListLayout from '~/components/elements/ListLayout'
+import MenuIconButton from '~/components/elements/MenuIconButton'
 import InviteByEmail from '~/components/surveys/InviteByEmail'
 import InvitesList from '~/components/surveys/InvitesList'
 import InviteByContacts from '~/components/surveys/InviteByContacts'
 import InviteByContactList from '~/components/surveys/InviteByContactList'
-import PageLoadError from '~/components/layouts/PageLoadError'
-import Spinner from '~/components/layouts/Spinner'
+import PageLoadError from '~/components/elements/PageLoadError'
+import Spinner from '~/components/elements/Spinner'
 export default {
   name: 'InvitesView',
   components: {

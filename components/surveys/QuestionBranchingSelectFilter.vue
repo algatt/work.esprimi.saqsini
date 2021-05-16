@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import { parseQuestionToForm } from '~/helpers/parseSurveyObjects'
+import { convertQuestionFromApiToForm } from '~/services/question-helpers'
 import MultiSelect from '~/components/elements/MultiSelect'
 
 export default {
@@ -104,7 +104,7 @@ export default {
   },
   methods: {
     getQuestionText(question) {
-      return parseQuestionToForm(question)
+      return convertQuestionFromApiToForm(question)
     },
     getCurrentQuestionOptions(questionNumber) {
       const x = this.questions.find((el) => {

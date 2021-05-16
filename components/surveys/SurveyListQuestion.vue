@@ -123,11 +123,11 @@ import {
   getQuestionTypeText,
 } from '~/services/question-helpers'
 import ModalService from '~/services/modal-services'
-import NewItemModal from '~/components/layouts/NewItemModal'
+import NewItemModal from '~/components/elements/NewItemModal'
 import { QUESTION_TYPES } from '~/assets/settings/survey-settings'
 import CloseModal from '~/components/elements/CloseModal'
 import ConfirmModal from '~/components/elements/ConfirmModal'
-import PlainModal from '~/components/layouts/PlainModal'
+import PlainModal from '~/components/elements/PlainModal'
 import DisplayQuestion from '~/components/surveys/DisplayQuestion'
 
 export default {

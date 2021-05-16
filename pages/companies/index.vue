@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import ListLayoutWithSidebar from '~/components/layouts/ListLayoutWithSidebar'
+import ListLayoutWithSidebar from '~/components/elements/ListLayoutWithSidebar'
 import DataTable from '~/components/elements/DataTable/DataTable'
 import LTextLink from '~/components/LTextLink'
 import LPopupMenu from '~/components/LPopupMenu'
@@ -88,10 +88,10 @@ import NewItemButton from '~/components/elements/NewItemButton'
 import ContactListSelect from '~/components/elements/ContactListSelect'
 import CompanySectorTreeView from '~/components/contacts/CompanySectorTreeView'
 import ModalService from '~/services/modal-services'
-import NewItemModal from '~/components/layouts/NewItemModal'
+import NewItemModal from '~/components/elements/NewItemModal'
 import ContactListError from '~/components/contacts/ContactListError'
-import PageLoadError from '~/components/layouts/PageLoadError'
-import Spinner from '~/components/layouts/Spinner'
+import PageLoadError from '~/components/elements/PageLoadError'
+import Spinner from '~/components/elements/Spinner'
 export default {
   name: 'CompaniesList',
   middleware: ['contactBook'],

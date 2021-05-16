@@ -92,14 +92,14 @@
 </template>
 
 <script>
-import ListLayout from '~/components/layouts/ListLayout'
+import ListLayout from '~/components/elements/ListLayout'
 import DataTable from '~/components/elements/DataTable/DataTable'
 import NewItemButton from '~/components/elements/NewItemButton'
 import ModalService from '~/services/modal-services'
-import NewItemModal from '~/components/layouts/NewItemModal'
-import PlainModal from '~/components/layouts/PlainModal'
-import PageLoadError from '~/components/layouts/PageLoadError'
-import Spinner from '~/components/layouts/Spinner'
+import NewItemModal from '~/components/elements/NewItemModal'
+import PlainModal from '~/components/elements/PlainModal'
+import PageLoadError from '~/components/elements/PageLoadError'
+import Spinner from '~/components/elements/Spinner'
 
 export default {
   name: 'ContactLists',
