@@ -62,7 +62,8 @@ export default {
         this.showPopup = true
         this.$nextTick(() => {
           const obj = this.$refs.popup.getBoundingClientRect()
-          this.left = this.left - obj.width
+          if (this.left - obj.width < 10) this.left = 0
+          else this.left = this.left - obj.width
           if (obj.height + this.top > clientHeight) this.top -= obj.height
         })
       }
