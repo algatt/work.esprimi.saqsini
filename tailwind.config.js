@@ -25,18 +25,7 @@ module.exports = {
   },
   purge: {
     options: {
-      safelist: {
-        greedy: [
-          '/blue/',
-          '/red/',
-          '/green/',
-          '/primary/',
-          '/yellow/',
-          '/green/',
-          ' /gray/',
-          '/indigo/',
-        ],
-      },
+      safelist: [/red/, /blue/, /gray/, /yellow/, /green/, /indigo/, /pink/],
     },
   },
 }
