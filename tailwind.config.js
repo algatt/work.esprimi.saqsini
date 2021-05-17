@@ -25,16 +25,18 @@ module.exports = {
   },
   purge: {
     options: {
-      safelist: [
-        '/blue/',
-        '/red/',
-        '/green/',
-        '/primary/',
-        '/yellow/',
-        '/green/',
-        ' /gray/',
-        '/indigo/',
-      ],
+      safelist: {
+        greedy: [
+          '/blue/',
+          '/red/',
+          '/green/',
+          '/primary/',
+          '/yellow/',
+          '/green/',
+          ' /gray/',
+          '/indigo/',
+        ],
+      },
     },
   },
 }
