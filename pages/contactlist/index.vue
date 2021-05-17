@@ -7,8 +7,21 @@
       @deleteAll="deleteAll"
     >
       <template #headerLeft><h6>Contact Lists</h6></template>
-      <template #headerRight
-        ><new-item-button @click="showNewItem"
+      <template #headerRight>
+        <l-button class="hidden md:flex" @click="downloadTemplate"
+          ><span>Download Template</span>
+          <template v-slot:rightIcon
+            ><i class="fas fa-file-download fa-fw"></i></template
+        ></l-button>
+        <l-button
+          class="flex md:hidden"
+          title="Download Template"
+          @click="downloadTemplate"
+        >
+          <template v-slot:rightIcon
+            ><i class="fas fa-file-download fa-fw"></i></template
+        ></l-button>
+        <new-item-button @click="showNewItem"
           ><span class="hidden md:flex">New Contact List</span
           ><span class="flex md:hidden">New</span></new-item-button
         ></template

@@ -1,3 +1,4 @@
+s
 <template>
   <button
     class="border px-1 rounded text-white flex items-stretch shadow transition duration-300 focus:ring-1 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed focus:transition focus:duration-300 h-8"
@@ -11,15 +12,17 @@
   >
     <span
       v-if="$slots.leftIcon"
-      class="flex items-center px-1 transition duration-300"
+      class="flex items-center transition duration-300"
       ><slot name="leftIcon"></slot
     ></span>
-    <span class="font-medium py-1 px-1 flex-1 flex items-center justify-center"
+    <span
+      v-if="$slots.default"
+      class="font-medium py-1 px-2 flex-1 flex items-center justify-center"
       ><slot></slot
     ></span>
     <span
       v-if="$slots.rightIcon"
-      class="flex items-center px-1 transition duration-300"
+      class="flex items-center transition duration-300"
       ><slot name="rightIcon"></slot
     ></span>
   </button>

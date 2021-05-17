@@ -1,9 +1,11 @@
-export default function ({ $axios, store, redirect }) {
+export default function ({ $axios, store, redirect, route }) {
   $axios.setHeader('Authorization', process.env.authorization)
   $axios.setHeader('Content-Type', 'application/x-www-form-urlencoded', [
     'post',
   ])
-  $axios.setHeader('token', store.state.auth.authToken)
+
+  if (route.name !== 'survey')
+    $axios.setHeader('token', store.state.auth.authToken)
 
   $axios.onError((err) => {
     if (err.response && err.response.status === 403) {

@@ -89,12 +89,12 @@
               @clearAnswers="clearAnswers(question)"
             ></display-question></div
         ></template>
-        <template v-else>
-          <div class="rounded bg-white shadow p-5">
-            Unfortunately, you are uneligible to participate in this survey.
-            Thank you for your time.
-          </div>
-        </template>
+        <!--        <template v-else>-->
+        <!--          <div class="rounded bg-white shadow p-5">-->
+        <!--            Unfortunately, you are uneligible to participate in this survey.-->
+        <!--            Thank you for your time.-->
+        <!--          </div>-->
+        <!--        </template>-->
       </template>
 
       <template v-else>

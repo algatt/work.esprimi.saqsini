@@ -168,6 +168,34 @@ export const actions = {
         })
     })
   },
+
+  disqualify({ commit }, token) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .patch(`/builder/invites/${token}/disqualify`, null, {
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        })
+        .then(() => {
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  sendEmailWithResponses({ commit }, token) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .patch(`/builder/responses/sendViaEmail/${token}`)
+        .then(() => {
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
 }
 
 export const mutations = {

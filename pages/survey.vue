@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="!loading"
+    v-if="!loading && !error && !disqualify && !finished"
     class="min-h-screen"
     :style="{ backgroundColor: parsedSurvey.options.backgroundColour }"
   >
@@ -27,7 +27,37 @@
       </modal-generic>
     </div>
   </div>
-  <spinner v-else></spinner>
+  <div
+    v-else-if="!loading && error"
+    class="flex flex-col justify-center items-center h-screen w-full"
+  >
+    <app-logo></app-logo>
+    <div class="my-10">There was a problem loading the survey.</div>
+  </div>
+  <div
+    v-else-if="!loading && !error && disqualify && !finished"
+    class="flex flex-col justify-center items-center h-screen w-full"
+  >
+    <app-logo></app-logo>
+    <div class="my-10 text-center space-y-2">
+      <p>Unfortunately, you are uneligible to participate in this survey.</p>
+      <p>Thank you for your time.</p>
+    </div>
+  </div>
+  <div
+    v-else-if="!loading && !error && !disqualify && finished"
+    class="flex flex-col justify-center items-center h-screen w-full"
+  >
+    <app-logo></app-logo>
+    <div class="my-10 text-center space-y-2">
+      <p>Thank you for your time.</p>
+      <p v-if="hasToken && !askForEmail">
+        <l-text-link @click="sendEmailWithResponses">Click here</l-text-link>
+        for a copy of your responses.
+      </p>
+    </div>
+  </div>
+  <spinner v-else-if="loading"></spinner>
 </template>
 
 <script>
@@ -36,19 +66,24 @@ import PreviewSurvey from '~/components/surveys/PreviewSurvey'
 import ModalGeneric from '~/components/elements/ModalGeneric'
 import { convertSurveyFromApiToForm } from '~/services/survey-helpers'
 import { USER_META_DATA } from '~/assets/settings/survey-settings'
+import AppLogo from '~/components/elements/AppLogo'
+import LTextLink from '~/components/LTextLink'
 
 export default {
   name: 'SurveyVue',
-  components: { ModalGeneric, Spinner, PreviewSurvey },
-  layout: 'surveyParticipation',
+  components: { LTextLink, AppLogo, ModalGeneric, Spinner, PreviewSurvey },
+
   data() {
     return {
+      error: false,
       surveyData: [],
       loading: true,
       answers: [],
       finished: false,
+      disqualify: false,
       sessionDetails: {},
       changedAnswers: {},
+      askForEmail: false,
     }
   },
   computed: {
@@ -87,10 +122,17 @@ export default {
       id: this.$route.query.id,
     }
     if (this.$route.query.token) properties.token = this.$route.query.token
-    this.$store.dispatch('invitations/redeem', properties).then((response) => {
-      this.surveyData = response
-      this.loading = false
-    })
+    this.$store
+      .dispatch('invitations/redeem', properties)
+      .then((response) => {
+        this.surveyData = response
+      })
+      .catch(() => {
+        this.error = true
+      })
+      .finally(() => {
+        this.loading = false
+      })
     this.generateSessionDetails()
   },
   methods: {
@@ -152,7 +194,35 @@ export default {
         }, 3000)
     },
     disqualifySurvey() {
-      alert('disqualifed')
+      this.$store
+        .dispatch(
+          'invitations/disqualify',
+          this.surveyData.invitations[0].token
+        )
+        .then(() => {
+          this.disqualify = true
+        })
+        .catch(() => {
+          this.error = true
+        })
+    },
+    sendEmailWithResponses() {
+      this.$store
+        .dispatch(
+          'invitations/sendEmailWithResponses',
+          this.surveyData.invitations[0].token
+        )
+        .then(() => {
+          this.askForEmail = true
+          this.$toasted.show(
+            'You will receive a copy of the responses shortly.'
+          )
+        })
+        .catch(() => {
+          this.$toasted.error(
+            'There was a problem sending you a copy of the responses'
+          )
+        })
     },
     async saveSession(answers) {
       this.answers = answers
