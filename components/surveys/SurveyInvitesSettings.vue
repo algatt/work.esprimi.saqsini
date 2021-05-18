@@ -128,6 +128,7 @@ import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
 import TextEditor from '~/components/elements/textEditor'
 import { isDateBefore } from '~/services/date-helpers'
+import { convertSurveyFromApiToForm } from '~/services/survey-helpers'
 
 const checkDates = (value, vm) => {
   if (
@@ -203,7 +204,9 @@ export default {
   },
 
   created() {
-    this.form = JSON.parse(JSON.stringify(this.dataItem))
+    this.form = convertSurveyFromApiToForm(
+      JSON.parse(JSON.stringify(this.dataItem))
+    )
   },
   methods: {
     activateInput(which) {

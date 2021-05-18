@@ -32,7 +32,7 @@
           {{ languageText['survey_title'] }}
         </h3>
 
-        <popup-menu-vue
+        <l-popup-menu
           v-if="
             survey.flags.includes('HAS_LANGUAGE_PACK_FILE') &&
             !survey.flags.includes('OUTDATED_LANGUAGE_PACK')
@@ -45,11 +45,11 @@
             color: survey.options.textColour,
           }"
         >
-          <template v-slot:menuButton
-            ><span class="px-1"><i class="fas fa-globe fa-fw fa-lg"></i></span
+          <template v-slot:icon>
+            <i class="fas fa-globe fa-fw fa-lg"></i
           ></template>
 
-          <template v-slot:menuItems>
+          <template v-slot:menu>
             <div
               v-for="(language, index) in survey.languages"
               :key="language + index"
@@ -62,7 +62,7 @@
                 {{ getCountryFromLanguage(language) }}
               </button>
             </div>
-          </template></popup-menu-vue
+          </template></l-popup-menu
         >
       </div>
     </div>
@@ -222,10 +222,11 @@ import {
 } from '@/assets/settings/survey-settings'
 import DisplayQuestion from '~/components/surveys/DisplayQuestion'
 import { convertSurveyFromApiToForm } from '~/services/survey-helpers'
+import LPopupMenu from '~/components/LPopupMenu'
 
 export default {
   name: 'PreviewSurvey',
-  components: { DisplayQuestion },
+  components: { LPopupMenu, DisplayQuestion },
   props: {
     originalSurvey: {
       type: Object,

@@ -53,7 +53,9 @@ function convertSurveyFromApiToForm(survey, language = PREFERRED_LANGUAGE) {
     )
 
     tempSurvey.validToDate = validToTimestamp.toISODate()
-    tempSurvey.validToTime = validToTimestamp.toLocaleString(DateTime)
+    tempSurvey.validToTime = validToTimestamp.toLocaleString(
+      DateTime.TIME_24_SIMPLE
+    )
   }
 
   if (tempSurvey.notificationTimestamp) {
@@ -63,7 +65,9 @@ function convertSurveyFromApiToForm(survey, language = PREFERRED_LANGUAGE) {
     )
 
     tempSurvey.notificationDate = notificationTimestamp.toISODate()
-    tempSurvey.notificationtime = notificationTimestamp.toLocaleString(DateTime)
+    tempSurvey.notificationTime = notificationTimestamp.toLocaleString(
+      DateTime.TIME_24_SIMPLE
+    )
   }
 
   if (tempSurvey.reminderTimestamp) {
@@ -73,7 +77,9 @@ function convertSurveyFromApiToForm(survey, language = PREFERRED_LANGUAGE) {
     )
 
     tempSurvey.reminderDate = reminderTimestamp.toISODate()
-    tempSurvey.reminderTime = reminderTimestamp.toLocaleString(DateTime)
+    tempSurvey.reminderTime = reminderTimestamp.toLocaleString(
+      DateTime.TIME_24_SIMPLE
+    )
   }
 
   return tempSurvey

@@ -1,5 +1,5 @@
 <template>
-  <list-layout v-if="!loading && contactLists.length !== 0">
+  <list-layout v-if="!loading && contactLists.length !== 0 && !error">
     <data-table
       :table-data="roles"
       :table-definition="tableRoles"
@@ -32,12 +32,11 @@
       </template></data-table
     ></list-layout
   >
-  <div
-    v-else-if="!loading && contactLists.length === 0"
-    class="flex justify-center w-full"
+  <contact-list-error
+    v-else-if="!loading && (contactLists.length === 0) & !error"
   >
-    <p class="pt-20 font-semibold">You do not have any contact lists set up.</p>
-  </div>
+  </contact-list-error>
+  <page-load-error v-else-if="!loading && error"></page-load-error>
 </template>
 
 <script>
@@ -47,12 +46,16 @@ import ModalService from '~/services/modal-services'
 import NewItemModal from '~/components/elements/NewItemModal'
 import NewItemButton from '~/components/elements/NewItemButton'
 import ContactListSelect from '~/components/elements/ContactListSelect'
+import ContactListError from '~/components/contacts/ContactListError'
+import PageLoadError from '~/components/elements/PageLoadError'
 
 export default {
   name: 'RolesList',
   middleware: ['contactBook'],
   layout: 'authlayout',
   components: {
+    PageLoadError,
+    ContactListError,
     ContactListSelect,
     DataTable,
     ListLayout,
@@ -62,6 +65,7 @@ export default {
   data() {
     return {
       loading: true,
+      error: false,
       tableRoles: [
         { title: 'Name', field: 'name', slot: 'name', sortable: true },
         { title: '', slot: 'actions', align: 'right' },
@@ -78,12 +82,19 @@ export default {
   },
   created() {
     this.loading = true
-    this.$store.dispatch('contactlist/getContactLists', {}).then(() => {
-      if (this.$store.state.selectedContactList) {
-        this.updateData()
-      }
-      this.loading = false
-    })
+    this.$store
+      .dispatch('contactlist/getContactLists', {})
+      .then(() => {
+        if (this.$store.state.selectedContactList) {
+          this.updateData()
+        }
+      })
+      .catch(() => {
+        this.error = true
+      })
+      .finally(() => {
+        this.loading = false
+      })
   },
   methods: {
     async updateData() {

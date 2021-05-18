@@ -31,7 +31,7 @@
         <span v-if="slotProps.item.flags.includes('KIOSK')"
           >Kiosk Response</span
         >
-        <span v-else>Invitation Response</span>
+        <span v-else>{{ slotProps.item.email }}</span>
       </template>
       <template #status="slotProps">
         <div class="flex justify-start">
@@ -40,7 +40,11 @@
             color="green"
             >submitted</l-badge
           >
-          <l-badge v-else color="red">pending</l-badge>
+          <l-badge
+            v-else-if="slotProps.item.flags.includes('DISQUALIFIED')"
+            color="red"
+            >disqualified</l-badge
+          >
         </div>
       </template>
       <template #lastAccessed="slotProps">

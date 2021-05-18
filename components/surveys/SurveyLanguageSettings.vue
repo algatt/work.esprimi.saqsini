@@ -89,7 +89,6 @@ export default {
           this.$toasted.show(
             'Language Pack uploaded successfully. It will be available in a few minutes.'
           )
-          this.$store.dispatch('setCurrentItemToBeEdited', null)
         })
         .catch((error) => {
           this.$toasted.show(error)

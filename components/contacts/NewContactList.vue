@@ -13,13 +13,10 @@
       >List Name</l-input
     >
 
-    <p class="font-semibold">Contact List</p>
-    <input
-      v-if="!form.code"
-      id="inputData"
-      type="file"
-      @change="fileSelected"
-    />
+    <template v-if="!form.code">
+      <p class="font-semibold">Contact List</p>
+      <input id="inputData" type="file" @change="fileSelected" />
+    </template>
 
     <l-input
       id="inputValidity"
