@@ -425,11 +425,12 @@ export default {
               rulesOutcome[rule] += `${true}${operator}`
             }
           })
+
           const operator = Object.prototype.hasOwnProperty.call(
             rules[rule],
             'isAnd'
           )
-            ? rules[rule].isAnd
+            ? rules[rule].isAnd === 'true'
               ? ' && '
               : ' || '
             : ''

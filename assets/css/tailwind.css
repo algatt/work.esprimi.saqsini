@@ -12,6 +12,7 @@
 
 html {
   /*font-size: 14px;*/
+  height:100%;
 }
 
 body {
@@ -19,6 +20,7 @@ body {
   font-weight: 500;
   @apply text-gray-700;
   @apply bg-white;
+  height:100%;
 }
 
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen w-full flex flex-col flex-grow">
+  <div class="w-full flex flex-col flex-1" style="height: 100%">
     <nuxt></nuxt>
   </div>
 </template>
