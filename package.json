@@ -11,7 +11,6 @@
     "lint": "npm run lint:js"
   },
   "dependencies": {
-    "@alanlobeslab/lobeslab": "0.0.1",
     "@nuxtjs/axios": "^5.12.2",
     "@tiptap/extension-image": "^2.0.0-beta.11",
     "@tiptap/extension-link": "^2.0.0-beta.15",

@@ -2,7 +2,6 @@
   <form class="login-dialog" @submit.prevent>
     <app-logo></app-logo>
 
-    <PButton></PButton>
     <l-input v-model="email" @keyup="$v.email.$touch">Email</l-input>
 
     <l-input v-model="password" type="password" @keyup="$v.password.$touch"
@@ -26,13 +25,12 @@
 <script>
 import { validationMixin } from 'vuelidate'
 import { required, email } from 'vuelidate/lib/validators'
-import { LButton as PButton } from '@alanlobeslab/lobeslab'
 
 import AppLogo from '~/components/elements/AppLogo'
 import LTextLink from '~/components/LTextLink'
 export default {
   name: 'LoginPage',
-  components: { LTextLink, AppLogo, PButton },
+  components: { LTextLink, AppLogo },
   layout: 'defaultLogin',
   middleware: 'auth',
   mixins: [validationMixin],
