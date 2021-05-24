@@ -192,7 +192,10 @@ export default {
 
       const tempAnswers = this.convertAnswers(this.answers)
 
-      await this.$store.dispatch('invitations/submit', tempAnswers)
+      if (this.hasEdit)
+        await this.$store.dispatch('invitations/update', tempAnswers)
+      else await this.$store.dispatch('invitations/submit', tempAnswers)
+
       await this.$store.dispatch(
         'invitations/consume',
         this.surveyData.invitations[0].token
