@@ -70,6 +70,27 @@ export const actions = {
     })
   },
 
+  update({ commit }, answers) {
+    return new Promise((resolve, reject) => {
+      const axios = require('axios')
+      const instance = axios.create()
+
+      instance
+        .put(`builder/responses/update`, answers, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: process.env.authorization,
+          },
+        })
+        .then((response) => {
+          resolve(response.data)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
   submit({ commit }, answers) {
     return new Promise((resolve, reject) => {
       const axios = require('axios')
