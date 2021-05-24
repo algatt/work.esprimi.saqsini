@@ -1,3 +1,5 @@
+import cookies from 'js-cookie'
+
 export const state = () => ({
   items: [],
   filters: [],
@@ -48,7 +50,7 @@ export const actions = {
     })
   },
 
-  redeem({ commit }, { id, token }) {
+  redeem({ commit, rootState }, { id, token, isAdmin }) {
     return new Promise((resolve, reject) => {
       let url = ''
       if (token) url = `/builder/invites?publicIdentifier=${id}&token=${token}`
@@ -57,9 +59,15 @@ export const actions = {
       const axios = require('axios')
       const instance = axios.create()
 
+      const headers = { Authorization: process.env.authorization }
+
+      if (isAdmin) {
+        headers.token = cookies.get('x-access-token')
+      }
+
       instance
         .get(url, {
-          headers: { Authorization: process.env.authorization },
+          headers,
         })
         .then((response) => {
           resolve(response.data)
@@ -72,14 +80,12 @@ export const actions = {
 
   update({ commit }, answers) {
     return new Promise((resolve, reject) => {
-      const axios = require('axios')
-      const instance = axios.create()
-
-      instance
+      this.$axios
         .put(`builder/responses/update`, answers, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: process.env.authorization,
+            token: cookies.get('x-access-token'),
           },
         })
         .then((response) => {
@@ -179,6 +185,21 @@ export const actions = {
     return new Promise((resolve, reject) => {
       this.$axios
         .patch(`/builder/invites/anonimiseByExternalEntityCode/${code}`, null, {
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        })
+        .then(() => {
+          resolve()
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  anonymiseResponsesByToken({ commit }, token) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .patch(`/builder/invites/anonimiseByToken/${token}`, null, {
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         })
         .then(() => {

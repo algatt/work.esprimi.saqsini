@@ -25,7 +25,7 @@
             <template v-slot:menu>
               <button
                 v-if="slotProps.item.email"
-                @click="anonymiseByEmail(slotProps.item.email)"
+                @click="anonymiseByToken(slotProps.item.token)"
               >
                 <i class="fas fa-user-secret fa-fw"></i>Anonymise
               </button>
@@ -113,9 +113,9 @@ export default {
           this.$toasted.error('There was a problem deleting the invites')
         })
     },
-    anonymiseByEmail(email) {
+    anonymiseByToken(token) {
       this.$store
-        .dispatch('invitations/anonymiseResponsesByEmail', email)
+        .dispatch('invitations/anonymiseResponsesByToken', token)
         .then(() => {
           this.$toasted.show('Response anonymisation in process')
         })

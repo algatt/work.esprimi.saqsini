@@ -26,11 +26,18 @@
     </modal-generic>
   </div>
   <div
-    v-else-if="!loading && error"
+    v-else-if="!loading && error === true"
     class="flex flex-col justify-center items-center h-screen w-full"
   >
     <app-logo></app-logo>
     <div class="my-10">There was a problem loading the survey.</div>
+  </div>
+  <div
+    v-else-if="!loading && error === 'ready'"
+    class="flex flex-col justify-center items-center h-screen w-full"
+  >
+    <app-logo></app-logo>
+    <div class="my-10">You have already participated in this survey.</div>
   </div>
   <div
     v-else-if="!loading && !error && disqualify && !finished"
@@ -96,6 +103,9 @@ export default {
     hasToken() {
       return this.$route.query.token !== undefined
     },
+    hasEdit() {
+      return this.$route.query.edit !== undefined
+    },
     existingAnswers() {
       const answers = JSON.parse(JSON.stringify(this.surveyData.questions))
       this.surveyData.responses.forEach((response) => {
@@ -118,6 +128,7 @@ export default {
   mounted() {
     const properties = {
       id: this.$route.query.id,
+      isAdmin: this.hasEdit,
     }
     if (this.$route.query.token) properties.token = this.$route.query.token
     this.$store
@@ -125,8 +136,9 @@ export default {
       .then((response) => {
         this.surveyData = response
       })
-      .catch(() => {
-        this.error = true
+      .catch((error) => {
+        if (error.response.status === 406) this.error = 'ready'
+        else this.error = true
       })
       .finally(() => {
         this.loading = false
@@ -225,7 +237,9 @@ export default {
     async saveSession(answers) {
       this.answers = answers
       const tempAnswers = this.convertAnswers(this.answers)
-      await this.$store.dispatch('invitations/update', tempAnswers)
+      if (this.hasEdit)
+        await this.$store.dispatch('invitations/update', tempAnswers)
+      else await this.$store.dispatch('invitations/submit', tempAnswers)
     },
     processAnswers(answers) {
       this.answers = answers

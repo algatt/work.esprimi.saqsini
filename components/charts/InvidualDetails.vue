@@ -60,7 +60,7 @@
               <button v-if="!slotProps.item.flags.includes('KIOSK')">
                 <i class="fas fa-headset fa-fw"></i>
                 <a
-                  :href="`/survey?id=${slotProps.item.surveyCode}&token=${slotProps.item.token}`"
+                  :href="`/survey?id=${surveyData.survey.publicIdentifier}&token=${slotProps.item.token}&edit=true`"
                   target="_blank"
                 >
                   Edit Responses</a
