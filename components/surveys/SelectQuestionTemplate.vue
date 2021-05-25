@@ -1,13 +1,20 @@
 <template>
   <data-table
-    :table-data="questions"
+    :table-data="processedQuestions"
     :table-definition="tableQuestions"
     :enable-selection="false"
   >
     <template v-slot:headerLeft>
       <h5>Template Questions</h5>
     </template>
-    <template v-slot:headerRight> </template>
+    <template v-slot:headerRight>
+      <l-input-button
+        v-model="searchField"
+        placeholder="Search"
+        @click="searchField = ''"
+      >
+        <i class="fas fa-times fa-fw text-gray-600"></i> </l-input-button
+    ></template>
     <template v-slot:name="slotProps">
       <div class="flex items-center space-x-3">
         <span>{{ slotProps.item.name }}</span>
@@ -67,9 +74,23 @@ export default {
       QUESTION_TYPES,
       getQuestionTypeText,
       selected: null,
+      searchField: '',
     }
   },
   computed: {
+    processedQuestions() {
+      const x = JSON.parse(JSON.stringify(this.questions))
+      if (this.searchField === '') return x
+      return x.filter((el) => {
+        return (
+          el.name.toLowerCase().includes(this.searchField) ||
+          getQuestionTypeText(el.flags)
+            .toLowerCase()
+            .includes(this.searchField) ||
+          el.tags.includes(this.searchField)
+        )
+      })
+    },
     questions() {
       return this.$store.state.questionstempplate.items
     },

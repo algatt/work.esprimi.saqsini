@@ -1,12 +1,21 @@
 <template>
   <list-layout v-if="!loading && !error">
     <data-table
-      :table-data="questions"
+      :table-data="processedQuestions"
       :table-definition="tableQuestions"
       @deleteAll="deleteMultipleQuestions"
     >
       <template v-slot:headerLeft>
-        <h5>Template Questions</h5>
+        <div class="flex items-center space-x-3">
+          <h5 class="mt-2">Template Questions</h5>
+          <l-input-button
+            v-model="searchField"
+            placeholder="Search"
+            @click="searchField = ''"
+          >
+            <i class="fas fa-times fa-fw text-gray-600"></i>
+          </l-input-button>
+        </div>
       </template>
       <template v-slot:headerRight>
         <LPopupMenu>
@@ -89,9 +98,23 @@ export default {
       ],
       QUESTION_TYPES,
       getQuestionTypeText,
+      searchField: '',
     }
   },
   computed: {
+    processedQuestions() {
+      const x = JSON.parse(JSON.stringify(this.questions))
+      if (this.searchField === '') return x
+      return x.filter((el) => {
+        return (
+          el.name.toLowerCase().includes(this.searchField) ||
+          getQuestionTypeText(el.flags)
+            .toLowerCase()
+            .includes(this.searchField) ||
+          el.tags.includes(this.searchField)
+        )
+      })
+    },
     questions() {
       return this.$store.state.questionstempplate.items
     },
