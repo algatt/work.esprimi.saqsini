@@ -119,6 +119,8 @@ export const SURVEY_LANGUAGE_GENERIC_TERMS = {
   ranking_instructions: 6,
   required: 7,
   position: 8,
+  start: 9,
+  disqualify: 10,
 }
 
 export const USER_META_DATA = {

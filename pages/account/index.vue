@@ -141,8 +141,9 @@ export default {
     this.$store
       .dispatch('auth/getUserAvatar')
       .then(() => {
-        if (this.accountAvatar && this.accountAvatar !== '')
+        if (this.accountAvatar && this.accountAvatar !== '') {
           this.avatarImage = this.accountAvatar
+        }
         this.displayName = this.accountDetails.displayName
         this.email = this.accountDetails.email
       })
@@ -181,6 +182,16 @@ export default {
 
       if (this.imageFile) {
         reader.readAsDataURL(this.imageFile)
+        this.$store
+          .dispatch('auth/updateUserAvatar', this.imageFile)
+          .then(() => {
+            this.$toasted.show('Profile image updated')
+          })
+          .catch(() => {
+            this.$toasted.error(
+              'There was a problem updating your profile image'
+            )
+          })
       }
     },
     updateDetails() {
@@ -189,20 +200,27 @@ export default {
           displayName: this.displayName,
           email: this.email,
         }),
-        this.imageFile === ''
-          ? this.$store.dispatch('auth/clearAvatar')
-          : this.$store.dispatch('auth/updateUserAvatar', this.imageFile),
       ])
         .then(() => {
-          this.$toasted.show('Profile updated')
+          this.$toasted.show('Profile details updated')
         })
         .catch(() => {
-          this.$toasted.error('There was a problem updating your profile...')
+          this.$toasted.error(
+            'There was a problem updating your profile details...'
+          )
         })
     },
     resetImage() {
       this.avatarImage = ''
       this.imageFile = ''
+      this.$store
+        .dispatch('auth/clearAvatar')
+        .then(() => {
+          this.$toasted.show('Profile image cleared')
+        })
+        .catch(() => {
+          this.$toasted.error('There was a problem clearing your image')
+        })
     },
   },
 }

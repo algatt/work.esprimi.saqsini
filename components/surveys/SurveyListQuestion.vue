@@ -86,6 +86,12 @@
               </button>
               <button
                 v-if="question.ordinalPosition !== 1"
+                @click="moveQuestion(question)"
+              >
+                <i class="fas fa-arrows-alt fa-fw"></i>Move
+              </button>
+              <button
+                v-if="question.ordinalPosition !== 1"
                 @click="deleteQuestion(question)"
               >
                 <i class="fas fa-trash-alt fa-fw"></i>Delete

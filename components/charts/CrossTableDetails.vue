@@ -158,7 +158,7 @@ export default {
           return !el.flags.includes('SECTION')
         })
         .sort((a, b) => {
-          return a > b ? 1 : -1
+          return a.ordinalPosition > b.ordinalPosition ? 1 : -1
         })
       if (this.crossTabY)
         x = x.filter((el) => {
@@ -172,7 +172,7 @@ export default {
           return !el.flags.includes('SECTION')
         })
         .sort((a, b) => {
-          return a > b ? 1 : -1
+          return a.ordinalPosition > b.ordinalPosition ? 1 : -1
         })
       if (this.crossTabX)
         x = x.filter((el) => {

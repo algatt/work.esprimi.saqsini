@@ -30,7 +30,7 @@
               <i class="fas fa-clipboard-list fa-fw"></i>Manage Survey
             </button>
             <button @click="viewResponses">
-              <i class="fas fa-chart-bar fa-fw"></i>View Responses
+              <i class="fas fa-chart-pie fa-fw"></i>View Responses
             </button>
           </template>
         </LPopupMenu>

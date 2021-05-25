@@ -4,7 +4,7 @@
       <div class="flex w-full md:flex-1">
         <h5>{{ responses.survey.name }}</h5>
       </div>
-      <div class="flex flex-col md:flex-row md:space-x-2">
+      <div class="flex flex-col md:flex-row md:space-x-4">
         <menu-icon-button
           :active="selectedView === 'overall'"
           @click="selectedView = 'overall'"
@@ -29,6 +29,22 @@
           >Cross Table<template v-slot:icon
             ><i class="fas fa-table fa-fw"></i></template
         ></menu-icon-button>
+        <LPopupMenu class="mt-2">
+          <template #icon>
+            <l-button
+              >Settings<template v-slot:rightIcon
+                ><i class="fas fa-caret-down fa-fw"></i></template
+            ></l-button>
+          </template>
+          <template v-slot:menu>
+            <button @click="manageSurvey">
+              <i class="fas fa-clipboard-list fa-fw"></i>Manage Survey
+            </button>
+            <button @click="manageOutreach">
+              <i class="fas fa-paper-plane fa-fw"></i>Manage Outreach
+            </button>
+          </template>
+        </LPopupMenu>
       </div>
     </div>
 
@@ -98,6 +114,20 @@ export default {
       .finally(() => {
         this.loading = false
       })
+  },
+  methods: {
+    manageOutreach() {
+      this.$router.push({
+        name: 'surveys-invites-id',
+        params: { id: this.$route.params.id },
+      })
+    },
+    manageSurvey() {
+      this.$router.push({
+        name: 'questions-id',
+        params: { id: this.$route.params.id },
+      })
+    },
   },
 }
 </script>

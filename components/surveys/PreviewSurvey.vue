@@ -118,7 +118,7 @@
             }"
             @click="started = true"
           >
-            Start
+            {{ languageText['start'] }}
           </button>
         </div>
       </template>

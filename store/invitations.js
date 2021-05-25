@@ -25,6 +25,7 @@ export const actions = {
       this.$axios
         .delete(`/builder/invites/${token}`)
         .then((response) => {
+          commit('surveys/deleteInvite', token, { root: true })
           commit('deleteInvite', token)
           resolve()
         })

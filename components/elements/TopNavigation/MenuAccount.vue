@@ -1,7 +1,7 @@
 <template>
   <div class="flex relative mr-3" @click="$emit('click')">
     <img
-      v-if="avatar && avatar !== ''"
+      v-if="avatar && avatar !== '' && avatar.length > 100"
       :src="avatar"
       class="h-8 w-8 rounded-full cursor-pointer border-2 transition duration-300"
       :class="[

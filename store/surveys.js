@@ -448,6 +448,11 @@ export const actions = {
         })
     })
   },
+
+  deleteInvite({ commit }, token) {
+    if (this.surveyData && this.surveyData.invitations)
+      commit('deleteInvite', token)
+  },
 }
 
 // export const getters = {
@@ -485,5 +490,11 @@ export const mutations = {
 
   setSurveyData(state, data) {
     state.surveyData = data
+  },
+
+  deleteInvite(state, token) {
+    state.surveyData.invitations = state.surveyData.invitations.filter((el) => {
+      return el.token !== token
+    })
   },
 }

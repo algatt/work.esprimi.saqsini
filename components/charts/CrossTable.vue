@@ -140,7 +140,8 @@ export default {
       return totalCount
     },
     calculatePercentage(value, total) {
-      return Math.round((value / total) * 100)
+      const x = Math.round((value / total) * 100)
+      return isNaN(x) ? 0 : x
     },
     copyTableToClipboard() {
       this.hidePercentages = true

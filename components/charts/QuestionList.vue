@@ -106,31 +106,32 @@ export default {
             const obj = document.getElementById(
               `question_graph_${question.question.code}`
             )
-            promises.push(
-              new Promise((resolve) => {
-                html2canvas(obj).then((canvas) => {
-                  doc.addPage()
-                  doc.setFont('Helvetica', 'bold')
-                  doc.setFontSize(16)
-                  doc.text(question.question.name, 2, 2)
-                  doc.setFont('Helvetica', 'bold')
-                  doc.setFontSize(14)
-                  doc.text(this.getQuestionTitle(question.question), 2, 3)
-                  let widthChange = 1
-                  if (canvas.width * 0.0264583333 > 17)
-                    widthChange = 17 / (canvas.width * 0.0264583333)
-                  resolve(
-                    doc.addImage(
-                      canvas,
-                      2,
-                      5,
-                      canvas.width * 0.0264583333 * widthChange,
-                      canvas.height * 0.0264583333 * widthChange
+            if (obj)
+              promises.push(
+                new Promise((resolve) => {
+                  html2canvas(obj).then((canvas) => {
+                    doc.addPage()
+                    doc.setFont('Helvetica', 'bold')
+                    doc.setFontSize(16)
+                    doc.text(question.question.name, 2, 2)
+                    doc.setFont('Helvetica', 'bold')
+                    doc.setFontSize(14)
+                    doc.text(this.getQuestionTitle(question.question), 2, 3)
+                    let widthChange = 1
+                    if (canvas.width * 0.0264583333 > 17)
+                      widthChange = 17 / (canvas.width * 0.0264583333)
+                    resolve(
+                      doc.addImage(
+                        canvas,
+                        2,
+                        5,
+                        canvas.width * 0.0264583333 * widthChange,
+                        canvas.height * 0.0264583333 * widthChange
+                      )
                     )
-                  )
+                  })
                 })
-              })
-            )
+              )
           })
           Promise.all(promises).then(() => {
             doc.save(`${this.surveyData.survey.name}.pdf`)

@@ -1,7 +1,16 @@
 <template>
-  <div class="flex relative items-center w-full h-6 border border-gray-300">
+  <div
+    class="flex relative items-center w-full h-7 border-2 border-gray-300 rounded-lg"
+  >
     <div
-      class="h-full"
+      class="absolute rounded"
+      style="
+        top: 3px;
+        right: 3px;
+        left: 3px;
+        bottom: 3px;
+        height: calc(100% - 6px);
+      "
       :class="
         barWidth === 100
           ? color
@@ -9,7 +18,7 @@
             : `bg-primary`
           : `bg-gray-200`
       "
-      :style="{ width: `calc(${barWidth}% + 1px)` }"
+      :style="{ width: `calc(${barWidth}% - 6px)` }"
     ></div>
     <span
       :title="`${currentValue} / ${totalValue}`"

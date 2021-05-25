@@ -66,6 +66,15 @@
                   Edit Responses</a
                 >
               </button>
+              <button
+                v-if="slotProps.item.email"
+                @click="anonymiseByToken(slotProps.item.token)"
+              >
+                <i class="fas fa-user-secret fa-fw"></i>Anonymise
+              </button>
+              <button @click="deleteResponse(slotProps.item.token)">
+                <i class="fas fa-trash-alt fa-fw"></i>Delete
+              </button>
             </template>
           </l-popup-menu>
         </div>
@@ -143,6 +152,26 @@ export default {
           close: true,
         },
       })
+    },
+    anonymiseByToken(token) {
+      this.$store
+        .dispatch('invitations/anonymiseResponsesByToken', token)
+        .then(() => {
+          this.$toasted.show('Response anonymisation in process')
+        })
+        .catch(() => {
+          this.$toasted.error('There was a problem anonymising the responses')
+        })
+    },
+    deleteResponse(token) {
+      this.$store
+        .dispatch('invitations/delete', token)
+        .then(() => {
+          this.$toasted.show(`Invite deleted`)
+        })
+        .catch(() => {
+          this.$toasted.error('There was a problem deleting the invite')
+        })
     },
   },
 }

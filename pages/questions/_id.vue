@@ -28,6 +28,15 @@
             <button @click="manageOutreach">
               <i class="fas fa-paper-plane fa-fw"></i>Manage Outreach
             </button>
+            <nuxt-link
+              :to="{
+                name: 'surveys-responses-id',
+                params: { id: survey.code },
+              }"
+              ><button>
+                <i class="fas fa-chart-pie fa-fw"></i>View Responses
+              </button></nuxt-link
+            >
             <button @click="showLanguageSettings">
               <i class="fas fa-language fa-fw"></i>Language
             </button>
