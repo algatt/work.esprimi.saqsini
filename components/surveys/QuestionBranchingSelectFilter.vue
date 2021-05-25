@@ -99,6 +99,31 @@ export default {
       })
     },
     filters() {
+      const x = JSON.parse(JSON.stringify(this.originalFilters))
+      const contacts = x.contacts
+      delete x.contacts
+
+      let age = contacts.map((el) => {
+        return el.age
+      })
+      age = Array.from(new Set(age))
+      x.age = []
+      age.forEach((el) => {
+        if (el !== undefined) x.age.push({ code: el, name: el })
+      })
+
+      let gender = contacts.map((el) => {
+        return el.gender
+      })
+      gender = Array.from(new Set(gender))
+      x.gender = []
+      gender.forEach((el) => {
+        if (el !== undefined) x.gender.push({ code: el, name: el })
+      })
+
+      return x
+    },
+    originalFilters() {
       return this.$store.state.invitations.filters
     },
   },

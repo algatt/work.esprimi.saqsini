@@ -146,4 +146,6 @@ export const FILTER_NAMES = {
   industries: 'Industry Name',
   roles: 'Role Name',
   sectors: 'Sector Name',
+  age: 'Age',
+  gender: 'Gender',
 }

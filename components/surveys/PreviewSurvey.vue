@@ -366,11 +366,15 @@ export default {
       })
     }
 
-    // TODO
-    this.getConditionState(
-      this.processedQuestions[0].surveyOptions,
-      'disqualify'
-    )
+    if (
+      this.getConditionState(
+        this.processedQuestions[0].surveyOptions,
+        'disqualify'
+      )
+    ) {
+      this.disqualify = true
+      this.$emit('disqualifySurvey')
+    }
   },
   methods: {
     getConditionState(surveyOptions, which = 'branching') {
@@ -389,10 +393,12 @@ export default {
               branchingRule,
               'isAnd'
             )
-              ? branchingRule.isAnd
+              ? branchingRule.isAnd === 'true'
                 ? ' && '
                 : ' || '
               : ''
+
+            console.log(operator)
 
             if (branchingRule.questionNumber) {
               const existingAnswers = this.getAnswerByQuestionNumber(
@@ -465,6 +471,8 @@ export default {
           )}${operator}`
         }
 
+        if (which === 'disqualify') console.log('disqualify')
+        else console.log('branching')
         console.log(rulesOutcome)
 
         console.log(finalOutcome)
