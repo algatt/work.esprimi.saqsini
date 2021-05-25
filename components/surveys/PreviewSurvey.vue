@@ -246,6 +246,13 @@ export default {
       required: false,
       default: false,
     },
+    invitation: {
+      type: Object,
+      required: false,
+      default: () => {
+        return {}
+      },
+    },
     existingAnswers: {
       type: Array,
       required: false,
@@ -266,6 +273,11 @@ export default {
     }
   },
   computed: {
+    invitationFilters() {
+      if (Object.keys(this.invitation).length > 0)
+        return JSON.parse(this.invitation.filter)
+      return {}
+    },
     languageText() {
       const data = {}
       Object.keys(SURVEY_LANGUAGE_GENERIC_TERMS).forEach((el) => {
@@ -353,7 +365,12 @@ export default {
         this.processAnswers(el.answers, el)
       })
     }
-    if (!this.showStart) this.started = true
+
+    // TODO
+    this.getConditionState(
+      this.processedQuestions[0].surveyOptions,
+      'disqualify'
+    )
   },
   methods: {
     getConditionState(surveyOptions, which = 'branching') {
@@ -422,7 +439,16 @@ export default {
               rulesOutcome[rule] += `${foundAnswer}${operator}`
             } else {
               // TODO: when implementing contactbook
-              rulesOutcome[rule] += `${true}${operator}`
+              const availableValues = branchingRule.options.map((el) => {
+                return el.name
+              })
+
+              const invitiationValue = this.invitationFilters[
+                branchingRule.filterName
+              ]
+              rulesOutcome[rule] += `${availableValues.includes(
+                invitiationValue
+              )}${operator}`
             }
           })
 
@@ -438,10 +464,12 @@ export default {
             rulesOutcome[rule]
           )}${operator}`
         }
-        // console.log(rulesOutcome)
-        //
-        // console.log(finalOutcome)
-        // console.log(this.evaluateBooleanExpression(finalOutcome))
+
+        console.log(rulesOutcome)
+
+        console.log(finalOutcome)
+        console.log(this.evaluateBooleanExpression(finalOutcome))
+
         return this.evaluateBooleanExpression(finalOutcome)
       }
 

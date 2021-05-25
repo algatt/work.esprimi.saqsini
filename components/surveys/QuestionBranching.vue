@@ -106,6 +106,7 @@ import { convertQuestionFromApiToForm } from '~/services/question-helpers'
 import LSelect from '~/components/LSelect'
 import QuestionBranchingSelectFilter from '~/components/surveys/QuestionBranchingSelectFilter'
 import LTextLink from '~/components/LTextLink'
+import { FILTER_NAMES } from '~/assets/settings/survey-settings'
 
 export default {
   name: 'QuestionBranching',
@@ -128,6 +129,7 @@ export default {
     return {
       isLoading: true,
       conditions: [],
+      FILTER_NAMES,
     }
   },
   computed: {
@@ -221,6 +223,7 @@ export default {
         name: Object.keys(this.filters)[0],
         options: [],
         contactListCode: this.contactList.code ? this.contactList.code : null,
+        filterName: FILTER_NAMES[Object.keys(this.filters)[0]],
       }
       if (group.ruleList.length > 0) {
         group.ruleList[group.ruleList.length - 1].isAnd = true
@@ -260,6 +263,7 @@ export default {
             contactListCode: this.contactList.code
               ? this.contactList.code
               : null,
+            filterName: FILTER_NAMES[newCode],
           }
         }
       }

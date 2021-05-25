@@ -10,6 +10,13 @@
         "text": "Create and manage your surveys",
         "role": ["ADMIN", "SURVEY_BUILDER"],
         "link": "surveys"
+      },
+      {
+        "icon": "fas fa-question fa-fw",
+        "header": "My Questions",
+        "text": "Create and manage your template questions",
+        "role": ["ADMIN", "SURVEY_BUILDER"],
+        "link": "questions"
       }
     ]
   },

@@ -30,8 +30,16 @@
             <l-button
               :color="options.color ? options.color : 'blue'"
               @click="confirm(updatedItem)"
-              >Save<template #rightIcon
-                ><i class="fas fa-save fa-fw"></i></template
+              ><span v-if="options && options.saveName">{{
+                options.saveName
+              }}</span
+              ><span v-else>Save</span
+              ><template #rightIcon
+                ><i
+                  :class="
+                    options.saveIcon ? options.saveIcon : `fas fa-save fa-fw`
+                  "
+                ></i></template
             ></l-button>
           </template>
           <template v-else-if="options.close">
@@ -62,6 +70,7 @@ import SurveyInvitesSettings from '~/components/surveys/SurveyInvitesSettings'
 import ContactListCollaborators from '~/components/contacts/ContactListCollaborators'
 import ShowNotifications from '~/components/elements/ShowNotifications'
 import ViewResponses from '~/components/charts/ViewResponses'
+import SelectQuestionTemplate from '~/components/surveys/SelectQuestionTemplate'
 
 export default {
   name: 'PlainModal',
@@ -79,6 +88,7 @@ export default {
     ContactListCollaborators,
     ShowNotifications,
     ViewResponses,
+    SelectQuestionTemplate,
   },
   mixins: [ModalMixin],
   props: {

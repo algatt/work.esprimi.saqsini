@@ -139,3 +139,11 @@ export const USER_META_DATA = {
   ],
   window: ['fullScreen', 'innerHeight', 'innerWidth'],
 }
+
+export const FILTER_NAMES = {
+  companies: 'Company Name',
+  departments: 'Department Name',
+  industries: 'Industry Name',
+  roles: 'Role Name',
+  sectors: 'Sector Name',
+}

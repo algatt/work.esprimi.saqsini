@@ -51,6 +51,9 @@
             >
               <i :class="button.icon"></i>{{ button.text }}
             </button>
+            <button @click="newQuestionFromTemplate(question.ordinalPosition)">
+              <i class="fas fa-question fa-fw"></i>From Template
+            </button>
           </template></LPopupMenu
         >
       </div>
@@ -114,6 +117,9 @@
               @click="newQuestion(button.flag, question.ordinalPosition)"
             >
               <i :class="button.icon"></i>{{ button.text }}
+            </button>
+            <button @click="newQuestionFromTemplate(question.ordinalPosition)">
+              <i class="fas fa-question fa-fw"></i>From Template
             </button>
           </template></LPopupMenu
         >
@@ -227,6 +233,43 @@ export default {
               `There was a problem creating the question ${error}`
             )
         })
+    },
+    newQuestionFromTemplate(ordinalPosition) {
+      ModalService.open(PlainModal, {
+        whichComponent: 'SelectQuestionTemplate',
+        options: {
+          saveName: 'Select',
+          saveIcon: 'fas fa-check fa-fw',
+        },
+      }).then((result) => {
+        ModalService.open(NewItemModal, {
+          whichComponent: 'NewQuestion',
+          dataItem: {
+            surveyCode: Number(this.$route.params.id),
+            flags: result.flags,
+            ordinalPosition: ordinalPosition + 1,
+            surveyOptions: JSON.stringify({}),
+            name: result.name,
+            options: result.options,
+            text: result.text,
+          },
+        })
+          .then((question) => {
+            this.$store.dispatch(
+              'questions/newQuestion',
+              convertQuestionFromFormToApi(question)
+            )
+          })
+          .then(() => {
+            this.$toasted.show(`Question created`)
+          })
+          .catch((error) => {
+            if (error !== 'dismissed')
+              this.$toasted.error(
+                `There was a problem creating the question ${error}`
+              )
+          })
+      })
     },
     deleteQuestion(question) {
       this.cannotDeleteDueToBranching = []
