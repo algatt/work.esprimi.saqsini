@@ -1,8 +1,10 @@
 <template>
   <div class="flex flex-col">
     <div class="w-full flex items-center justify-end px-10 py-5">
-      <nuxt-link :to="{ name: 'login' }"
+      <nuxt-link v-if="!isLoggedIn" :to="{ name: 'login' }"
         ><l-text-link class="text-lg">login</l-text-link></nuxt-link
+      ><nuxt-link v-else :to="{ name: 'surveys' }"
+        ><l-text-link class="text-lg">home</l-text-link></nuxt-link
       >
     </div>
 
@@ -136,6 +138,11 @@ export default {
       image3,
       image4,
     }
+  },
+  computed: {
+    isLoggedIn() {
+      return this.$store.state.auth.authUser
+    },
   },
 }
 </script>

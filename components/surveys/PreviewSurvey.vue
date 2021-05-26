@@ -471,12 +471,12 @@ export default {
           )}${operator}`
         }
 
-        if (which === 'disqualify') console.log('disqualify')
-        else console.log('branching')
-        console.log(rulesOutcome)
-
-        console.log(finalOutcome)
-        console.log(this.evaluateBooleanExpression(finalOutcome))
+        // if (which === 'disqualify') console.log('disqualify')
+        // else console.log('branching')
+        // console.log(rulesOutcome)
+        //
+        // console.log(finalOutcome)
+        // console.log(this.evaluateBooleanExpression(finalOutcome))
 
         return this.evaluateBooleanExpression(finalOutcome)
       }

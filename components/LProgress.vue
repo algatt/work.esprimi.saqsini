@@ -5,11 +5,11 @@
     <div
       class="absolute rounded"
       style="
-        top: 3px;
-        right: 3px;
-        left: 3px;
-        bottom: 3px;
-        height: calc(100% - 6px);
+        top: 2px;
+        right: 2px;
+        left: 2px;
+        bottom: 2px;
+        height: calc(100% - 4px);
       "
       :class="
         barWidth === 100
@@ -18,7 +18,7 @@
             : `bg-primary`
           : `bg-gray-200`
       "
-      :style="{ width: `calc(${barWidth}% - 6px)` }"
+      :style="{ width: `calc(${barWidth}% - 4px)` }"
     ></div>
     <span
       :title="`${currentValue} / ${totalValue}`"

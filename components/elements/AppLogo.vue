@@ -1,5 +1,5 @@
 <template>
-  <div class="hover:animate-pulse" @click="$router.push({ name: 'index' })">
+  <div class="hover:animate-pulse" @click="$router.push({ name: 'surveys' })">
     <h4
       :class="
         color
@@ -9,7 +9,7 @@
           : 'text-primary'
       "
     >
-      <nuxt-link to="/">
+      <nuxt-link :to="{ name: 'surveys' }">
         saqsini<i class="far fa-comments fa-fw ml-1"></i
       ></nuxt-link>
     </h4>

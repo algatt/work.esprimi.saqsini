@@ -125,9 +125,9 @@ export default {
     this.loading = true
     this.$store
       .dispatch('contactlist/getContactLists', {})
-      .then(() => {
+      .then(async () => {
         if (this.$store.state.selectedContactList) {
-          this.updateData()
+          await this.updateData()
         }
       })
       .catch(() => {
