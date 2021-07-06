@@ -1,5 +1,29 @@
 <template>
   <div class="flex flex-col w-full space-y-5">
+    <l-input
+      id="inputMaxChoice"
+      v-model="maxChoice"
+      :error="
+        $v.maxChoice.$model !== undefined
+          ? !$v.maxChoice.required
+            ? 'required'
+            : !$v.maxChoice.numeric
+            ? 'must be a number'
+            : !$v.maxChoice.between
+            ? `must be between 1 and ${this.options.length}`
+            : null
+          : null
+      "
+      @change="$v.maxChoice.$touch()"
+      ><span class="flex items-center">
+        Maximum Choices Allowed
+        <popup-information
+          >A limit can be set on the number of choices that can be
+          selected.</popup-information
+        >
+      </span></l-input
+    >
+
     <div class="flex items-center mt-4">
       <label class="font-semibold">Options</label>
       <span v-if="$v.options.$invalid">
@@ -31,7 +55,7 @@
 
 <script>
 import { validationMixin } from 'vuelidate'
-import { required } from 'vuelidate/lib/validators'
+import { required, numeric, between } from 'vuelidate/lib/validators'
 
 export default {
   name: 'NewQuestionRanking',
@@ -45,6 +69,7 @@ export default {
   data() {
     return {
       options: [],
+      maxChoice: 0,
     }
   },
   computed: {
@@ -56,6 +81,9 @@ export default {
     options() {
       this.updateValues()
       this.$emit('updatedOptions', this.options)
+    },
+    maxChoice(ev) {
+      this.$emit('updateMaxChoice', ev)
     },
     isValid() {
       this.$emit('isValid', !this.$v.$invalid)
@@ -70,6 +98,13 @@ export default {
         },
       },
     },
+    maxChoice: {
+      required,
+      numeric,
+      between(value) {
+        return between(1, this.options.length)(value)
+      },
+    },
   },
   created() {
     if (!this.form.options) {
@@ -77,8 +112,10 @@ export default {
         { ordinalPosition: 1, text: 'Option 1', value: 'Option 1' },
         { ordinalPosition: 2, text: 'Option 2', value: 'Option 2' },
       ]
+      this.maxChoice = this.options.length
     } else {
       this.options = this.form.options
+      this.maxChoice = this.form.maxChoice
     }
   },
   methods: {

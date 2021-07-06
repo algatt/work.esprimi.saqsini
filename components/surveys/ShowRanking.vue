@@ -134,26 +134,20 @@ export default {
       })
     })
 
-    for (let i = this.answers.length + 1; i <= this.options.length; i++)
+    let position = this.languageText.position
+    if (position === undefined) position = 'Position'
+    for (let i = this.answers.length + 1; i <= this.question.maxChoice; i++)
       this.dummies.push({
         code: Math.random(),
-        text: this.languageText.position + ' ' + i,
+        text: `${position} ${i}`,
       })
   },
   methods: {
     moveOptionToAnswers(option, index) {
+      if (this.answers.length === this.question.maxChoice) return
       this.options.splice(index, 1)
-      let rank = this.answers.length + 1
-      option.value = rank
       this.answers.push(option)
-      this.dummies = []
-
-      this.options.forEach(() => {
-        this.dummies.push({
-          code: Math.random(),
-          text: this.languageText.position + ' ' + ++rank,
-        })
-      })
+      this.dummies.splice(0, 1)
     },
     moveAnswerToOptions(option, index) {
       this.answers.splice(index, 1)
@@ -162,13 +156,15 @@ export default {
           return el.value === option.questionOption
         })
       )
-      this.dummies = []
-      let rank = this.answers.length + 1
-      this.options.forEach(() => {
-        this.dummies.push({
-          code: Math.random(),
-          text: this.languageText.position + ' ' + rank++,
-        })
+      this.options = this.options.sort((a, b) => {
+        return a.ordinalPosition > b.ordinalPosition ? 1 : -1
+      })
+      const rank = this.answers.length + 1
+      let position = this.languageText.position
+      if (position === undefined) position = 'Position'
+      this.dummies.splice(index, 0, {
+        code: Math.random(),
+        text: `${position} ${rank}`,
       })
     },
     clearAnswers() {
@@ -178,7 +174,9 @@ export default {
       for (let i = 1; i <= this.options.length; i++)
         this.dummies.push({
           code: Math.random(),
-          text: this.languageText.position + ' ' + i,
+          text: this.languageText.position
+            ? this.languageText.position
+            : 'Position' + ' ' + i,
         })
     },
     getOptionText(option) {

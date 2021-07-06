@@ -494,7 +494,8 @@ export default {
     },
     processAnswers(answers, question) {
       if (question.flags.includes('RANKING')) {
-        if (answers.length !== question.options.length) {
+        const surveyOptions = JSON.parse(question.surveyOptions)
+        if (answers.length < surveyOptions.maxChoice) {
           this.answers = this.answers.filter((el) => {
             return el.code !== question.code
           })

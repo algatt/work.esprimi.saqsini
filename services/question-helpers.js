@@ -77,6 +77,10 @@ export function convertQuestionFromApiToForm(
       temp.disqualify = { rules: [] }
     }
 
+    if (surveyOptions.maxChoice) {
+      temp.maxChoice = Number(surveyOptions.maxChoice)
+    }
+
     delete temp.surveyOptions
   }
 
@@ -116,6 +120,11 @@ export function convertQuestionFromFormToApi(question) {
 
   temp.surveyOptions.branching = question.branching
   temp.surveyOptions.disqualify = question.disqualify
+
+  if (question.maxChoice) {
+    temp.surveyOptions.maxChoice = Number(question.maxChoice)
+  }
+
   temp.surveyOptions = JSON.stringify(temp.surveyOptions)
 
   temp.flags = temp.flags.filter((el) => {

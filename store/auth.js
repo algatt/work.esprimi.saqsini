@@ -69,6 +69,7 @@ export const actions = {
   },
 
   getUserDetails({ commit, rootState }) {
+    console.log('making request')
     return new Promise((resolve, reject) => {
       this.$axios
         .$get('auth/user')
@@ -76,7 +77,11 @@ export const actions = {
           commit('setAuthUser', user)
           resolve(user)
         })
-        .catch((error) => reject(error))
+        .catch((error) => {
+          console.log('error in userRequest')
+          console.log(error.message)
+          reject(error)
+        })
     })
   },
 
@@ -219,6 +224,8 @@ export const mutations = {
       cookies.remove('x-access-token')
       this.$axios.setHeader('token', null)
     }
+    console.log('in mutation')
+    console.log(state.authToken)
   },
 
   setAuthUser(state, details) {
@@ -234,7 +241,7 @@ export const getters = {
   getPermissions(state) {
     const permissions = []
 
-    if (!state.authUser) return []
+    if (!state.authUser || !state.authUser.appFlags) return []
 
     if (state.authUser.appFlags.includes('SURVEY_BUILDER'))
       permissions.push('SURVEY_BUILDER')

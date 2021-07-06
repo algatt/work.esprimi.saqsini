@@ -1,5 +1,6 @@
 import cookie from 'cookie'
 import cookies from 'js-cookie'
+import axios from 'axios'
 
 export const state = () => ({
   selectedContactList: null,
@@ -16,7 +17,17 @@ export const actions = {
             'auth/setAuthToken',
             cookies['x-access-token']
           )
-          await context.store.dispatch('auth/getUserDetails')
+
+          const url = `${process.env.api_path}${process.env.api_auth}user`
+
+          const user = await axios.get(url, {
+            headers: {
+              Authorization: process.env.authorization,
+              token: cookies['x-access-token'],
+            },
+          })
+
+          context.store.commit('auth/setAuthUser', user.data)
         } catch {
           context.store.commit('auth/setAuthToken', '')
           context.store.commit('auth/setAuthUser', {})

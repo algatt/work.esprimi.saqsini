@@ -112,6 +112,7 @@
         @updatedOptions="form.options = $event"
         @updateAllowOther="form.allowOther = $event"
         @updateAllowMultiple="form.allowMultiple = $event"
+        @updateMaxChoice="form.maxChoice = $event"
         @isValid="isRemainderOfFormValid = $event"
         @updatedShowWeights="form.showWeights = $event"
       ></component>
@@ -212,6 +213,9 @@ export default {
         this.$emit('update', value)
       },
       deep: true,
+    },
+    isRemainderOfFormValid(ev) {
+      this.$emit('valid', ev)
     },
   },
   validations: {
