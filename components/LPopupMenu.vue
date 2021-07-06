@@ -2,7 +2,7 @@
   <span class="flex relative items-center">
     <div
       ref="popupButton"
-      class="focus:outline-none flex justify-center items-center"
+      class="focus:outline-none flex justify-center items-center cursor-pointer"
       @click.stop="managePopup"
     >
       <slot name="icon"></slot>

@@ -6,64 +6,67 @@
     :style="{ backgroundColor: survey.options.backgroundColour }"
   >
     <div
-      class="bg-cover flex flex-wrap items-center rounded w-full mb-5 shadow bg-white"
-      :style="{
-        backgroundImage: 'url(' + survey.options.headerImage + ')',
-      }"
+      class="flex flex-wrap items-center rounded w-full mb-5 shadow bg-white relative"
+      :class="{ 'h-28': survey.options.headerImage === '' }"
     >
-      <div
-        class="w-full flex justify-between items-center"
-        :class="survey.options.headerImage !== '' ? 'h-56' : 'h-32'"
-      >
-        <h3
-          class="px-5 py-3"
-          :class="
-            survey.options.headerImage === ''
-              ? null
-              : 'bg-white bg-opacity-90 rounded-r'
-          "
-          :style="{
-            color:
+      <img
+        :src="`${survey.options.headerImage}`"
+        :class="survey.options.headerAlignment"
+      />
+
+      <div class="w-full flex items-end absolute top-0 left-0 h-full p-10">
+        <div
+          class="flex items-center"
+          :class="{ 'ml-auto': survey.options.headerAlignment === 'mr-auto' }"
+        >
+          <h3
+            :class="
               survey.options.headerImage === ''
-                ? survey.options.textColour
-                : survey.options.accentColour,
-          }"
-        >
-          {{ languageText['survey_title'] }}
-        </h3>
+                ? null
+                : 'bg-white bg-opacity-90 rounded-r'
+            "
+            :style="{
+              color: survey.options.accentColour,
+            }"
+          >
+            {{ languageText['survey_title'] }}
+          </h3>
 
-        <l-popup-menu
-          v-if="
-            survey.flags.includes('HAS_LANGUAGE_PACK_FILE') &&
-            !survey.flags.includes('OUTDATED_LANGUAGE_PACK')
-          "
-          class="px-5 py-3"
-          :class="
-            survey.options.headerImage === '' ? null : 'bg-white bg-opacity-90'
-          "
-          :style="{
-            color: survey.options.textColour,
-          }"
-        >
-          <template v-slot:icon>
-            <i class="fas fa-globe fa-fw fa-lg"></i
-          ></template>
+          <l-popup-menu
+            v-if="
+              survey.flags.includes('HAS_LANGUAGE_PACK_FILE') &&
+              !survey.flags.includes('OUTDATED_LANGUAGE_PACK')
+            "
+            class="ml-2"
+            :class="
+              survey.options.headerImage === ''
+                ? null
+                : 'bg-white bg-opacity-90'
+            "
+            :style="{
+              color: survey.options.textColour,
+            }"
+          >
+            <template v-slot:icon>
+              <i class="fas fa-globe fa-fw fa-lg"></i
+            ></template>
 
-          <template v-slot:menu>
-            <div
-              v-for="(language, index) in survey.languages"
-              :key="language + index"
-            >
-              <button
-                v-if="language !== currentLanguage"
-                class="px-5 py-2 w-full"
-                @click="changeLanguage(language)"
+            <template v-slot:menu>
+              <div
+                v-for="(language, index) in survey.languages"
+                :key="language + index"
               >
-                {{ getCountryFromLanguage(language) }}
-              </button>
-            </div>
-          </template></l-popup-menu
-        >
+                <button
+                  v-if="language !== currentLanguage"
+                  class="px-5 py-2 w-full"
+                  @click="changeLanguage(language)"
+                >
+                  {{ getCountryFromLanguage(language) }}
+                </button>
+              </div>
+            </template></l-popup-menu
+          >
+        </div>
       </div>
     </div>
     <div ref="questionsSection" class="w-full">
@@ -204,13 +207,12 @@
     </div>
     <div
       v-if="survey.options.footerImage !== ''"
-      class="w-full bg-center flex flex-wrap items-center rounded"
-      :style="{
-        backgroundColor: survey.options.backgroundColour,
-        backgroundImage: 'url(' + survey.options.footerImage + ')',
-      }"
+      class="flex flex-wrap items-center rounded w-full mb-5 shadow bg-white relative"
     >
-      <div class="h-32"></div>
+      <img
+        :src="`${survey.options.footerImage}`"
+        :class="survey.options.footerAlignment"
+      />
     </div>
   </div>
 </template>

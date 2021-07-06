@@ -40,17 +40,7 @@
       >Survey Name</l-input
     >
 
-    <l-text-area
-      v-model="form.textConverted"
-      :error="
-        $v.form.textConverted.$model !== undefined &&
-        !$v.form.textConverted.required
-          ? 'required'
-          : null
-      "
-      @input="$v.form.textConverted.$touch()"
-      >Survey Description</l-text-area
-    >
+    <l-text-area v-model="form.textConverted">Survey Description</l-text-area>
 
     <l-input
       v-model="form.referenceDate"
@@ -209,9 +199,6 @@ export default {
   validations: {
     form: {
       name: {
-        required,
-      },
-      textConverted: {
         required,
       },
       referenceDate: {

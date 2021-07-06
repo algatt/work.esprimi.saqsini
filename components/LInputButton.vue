@@ -12,6 +12,7 @@
         @input="$emit('update', $event.target.value)"
         @keyup="$emit('keyup', $event.target.value)"
         @blur="$emit('blur')"
+        @focus="$emit('focus')"
       />
 
       <div

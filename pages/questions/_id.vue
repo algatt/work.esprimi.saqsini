@@ -1,6 +1,9 @@
 <template>
   <list-layout v-if="!loading && !error">
-    <div class="w-full mt-3 mb-6 flex justify-between flex-wrap">
+    <div
+      class="w-full flex justify-between flex-wrap fixed bg-gray-50 md:h-20 h-36 border-b border-gray-200"
+      style="top: 3rem; left: 0rem; z-index: 2"
+    >
       <div class="w-full md:w-6/12 flex justify-start items-center px-4">
         <h4 class="mr-5">{{ survey.name }}</h4>
         <contact-list-select
@@ -10,7 +13,17 @@
           "
         ></contact-list-select>
       </div>
-      <div class="w-full md:w-6/12 flex justify-start md:justify-end px-4">
+      <div
+        class="w-full md:w-6/12 flex items-center justify-start md:justify-end space-x-2 px-4"
+      >
+        <l-button title="Toggle View" @click="toggleShowPreview">
+          <i class="fas fa-poll-h fa-fw mr-1"></i
+          ><span class="hidden md:block">Toggle View</span>
+        </l-button>
+        <l-button title="Show Preview" @click="showSurveyPreview = true">
+          <i class="fas fa-eye fa-fw mr-1"></i
+          ><span class="hidden md:block">Preview</span>
+        </l-button>
         <LPopupMenu>
           <template #icon>
             <l-button
@@ -20,7 +33,7 @@
           </template>
           <template v-slot:menu>
             <button @click="editSurvey">
-              <i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit Survey
+              <i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit Survey Details
             </button>
             <button @click="showSurveySettings">
               <i class="fas fa-sliders-h fa-fw"></i>Customisation
@@ -46,12 +59,7 @@
             <button @click="showInviteSettings">
               <i class="fas fa-envelope-open-text fa-fw"></i>Invite Settings
             </button>
-            <button @click="showSurveyPreview = true">
-              <i class="fas fa-eye fa-fw"></i>Preview
-            </button>
-            <button @click="toggleShowPreview">
-              <i class="fas fa-poll-h fa-fw"></i>Toggle View
-            </button>
+
             <button @click="clearBranching">
               <i class="fas fa-code-branch fa-fw"></i>Clear Branching
             </button>
@@ -60,7 +68,7 @@
       </div>
     </div>
 
-    <div class="w-full md:w-8/12 flex flex-col mx-auto">
+    <div class="w-full md:w-8/12 flex flex-col mx-auto md:mt-20 mt-36">
       <survey-list-question
         v-for="section in sectionQuestions"
         :key="section.code"
@@ -105,7 +113,6 @@ import NewItemModal from '~/components/elements/NewItemModal'
 import ContactListSelect from '~/components/elements/ContactListSelect'
 import PageLoadError from '~/components/elements/PageLoadError'
 import Spinner from '~/components/elements/Spinner'
-import survey from '~/pages/survey'
 
 export default {
   name: 'QuestionList',
@@ -259,7 +266,7 @@ export default {
       })
         .then((response) => {
           this.$store.dispatch('surveys/updateSurvey', response)
-          this.$toasted.show(`Survey ${survey.name} updated`)
+          this.$toasted.show(`Survey ${this.survey.name} updated`)
         })
         .catch(() => {})
     },

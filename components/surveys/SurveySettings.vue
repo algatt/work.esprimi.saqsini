@@ -10,7 +10,8 @@
       />
       <div class="flex flex-col justify-start items-start">
         <button
-          class="text-primary focus:outline-none hover:text-primary-darker h-24 w-36"
+          class="text-primary focus:outline-none hover:text-primary-darker w-36"
+          style="min-height: 6rem"
           @click="activateInput('inputHeaderImage')"
         >
           <img
@@ -20,7 +21,20 @@
           />
           <i v-else class="far fa-image fa-fw fa-3x"></i>
         </button>
-        <button
+        <l-select
+          v-if="form.options.headerImage"
+          v-model="form.options.headerAlignment"
+          class="my-2"
+        >
+          <template #default>Alignment</template>
+          <template #options>
+            <option value="mr-auto">Left</option>
+            <option value="mx-auto">Center</option>
+            <option value="ml-auto">Right</option>
+          </template>
+        </l-select>
+
+        <l-text-link
           v-if="form.options.headerImage !== ''"
           class="btn-link my-1"
           @click="
@@ -29,7 +43,7 @@
           "
         >
           Clear
-        </button>
+        </l-text-link>
       </div>
     </div>
 
@@ -43,7 +57,8 @@
       />
       <div class="flex flex-col justify-start items-start">
         <button
-          class="text-primary focus:outline-none hover:text-primary-darker h-24 w-36"
+          class="text-primary focus:outline-none hover:text-primary-darker w-36"
+          style="min-height: 6rem"
           @click="activateInput('inputFooterImage')"
         >
           <img
@@ -53,7 +68,19 @@
           />
           <i v-else class="far fa-image fa-fw fa-3x"></i>
         </button>
-        <button
+        <l-select
+          v-if="form.options.footerImage"
+          v-model="form.options.footerAlignment"
+          class="my-2"
+        >
+          <template #default>Alignment</template>
+          <template #options>
+            <option value="mr-auto">Left</option>
+            <option value="mx-auto">Center</option>
+            <option value="ml-auto">Right</option>
+          </template>
+        </l-select>
+        <l-text-link
           v-if="form.options.footerImage !== ''"
           class="btn-link my-1"
           @click="
@@ -62,7 +89,7 @@
           "
         >
           Clear
-        </button>
+        </l-text-link>
       </div>
     </div>
 
@@ -113,9 +140,12 @@
 <script>
 import { convertSurveyFromApiToForm } from '~/services/survey-helpers'
 import { SURVEY_COLOURS } from '~/assets/settings/survey-settings'
+import LTextLink from '~/components/LTextLink'
+import LSelect from '~/components/LSelect'
 
 export default {
   name: 'SurveySettings',
+  components: { LSelect, LTextLink },
   props: {
     dataItem: {
       type: Object,
@@ -164,6 +194,9 @@ export default {
 
       if (this[whichData]) {
         reader.readAsDataURL(this[whichData])
+        if (whichData === 'headerImage')
+          this.form.options.headerAlignment = 'mr-auto'
+        else this.form.options.footerAlignment = 'mr-auto'
       }
     },
   },

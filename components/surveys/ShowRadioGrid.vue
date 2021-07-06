@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="flex flex-col w-full overflow-auto max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-none mx-auto"
-  >
+  <div class="flex flex-col">
     <div
       class="flex font-semibold mb-2 items-center"
       :style="{ color: displayStyle.textColour }"
@@ -11,64 +9,36 @@
         {{ languageText['required'] }}</span
       >
     </div>
-
-    <div
-      class="flex-col"
-      :style="{ minWidth: `${columns.length + 1 * minElWidth}px` }"
-    >
-      <div class="flex">
-        <div
-          class="border-b-2 py-2"
-          :style="{
-            width: `${100 / (columns.length + 1)}%`,
-            minWidth: `${minElWidth}px`,
-          }"
-        ></div>
-        <div
-          v-for="(item, index) in columns"
-          :key="index"
-          class="flex relative items-center py-2 border-b-2 py-2"
-          :style="{
-            width: `${100 / (columns.length + 1)}%`,
-            minWidth: `${minElWidth}px`,
-          }"
-        >
-          <p
-            class="text-center w-full"
+    <div class="overflow-auto">
+      <table>
+        <tr class="border-b border-gray-200">
+          <td :style="{ width: `20%`, minWidth: `${minElWidth * 2}px` }">
+            &nbsp;
+          </td>
+          <td
+            v-for="(item, index) in columns"
+            :key="index"
+            :style="{
+              color: displayStyle.textColour,
+              width: `20%`,
+              minWidth: `${minElWidth}px`,
+            }"
+            class="text-center py-2"
+          >
+            {{ item.text }}
+          </td>
+        </tr>
+        <tr v-for="(item, index) in rows" :key="index" class="even:bg-gray-100">
+          <td
+            class="text-left py-2"
             :style="{ color: displayStyle.textColour }"
           >
             {{ item.text }}
-          </p>
-        </div>
-      </div>
-      <div class="flex flex-wrap w-full">
-        <div
-          v-for="(item, index) in rows"
-          :key="index"
-          class="flex items-center w-full"
-        >
-          <div
-            class="flex items-center relative border-b-2 py-2"
-            :style="{
-              width: `${100 / (columns.length + 1)}%`,
-              minWidth: `${minElWidth}px`,
-            }"
-          >
-            <p
-              class="text-center w-full"
-              :style="{ color: displayStyle.textColour }"
-            >
-              {{ item.text }}
-            </p>
-          </div>
-          <div
+          </td>
+          <td
             v-for="(i, columnIndex) in columns"
             :key="columnIndex"
-            class="text-center border-b-2 py-2"
-            :style="{
-              width: `${100 / (columns.length + 1)}%`,
-              minWidth: `${minElWidth}px`,
-            }"
+            class="text-center"
           >
             <button
               :style="{ color: displayStyle.textColour }"
@@ -81,11 +51,10 @@
               ></i>
               <i v-else class="far fa-circle fa-fw"></i>
             </button>
-          </div>
-        </div>
-      </div>
+          </td>
+        </tr>
+      </table>
     </div>
-
     <div class="flex my-2">
       <button
         class="cursor-pointer font-semibold"
@@ -127,7 +96,7 @@ export default {
         scale: [],
         rows: [],
       },
-      minElWidth: 100,
+      minElWidth: 150,
     }
   },
 

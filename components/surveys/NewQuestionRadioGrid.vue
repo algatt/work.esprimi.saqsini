@@ -26,9 +26,11 @@
             }"
           >
             <l-input-button
+              :id="`inputScale${index}`"
               v-model="options[0].scale[index].text"
               button-color="red"
               :button-disabled="options[0].scale.length < 3"
+              @focus="selectAll(`inputScale${index}`)"
               @click="deleteScale(index)"
             >
               <i class="fas fa-trash-alt fa-fw"></i>
@@ -54,9 +56,11 @@
               }"
             >
               <l-input-button
+                :id="`inputRow${index}`"
                 v-model="options[0].rows[index]"
                 button-color="red"
                 :button-disabled="options[0].rows.length === 1"
+                @focus="selectAll(`inputRow${index}`)"
                 @click="deleteRow(index)"
               >
                 <i class="fas fa-trash-alt fa-fw"></i>
@@ -196,6 +200,9 @@ export default {
     },
     deleteRow(index) {
       this.options[0].rows.splice(index, 1)
+    },
+    selectAll(el) {
+      document.getElementById(el).select()
     },
   },
 }

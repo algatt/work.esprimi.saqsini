@@ -5,22 +5,68 @@
       class="flex flex-col bg-white rounded border-t border-b"
     >
       <div class="flex flex-wrap">
-        <div class="flex flex-1 flex-col items-start pl-6 py-4 space-y-2">
-          <template v-if="!showPreview">
-            <h6>{{ question.name }}</h6>
-            <div class="flex flex-wrap space-x-2">
-              <l-badge>{{ getQuestionType(question) }}</l-badge>
-              <l-badge v-if="hasBranching">Branching</l-badge>
+        <div
+          class="flex flex-1 flex-col items-start pl-4 py-4 space-y-2"
+          style="max-width: calc(100% - 6rem)"
+        >
+          <h6>
+            <span v-if="showPreview">{{ question.questionNumber }}</span
+            ><span v-else>{{ question.name }}</span>
+          </h6>
+          <div class="flex flex-wrap space-x-2">
+            <l-badge>{{ getQuestionType(question) }}</l-badge>
+            <div @click="showBranching = question.code">
+              <l-badge
+                v-if="hasBranching"
+                class="hover:bg-gray-300 cursor-pointer"
+                >Branching</l-badge
+              >
             </div>
-          </template>
-          <display-question
-            v-else
-            :question="question"
-            class="w-full"
-          ></display-question>
+          </div>
+          <div
+            v-if="showBranching === question.code"
+            class="flex flex-col bg-gray-100 border border-gray-200 rounded w-full p-3 2xl:relative"
+          >
+            <button
+              class="absolute top-1 right-2 text-gray-300 hover:text-gray-500"
+              @click="showBranching = null"
+            >
+              <i class="fas fa-times fa-fw"></i>
+            </button>
+            <div
+              v-for="(item, indexBranch) in getBranchingDetails(question)"
+              :key="indexBranch"
+            >
+              <div v-for="(rule, ruleIndex) in item.ruleList" :key="ruleIndex">
+                <span class="font-bold"
+                  >Question Number {{ rule.questionNumber }}</span
+                ><span>&nbsp;must be one of the following</span>
+                <div class="flex flex-wrap space-x-2 px-2 my-2">
+                  <span
+                    v-for="(option, optionIndex) in rule.options"
+                    :key="optionIndex"
+                    class="bg-gray-50 rounded border border-gray-200 px-2 py-0.5"
+                  >
+                    {{ option.name }}
+                  </span>
+                </div>
+              </div>
+              <div v-if="item.isAnd" class="my-3">
+                <span v-if="item.isAnd === 'false'">or</span
+                ><span v-else>and</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto w-full">
+            <display-question
+              v-if="showPreview"
+              :question="question"
+            ></display-question>
+          </div>
         </div>
 
-        <div class="flex w-24 justify-center">
+        <div class="flex w-24 justify-center items-start py-4">
           <LPopupMenu
             ><template v-slot:menu
               ><button @click="editQuestion(question)">
@@ -36,12 +82,11 @@
           >
         </div>
       </div>
-      <div
-        class="flex justify-center opacity-0 hover:opacity-100 transition duration-300 py-1"
-      >
+      <div class="flex justify-center py-3">
         <LPopupMenu>
           <template v-slot:icon
-            ><LButtonCircle><i class="fas fa-plus fa-fw"></i></LButtonCircle
+            ><button class="new-button">
+              <i class="fas fa-plus fa-fw"></i></button
           ></template>
           <template v-slot:menu>
             <button
@@ -65,23 +110,63 @@
     >
       <div class="flex flex-wrap">
         <div class="flex flex-1 flex-col space-y-2 pl-4">
-          <template v-if="!showPreview">
-            <h4 class="text-blue-600 font-bold">
-              {{ question.name }}
-            </h4>
-            <div class="flex flex-wrap space-x-2">
-              <l-badge v-if="hasBranching">Branching</l-badge>
-              <l-badge v-if="hasDisqualify">Disqualify</l-badge>
+          <h4 class="text-blue-600 font-bold">
+            <span v-if="showPreview">{{ question.questionNumber }}</span
+            ><span v-else>{{ question.name }}</span>
+          </h4>
+          <div class="flex flex-wrap space-x-2">
+            <div @click="showBranching = question.code">
+              <l-badge
+                v-if="hasBranching"
+                class="hover:bg-gray-300 cursor-pointer"
+                >Branching</l-badge
+              >
             </div>
-          </template>
+            <l-badge v-if="hasDisqualify">Disqualify</l-badge>
+          </div>
+          <div
+            v-if="showBranching === question.code"
+            class="flex flex-col bg-gray-100 border border-gray-200 rounded w-full p-3 2xl:relative"
+          >
+            <button
+              class="absolute top-1 right-2 text-gray-300 hover:text-gray-500"
+              @click="showBranching = null"
+            >
+              <i class="fas fa-times fa-fw"></i>
+            </button>
+            <div
+              v-for="(item, indexBranch) in getBranchingDetails(question)"
+              :key="indexBranch"
+            >
+              <div v-for="(rule, ruleIndex) in item.ruleList" :key="ruleIndex">
+                <span class="font-bold"
+                  >Question Number {{ rule.questionNumber }}</span
+                ><span>&nbsp;must be one of the following</span>
+                <div class="flex flex-wrap space-x-2 px-2 my-2">
+                  <span
+                    v-for="(option, optionIndex) in rule.options"
+                    :key="optionIndex"
+                    class="bg-gray-50 rounded border border-gray-200 px-2 py-0.5"
+                  >
+                    {{ option.name }}
+                  </span>
+                </div>
+              </div>
+              <div v-if="item.isAnd" class="my-3">
+                <span v-if="item.isAnd === 'false'">or</span
+                ><span v-else>and</span>
+              </div>
+            </div>
+          </div>
+
           <display-question
-            v-else
+            v-if="showPreview"
             :question="question"
             class="w-full text-xl font-semibold"
           ></display-question>
         </div>
 
-        <div class="flex w-24 justify-center py-1">
+        <div class="flex w-24 justify-center py-1 items-start">
           <LPopupMenu
             ><template v-slot:menu
               ><button @click="editQuestion(question)">
@@ -103,12 +188,11 @@
           >
         </div>
       </div>
-      <div
-        class="flex justify-center opacity-0 hover:opacity-100 transition duration-300 py-1"
-      >
+      <div class="flex justify-center transition py-3">
         <LPopupMenu>
           <template v-slot:icon
-            ><LButtonCircle><i class="fas fa-plus fa-fw"></i></LButtonCircle
+            ><button class="new-button">
+              <i class="fas fa-plus fa-fw"></i></button
           ></template>
           <template v-slot:menu>
             <button
@@ -163,6 +247,7 @@ export default {
   data() {
     return {
       QUESTION_TYPES,
+      showBranching: null,
     }
   },
   computed: {
@@ -317,8 +402,22 @@ export default {
         },
       })
     },
+    getBranchingDetails(question) {
+      const surveyOptions = JSON.parse(question.surveyOptions)
+      if (
+        !surveyOptions.branching ||
+        !surveyOptions.branching.rules ||
+        surveyOptions.branching.rules.length === 0
+      )
+        return null
+      return surveyOptions.branching.rules
+    },
   },
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.new-button {
+  @apply flex items-center justify-center rounded-full bg-gray-50 w-6 h-6 text-gray-300 hover:bg-blue-600 hover:text-white hover:border-blue-700 transition duration-300 border border-gray-300;
+}
+</style>

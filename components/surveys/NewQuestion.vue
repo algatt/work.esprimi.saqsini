@@ -45,7 +45,10 @@
         "
         @change="$v.form.questionNumber.$touch()"
         ><span class="flex items-center">
-          Question Number
+          <template v-if="question.flags.includes('SECTION')"
+            >Page Number</template
+          ><template v-else>Question Number</template>
+
           <popup-information
             >This is the question number used for internal purposes. The
             respondent will not see this.</popup-information
@@ -65,7 +68,9 @@
         "
         @change="$v.form.name.$touch()"
         ><span class="flex items-center">
-          Question Name
+          <template v-if="question.flags.includes('SECTION')"
+            >Internal Page Name</template
+          ><template v-else>Internal Question Name</template>
           <popup-information
             >This is the name of the question used for internal purposes. The
             respondent will not see this.</popup-information
@@ -85,7 +90,9 @@
         "
         @change="$v.form.text.$touch()"
         ><span class="flex items-center">
-          Question Text
+          <template v-if="question.flags.includes('SECTION')"
+            >Page Text</template
+          ><template v-else>Question Text</template>
           <popup-information
             >This is the question text that will be seen by the
             respondent.</popup-information
@@ -243,9 +250,11 @@ export default {
   },
   created() {
     this.form = convertQuestionFromApiToForm(this.dataItem)
+    if (!this.form.isMandatory) this.form.isMandatory = true
   },
   mounted() {
     this.$v.form.questionNumber.$touch()
+
     document.getElementById('inputName').focus()
     this.$watch(
       '$v',

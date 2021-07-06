@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-auto p-5 flex flex-col bg-white">
+  <div class="mx-auto p-5 flex flex-col">
     <show-section
       v-if="questionType === 'SECTION'"
       :question="parsedQuestion"
