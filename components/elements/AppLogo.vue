@@ -9,6 +9,9 @@
           : 'text-primary'
       "
     >
+      <span v-if="isDev" title="Development Site"
+        ><i class="fas fa-hard-hat fa-sm fa-fw text-yellow-400"></i
+      ></span>
       <nuxt-link :to="{ name: 'surveys' }">
         saqsini<i class="far fa-comments fa-fw ml-1"></i
       ></nuxt-link>
@@ -23,6 +26,11 @@ export default {
     color: {
       type: String,
       default: null,
+    },
+  },
+  computed: {
+    isDev() {
+      return process.env.NODE_ENV === 'development'
     },
   },
 }

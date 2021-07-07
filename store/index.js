@@ -18,11 +18,11 @@ export const actions = {
             cookies['x-access-token']
           )
 
-          const url = `${process.env.api_path}${process.env.api_auth}user`
+          const url = `${context.$config.api_path}${context.$config.api_auth}user`
 
           const user = await axios.get(url, {
             headers: {
-              Authorization: process.env.authorization,
+              Authorization: context.$config.authorization,
               token: cookies['x-access-token'],
             },
           })

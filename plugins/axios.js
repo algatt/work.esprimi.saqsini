@@ -1,5 +1,5 @@
-export default function ({ $axios, store, redirect, route }) {
-  $axios.setHeader('Authorization', process.env.authorization)
+export default function ({ $axios, store, redirect, route, $config }) {
+  $axios.setHeader('Authorization', $config.authorization)
   $axios.setHeader('Content-Type', 'application/x-www-form-urlencoded', [
     'post',
   ])
