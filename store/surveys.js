@@ -340,7 +340,7 @@ export const actions = {
           temp.flags = temp.flags.filter((el) => {
             return el !== 'KIOSK'
           })
-          commit('updateItem', { which: 'surveys', item: temp }, { root: true })
+          commit('updateSurvey', temp)
           resolve()
         })
         .catch((error) => {
@@ -356,7 +356,7 @@ export const actions = {
         .then(() => {
           const temp = JSON.parse(JSON.stringify(survey))
           temp.flags.push('KIOSK')
-          commit('updateItem', { which: 'surveys', item: temp }, { root: true })
+          commit('updateSurvey', temp)
           resolve()
         })
         .catch((error) => {

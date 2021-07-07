@@ -291,12 +291,13 @@ export default {
     },
     enableNext() {
       for (const cnt of this.processedQuestionsCurrentPage) {
-        if (
-          cnt.validity === true &&
-          cnt.flags.includes('IS_MANDATORY') &&
-          this.getAnswerByQuestionNumber(cnt.questionNumber).length === 0
-        )
-          return false
+        if (!cnt.flags.includes('SECTION'))
+          if (
+            cnt.validity === true &&
+            cnt.flags.includes('IS_MANDATORY') &&
+            this.getAnswerByQuestionNumber(cnt.questionNumber).length === 0
+          )
+            return false
       }
       return true
     },

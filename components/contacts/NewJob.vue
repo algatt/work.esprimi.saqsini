@@ -201,7 +201,8 @@ export default {
         this.form.contactNumber = this.phoneNumber
           .substring(this.phoneNumber.indexOf(' '), this.phoneNumber.length)
           .trim()
-          .replace(' ', '')
+          .replaceAll(' ', '')
+          .replaceAll('-', '')
       }
     },
     updateDepartments() {
