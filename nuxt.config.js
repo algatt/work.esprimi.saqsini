@@ -1,3 +1,5 @@
+require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` })
+
 export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
 
@@ -25,13 +27,13 @@ export default {
     ],
   },
   env: {
-    api_auth: '/api/v0.3/',
-    // api_path: 'https://com-lobeslab-sdc-api-test.herokuapp.com',
-    api_path: 'https://lobeslab-api.herokuapp.com',
-    siteUrl: 'https://saqsini.lobeslab.com/',
-    siteUrlActivate: this.siteUrl + 'activate',
-    // authorization: '2c276e30-b685-493e-a660-559feae22f8d',
-    authorization: '4fd080ae-fbc6-4a2f-86e1-7b5d489d31a3',
+    // api_auth: '/api/v0.3/',
+    // // api_path: 'https://com-lobeslab-sdc-api-test.herokuapp.com',
+    // api_path: 'https://lobeslab-api.herokuapp.com',
+    // siteUrl: 'https://saqsini.lobeslab.com/',
+    siteUrlActivate: process.env.siteURL + 'activate',
+    // // authorization: '2c276e30-b685-493e-a660-559feae22f8d',
+    // authorization: '4fd080ae-fbc6-4a2f-86e1-7b5d489d31a3',
   },
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
@@ -67,6 +69,7 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    ['@nuxtjs/dotenv', { filename: `.env.${process.env.NODE_ENV}` }],
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
@@ -76,21 +79,21 @@ export default {
 
   proxy: {
     '/auth/': {
-      target: 'https://lobeslab-api.herokuapp.com',
+      target: process.env.API_PATH,
       pathRewrite: {
         '^/auth/': '/api/v0.3/',
       },
     },
     '/contact/': {
       // target: 'https://com-lobeslab-sdc-api-test.herokuapp.com/api/v0.3/',
-      target: 'https://lobeslab-api.herokuapp.com',
+      target: process.env.API_PATH,
       pathRewrite: {
         '^/contact/': '/contactbook/v0.3/',
       },
     },
     '/builder/': {
       // target: 'https://com-lobeslab-sdc-api-test.herokuapp.com/api/v0.3/',
-      target: 'https://lobeslab-api.herokuapp.com',
+      target: process.env.API_PATH,
       pathRewrite: {
         '^/builder/': '/surveyBuilder/v0.3/',
       },
