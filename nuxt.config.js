@@ -26,10 +26,12 @@ export default {
   },
   env: {
     api_auth: '/api/v0.3/',
-    api_path: 'https://com-lobeslab-sdc-api-test.herokuapp.com',
-    siteUrl: 'https://saqsini.herokuapp.com/',
+    // api_path: 'https://com-lobeslab-sdc-api-test.herokuapp.com',
+    api_path: 'https://lobeslab-api.herokuapp.com',
+    siteUrl: 'https://saqsini.lobeslab.com/',
     siteUrlActivate: this.siteUrl + 'activate',
-    authorization: '2c276e30-b685-493e-a660-559feae22f8d',
+    // authorization: '2c276e30-b685-493e-a660-559feae22f8d',
+    authorization: '4fd080ae-fbc6-4a2f-86e1-7b5d489d31a3',
   },
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
@@ -74,21 +76,21 @@ export default {
 
   proxy: {
     '/auth/': {
-      target: 'https://com-lobeslab-sdc-api-test.herokuapp.com/',
+      target: 'https://lobeslab-api.herokuapp.com',
       pathRewrite: {
         '^/auth/': '/api/v0.3/',
       },
     },
     '/contact/': {
       // target: 'https://com-lobeslab-sdc-api-test.herokuapp.com/api/v0.3/',
-      target: 'https://com-lobeslab-sdc-api-test.herokuapp.com',
+      target: 'https://lobeslab-api.herokuapp.com',
       pathRewrite: {
         '^/contact/': '/contactbook/v0.3/',
       },
     },
     '/builder/': {
       // target: 'https://com-lobeslab-sdc-api-test.herokuapp.com/api/v0.3/',
-      target: 'https://com-lobeslab-sdc-api-test.herokuapp.com/',
+      target: 'https://lobeslab-api.herokuapp.com',
       pathRewrite: {
         '^/builder/': '/surveyBuilder/v0.3/',
       },
