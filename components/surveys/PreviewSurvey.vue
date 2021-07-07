@@ -78,11 +78,7 @@
             class="mb-5"
           >
             <display-question
-              v-if="
-                question.page === currentPage &&
-                question.validity &&
-                question.ordinalPosition !== 1
-              "
+              v-if="question.page === currentPage && question.validity"
               :key="`${question.code} ${currentLanguage}`"
               class="rounded shadow bg-white"
               :display-style="survey.options"
@@ -274,7 +270,7 @@ export default {
       currentPage: 1,
       currentLanguage: PREFERRED_LANGUAGE,
       survey: null,
-      started: false,
+      started: true,
       disqualify: false,
     }
   },
