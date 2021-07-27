@@ -21,6 +21,16 @@
         </span></l-input
       >
 
+      <l-input id="inputDomain" v-model="form.domain"
+        ><span class="flex items-center">
+          Question Domain
+          <popup-information
+            >You can assign a label to the question which then can be used for
+            reporting.</popup-information
+          >
+        </span></l-input
+      >
+
       <div class="flex flex-col">
         <label class="font-semibold">Tags</label>
         <div class="flex items-center space-x-3 my-4">

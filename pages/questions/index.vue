@@ -88,7 +88,7 @@ export default {
     Spinner,
   },
   layout: 'authlayout',
-  middleware: ['surveybuilder'],
+  middleware: ['surveyBuilder'],
   data() {
     return {
       loading: true,

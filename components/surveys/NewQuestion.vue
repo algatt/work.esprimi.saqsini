@@ -78,6 +78,16 @@
         </span></l-input
       >
 
+      <l-input id="inputDomain" v-model="form.domain"
+        ><span class="flex items-center">
+          Domain Name
+          <popup-information
+            >You can assign a label to the question which then can be used for
+            reporting.</popup-information
+          >
+        </span></l-input
+      >
+
       <l-text-area
         id="inputText"
         v-model="form.text"
