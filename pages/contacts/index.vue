@@ -152,7 +152,7 @@ export default {
           this.$store
             .dispatch('contacts/newContact', response)
             .then((contact) => {
-              this.$toasted.show(`Contacts ${contact.name} created`)
+              this.$toasted.show(`Contacts ${response.name} created`)
             })
         })
         .catch((error) => {

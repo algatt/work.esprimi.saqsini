@@ -39,6 +39,7 @@ export const actions = {
   newContact({ commit, dispatch, state, rootState }, contact) {
     contact.contactbookCode = rootState.selectedContactList?.code
     delete contact.code
+    contact.additionalAttributes = JSON.stringify(contact.additionalAttributes)
     return new Promise((resolve, reject) => {
       this.$axios
         .post('contact/contact/', qs.stringify(contact))
@@ -55,6 +56,7 @@ export const actions = {
   updateContact({ commit }, contact) {
     const code = contact.code
     const jobCount = contact.jobCount
+    contact.additionalAttributes = JSON.stringify(contact.additionalAttributes)
     delete contact.code
     return new Promise((resolve, reject) => {
       this.$axios

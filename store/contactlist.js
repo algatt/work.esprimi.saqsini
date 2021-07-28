@@ -49,6 +49,10 @@ export const actions = {
   newContactList({ commit, dispatch, state }, contactList) {
     const data = new FormData()
     data.append('name', contactList.name)
+    data.append(
+      'additionalAttributes',
+      JSON.stringify(contactList.additionalAttributes)
+    )
     if (contactList.dataFile) data.append('data', contactList.dataFile)
     if (contactList.deleteBy) data.append('deleteBy', contactList.deleteBy)
 
@@ -72,6 +76,10 @@ export const actions = {
   updateContactList({ commit, dispatch, state }, contactList) {
     const data = new FormData()
     data.append('name', contactList.name)
+    data.append(
+      'additionalAttributes',
+      JSON.stringify(contactList.additionalAttributes)
+    )
     if (contactList.data) data.append('data', contactList.data)
     if (contactList.deleteBy) data.append('deleteBy', contactList.deleteBy)
 

@@ -164,7 +164,9 @@ export default {
   },
   methods: {
     showNewItem() {
-      const dataItem = {}
+      const dataItem = {
+        additionalAttributes: {},
+      }
 
       ModalService.open(NewItemModal, {
         whichComponent: 'NewContactList',

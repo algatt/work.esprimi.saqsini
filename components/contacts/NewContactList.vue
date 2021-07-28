@@ -30,6 +30,47 @@
       @change="$v.form.deleteBy.$touch()"
       >Valid Until</l-input
     >
+
+    <div class="flex flex-col space-y-3">
+      <p class="font-semibold">Additional Attributes for Contacts</p>
+      <div class="flex flex-wrap items-center space-x-3">
+        <div
+          v-for="(attr, index) in Object.keys(form.additionalAttributes)"
+          :key="index"
+          class="flex items-center border bg-gray-50 rounded border-gray-100 py-1 px-2"
+        >
+          <span>{{ attr }}</span>
+          <span
+            class="cursor-pointer text-gray-600 hover:text-red-600 transition duration-300"
+            @click="removeAttribute(attr)"
+            ><i class="fas fa-times fa-fw ml-1"></i
+          ></span>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center">
+        <span
+          v-if="newAttr === false"
+          class="text-primary cursor-pointer hover:underline"
+          @click="enableNewAttr"
+          >Add New</span
+        >
+        <l-input-button
+          v-if="newAttr"
+          ref="newAttr"
+          v-model="newAttributeValue"
+          :button-disabled="!isAttrValid"
+          @click="addAttribute"
+        >
+          <template><i class="fas fa-save fa-fw"></i></template>
+        </l-input-button>
+        <span
+          v-if="newAttr === true"
+          class="text-primary cursor-pointer hover:underline mt-1 ml-2"
+          @click="disableNewAttr"
+          >Cancel</span
+        >
+      </div>
+    </div>
   </div>
 </template>
 
@@ -63,11 +104,20 @@ export default {
   data() {
     return {
       form: null,
+      newAttr: false,
+      newAttributeValue: '',
     }
   },
   computed: {
     isValid() {
       return !this.$v.$invalid
+    },
+    isAttrValid() {
+      const currentValues = Object.keys(this.form.additionalAttributes)
+      return (
+        this.newAttributeValue.trim().length !== 0 &&
+        !currentValues.includes(this.newAttributeValue)
+      )
     },
   },
   watch: {
@@ -96,6 +146,33 @@ export default {
   methods: {
     fileSelected(event) {
       this.form.dataFile = document.getElementById('inputData').files[0]
+    },
+    enableNewAttr() {
+      this.newAttr = true
+      this.$nextTick(() => {
+        try {
+          this.$refs.newAttr.$el.children[1].firstChild.focus()
+        } catch {}
+      })
+    },
+    disableNewAttr() {
+      this.newAttr = false
+      this.newAttributeValue = ''
+    },
+    addAttribute() {
+      this.form.additionalAttributes[this.newAttributeValue] = ''
+      this.newAttributeValue = ''
+      this.newAttr = false
+    },
+    removeAttribute(attr) {
+      const keys = Object.keys(this.form.additionalAttributes).filter((el) => {
+        return el !== attr
+      })
+      const result = new Set()
+      for (const i in this.form.additionalAttributes) {
+        if (keys.includes(i)) result[i] = this.form.additionalAttributes[i]
+      }
+      this.form.additionalAttributes = result
     },
   },
 }
