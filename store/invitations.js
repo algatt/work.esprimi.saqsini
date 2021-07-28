@@ -60,7 +60,7 @@ export const actions = {
       const axios = require('axios')
       const instance = axios.create()
 
-      const headers = { Authorization: process.env.authorization }
+      const headers = { Authorization: this.$config.authorization }
 
       if (isAdmin) {
         headers.token = cookies.get('x-access-token')

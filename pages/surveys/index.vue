@@ -311,7 +311,7 @@ export default {
       }
     },
     copyUrl(url) {
-      url = `${process.env.siteUrl}survey?id=${url}`
+      url = `${this.$config.siteUrl}survey?id=${url}`
       navigator.clipboard.writeText(url).then(() => {
         this.$toasted.show('URL copied to clipboard', {
           action: { text: 'GO', href: url, target: '_blank' },

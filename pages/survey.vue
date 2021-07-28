@@ -130,6 +130,7 @@ export default {
       id: this.$route.query.id,
       isAdmin: this.hasEdit,
     }
+
     if (this.$route.query.token) properties.token = this.$route.query.token
     this.$store
       .dispatch('invitations/redeem', properties)
