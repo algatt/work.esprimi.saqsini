@@ -164,14 +164,7 @@ export const actions = {
             return item !== 'ACTIVE'
           })
           tempSurvey.flags.push('FLAGGED_FOR_REMOVAL')
-          commit(
-            'updateItem',
-            {
-              which: 'surveys',
-              item: tempSurvey,
-            },
-            { root: true }
-          )
+          commit('updateSurvey', tempSurvey)
           resolve()
         })
         .catch((error) => {
@@ -190,14 +183,7 @@ export const actions = {
             return item !== 'FLAGGED_FOR_REMOVAL'
           })
 
-          commit(
-            'updateItem',
-            {
-              which: 'surveys',
-              item: tempSurvey,
-            },
-            { root: true }
-          )
+          commit('updateSurvey', tempSurvey)
           resolve()
         })
         .catch((error) => {
@@ -211,11 +197,7 @@ export const actions = {
       this.$axios
         .post('/builder/instance/' + survey.code)
         .then((response) => {
-          commit(
-            'newItem',
-            { which: 'surveys', item: response.data },
-            { root: true }
-          )
+          commit('newSurvey', response.data)
           resolve()
         })
         .catch((error) => {
@@ -375,7 +357,7 @@ export const actions = {
             return el !== 'ACTIVE'
           })
           temp.flags.push('EXPIRED')
-          commit('updateItem', { which: 'surveys', item: temp }, { root: true })
+          commit('updateSurvey', temp)
           resolve(response.data)
         })
         .catch((error) => {
@@ -394,7 +376,7 @@ export const actions = {
             return el !== 'EXPIRED'
           })
           temp.flags.push('ACTIVE')
-          commit('updateItem', { which: 'surveys', item: temp }, { root: true })
+          commit('updateSurvey', temp)
           resolve()
         })
         .catch((error) => {
