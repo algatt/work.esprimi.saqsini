@@ -401,7 +401,7 @@ export default {
                 : ' || '
               : ''
 
-            console.log(operator)
+            // console.log(operator)
 
             if (branchingRule.questionNumber) {
               const existingAnswers = this.getAnswerByQuestionNumber(

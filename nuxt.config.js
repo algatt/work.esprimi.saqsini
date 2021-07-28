@@ -6,7 +6,7 @@ const apiPath =
 const siteUrl =
   process.env.NODE_ENV === 'production'
     ? 'https://saqsini.lobeslab.com/'
-    : 'htps://saqsini.herokuapp.com/'
+    : 'https://lobeslab-saqsini-test.herokuapp.com/'
 
 export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)

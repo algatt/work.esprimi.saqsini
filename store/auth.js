@@ -40,7 +40,7 @@ export const actions = {
           '/auth/tokens/resetPassword',
           qs.stringify({
             email,
-            siteUrl: 'https://saqsini.herokuapp.com/reset',
+            siteUrl: `${this.$config.siteUrl}reset`,
           })
         )
         .then(() => {
@@ -69,7 +69,6 @@ export const actions = {
   },
 
   getUserDetails({ commit, rootState }) {
-    console.log('making request')
     return new Promise((resolve, reject) => {
       this.$axios
         .$get('auth/user')
@@ -78,8 +77,6 @@ export const actions = {
           resolve(user)
         })
         .catch((error) => {
-          console.log('error in userRequest')
-          console.log(error.message)
           reject(error)
         })
     })
@@ -224,8 +221,6 @@ export const mutations = {
       cookies.remove('x-access-token')
       this.$axios.setHeader('token', null)
     }
-    console.log('in mutation')
-    console.log(state.authToken)
   },
 
   setAuthUser(state, details) {
