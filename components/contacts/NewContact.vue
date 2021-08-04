@@ -68,15 +68,6 @@
         >invalid phone</span
       >
     </div>
-
-    <div
-      v-for="(additional, index) in Object.keys(form.additionalAttributes)"
-      :key="index"
-    >
-      <l-input v-model="form.additionalAttributes[additional]">{{
-        additional
-      }}</l-input>
-    </div>
   </div>
 </template>
 
@@ -125,7 +116,6 @@ export default {
         { text: 'Male', value: 'M' },
         { text: 'Unspecified', value: 'X' },
       ],
-      additionalAttributes: null,
     }
   },
   computed: {
@@ -153,18 +143,6 @@ export default {
         ' ' +
         this.form.contactNumber
       ).trim()
-
-    const selectedContactList = this.$store.state.selectedContactList
-    this.additionalAttributes = this.$store.state.contactlist.items.find(
-      (el) => {
-        return el.code === selectedContactList.code
-      }
-    ).additionalAttributes
-    if (!this.form.additionalAttributes) this.form.additionalAttributes = {}
-    for (const i in this.additionalAttributes) {
-      if (!Object.keys(this.form.additionalAttributes).includes(i))
-        this.form.additionalAttributes[i] = ''
-    }
   },
   mounted() {
     document.getElementById('inputName').focus()

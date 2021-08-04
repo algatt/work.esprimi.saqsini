@@ -1,11 +1,12 @@
 <template>
   <div v-if="!loading" class="flex flex-col mt-5 space-y-8">
     <div class="flex flex-col w-full space-y-3">
-      <div>
-        <p class="font-semibold mb-1">Contact Book Filters</p>
+      <p class="font-semibold mb-1">Contact Book Filters</p>
+
+      <div class="flex flex-col md:flex-row md:flex-wrap">
         <multi-select
           :key="'sectors' + getCodes(selectedSectors)"
-          class="w-full"
+          class="w-full md:w-6/12 md:px-4 md:py-2"
           :original-list="sectors"
           :selected-list="selectedSectors"
           @selectedItems="updateAll('selectedSectors', $event)"
@@ -14,7 +15,7 @@
 
         <multi-select
           :key="'industries' + getCodes(selectedIndustries)"
-          class="w-full"
+          class="w-full md:w-6/12 md:px-4 md:py-2"
           :original-list="industries"
           :selected-list="selectedIndustries"
           @selectedItems="updateAll('selectedIndustries', $event)"
@@ -23,7 +24,7 @@
 
         <multi-select
           :key="'companies' + getCodes(selectedCompanies)"
-          class="w-full"
+          class="w-full md:w-6/12 md:px-4 md:py-2"
           :original-list="companies"
           :selected-list="selectedCompanies"
           @selectedItems="updateAll('selectedCompanies', $event)"
@@ -32,7 +33,7 @@
 
         <multi-select
           :key="'departments' + getCodes(selectedDepartments)"
-          class="w-full"
+          class="w-full md:w-6/12 md:px-4 md:py-2"
           :original-list="departments"
           :selected-list="selectedDepartments"
           @selectedItems="selectedDepartments = $event"
@@ -41,63 +42,64 @@
 
         <multi-select
           :key="'roles' + getCodes(selectedRoles)"
-          class="w-full"
+          class="w-full md:w-6/12 md:px-4 md:py-2"
           :original-list="roles"
           :selected-list="selectedRoles"
           @selectedItems="selectedRoles = $event"
           ><template v-slot:title>Roles</template></multi-select
         >
-        <div v-if="mergedContacts.length > 0" class="overflow-y-auto py-5">
-          <data-table
-            :enable-delete-all="false"
-            :table-data="mergedContacts"
-            :table-definition="tableInvites"
-            @selectItems="selectedContacts = $event"
-          >
-            <template v-slot:personal="slotProps">
-              <span class="flex">
-                {{ slotProps.item.displayName }}
-                <template v-if="slotProps.item.age || slotProps.item.gender">
-                  (<template v-if="slotProps.item.gender"
-                    ><span v-if="slotProps.item.gender === 'M'">Male</span
-                    ><span v-else-if="slotProps.item.gender === 'F'"
-                      >Female</span
-                    ></template
-                  ><template v-if="slotProps.item.age"
-                    >&nbsp;{{ slotProps.item.age }} years</template
-                  >)
-                </template> </span
-              ><span>
-                {{ slotProps.item.email }}
-              </span>
-            </template>
-            <template #sector="slotProps"
-              ><span class="flex flex-col">
-                <span> {{ getSector(slotProps.item.companyCode) }}</span>
-                <span> {{ getIndustry(slotProps.item.companyCode) }}</span>
-              </span></template
-            >
-            <template #company="slotProps">
-              <span class="flex flex-col"
-                ><span>{{ slotProps.item.companyName }}</span
-                >{{ slotProps.item.departmentName }}<span></span></span
-            ></template>
-            <template #role="slotProps">{{ slotProps.item.roleName }}</template>
-          </data-table>
-        </div>
-        <div v-else class="flex justify-center font-semibold my-2 rounded py-5">
-          No Contacts!
-        </div>
-        <div v-if="mergedContacts.length > 0" class="flex justify-between">
-          <p class="mt-2">
-            Total Invites
-            <span
-              class="ml-2 bg-primary text-white text-sm px-1 py-0.5 rounded"
-              >{{ selectedContacts.length }}</span
-            >
-          </p>
-        </div>
       </div>
+      <div v-if="mergedContacts.length > 0" class="overflow-y-auto py-5">
+        <data-table
+          :enable-delete-all="false"
+          :table-data="mergedContacts"
+          :table-definition="tableInvites"
+          @selectItems="selectedContacts = $event"
+        >
+          <template v-slot:personal="slotProps">
+            <span class="flex">
+              {{ slotProps.item.displayName }}
+              <template v-if="slotProps.item.age || slotProps.item.gender">
+                (<template v-if="slotProps.item.gender"
+                  ><span v-if="slotProps.item.gender === 'M'">Male</span
+                  ><span v-else-if="slotProps.item.gender === 'F'"
+                    >Female</span
+                  ></template
+                ><template v-if="slotProps.item.age"
+                  >&nbsp;{{ slotProps.item.age }} years</template
+                >)
+              </template> </span
+            ><span>
+              {{ slotProps.item.email }}
+            </span>
+          </template>
+          <template #sector="slotProps"
+            ><span class="flex flex-col">
+              <span> {{ getSector(slotProps.item.companyCode) }}</span>
+              <span> {{ getIndustry(slotProps.item.companyCode) }}</span>
+            </span></template
+          >
+          <template #company="slotProps">
+            <span class="flex flex-col"
+              ><span>{{ slotProps.item.companyName }}</span
+              >{{ slotProps.item.departmentName }}<span></span></span
+          ></template>
+          <template #role="slotProps">{{ slotProps.item.roleName }}</template>
+        </data-table>
+      </div>
+      <div v-else class="flex justify-center font-semibold my-2 rounded py-5">
+        No Contacts!
+      </div>
+      <div v-if="mergedContacts.length > 0" class="flex justify-between">
+        <p class="mt-2">
+          Total Invites
+          <span
+            class="ml-2 bg-primary text-white text-sm px-1 py-0.5 rounded"
+            >{{ selectedContacts.length }}</span
+          >
+        </p>
+      </div>
+
       <notification-reminder-section
         :existing-data="form"
         @update="form = $event"
@@ -156,6 +158,11 @@ export default {
   },
 
   computed: {
+    additionalAttributes() {
+      return this.contacts.map((el) => {
+        return el.additionalAttributes
+      })
+    },
     isValid() {
       return !this.datesError && this.selectedContacts.length > 0
     },

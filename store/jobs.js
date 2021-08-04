@@ -40,7 +40,7 @@ export const actions = {
 
   newJob({ dispatch, commit }, job) {
     delete job.code
-
+    job.additionalAttributes = JSON.stringify(job.additionalAttributes)
     return new Promise((resolve, reject) => {
       this.$axios
         .post('/contact/job/', qs.stringify(job))
@@ -90,6 +90,8 @@ export const actions = {
     const companyName = job.companyName
     const departmentName = job.departmentName
     const roleName = job.roleName
+
+    job.additionalAttributes = JSON.stringify(job.additionalAttributes)
 
     if (job.isActive)
       await this.$axios.patch(

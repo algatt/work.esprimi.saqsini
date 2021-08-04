@@ -87,6 +87,38 @@
         <template v-slot:rightLabel>Active</template>
       </l-toggle>
     </div>
+
+    <p class="font-bold">Additional Attributes</p>
+    <div class="flex flex-wrap space-x-3">
+      <span
+        v-for="(attr, index) in availableAdditionalAttributes"
+        :key="index"
+        class="bg-gray-50 border border-gray-100 px-1 py-0.5 rounded cursor-pointer hover:bg-gray-100 hover:border-gray-200"
+        @click="addAdditionalAttribute(attr)"
+        >{{ attr }}</span
+      >
+    </div>
+    <div
+      v-for="(additional, index) in Object.keys(form.additionalAttributes)"
+      :key="index"
+      class="w-full flex items-stretch"
+    >
+      <div class="pr-5 flex flex-1 items-center">
+        <l-input
+          v-model="form.additionalAttributes[additional]"
+          class="w-full"
+          >{{ additional }}</l-input
+        >
+      </div>
+      <div class="w-32 flex items-center pt-6">
+        <button
+          class="font-semibold cursor-pointer text-gray-600 hover:text-red-600"
+          @click="removeAdditionalAttribute(additional)"
+        >
+          Remove
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -116,6 +148,9 @@ export default {
       phoneNumber: '',
       checkPhoneState: true,
       departments: '',
+      additionalAttributes: null,
+      existingAdditionalAttributes: [],
+      availableAdditionalAttributes: [],
     }
   },
   validations: {
@@ -174,6 +209,18 @@ export default {
     if (this.form.flags)
       this.form.isActive = this.form.flags.includes('ONGOING')
     else this.form.isActive = true
+
+    const selectedContactList = this.$store.state.selectedContactList
+    this.additionalAttributes = this.$store.state.contactlist.items.find(
+      (el) => {
+        return el.code === selectedContactList.code
+      }
+    ).additionalAttributes
+    if (!this.form.additionalAttributes) this.form.additionalAttributes = {}
+    for (const i in this.additionalAttributes) {
+      if (!Object.keys(this.form.additionalAttributes).includes(i))
+        this.availableAdditionalAttributes.push(i)
+    }
   },
   mounted() {
     document.getElementById('inputCompany').focus()
@@ -190,6 +237,18 @@ export default {
   },
 
   methods: {
+    addAdditionalAttribute(attr) {
+      this.availableAdditionalAttributes = this.availableAdditionalAttributes.filter(
+        (el) => {
+          return el !== attr
+        }
+      )
+      this.form.additionalAttributes[attr] = ''
+    },
+    removeAdditionalAttribute(attr) {
+      this.availableAdditionalAttributes.push(attr)
+      delete this.form.additionalAttributes[attr]
+    },
     validatePhone(ev) {
       this.checkPhoneState = ev.valid
       if (ev.valid) {
