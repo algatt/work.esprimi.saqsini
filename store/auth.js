@@ -1,6 +1,6 @@
 import qs from 'qs'
 import cookies from 'js-cookie'
-import convertBinaryDataToImage from '~/services/image-helpers'
+import { convertBinaryDataToImage } from '~/services/image-helpers'
 
 export const state = () => ({
   authUser: null,

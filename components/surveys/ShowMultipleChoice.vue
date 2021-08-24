@@ -9,7 +9,7 @@
         {{ languageText['required'] }}</span
       >
     </div>
-    <div class="flex flex-col mt-2 max-w-max">
+    <div class="flex flex-col mt-2 max-w-max min-w-48">
       <button
         v-for="(option, index) in question.options"
         :key="index"
@@ -32,12 +32,12 @@
               class="fas fa-check-circle fa-fw"
             ></i></transition
         ></span>
-        <span class="text-left pl-2 pr-10">{{ option.text }}</span>
+        <span class="text-left pl-2 pr-12">{{ option.text }}</span>
       </button>
 
       <div
         v-if="question.allowOther"
-        class="card-multiple-choice"
+        class="flex items-center border-2 mb-2 shadow-sm transition duration-300 font-semibold rounded pr-12"
         :style="{
           borderColor: displayStyle.accentColour,
           backgroundColor:
@@ -57,13 +57,13 @@
         ></span>
         <input
           v-model="otherAnswer"
-          class="flex flex-grow font-semibold transition duration-300 pl-2 pr-10 text-gray-700 h-full py-1"
           :style="{
             borderColor: displayStyle.accentColour,
             backgroundColor:
               otherAnswer !== '' ? displayStyle.accentColour : 'white',
             color: otherAnswer !== '' ? 'white' : displayStyle.textColour,
           }"
+          class="focus:outline-none py-2 text-gray-700 pl-2 font-semibold"
           placeholder="Other answer..."
           @blur="checkOtherAnswer"
         />
@@ -184,7 +184,6 @@ export default {
 
 <style scoped>
 .card-multiple-choice {
-  /*@apply border-2 mb-2 w-full flex  justify-start pl-3 pr-9 py-2 flex-wrap shadow-sm rounded transition duration-300 font-semibold;*/
   @apply flex items-center border-2 mb-2 py-2 shadow-sm transition duration-300 font-semibold rounded;
 }
 

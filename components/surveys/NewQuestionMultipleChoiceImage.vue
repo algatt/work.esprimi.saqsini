@@ -68,7 +68,7 @@
 <script>
 import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
-import convertBinaryDataToImage from '~/services/image-helpers'
+import { resizeImage } from '~/services/image-helpers'
 
 export default {
   name: 'NewQuestionMultipleChoiceImage',
@@ -92,7 +92,11 @@ export default {
     },
 
     isValid() {
-      return !this.$v.$invalid && this.totalOptions > 1
+      return (
+        !this.$v.$invalid &&
+        this.totalOptions > 1 &&
+        this.totalOptions === this.totalImages
+      )
     },
   },
   watch: {
@@ -107,8 +111,11 @@ export default {
       this.$emit('updateAllowMultiple', ev)
     },
 
-    isValid() {
-      this.$emit('isValid', this.isValid)
+    isValid: {
+      handler() {
+        this.$emit('isValid', this.isValid)
+      },
+      deep: true,
     },
   },
   validations: {
@@ -123,13 +130,28 @@ export default {
   created() {
     if (!this.form.options) {
       this.options = []
+      this.totalImages = 0
+      this.options.push(
+        {
+          ordinalPosition: this.options.length + 1,
+          text: 'New Option',
+          surveyOptions: {},
+        },
+        {
+          ordinalPosition: this.options.length + 1,
+          text: 'New Option',
+          surveyOptions: {},
+        }
+      )
     } else {
       this.options = this.form.options
+      this.totalImages = this.options.length
     }
 
     this.allowMultiple =
       this.form.allowMultiple === undefined ? true : this.form.allowMultiple
   },
+
   methods: {
     addNewOption() {
       this.options.push({
@@ -153,6 +175,7 @@ export default {
       this.options.forEach((el) => {
         el.ordinalPosition = position++
       })
+      this.totalImages--
     },
     updateValues() {
       this.options.forEach((item) => {
@@ -161,9 +184,13 @@ export default {
     },
     async updateImage(event, index) {
       if (!event.target.files[0]) return
-      this.options[index].surveyOptions.image = await convertBinaryDataToImage(
-        event.target.files[0]
+
+      this.options[index].surveyOptions.image = await resizeImage(
+        event.target.files[0],
+        480,
+        480
       )
+      this.totalImages++
       this.$forceUpdate()
     },
   },
