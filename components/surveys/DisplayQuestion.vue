@@ -6,13 +6,27 @@
       :display-style="displayStyle"
     ></show-section>
     <show-multiple-choice
-      v-else-if="questionType === 'MULTIPLE_CHOICE'"
+      v-else-if="
+        questionType === 'MULTIPLE_CHOICE' &&
+        !parsedQuestion.isMultipleChoiceImage
+      "
       :question="parsedQuestion"
       :display-style="displayStyle"
       :existing-answer="existingAnswer"
       :language-text="languageText"
       @answers="$emit('answers', $event)"
     ></show-multiple-choice>
+    <show-multiple-choice-image
+      v-else-if="
+        questionType === 'MULTIPLE_CHOICE' &&
+        parsedQuestion.isMultipleChoiceImage
+      "
+      :question="parsedQuestion"
+      :display-style="displayStyle"
+      :existing-answer="existingAnswer"
+      :language-text="languageText"
+      @answers="$emit('answers', $event)"
+    ></show-multiple-choice-image>
     <show-likert
       v-else-if="questionType === 'LIKERT'"
       :question="parsedQuestion"
@@ -71,6 +85,7 @@ import ShowTypeIn from '~/components/surveys/ShowTypeIn'
 import ShowRanking from '~/components/surveys/ShowRanking'
 import ShowLikert from '~/components/surveys/ShowLikert'
 import ShowRadioGrid from '~/components/surveys/ShowRadioGrid'
+import ShowMultipleChoiceImage from '~/components/surveys/ShowMultipleChoiceImage'
 import { SURVEY_OPTIONS } from '~/assets/settings/survey-settings'
 
 export default {
@@ -83,6 +98,7 @@ export default {
     ShowSection,
     ShowMultipleChoice,
     ShowLikert,
+    ShowMultipleChoiceImage,
   },
   props: {
     question: {

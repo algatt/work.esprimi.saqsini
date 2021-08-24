@@ -84,6 +84,14 @@ export const QUESTION_TYPES = {
     options: [],
     component: 'NewQuestionRadioGrid',
   },
+  MULTIPLE_CHOICE_IMAGE: {
+    code: 7,
+    text: 'Multiple Choice (Images)',
+    flag: 'MULTIPLE_CHOICE_IMAGE',
+    icon: 'fas fa-image fa-fw',
+    options: ['allowMultiple', 'isMultipleChoiceImage'],
+    component: 'NewQuestionMultipleChoiceImage',
+  },
 }
 
 export const QUESTION_HELP = {

@@ -49,6 +49,7 @@ export function convertQuestionFromApiToForm(
         ordinalPosition: el.ordinalPosition,
         text,
         value: el.value,
+        surveyOptions: JSON.parse(el.surveyOptions),
       }
       if (el.flags) obj.flags = el.flags
 
@@ -81,6 +82,8 @@ export function convertQuestionFromApiToForm(
       temp.maxChoice = Number(surveyOptions.maxChoice)
     }
 
+    if (surveyOptions.isMultipleChoiceImage) temp.isMultipleChoiceImage = true
+
     delete temp.surveyOptions
   }
 
@@ -95,6 +98,12 @@ export function convertQuestionFromFormToApi(question) {
   const whichQuestion = getQuestionType(temp)
 
   temp.text = [{ language: PREFERRED_LANGUAGE, text: temp.text }]
+  if (temp.flags.includes('MULTIPLE_CHOICE_IMAGE')) {
+    temp.flags = temp.flags.filter((el) => {
+      return el !== 'MULTIPLE_CHOICE_IMAGE'
+    })
+    temp.flags.push('MULTIPLE_CHOICE')
+  }
 
   if (temp.options) {
     const formOptions = temp.options
@@ -104,7 +113,7 @@ export function convertQuestionFromFormToApi(question) {
         ordinalPosition: el.ordinalPosition,
         text: [{ language: PREFERRED_LANGUAGE, text: el.text }],
         value: el.value,
-        surveyOptions: null,
+        surveyOptions: JSON.stringify(el.surveyOptions),
       }
       if (el.mask) obj.mask = el.mask
       if (el.flags) obj.flags = el.flags

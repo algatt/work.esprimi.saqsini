@@ -85,7 +85,7 @@ export const actions = {
         .put(`builder/responses/update`, answers, {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: process.env.authorization,
+            Authorization: this.$config.authorization,
             token: cookies.get('x-access-token'),
           },
         })
@@ -107,7 +107,7 @@ export const actions = {
         .put(`builder/responses/submit`, answers, {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: process.env.authorization,
+            Authorization: this.$config.authorization,
           },
         })
         .then((response) => {
@@ -126,7 +126,7 @@ export const actions = {
 
       instance
         .patch(`/builder/invites/${token}/consume`, null, {
-          headers: { Authorization: process.env.authorization },
+          headers: { Authorization: this.$config.authorization },
         })
         .then((response) => {
           resolve(response.data)

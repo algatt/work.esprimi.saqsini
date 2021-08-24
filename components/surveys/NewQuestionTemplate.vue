@@ -119,6 +119,7 @@ import NewQuestionDropDown from '~/components/surveys/NewQuestionDropDown'
 import NewQuestionTypeIn from '~/components/surveys/NewQuestionTypeIn'
 import NewQuestionRanking from '~/components/surveys/NewQuestionRanking'
 import NewQuestionMultipleChoice from '~/components/surveys/NewQuestionMultipleChoice'
+import NewQuestionMultipleChoiceImage from '~/components/surveys/NewQuestionMultipleChoiceImage'
 import NewQuestionLikert from '~/components/surveys/NewQuestionLikert'
 import {
   QUESTION_TYPES,
@@ -143,6 +144,7 @@ export default {
     NewQuestionSection,
     NewQuestionLikert,
     NewQuestionMultipleChoice,
+    NewQuestionMultipleChoiceImage,
   },
   mixins: [validationMixin],
   props: {

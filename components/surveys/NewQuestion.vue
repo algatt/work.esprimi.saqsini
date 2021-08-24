@@ -161,6 +161,7 @@ import NewQuestionDropDown from '~/components/surveys/NewQuestionDropDown'
 import NewQuestionTypeIn from '~/components/surveys/NewQuestionTypeIn'
 import NewQuestionRanking from '~/components/surveys/NewQuestionRanking'
 import NewQuestionMultipleChoice from '~/components/surveys/NewQuestionMultipleChoice'
+import NewQuestionMultipleChoiceImage from '~/components/surveys/NewQuestionMultipleChoiceImage'
 import NewQuestionLikert from '~/components/surveys/NewQuestionLikert'
 import {
   QUESTION_TYPES,
@@ -185,6 +186,7 @@ export default {
     NewQuestionSection,
     NewQuestionLikert,
     NewQuestionMultipleChoice,
+    NewQuestionMultipleChoiceImage,
   },
   mixins: [validationMixin],
   props: {
@@ -212,7 +214,8 @@ export default {
       return this.$store.state.questions.items
     },
     questionType() {
-      const x = this.question.flags
+      let x = this.question.flags
+      if (this.question.isMultipleChoiceImage) x = 'MULTIPLE_CHOICE_IMAGE'
 
       let questionType = null
       Object.keys(QUESTION_TYPES).forEach((el) => {
@@ -259,6 +262,12 @@ export default {
     },
   },
   created() {
+    if (JSON.parse(this.dataItem.surveyOptions).isMultipleChoiceImage) {
+      this.dataItem.flags = this.dataItem.flags.filter((el) => {
+        return el !== 'MULTIPLE_CHOICE'
+      })
+      this.dataItem.flags.push('MULTIPLE_CHOICE_IMAGE')
+    }
     this.form = convertQuestionFromApiToForm(this.dataItem)
     if (!this.form.isMandatory) this.form.isMandatory = true
   },

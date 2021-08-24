@@ -9,7 +9,7 @@
         {{ languageText['required'] }}</span
       >
     </div>
-    <div class="flex flex-col mt-2 max-w-max">
+    <div class="flex flex-wrap mt-2">
       <button
         v-for="(option, index) in question.options"
         :key="index"
@@ -22,52 +22,24 @@
             ? 'white'
             : displayStyle.textColour,
         }"
-        class="card-multiple-choice"
+        class="card-multiple-choice relative ml-2"
         @click="addToAnswer(option)"
       >
-        <span class="w-10 min-w-10">
-          <transition name="fade">
+        <transition name="fade">
+          <span
+            v-if="answerPresent(option.value)"
+            class="absolute top-0 left-0 w-full h-full flex justify-center items-center bg-white bg-opacity-50"
+          >
             <i
-              v-if="answerPresent(option.value)"
-              class="fas fa-check-circle fa-fw"
-            ></i></transition
-        ></span>
-        <span class="text-left pl-2 pr-10">{{ option.text }}</span>
-      </button>
-
-      <div
-        v-if="question.allowOther"
-        class="card-multiple-choice"
-        :style="{
-          borderColor: displayStyle.accentColour,
-          backgroundColor:
-            otherAnswer !== '' ? displayStyle.accentColour : 'white',
-          color: otherAnswer !== '' ? 'white' : displayStyle.textColour,
-        }"
-      >
-        <span
-          class="w-10 min-w-10 flex justify-center items-center cursor-pointer"
-          @click="removeOther"
-        >
-          <transition name="fade">
-            <i
-              v-if="otherAnswer !== ''"
-              class="fas fa-check-circle"
-            ></i></transition
-        ></span>
-        <input
-          v-model="otherAnswer"
-          class="flex flex-grow font-semibold transition duration-300 pl-2 pr-10 text-gray-700 h-full py-1"
-          :style="{
-            borderColor: displayStyle.accentColour,
-            backgroundColor:
-              otherAnswer !== '' ? displayStyle.accentColour : 'white',
-            color: otherAnswer !== '' ? 'white' : displayStyle.textColour,
-          }"
-          placeholder="Other answer..."
-          @blur="checkOtherAnswer"
+              class="fas fa-check-circle fa-2x bg-white rounded-full"
+              :style="{ color: displayStyle.accentColour }"
+            ></i></span
+        ></transition>
+        <img
+          :src="option.surveyOptions.image"
+          class="rounded md:w-80 h-full object-cover"
         />
-      </div>
+      </button>
     </div>
     <div class="flex my-2">
       <button
@@ -86,7 +58,7 @@
 
 <script>
 export default {
-  name: 'ShowMultipleChoiceVue',
+  name: 'ShowMultipleChoiceImage',
   props: {
     question: {
       required: true,
@@ -184,11 +156,10 @@ export default {
 
 <style scoped>
 .card-multiple-choice {
-  /*@apply border-2 mb-2 w-full flex  justify-start pl-3 pr-9 py-2 flex-wrap shadow-sm rounded transition duration-300 font-semibold;*/
-  @apply flex items-center border-2 mb-2 py-2 shadow-sm transition duration-300 font-semibold rounded;
+  @apply border-2 mb-2 w-full md:w-80 flex justify-start p-1 flex-wrap shadow-sm rounded transition duration-300 font-semibold;
 }
 
 .otherInput::placeholder {
-  @apply text-gray-900;
+  @apply text-gray-700;
 }
 </style>

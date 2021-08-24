@@ -293,15 +293,22 @@ export default {
         })
     },
     newQuestion(flag, ordinalPosition) {
+      const dataItem = {
+        questionNumber: this.maxNumber,
+        surveyCode: Number(this.$route.params.id),
+        flags: [flag === 'MULTIPLE_CHOICE_IMAGE' ? 'MULTIPLE_CHOICE' : flag],
+        ordinalPosition: ordinalPosition + 1,
+        surveyOptions: {},
+      }
+
+      if (flag === 'MULTIPLE_CHOICE_IMAGE')
+        dataItem.surveyOptions.isMultipleChoiceImage = true
+
+      dataItem.surveyOptions = JSON.stringify(dataItem.surveyOptions)
+
       ModalService.open(NewItemModal, {
         whichComponent: 'NewQuestion',
-        dataItem: {
-          questionNumber: this.maxNumber,
-          surveyCode: Number(this.$route.params.id),
-          flags: [flag],
-          ordinalPosition: ordinalPosition + 1,
-          surveyOptions: JSON.stringify({}),
-        },
+        dataItem,
       })
         .then((question) => {
           this.$store.dispatch(
