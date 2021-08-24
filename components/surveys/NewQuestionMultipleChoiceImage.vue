@@ -190,7 +190,9 @@ export default {
         480,
         480
       )
-      this.totalImages++
+      this.totalImages = this.options.filter((el) => {
+        return el.surveyOptions.image
+      }).length
       this.$forceUpdate()
     },
   },
