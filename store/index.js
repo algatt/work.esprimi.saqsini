@@ -4,11 +4,13 @@ import axios from 'axios'
 
 export const state = () => ({
   selectedContactList: null,
+  clientIp: null,
 })
 
 export const actions = {
   async nuxtServerInit({ dispatch, commit, state }, context) {
     if (process.server) {
+      context.store.commit('setIp', context.req.client._peername)
       const cookies = cookie.parse(context.req.headers.cookie || '')
 
       if (cookies['x-access-token']) {
@@ -57,6 +59,10 @@ export const mutations = {
       sameSite: 'None',
       secure: true,
     })
+  },
+
+  setIp(state, ipAddress) {
+    state.clientIp = ipAddress
   },
 }
 
