@@ -10,7 +10,7 @@
             : !$v.maxChoice.numeric
             ? 'must be a number'
             : !$v.maxChoice.between
-            ? `must be between 1 and ${this.options.length}`
+            ? `must be between 1 and ${options.length}`
             : null
           : null
       "

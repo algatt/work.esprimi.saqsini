@@ -129,7 +129,7 @@ export default {
           this.convertedOptions.push({
             ordinalPosition: el.ordinalPosition,
             text: el.text,
-            value: el.value,
+            value: el.text,
             mask: 2,
             flags: ['COLUMN'],
           })

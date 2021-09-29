@@ -79,8 +79,9 @@
           >
             <display-question
               v-if="question.page === currentPage && question.validity"
+              :id="`question${question.code}`"
               :key="`${question.code} ${currentLanguage}`"
-              class="rounded shadow bg-white"
+              class="rounded shadow bg-white border-2 border-transparent transition duration-300"
               :display-style="survey.options"
               :language="currentLanguage"
               :language-text="languageText"
@@ -154,55 +155,63 @@
           {{ languageText['previous'] }}
         </button>
 
-        <button
-          v-if="!isFinalPage"
-          :disabled="!enableNext"
-          class="w-28 focus:outline-none py-1.5 px-3 rounded font-bold flex flex-wrap items-center justify-center shadow"
-          :class="
-            survey.options.backgroundColour === '#000000'
-              ? 'disabled:bg-gray-700'
-              : 'disabled:bg-gray-200'
-          "
-          :style="
-            !enableNext
-              ? {
-                  color: '#666666',
-                  cursor: 'not-allowed',
-                }
-              : {
-                  backgroundColor: survey.options.accentColour,
-                  color: 'white',
-                }
-          "
-          @click="showNextPage"
-        >
-          {{ languageText['next'] }}
-        </button>
+        <span class="relative">
+          <button
+            v-if="!isFinalPage"
+            :disabled="!enableNext"
+            class="w-28 focus:outline-none py-1.5 px-3 rounded font-bold flex flex-wrap items-center justify-center shadow"
+            :class="
+              survey.options.backgroundColour === '#000000'
+                ? 'disabled:bg-gray-700'
+                : 'disabled:bg-gray-200'
+            "
+            :style="
+              !enableNext
+                ? {
+                    color: '#666666',
+                    cursor: 'not-allowed',
+                  }
+                : {
+                    backgroundColor: survey.options.accentColour,
+                    color: 'white',
+                  }
+            "
+            @click="showNextPage"
+          >
+            {{ languageText['next'] }}
+          </button>
 
-        <button
-          v-else
-          :disabled="!enableNext"
-          class="w-28 focus:outline-none py-1.5 px-3 rounded font-bold flex flex-wrap items-center justify-center shadow"
-          :class="
-            survey.options.backgroundColour === '#000000'
-              ? 'disabled:bg-gray-700'
-              : 'disabled:bg-gray-200'
-          "
-          :style="
-            !enableNext
-              ? {
-                  color: '#666666',
-                  cursor: 'not-allowed',
-                }
-              : {
-                  backgroundColor: survey.options.accentColour,
-                  color: 'white',
-                }
-          "
-          @click="finishSurvey"
-        >
-          {{ languageText['finish'] }}
-        </button>
+          <button
+            v-else
+            :disabled="!enableNext"
+            class="w-28 focus:outline-none py-1.5 px-3 rounded font-bold flex flex-wrap items-center justify-center shadow"
+            :class="
+              survey.options.backgroundColour === '#000000'
+                ? 'disabled:bg-gray-700'
+                : 'disabled:bg-gray-200'
+            "
+            :style="
+              !enableNext
+                ? {
+                    color: '#666666',
+                    cursor: 'not-allowed',
+                  }
+                : {
+                    backgroundColor: survey.options.accentColour,
+                    color: 'white',
+                  }
+            "
+            @click="finishSurvey"
+          >
+            {{ languageText['finish'] }}
+          </button>
+
+          <button
+            v-if="!enableNext"
+            class="absolute top-0 left-0 w-full h-full"
+            @click="scrollToUnansweredQuestion()"
+          ></button>
+        </span>
       </div>
     </div>
     <div
@@ -300,6 +309,19 @@ export default {
             return false
       }
       return true
+    },
+    requiredQuestionsNotFilled() {
+      const which = []
+      for (const cnt of this.processedQuestionsCurrentPage) {
+        if (!cnt.flags.includes('SECTION'))
+          if (
+            cnt.validity === true &&
+            cnt.flags.includes('IS_MANDATORY') &&
+            this.getAnswerByQuestionNumber(cnt.questionNumber).length === 0
+          )
+            which.push(cnt)
+      }
+      return which
     },
     enablePrevious() {
       return this.currentPage > 1
@@ -615,6 +637,15 @@ export default {
       const x = CountryLanguage.getLanguage(code).nativeName[0]
       return x.substring(0, 1).toUpperCase() + x.substring(1, x.length)
     },
+    scrollToUnansweredQuestion() {
+      const whichQuestion = this.requiredQuestionsNotFilled[0].code
+      const question = document.getElementById(`question${whichQuestion}`)
+      question.scrollIntoView({ behavior: 'smooth' })
+      question.classList.toggle('required-question')
+      setTimeout(() => {
+        question.classList.toggle('required-question')
+      }, 4000)
+    },
   },
 }
 </script>
@@ -625,5 +656,9 @@ export default {
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
+}
+
+.required-question {
+  @apply border-2 border-red-400 transition duration-300;
 }
 </style>
