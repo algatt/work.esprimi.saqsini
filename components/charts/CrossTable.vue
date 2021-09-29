@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col w-full overflow-auto max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-none mx-auto"
+    class="flex flex-col w-full overflow-auto max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-none px-5 mx-auto"
   >
     <div ref="crossTable">
       <table

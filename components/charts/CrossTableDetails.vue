@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-wrap w-full">
+  <div class="flex md:flex-row flex-col w-full">
     <div class="flex flex-col w-full md:w-4/12">
       <p class="font-semibold mb-1">X Axis</p>
       <select
@@ -90,7 +90,7 @@
       <div v-else-if="crossTabX.code === crossTabY.code">
         <p>You need to select different questions</p>
       </div>
-      <div v-else>
+      <div v-else class="w-full">
         <CrossTable
           v-if="allowCrossTab"
           :data="getCrossTabData()"

@@ -146,7 +146,9 @@ export default {
     moveOptionToAnswers(option, index) {
       if (this.answers.length === this.question.maxChoice) return
       this.options.splice(index, 1)
-      this.answers.push(option)
+      const tempOption = JSON.parse(JSON.stringify(option))
+      tempOption.value = `${tempOption.value} (${this.answers.length + 1})`
+      this.answers.push(tempOption)
       this.dummies.splice(0, 1)
     },
     moveAnswerToOptions(option, index) {

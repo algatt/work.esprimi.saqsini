@@ -145,6 +145,10 @@ export default {
               name: `${el.value} (${i})`,
             })
           }
+          // data.push({
+          //   code: `${el.value}`,
+          //   name: `${el.value}`,
+          // })
         })
         return data
       } else if (x.flags.includes('RADIO_GRID')) {

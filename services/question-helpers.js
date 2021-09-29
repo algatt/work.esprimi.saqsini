@@ -163,8 +163,21 @@ export function getDifferentAnswers(question, responses) {
       data.push({ text: el.value, code: el.value })
     })
   } else if (isRanking) {
-    question.options.forEach((el) => {
-      data.push({ text: el.value, code: el.value })
+    // question.options.forEach((el) => {
+    //   data.push({ text: el.value, code: el.value })
+    // })
+    let tempOptions = Array.from(
+      new Set(
+        responses.map((el) => {
+          return el.value
+        })
+      )
+    )
+    tempOptions = tempOptions.sort((a, b) => {
+      return a > b ? 1 : -1
+    })
+    tempOptions.forEach((el) => {
+      data.push({ text: el, code: el })
     })
   } else if (!isTypeIn) {
     question.options.forEach((el) => {
@@ -235,6 +248,55 @@ export function getDataAggregate(legendData, selectedList, originalData) {
   }
 }
 
+// export function getDataAggregateRanking(
+//   legendData,
+//   selectedList,
+//   originalData
+// ) {
+//   let answers = getDifferentAnswers(
+//     originalData.question,
+//     originalData.responses
+//   )
+//
+//   const originalAnswers = answers.map((el) => {
+//     return el.code
+//   })
+//
+//   answers = originalAnswers.filter((el) => {
+//     return selectedList.includes(el)
+//   })
+//
+//   const dataToReturn = {
+//     labels: [],
+//     datasets: [],
+//   }
+//
+//   for (let i = 1; i <= originalAnswers.length; i++) {
+//     dataToReturn.labels.push(i)
+//   }
+//
+//   for (let i = 0; i < answers.length; i++) {
+//     dataToReturn.datasets.push({
+//       maxBarThickness: 56,
+//       label: answers[i],
+//       data: new Array(originalAnswers.length).fill(0),
+//       backgroundColor: colours[originalAnswers.indexOf(answers[i])],
+//     })
+//   }
+//
+//   const whichResponses = originalData.responses
+//
+//   whichResponses.forEach((response) => {
+//     const x = dataToReturn.datasets.find((el) => {
+//       return el.label === response.option
+//     })
+//
+//     const index = dataToReturn.labels.indexOf(Number(response.value))
+//     if (x) x.data[index]++
+//   })
+//   return dataToReturn
+// }
+
 export function getDataAggregateRanking(
   legendData,
   selectedList,
@@ -258,28 +320,45 @@ export function getDataAggregateRanking(
     datasets: [],
   }
 
-  for (let i = 1; i <= originalAnswers.length; i++) {
-    dataToReturn.labels.push(i)
+  dataToReturn.labels = answers
+  dataToReturn.datasets.push({ data: [], backgroundColor: [] })
+
+  for (let i = 1; i <= answers.length; i++) {
+    const count = originalData.responses.filter((el) => {
+      return el.value === answers[i]
+    })
+    dataToReturn.datasets[0].data.push(count.length)
+    dataToReturn.datasets[0].backgroundColor.push(
+      colours[originalAnswers.indexOf(answers[i])]
+    )
   }
 
-  for (let i = 0; i < answers.length; i++) {
-    dataToReturn.datasets.push({
-      maxBarThickness: 56,
-      label: answers[i],
-      data: new Array(originalAnswers.length).fill(0),
-      backgroundColor: colours[originalAnswers.indexOf(answers[i])],
-    })
-  }
+  // dataToReturn.datasets.push({ data: [1, 2, 3, 4] })
 
-  const whichResponses = originalData.responses
-
-  whichResponses.forEach((response) => {
-    const x = dataToReturn.datasets.find((el) => {
-      return el.label === response.option
-    })
-
-    const index = dataToReturn.labels.indexOf(Number(response.value))
-    if (x) x.data[index]++
-  })
+  // for (let i = 1; i <= originalAnswers.length; i++) {
+  //   dataToReturn.labels.push(i)
+  // }
+  //
+  // for (let i = 0; i < answers.length; i++) {
+  //   dataToReturn.datasets.push({
+  //     maxBarThickness: 56,
+  //     label: answers[i],
+  //     data: new Array(originalAnswers.length).fill(0),
+  //     backgroundColor: colours[originalAnswers.indexOf(answers[i])],
+  //   })
+  // }
+  //
+  //
+  //
+  // const whichResponses = originalData.responses
+  //
+  // whichResponses.forEach((response) => {
+  //   const x = dataToReturn.datasets.find((el) => {
+  //     return el.label === response.option
+  //   })
+  //
+  //   const index = dataToReturn.labels.indexOf(Number(response.value))
+  //   if (x) x.data[index]++
+  // })
   return dataToReturn
 }

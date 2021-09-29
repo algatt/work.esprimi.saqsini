@@ -140,7 +140,7 @@ export const actions = {
           let position = 1
           newPositions.forEach((el) => {
             el.position = position
-            el.questioNumber = position++
+            el.question = position++
           })
           await dispatch('updateQuestionNumbers', newPositions)
           resolve()

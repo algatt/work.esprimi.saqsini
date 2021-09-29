@@ -421,10 +421,7 @@ export default {
                   )
                 })
 
-                if (
-                  originalQuestion.flags.includes('RANKING') ||
-                  originalQuestion.flags.includes('RADIO_GRID')
-                ) {
+                if (originalQuestion.flags.includes('RADIO_GRID')) {
                   const value = `${existingAnswers[i].questionOption} (${existingAnswers[i].value})`
 
                   if (
