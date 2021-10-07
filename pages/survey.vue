@@ -202,9 +202,12 @@ export default {
         this.surveyData.invitations[0].token
       )
 
+      let surveyOptions = JSON.parse(this.survey.survey.options)
+      surveyOptions = surveyOptions.redirectURL ? surveyOptions.redirectURL : ''
       if (!this.hasToken)
         setTimeout(() => {
-          window.location.reload()
+          if (surveyOptions === '') window.location.reload()
+          else window.location.replace(surveyOptions)
         }, 3000)
     },
     disqualifySurvey() {

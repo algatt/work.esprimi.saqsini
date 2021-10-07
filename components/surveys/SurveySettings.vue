@@ -134,6 +134,21 @@
         </button>
       </div>
     </div>
+
+    <div v-if="dataItem.flags.includes('KIOSK')" class="w-full">
+      <l-input v-model="form.options.redirectURL">
+        <template>
+          <span class="flex items-center"
+            >Redirection URL
+            <popup-information
+              >When in Kiosk mode, after a survey is submitted, the page will
+              refresh to allow for a new submission. If a URL is entered, it
+              will redirect to given URL.</popup-information
+            ></span
+          >
+        </template>
+      </l-input>
+    </div>
   </div>
 </template>
 
@@ -142,10 +157,12 @@ import { convertSurveyFromApiToForm } from '~/services/survey-helpers'
 import { SURVEY_COLOURS } from '~/assets/settings/survey-settings'
 import LTextLink from '~/components/LTextLink'
 import LSelect from '~/components/LSelect'
+import LInput from '~/components/LInput'
+import PopupInformation from '~/components/elements/PopupInformation'
 
 export default {
   name: 'SurveySettings',
-  components: { LSelect, LTextLink },
+  components: { LSelect, LTextLink, LInput, PopupInformation },
   props: {
     dataItem: {
       type: Object,
