@@ -133,12 +133,12 @@ export default {
       this.totalImages = 0
       this.options.push(
         {
-          ordinalPosition: this.options.length + 1,
+          ordinalPosition: 1,
           text: 'New Option',
           surveyOptions: {},
         },
         {
-          ordinalPosition: this.options.length + 1,
+          ordinalPosition: 2,
           text: 'New Option',
           surveyOptions: {},
         }
