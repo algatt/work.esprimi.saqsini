@@ -25,6 +25,7 @@ export const SURVEY_OPTIONS = {
   textColour: SURVEY_COLOURS.textColours[0],
   headerImage: '',
   footerImage: '',
+  redirectURL: '',
 }
 
 export const QUESTION_TYPES = {

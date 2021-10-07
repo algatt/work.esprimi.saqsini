@@ -94,7 +94,7 @@ function convertSurveyFromFormToApi(survey) {
     tempSurvey.defaultLanguage = PREFERRED_LANGUAGE
 
   // description
-  if (tempSurvey.text) {
+  if (tempSurvey.text.length !== 0) {
     tempSurvey.text.find((el) => {
       return el.language === PREFERRED_LANGUAGE
     }).text = tempSurvey.textConverted
