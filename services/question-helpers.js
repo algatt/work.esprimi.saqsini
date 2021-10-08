@@ -236,7 +236,7 @@ export function getDataAggregate(legendData, selectedList, originalData) {
 
   return {
     labels: selectedList.map((el) => {
-      return el
+      return el.length > 25 ? el.substr(0, 23) + '...' : el
     }),
     datasets: [
       {

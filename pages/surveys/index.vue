@@ -232,8 +232,10 @@ export default {
               child: this.selectedSubcategory,
             })
           })
-          .catch(() => {
-            this.$toasted.error('There was a problem creating the survey')
+          .catch((error) => {
+            this.$toasted.error(
+              `There was a problem creating the survey ${error}`
+            )
           })
       })
     },
