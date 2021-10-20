@@ -2,7 +2,7 @@
   <div class="flex flex-col overflow-x-auto w-full">
     <div
       class="flex flex-col w-full"
-      :style="{ minWidth: `${datasets.columns.length + 1 * minElWidth}px` }"
+      :style="{ minWidth: `${datasets.columns.length + minElWidth}px` }"
     >
       <div class="flex">
         <div
@@ -49,17 +49,17 @@
         }"
       >
         <span
-          v-if="score === datasets.minValue"
+          v-if="score === datasets.min[item]"
           class="bg-red-100 text-red-700 rounded-lg px-2 py-0.5"
           >{{ score }}</span
         >
         <span
-          v-else-if="score === datasets.maxValue"
+          v-else-if="score === datasets.max[item]"
           class="bg-green-100 text-green-700 rounded-lg px-2 py-0.5"
           >{{ score }}</span
         >
         <span v-else>{{ score }}</span>
-        <span> {{ calculatePercentage(score, datasets.totalCount) }}%</span>
+        <span> {{ calculatePercentage(score, datasets.totals[item]) }}%</span>
       </div>
     </div>
   </div>
@@ -134,17 +134,34 @@ export default {
           data.responses[el.option][el.value] += 1
       })
 
-      Object.keys(data.responses).forEach((el) => {
-        Object.keys(data.responses[el]).forEach((val) => {
-          const value = data.responses[el][val]
-          if (!data.totalCount) data.totalCount = value
-          else data.totalCount += value
-          if (!data.minValue) data.minValue = value
-          if (!data.maxValue) data.maxValue = value
-          if (value < data.minValue) data.minValue = value
-          if (value > data.maxValue) data.maxValue = value
-        })
+      console.log(data.responses)
+
+      // Object.keys(data.responses).forEach((el) => {
+      //   Object.keys(data.responses[el]).forEach((val) => {
+      //     const value = data.responses[el][val]
+      //     if (!data.totalCount) data.totalCount = value
+      //     else data.totalCount += value
+      //     if (!data.minValue) data.minValue = value
+      //     if (!data.maxValue) data.maxValue = value
+      //     if (value < data.minValue) data.minValue = value
+      //     if (value > data.maxValue) data.maxValue = value
+      //   })
+      // })
+
+      data.totals = {}
+      data.max = {}
+      data.min = {}
+      Object.keys(data.responses).forEach((val) => {
+        const values = Object.values(data.responses[val])
+        data.totals[val] = values.reduce(
+          (previousValue, currentValue) => previousValue + currentValue,
+          0
+        )
+        data.max[val] = Math.max(...values)
+        data.min[val] = Math.min(...values)
       })
+
+      console.log(data)
       return data
     },
   },

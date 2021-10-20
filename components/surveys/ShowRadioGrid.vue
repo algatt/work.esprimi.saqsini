@@ -4,15 +4,47 @@
       class="flex font-semibold mb-2 items-center"
       :style="{ color: displayStyle.textColour }"
     >
-      {{ question.text }}
+      <span>{{ question.text }}</span>
       <span v-if="question.isMandatory" class="ml-1 text-xs font-medium italic">
         {{ languageText['required'] }}</span
       >
     </div>
     <div class="overflow-auto">
-      <table>
+      <div class="block lg:hidden">
+        <div
+          v-for="(option, optionIndex) in rows"
+          :key="optionIndex"
+          class="mb-4"
+        >
+          <div
+            class="font-bold mb-2"
+            :style="`color:${displayStyle.textColor}`"
+          >
+            {{ option.text }}
+          </div>
+          <div
+            v-for="(value, valueIndex) in columns"
+            :key="valueIndex"
+            class="border-2 rounded p-2 mb-2 cursor-pointer transition duration-300"
+            :style="`border-color:${displayStyle.accentColour}; color:${
+              checkIfExists(option, value) ? 'white' : displayStyle.textColour
+            }; backgroundColor: ${
+              checkIfExists(option, value) ? displayStyle.accentColour : 'white'
+            }`"
+            @click="setAnswer(option, value)"
+          >
+            {{ value.text }}
+          </div>
+        </div>
+      </div>
+      <table class="hidden lg:block">
         <tr class="border-b border-gray-200">
-          <td :style="{ width: `20%`, minWidth: `${minElWidth * 2}px` }">
+          <td
+            :style="{
+              width: `${100 / columns}%`,
+              minWidth: `${minElWidth * 1.5}px`,
+            }"
+          >
             &nbsp;
           </td>
           <td
@@ -20,7 +52,7 @@
             :key="index"
             :style="{
               color: displayStyle.textColour,
-              width: `20%`,
+              width: `${100 / columns}%`,
               minWidth: `${minElWidth}px`,
             }"
             class="text-center py-2"

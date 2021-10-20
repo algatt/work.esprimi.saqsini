@@ -3,7 +3,8 @@
     <div
       v-for="(chart, index) in chartsToDraw"
       :key="index"
-      class="w-full md:w-4/12 flex justify-center items-center mb-20"
+      class="w-full flex justify-center items-center mb-20"
+      :class="chart.width"
     >
       <component
         :is="chart.type"
@@ -19,16 +20,16 @@
 import PieChart from '~/components/charts/PieChart'
 import colours from '~/assets/settings/colours.json'
 import LineChart from '~/components/charts/LineChart'
-import HorizontalBarChart from '~/components/charts/HorizontalBarChart'
+import BarChart from '~/components/charts/BarChart'
 import {
   OPTIONS_PIE_CHART,
   OPTIONS_LINE_CHART,
-  OPTIONS_HORIZONTAL_BAR,
+  OPTIONS_BAR_CHART,
 } from '~/assets/settings/charts-settings'
 export default {
   name: 'SurveyDetails',
   components: {
-    HorizontalBarChart,
+    BarChart,
     LineChart,
     PieChart,
   },
@@ -37,7 +38,7 @@ export default {
     return {
       OPTIONS_PIE_CHART,
       OPTIONS_LINE_CHART,
-      OPTIONS_HORIZONTAL_BAR,
+      OPTIONS_BAR_CHART,
       chartsToDraw: [],
     }
   },
@@ -143,11 +144,13 @@ export default {
         type: 'pie-chart',
         chartData: this.responseRates,
         properties: { title: 'Response Rate' },
+        width: 'md:w-4/12',
       },
       {
         type: 'pie-chart',
         chartData: this.kioskResponse,
         properties: { title: 'Kiosk Vs Invites' },
+        width: 'md:w-4/12',
       },
       {
         type: 'line-chart',
@@ -157,11 +160,13 @@ export default {
           xAxes: 'Date',
           yAxes: 'Count',
         },
+        width: 'md:w-4/12',
       },
       {
-        type: 'horizontal-bar-chart',
+        type: 'bar-chart',
         chartData: this.totalResponsesPerQuestion,
         properties: { title: 'Responses Per Question' },
+        width: 'md:w-full',
       },
     ]
   },
