@@ -108,6 +108,12 @@ export const OPTIONS_HORIZONTAL_BAR = {
 }
 
 export const OPTIONS_BAR_CHART = {
+  title: {
+    display: true,
+    // text: 'Title goes here',
+    fontSize: 16,
+    fontFamily: 'Poppins',
+  },
   responsive: false,
   maintainAspectRatio: false,
   legend: {
