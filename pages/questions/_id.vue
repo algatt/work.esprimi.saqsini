@@ -60,7 +60,7 @@
               <i class="fas fa-envelope-open-text fa-fw"></i>Invite Settings
             </button>
 
-            <button @click="clearBranching">
+            <button v-if="canUseContactBook" @click="clearBranching">
               <i class="fas fa-code-branch fa-fw"></i>Clear Branching
             </button>
           </template>
