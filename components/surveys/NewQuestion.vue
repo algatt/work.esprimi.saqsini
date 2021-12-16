@@ -140,6 +140,7 @@
       :existing-conditions="form.branching"
       :question="question"
       @conditions="receiveConditions"
+      @isValid="isRemainderOfFormValid = $event"
     ></question-branching>
 
     <question-branching
@@ -148,6 +149,7 @@
       :existing-conditions="form.disqualify"
       :question="question"
       @conditions="receiveDisqualify"
+      @isValid="isRemainderOfFormValid = $event"
     ></question-branching>
   </div>
 </template>

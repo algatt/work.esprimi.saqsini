@@ -65,20 +65,25 @@
           </div>
         </div>
 
-        <div class="flex w-24 justify-center items-start py-4">
-          <LPopupMenu
-            ><template v-slot:menu
-              ><button @click="editQuestion(question)">
-                <i class="fas fa-edit fa-fw"></i>Edit
-              </button>
-              <button @click="moveQuestion(question)">
-                <i class="fas fa-arrows-alt fa-fw"></i>Move
-              </button>
-              <button @click="deleteQuestion(question)">
-                <i class="fas fa-trash-alt fa-fw"></i>Delete
-              </button></template
-            ></LPopupMenu
+        <div class="flex w-24 justify-end space-x-2 pr-3 pt-5 items-start">
+          <button
+            class="text-gray-300 hover:text-blue-500 transition duration-300"
+            @click="editQuestion(question)"
           >
+            <i class="fas fa-edit fa-fw"></i>
+          </button>
+          <button
+            class="text-gray-300 hover:text-blue-500 transition duration-300"
+            @click="moveQuestion(question)"
+          >
+            <i class="fas fa-arrows-alt fa-fw"></i>
+          </button>
+          <button
+            class="text-gray-300 hover:text-red-500 transition duration-300"
+            @click="deleteQuestion(question)"
+          >
+            <i class="fas fa-trash-alt fa-fw"></i>
+          </button>
         </div>
       </div>
       <div class="flex justify-center py-3">
@@ -164,26 +169,27 @@
           ></display-question>
         </div>
 
-        <div class="flex w-24 justify-center py-1 items-start">
-          <LPopupMenu
-            ><template v-slot:menu
-              ><button @click="editQuestion(question)">
-                <i class="fas fa-edit fa-fw"></i>Edit
-              </button>
-              <button
-                v-if="question.ordinalPosition !== 1"
-                @click="moveQuestion(question)"
-              >
-                <i class="fas fa-arrows-alt fa-fw"></i>Move
-              </button>
-              <button
-                v-if="question.ordinalPosition !== 1"
-                @click="deleteQuestion(question)"
-              >
-                <i class="fas fa-trash-alt fa-fw"></i>Delete
-              </button>
-            </template></LPopupMenu
+        <div class="flex w-24 justify-end space-x-2 pr-3 py-1 items-start">
+          <button
+            class="text-gray-300 hover:text-blue-500 transition duration-300"
+            @click="editQuestion(question)"
           >
+            <i class="fas fa-edit fa-fw"></i>
+          </button>
+          <button
+            v-if="question.ordinalPosition !== 1"
+            class="text-gray-300 hover:text-blue-500 transition duration-300"
+            @click="moveQuestion(question)"
+          >
+            <i class="fas fa-arrows-alt fa-fw"></i>
+          </button>
+          <button
+            v-if="question.ordinalPosition !== 1"
+            class="text-gray-300 hover:text-red-500 transition duration-300"
+            @click="deleteQuestion(question)"
+          >
+            <i class="fas fa-trash-alt fa-fw"></i>
+          </button>
         </div>
       </div>
       <div class="flex justify-center transition py-3">
@@ -307,6 +313,9 @@ export default {
 
       ModalService.open(NewItemModal, {
         whichComponent: 'NewQuestion',
+        options: {
+          header: 'New Question',
+        },
         dataItem,
       })
         .then((question) => {

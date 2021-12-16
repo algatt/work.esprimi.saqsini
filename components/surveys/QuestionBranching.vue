@@ -1,6 +1,13 @@
 <template>
   <div v-if="!isLoading" class="flex flex-col">
     <div
+      v-if="!isBranchingValid"
+      class="bg-red-100 border border-red-200 my-3 p-2 text-red-800 text-sm rounded transition duration-300"
+    >
+      Check your branching rules. You cannot have rules without any selected
+      values.
+    </div>
+    <div
       v-for="condition in conditions"
       :key="condition.groupIndex"
       class="flex flex-col"
@@ -133,6 +140,21 @@ export default {
     }
   },
   computed: {
+    isBranchingValid() {
+      let valid = true
+      for (const iter of this.conditions) {
+        if (iter.ruleList.length === 0) valid = false
+        else {
+          const options = iter.ruleList.map((el) => {
+            return el.options
+          })
+          options.forEach((option) => {
+            if (option.length === 0) valid = false
+          })
+        }
+      }
+      return valid
+    },
     canUseContactBook() {
       return this.$store.getters['auth/getPermissions'].includes('CONTACTBOOK')
     },
@@ -165,6 +187,9 @@ export default {
   watch: {
     conditions(ev) {
       this.$emit('conditions', { rules: ev })
+    },
+    isBranchingValid(ev) {
+      this.$emit('isValid', this.isBranchingValid)
     },
   },
   created() {
