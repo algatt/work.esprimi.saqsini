@@ -55,7 +55,8 @@
               <i class="fas fa-users fa-fw"></i>Collaborators
             </button>
             <button @click="showInviteSettings">
-              <i class="fas fa-envelope-open-text fa-fw"></i>Invite Settings
+              <i class="fas fa-envelope-open-text fa-fw"></i>Notification
+              Settings
             </button>
 
             <button v-if="canUseContactBook" @click="clearBranching">
@@ -269,6 +270,7 @@ export default {
         dataItem: this.survey,
         options: {
           close: true,
+          header: 'Manage Languages',
         },
       })
     },
@@ -278,6 +280,7 @@ export default {
         dataItem: this.survey,
         options: {
           close: true,
+          header: 'Manage Collaborators',
         },
       })
     },
@@ -285,6 +288,9 @@ export default {
       ModalService.open(PlainModal, {
         whichComponent: 'SurveyInvitesSettings',
         dataItem: this.survey,
+        options: {
+          header: 'Manage Notifications',
+        },
       })
         .then((response) => {
           this.$store.dispatch('surveys/updateSurvey', response)
