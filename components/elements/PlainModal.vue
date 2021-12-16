@@ -63,7 +63,6 @@ import ModalBody from '~/components/elements/Modal/ModalBody'
 import LButton from '~/components/LButton'
 
 import QuestionMoveMenu from '~/components/surveys/QuestionMoveMenu'
-import SurveySettings from '~/components/surveys/SurveySettings'
 import SurveyLanguageSettings from '~/components/surveys/SurveyLanguageSettings'
 import SurveyCollaborators from '~/components/surveys/SurveyCollaborators'
 import SurveyInvitesSettings from '~/components/surveys/SurveyInvitesSettings'
@@ -81,7 +80,6 @@ export default {
     ModalHeader,
     Modal,
     QuestionMoveMenu,
-    SurveySettings,
     SurveyLanguageSettings,
     SurveyCollaborators,
     SurveyInvitesSettings,

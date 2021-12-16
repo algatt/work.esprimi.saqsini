@@ -35,9 +35,7 @@
             <button @click="editSurvey">
               <i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit Survey Details
             </button>
-            <button @click="showSurveySettings">
-              <i class="fas fa-sliders-h fa-fw"></i>Customisation
-            </button>
+
             <button @click="manageOutreach">
               <i class="fas fa-paper-plane fa-fw"></i>Manage Outreach
             </button>
@@ -258,18 +256,6 @@ export default {
           return el.ordinalPosition < nextSection.ordinalPosition
         })
       return temp
-    },
-    showSurveySettings() {
-      ModalService.open(PlainModal, {
-        whichComponent: 'SurveySettings',
-        options: { header: `Customise ${this.survey.name}` },
-        dataItem: this.survey,
-      })
-        .then((response) => {
-          this.$store.dispatch('surveys/updateSurvey', response)
-          this.$toasted.show(`Survey ${this.survey.name} updated`)
-        })
-        .catch(() => {})
     },
     manageOutreach() {
       this.$router.push({

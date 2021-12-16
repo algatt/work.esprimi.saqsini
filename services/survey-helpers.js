@@ -139,10 +139,6 @@ function convertSurveyFromFormToApi(survey) {
     delete tempSurvey.reminderTime
   }
 
-  // options
-  if (!tempSurvey.options) {
-    tempSurvey.options = SURVEY_OPTIONS
-  }
   tempSurvey.options = JSON.stringify(tempSurvey.options)
 
   if (tempSurvey.categoryCode) delete tempSurvey.categoryCode
