@@ -2,87 +2,87 @@
   <div
     v-if="survey"
     ref="surveyModal"
-    class="flex flex-col p-5 h-full"
-    :style="{ backgroundColor: survey.options.backgroundColour }"
+    class="flex flex-col p-5 bg-white rounded shadow-lg border border-gray-400"
   >
-    <div
-      class="flex flex-wrap items-center rounded w-full mb-5 shadow bg-white relative"
-      :class="{ 'h-28': survey.options.headerImage === '' }"
-    >
+    <div class="flex flex-wrap items-center rounded w-full p-5 relative">
       <img
         :src="`${survey.options.headerImage}`"
         :class="survey.options.headerAlignment"
+        style="height: 12rem"
       />
 
-      <div class="w-full flex items-end absolute top-0 left-0 h-full p-10">
-        <div
-          class="flex items-center"
-          :class="{ 'ml-auto': survey.options.headerAlignment === 'mr-auto' }"
+      <div
+        class="flex flex-col absolute"
+        :class="
+          survey.options.headerAlignment === 'mr-auto' ? 'right-0' : 'left-0'
+        "
+      >
+        <h3
+          :class="[
+            survey.options.headerImage === ''
+              ? null
+              : 'bg-white bg-opacity-90 rounded-r',
+            survey.options.theme.accentText,
+          ]"
         >
-          <h3
-            :class="
-              survey.options.headerImage === ''
-                ? null
-                : 'bg-white bg-opacity-90 rounded-r'
-            "
-            :style="{
-              color: survey.options.accentColour,
-            }"
-          >
-            {{ languageText['survey_title'] }}
-          </h3>
+          {{ languageText['survey_title'] }}
+        </h3>
 
-          <l-popup-menu
-            v-if="
-              survey.flags.includes('HAS_LANGUAGE_PACK_FILE') &&
-              !survey.flags.includes('OUTDATED_LANGUAGE_PACK')
-            "
-            class="ml-2"
-            :class="
-              survey.options.headerImage === ''
-                ? null
-                : 'bg-white bg-opacity-90'
-            "
-            :style="{
-              color: survey.options.textColour,
-            }"
-          >
-            <template v-slot:icon>
-              <i class="fas fa-globe fa-fw fa-lg"></i
-            ></template>
+        <l-popup-menu
+          v-if="
+            survey.flags.includes('HAS_LANGUAGE_PACK_FILE') &&
+            !survey.flags.includes('OUTDATED_LANGUAGE_PACK')
+          "
+          class="mt-2"
+          :class="[
+            survey.options.headerImage === '' ? null : 'bg-white bg-opacity-90',
+            survey.options.theme.accentText,
+          ]"
+        >
+          <template v-slot:icon>
+            <span
+              class="border-2 px-2 rounded"
+              :class="survey.options.theme.borderColour"
+            >
+              <i class="far fa-flag fa-fw"></i
+              ><i class="fas fa-caret-down"></i></span
+          ></template>
 
-            <template v-slot:menu>
-              <div
-                v-for="(language, index) in survey.languages"
-                :key="language + index"
+          <template v-slot:menu>
+            <div
+              v-for="(language, index) in survey.languages"
+              :key="language + index"
+            >
+              <button
+                v-if="language !== currentLanguage"
+                class="px-5 py-2 w-full"
+                @click="changeLanguage(language)"
               >
-                <button
-                  v-if="language !== currentLanguage"
-                  class="px-5 py-2 w-full"
-                  @click="changeLanguage(language)"
-                >
-                  {{ getCountryFromLanguage(language) }}
-                </button>
-              </div>
-            </template></l-popup-menu
-          >
-        </div>
+                {{ getCountryFromLanguage(language) }}
+              </button>
+            </div>
+          </template></l-popup-menu
+        >
       </div>
     </div>
-    <div ref="questionsSection" class="w-full">
+    <div ref="questionsSection" class="w-full flex flex-col">
       <template v-if="started">
         <template v-if="!disqualify">
           <div
             v-for="question in processedQuestions"
             :key="question.code"
-            class="mb-5"
+            :class="
+              question.page === currentPage && question.validity
+                ? 'border rounded shadow border-gray-200 mb-5'
+                : null
+            "
           >
             <display-question
               v-if="question.page === currentPage && question.validity"
               :id="`question${question.code}`"
               :key="`${question.code} ${currentLanguage}`"
-              class="rounded shadow bg-white border-2 border-transparent transition duration-300"
-              :display-style="survey.options"
+              class="rounded border-2 border-transparent transition duration-300"
+              :display-style="survey.options.theme"
               :language="currentLanguage"
               :language-text="languageText"
               :question="question"
@@ -102,24 +102,20 @@
       </template>
 
       <template v-else>
-        <div class="rounded shadow py-10 bg-white">
+        <div class="rounded shadow bg-white">
           <display-question
             :key="`${processedQuestions[0].code} ${currentLanguage}`"
-            class="rounded"
-            :display-style="survey.options"
+            class="w-full rounded mb-5"
+            :display-style="survey.options.theme"
             :language="currentLanguage"
             :language-text="languageText"
             :question="processedQuestions[0]"
           ></display-question>
         </div>
-        <div
-          class="flex items-center justify-center space-x-3 my-5 py-3 rounded shadow bg-white"
-        >
+        <div class="flex items-center justify-center">
           <button
-            class="px-5 py-1 rounded font-semibold text-white"
-            :style="{
-              backgroundColor: survey.options.accentColour,
-            }"
+            class="w-28 rounded-lg font-semibold"
+            :class="survey.options.theme.buttons"
             @click="started = true"
           >
             {{ languageText['start'] }}
@@ -127,55 +123,27 @@
         </div>
       </template>
 
-      <div
-        v-if="started && !disqualify"
-        class="flex items-center justify-center space-x-3 my-5 py-3 rounded shadow-lg bg-white"
-      >
-        <button
-          :disabled="!enablePrevious"
-          class="w-28 focus:outline-none py-1.5 px-3 rounded font-bold flex flex-wrap items-center justify-center shadow"
-          :class="
-            survey.options.backgroundColour === '#000000'
-              ? 'disabled:bg-gray-700'
-              : 'disabled:bg-gray-200'
-          "
-          :style="
-            !enablePrevious
-              ? {
-                  color: '#666666',
-                  cursor: 'not-allowed',
-                }
-              : {
-                  backgroundColor: survey.options.accentColour,
-                  color: 'white',
-                }
-          "
-          @click="showPreviousPage"
-        >
-          {{ languageText['previous'] }}
-        </button>
+      <div v-if="started && !disqualify" class="flex justify-center h-8 mt-5">
+        <div class="flex justify-center relative space-x-3">
+          <button
+            :disabled="!enablePrevious"
+            class="w-28 font-semibold rounded-lg"
+            :class="survey.options.theme.buttons"
+            @click="showPreviousPage"
+          >
+            {{ languageText['previous'] }}
+          </button>
 
-        <span class="relative">
+          <button
+            v-if="!enableNext"
+            class="h-8 flex items-stretch w-28 absolute right-0"
+            @click="scrollToUnansweredQuestion"
+          ></button>
           <button
             v-if="!isFinalPage"
             :disabled="!enableNext"
-            class="w-28 focus:outline-none py-1.5 px-3 rounded font-bold flex flex-wrap items-center justify-center shadow"
-            :class="
-              survey.options.backgroundColour === '#000000'
-                ? 'disabled:bg-gray-700'
-                : 'disabled:bg-gray-200'
-            "
-            :style="
-              !enableNext
-                ? {
-                    color: '#666666',
-                    cursor: 'not-allowed',
-                  }
-                : {
-                    backgroundColor: survey.options.accentColour,
-                    color: 'white',
-                  }
-            "
+            class="w-28 font-semibold rounded-lg"
+            :class="survey.options.theme.buttons"
             @click="showNextPage"
           >
             {{ languageText['next'] }}
@@ -184,43 +152,27 @@
           <button
             v-else
             :disabled="!enableNext"
-            class="w-28 focus:outline-none py-1.5 px-3 rounded font-bold flex flex-wrap items-center justify-center shadow"
-            :class="
-              survey.options.backgroundColour === '#000000'
-                ? 'disabled:bg-gray-700'
-                : 'disabled:bg-gray-200'
-            "
-            :style="
-              !enableNext
-                ? {
-                    color: '#666666',
-                    cursor: 'not-allowed',
-                  }
-                : {
-                    backgroundColor: survey.options.accentColour,
-                    color: 'white',
-                  }
-            "
+            class="w-28 font-semibold rounded-lg"
+            :class="survey.options.theme.buttons"
             @click="finishSurvey"
           >
             {{ languageText['finish'] }}
           </button>
+        </div>
 
-          <button
-            v-if="!enableNext"
-            class="absolute top-0 left-0 w-full h-full"
-            @click="scrollToUnansweredQuestion()"
-          ></button>
-        </span>
+        <!--        <button-->
+        <!--          v-if="!enableNext"-->
+        <!--          class="absolute top-0 left-0 w-full h-full"-->
+        <!--          @click="scrollToUnansweredQuestion()"-->
+        <!--        ></button>-->
       </div>
     </div>
-    <div
-      v-if="survey.options.footerImage !== ''"
-      class="flex flex-wrap items-center rounded w-full mb-5 shadow bg-white relative"
-    >
+
+    <div class="flex flex-wrap items-center rounded w-full p-5 relative mt-5">
       <img
         :src="`${survey.options.footerImage}`"
         :class="survey.options.footerAlignment"
+        style="height: 12rem"
       />
     </div>
   </div>
@@ -659,6 +611,6 @@ export default {
 }
 
 .required-question {
-  @apply border-2 border-red-400 transition duration-300;
+  @apply border-red-400 transition duration-300;
 }
 </style>

@@ -1,8 +1,8 @@
 <template>
   <div
     v-if="!loading && !error && !disqualify && !finished"
-    class="min-h-screen"
-    :style="{ backgroundColor: parsedSurvey.options.backgroundColour }"
+    class="min-h-screen p-3 lg:p-10 w-full"
+    :class="parsedSurvey.options.theme.background"
   >
     <PreviewSurvey
       class="w-11/12 md:w-8/12 mx-auto"

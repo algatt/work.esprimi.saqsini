@@ -2,7 +2,7 @@
   <div class="flex flex-col">
     <div
       class="flex font-semibold mb-2 items-center"
-      :style="{ color: displayStyle.textColour }"
+      :class="displayStyle.textColour"
     >
       {{ question.text }}
       <span v-if="question.isMandatory" class="ml-1 text-xs font-medium italic">
@@ -13,11 +13,7 @@
       <select
         v-model="answers"
         class="dropdown-input dropdown-select md:w-6/12 w-full"
-        :style="{
-          borderColor: displayStyle.accentColour,
-          backgroundColor: 'white',
-          color: displayStyle.textColour,
-        }"
+        :class="[displayStyle.borderColour, displayStyle.textColour]"
       >
         <option value="" disabled selected>{{ getNotSelected() }}</option>
         <option
@@ -32,7 +28,7 @@
     <div class="flex my-2">
       <button
         class="cursor-pointer font-semibold"
-        :style="{ color: displayStyle.accentColour }"
+        :class="displayStyle.accentText"
         @click="answers = ''"
       >
         {{ languageText['clear'] }}

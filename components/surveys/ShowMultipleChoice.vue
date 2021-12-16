@@ -2,7 +2,7 @@
   <div class="flex flex-col">
     <div
       class="flex font-semibold mb-2 items-center"
-      :style="{ color: displayStyle.textColour }"
+      :class="displayStyle.textColour"
     >
       {{ question.text }}
       <span v-if="question.isMandatory" class="ml-1 text-xs font-medium italic">
@@ -13,15 +13,12 @@
       <button
         v-for="(option, index) in question.options"
         :key="index"
-        :style="{
-          borderColor: displayStyle.accentColour,
-          backgroundColor: answerPresent(option.value)
-            ? displayStyle.accentColour
-            : 'white',
-          color: answerPresent(option.value)
-            ? 'white'
-            : displayStyle.textColour,
-        }"
+        :class="[
+          displayStyle.borderColour,
+          answerPresent(option.value)
+            ? `${displayStyle.accentBackground} text-white`
+            : `${displayStyle.accentText}`,
+        ]"
         class="card-multiple-choice"
         @click="addToAnswer(option)"
       >
@@ -38,12 +35,12 @@
       <div
         v-if="question.allowOther"
         class="flex items-center border-2 mb-2 shadow-sm transition duration-300 font-semibold rounded pr-12"
-        :style="{
-          borderColor: displayStyle.accentColour,
-          backgroundColor:
-            otherAnswer !== '' ? displayStyle.accentColour : 'white',
-          color: otherAnswer !== '' ? 'white' : displayStyle.textColour,
-        }"
+        :class="[
+          displayStyle.borderColour,
+          otherAnswer !== ''
+            ? `${displayStyle.accentBackground} text-white`
+            : `${displayStyle.accentText}`,
+        ]"
       >
         <span
           class="w-10 min-w-10 flex justify-center items-center cursor-pointer"
@@ -57,13 +54,13 @@
         ></span>
         <input
           v-model="otherAnswer"
-          :style="{
-            borderColor: displayStyle.accentColour,
-            backgroundColor:
-              otherAnswer !== '' ? displayStyle.accentColour : 'white',
-            color: otherAnswer !== '' ? 'white' : displayStyle.textColour,
-          }"
-          class="focus:outline-none py-2 text-gray-700 pl-2 font-semibold"
+          :class="[
+            displayStyle.borderColour,
+            otherAnswer !== ''
+              ? `${displayStyle.accentBackground} text-white`
+              : `${displayStyle.accentText}`,
+          ]"
+          class="focus:outline-none py-2 pl-2 font-semibold transition duration-300"
           placeholder="Other answer..."
           @blur="checkOtherAnswer"
         />
@@ -72,7 +69,7 @@
     <div class="flex my-2">
       <button
         class="cursor-pointer font-semibold"
-        :style="{ color: displayStyle.accentColour }"
+        :class="displayStyle.accentText"
         @click="
           answers = []
           otherAnswer = ''

@@ -2,14 +2,14 @@
   <div class="flex flex-col">
     <div
       class="flex font-semibold mb-2 items-center"
-      :style="{ color: displayStyle.textColour }"
+      :class="displayStyle.textColour"
     >
       {{ question.text }}
       <span v-if="question.isMandatory" class="ml-1 text-xs font-medium italic">
         {{ languageText['required'] }}</span
       >
     </div>
-    <div class="flex w-full" :style="{ color: displayStyle.textColour }">
+    <div class="flex w-full">
       <i>{{ languageText['ranking_instructions'] }}</i>
     </div>
     <div class="flex w-full mt-2">
@@ -17,11 +17,8 @@
         <div
           v-for="(option, index) in options"
           :key="'options' + index"
-          class="md:w-7/12 w-11/12 p-3 my-2 rounded shadow-sm cursor-pointer mx-auto border-2 border-transparent"
-          :style="{
-            backgroundColor: displayStyle.accentColour,
-            color: 'white',
-          }"
+          class="md:w-7/12 w-11/12 p-3 my-2 text-white rounded shadow-sm cursor-pointer mx-auto border-2 border-transparent"
+          :class="displayStyle.accentBackground"
           @click="moveOptionToAnswers(option, index)"
         >
           <span class="flex flex-grow">{{ option.text }}</span>
@@ -32,11 +29,8 @@
         <div
           v-for="(option, index) in answers"
           :key="`${index} ${languageText.title}`"
-          class="w-11/12 md:w-7/12 p-3 my-2 rounded shadow-sm cursor-pointer mx-auto border-2 border-transparent"
-          :style="{
-            backgroundColor: displayStyle.accentColour,
-            color: 'white',
-          }"
+          class="w-11/12 md:w-7/12 p-3 my-2 text-white rounded shadow-sm cursor-pointer mx-auto border-2 border-transparent"
+          :class="displayStyle.accentBackground"
           @click="moveAnswerToOptions(option, index)"
         >
           <span class="flex flex-grow">{{ getOptionText(option) }}</span>
@@ -44,13 +38,7 @@
         <div
           v-for="(option, index) in dummies"
           :key="index"
-          class="w-11/12 md:w-7/12 p-3 my-2 rounded shadow-sm mx-auto border-2 border-dashed cursor-default"
-          :class="
-            displayStyle.backgroundColour === '#000000'
-              ? 'bg-gray-700 border-gray-800'
-              : 'bg-gray-100 border-gray-200'
-          "
-          :style="{ color: displayStyle.textColour }"
+          class="w-11/12 md:w-7/12 bg-gray-100 border-gray-20 p-3 my-2 rounded shadow-sm mx-auto border-2 border-dashed cursor-default"
         >
           <span class="flex flex-grow">{{ option.text }}</span>
         </div>
@@ -59,7 +47,7 @@
     <div class="flex my-2">
       <button
         class="cursor-pointer font-semibold"
-        :style="{ color: displayStyle.accentColour }"
+        :class="displayStyle.accentText"
         @click="clearAnswers"
       >
         {{ languageText['clear'] }}

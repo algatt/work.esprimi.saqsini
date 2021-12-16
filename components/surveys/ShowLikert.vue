@@ -2,7 +2,7 @@
   <div class="flex flex-col">
     <div
       class="flex font-semibold mb-2 items-center"
-      :style="{ color: displayStyle.textColour }"
+      :class="displayStyle.textColour"
     >
       {{ question.text }}
       <span v-if="question.isMandatory" class="ml-1 text-xs font-medium italic">
@@ -20,15 +20,12 @@
           v-for="(option, index) in question.options"
           :key="index"
           class="card-likert"
-          :style="{
-            borderColor: displayStyle.accentColour,
-            backgroundColor: answerPresent(option.value)
-              ? displayStyle.accentColour
-              : 'white',
-            color: answerPresent(option.value)
-              ? 'white'
-              : displayStyle.textColour,
-          }"
+          :class="[
+            displayStyle.borderColour,
+            answerPresent(option.value)
+              ? `${displayStyle.accentBackground} text-white`
+              : `${displayStyle.accentText}`,
+          ]"
           @click="addAnswer(option)"
         >
           <span v-if="!question.showWeights" class="flex justify-center">{{
@@ -41,7 +38,7 @@
     <div class="flex my-2">
       <button
         class="cursor-pointer font-semibold"
-        :style="{ color: displayStyle.accentColour }"
+        :class="displayStyle.accentText"
         @click="answers = []"
       >
         {{ languageText['clear'] }}

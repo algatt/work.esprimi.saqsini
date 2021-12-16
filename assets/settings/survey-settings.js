@@ -1,6 +1,49 @@
 export const PREFERRED_LANGUAGE = 'en'
 
 export const SURVEY_COLOURS = {
+  themes: [
+    {
+      name: 'blue',
+      textColour: 'text-gray-700',
+      background: 'bg-gradient-to-br from-blue-500 to-blue-700',
+      accentText: 'text-blue-600',
+      accentBackground: 'bg-blue-600',
+      borderColour: 'border-blue-600',
+      buttons:
+        'bg-blue-600 text-white hover:text-blue-600 hover:bg-white active:text-blue-600 active:bg-white transition duration-300 border-2 border-transparent hover:border-blue-600 disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-transparent ',
+    },
+    {
+      name: 'red',
+      textColour: 'text-gray-700',
+      background: 'bg-gradient-to-br from-red-500 to-red-700',
+      accentText: 'text-red-600',
+      accentBackground: 'bg-red-600',
+      borderColour: 'border-red-600',
+      buttons:
+        'bg-red-600 text-white hover:text-red-600 hover:bg-white active:text-red-600 active:bg-white transition duration-300 border-2 border-transparent hover:border-red-600 disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-transparent ',
+    },
+    {
+      name: 'pink',
+      textColour: 'text-gray-700',
+      background: 'bg-gradient-to-br from-pink-500 to-pink-700',
+      accentText: 'text-pink-600',
+      accentBackground: 'bg-pink-600',
+      borderColour: 'border-pink-600',
+      buttons:
+        'bg-pink-600 text-white hover:text-pink-600 hover:bg-white active:text-pink-600 active:bg-white transition duration-300 border-2 border-transparent hover:border-pink-600 disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-transparent ',
+    },
+    {
+      name: 'green',
+      textColour: 'text-gray-700',
+      background: 'bg-gradient-to-r from-green-500 to-green-700',
+      accentText: 'text-green-600',
+      accentBackground: 'bg-green-600',
+      borderColour: 'border-green-600',
+      buttons:
+        'bg-green-600 text-white hover:text-green-600 hover:bg-white active:text-green-600 active:bg-white transition duration-300 border-2 border-transparent hover:border-green-600 disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-transparent ',
+    },
+  ],
+
   accentColours: [
     '#3B82F6',
     '#EF4444',
@@ -20,12 +63,13 @@ export const SURVEY_COLOURS = {
   textColours: ['#4B5563'],
 }
 export const SURVEY_OPTIONS = {
-  accentColour: SURVEY_COLOURS.accentColours[0],
-  backgroundColour: SURVEY_COLOURS.backgroundColours[0],
-  textColour: SURVEY_COLOURS.textColours[0],
+  // accentColour: SURVEY_COLOURS.accentColours[0],
+  // backgroundColour: SURVEY_COLOURS.backgroundColours[0],
+  // textColour: SURVEY_COLOURS.textColours[0],
   headerImage: '',
   footerImage: '',
   redirectURL: '',
+  theme: SURVEY_COLOURS.themes[0],
 }
 
 export const QUESTION_TYPES = {

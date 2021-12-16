@@ -262,6 +262,7 @@ export default {
     showSurveySettings() {
       ModalService.open(PlainModal, {
         whichComponent: 'SurveySettings',
+        options: { header: `Customise ${this.survey.name}` },
         dataItem: this.survey,
       })
         .then((response) => {

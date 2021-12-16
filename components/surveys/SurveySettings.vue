@@ -94,6 +94,27 @@
     </div>
 
     <div class="flex flex-col">
+      <label class="font-semibold mb-2">Theme Colour</label>
+      <div class="flex space-x-2">
+        <button
+          v-for="(theme, index) in themeColours"
+          :key="index"
+          class="h-8 w-8 rounded-full border-2 border-gray-300 hover:border-gray-500 focus:outline-none"
+          :class="theme.accentBackground"
+          @click="
+            form.options.theme = theme
+            $forceUpdate()
+          "
+        >
+          <i
+            v-if="form.options.theme && theme.name === form.options.theme.name"
+            class="fas fa-check fa-fw fa-sm text-white"
+          ></i>
+        </button>
+      </div>
+    </div>
+
+    <div v-if="false" class="flex flex-col">
       <label class="font-semibold mb-2">Accent Colour</label>
       <div class="flex space-x-2">
         <button
@@ -112,7 +133,7 @@
       </div>
     </div>
 
-    <div class="flex flex-col">
+    <div v-if="false" class="flex flex-col">
       <label class="font-semibold mb-2">Background Colour</label>
       <div class="flex space-x-2">
         <button
@@ -176,6 +197,7 @@ export default {
       footerImage: '',
       accentColours: SURVEY_COLOURS.accentColours,
       backgroundColours: SURVEY_COLOURS.backgroundColours,
+      themeColours: SURVEY_COLOURS.themes,
     }
   },
   watch: {

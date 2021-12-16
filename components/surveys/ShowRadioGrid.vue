@@ -2,7 +2,7 @@
   <div class="flex flex-col">
     <div
       class="flex font-semibold mb-2 items-center"
-      :style="{ color: displayStyle.textColour }"
+      :class="displayStyle.textColour"
     >
       <span>{{ question.text }}</span>
       <span v-if="question.isMandatory" class="ml-1 text-xs font-medium italic">
@@ -26,11 +26,12 @@
             v-for="(value, valueIndex) in columns"
             :key="valueIndex"
             class="border-2 rounded p-2 mb-2 cursor-pointer transition duration-300"
-            :style="`border-color:${displayStyle.accentColour}; color:${
-              checkIfExists(option, value) ? 'white' : displayStyle.textColour
-            }; backgroundColor: ${
-              checkIfExists(option, value) ? displayStyle.accentColour : 'white'
-            }`"
+            :class="[
+              displayStyle.borderColour,
+              checkIfExists(option, value)
+                ? `${displayStyle.accentBackground} text-white`
+                : `${displayStyle.accentText}`,
+            ]"
             @click="setAnswer(option, value)"
           >
             {{ value.text }}
@@ -51,7 +52,6 @@
             v-for="(item, index) in columns"
             :key="index"
             :style="{
-              color: displayStyle.textColour,
               width: `${100 / columns}%`,
               minWidth: `${minElWidth}px`,
             }"
@@ -79,7 +79,7 @@
               <i
                 v-if="checkIfExists(item, i)"
                 class="far fa-check-circle fa-fw"
-                :style="{ color: displayStyle.accentColour }"
+                :class="displayStyle.accentText"
               ></i>
               <i v-else class="far fa-circle fa-fw"></i>
             </button>
@@ -90,7 +90,7 @@
     <div class="flex my-2">
       <button
         class="cursor-pointer font-semibold"
-        :style="{ color: displayStyle.accentColour }"
+        :class="displayStyle.accentText"
         @click="answers = []"
       >
         {{ languageText['clear'] }}

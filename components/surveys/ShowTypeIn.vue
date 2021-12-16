@@ -2,7 +2,7 @@
   <div class="flex flex-col">
     <div
       class="flex font-semibold mb-2 items-center"
-      :style="{ color: displayStyle.textColour }"
+      :class="displayStyle.textColour"
     >
       {{ question.text }}
       <span v-if="question.isMandatory" class="ml-1 text-xs font-medium italic">
@@ -13,17 +13,13 @@
       <textarea
         v-model="answer"
         class="w-full border-2 rounded-sm p-5"
-        :style="{
-          backgroundColor: 'white',
-          color: displayStyle.textColour,
-          borderColor: displayStyle.accentColour,
-        }"
+        :class="[displayStyle.borderColour]"
       ></textarea>
     </div>
     <div class="flex my-2">
       <button
         class="cursor-pointer font-semibold"
-        :style="{ color: displayStyle.accentColour }"
+        :class="displayStyle.accentText"
         @click="answer = ''"
       >
         {{ languageText['clear'] }}

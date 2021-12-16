@@ -1,9 +1,9 @@
 <template>
   <screen-overlay :dim="true" @click="$emit('modalClosed')">
     <div
-      class="w-full md:w-8/12 mx-auto flex flex-col relative shadow-md overflow-y-auto"
+      class="w-full md:w-8/12 mx-auto flex flex-col relative shadow-md overflow-y-auto rounded-lg p-10"
       style="height: 90vh"
-      :style="{ backgroundColor: survey.options.backgroundColour }"
+      :class="survey.options.theme.background"
       @click.stop
     >
       <preview-survey

@@ -1,7 +1,7 @@
 <template>
-  <div class="flex flex-col bg-white">
-    <div class="flex">
-      <p :style="{ color: displayStyle.textColour }">{{ question.text }}</p>
+  <div class="flex flex-col">
+    <div class="flex font-semibold" :class="displayStyle.textColour">
+      <p>{{ question.text }}</p>
     </div>
   </div>
 </template>

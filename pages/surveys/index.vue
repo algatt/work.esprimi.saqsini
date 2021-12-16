@@ -78,15 +78,19 @@
         <template #Actions="slotProps">
           <span class="flex justify-center">
             <LPopupMenu>
-              <template v-slot:menu
-                ><nuxt-link
+              <template v-slot:menu>
+                <button @click="editSurvey(slotProps.item)">
+                  <i class="fas fa-pencil-alt fa-fw fa-sm"></i>Edit Survey
+                  Details
+                </button>
+                <nuxt-link
                   :to="{
                     name: 'questions-id',
                     params: { id: slotProps.item.code },
                   }"
                 >
                   <button>
-                    <i class="fas fa-clipboard-list fa-fw"></i>Manage Survey
+                    <i class="fas fa-clipboard-list fa-fw"></i>Manage Questions
                   </button></nuxt-link
                 >
                 <nuxt-link
@@ -101,7 +105,7 @@
                 >
 
                 <button @click="duplicateSurvey(slotProps.item)">
-                  <i class="fas fa-copy fa-fw"></i>Duplicate
+                  <i class="fas fa-copy fa-fw"></i>Duplicate Survey
                 </button>
                 <button
                   v-if="slotProps.item.flags.includes('FLAGGED_FOR_REMOVAL')"
@@ -150,6 +154,7 @@ import ModalService from '~/services/modal-services'
 import NewItemModal from '~/components/elements/NewItemModal'
 import PageLoadError from '~/components/elements/PageLoadError'
 import Spinner from '~/components/elements/Spinner'
+import ConfirmModal from '~/components/elements/ConfirmModal'
 
 export default {
   name: 'SurveyList',
@@ -182,9 +187,9 @@ export default {
         { title: '', slot: 'flags' },
         { title: 'Date', field: 'referenceDate', sortable: true },
         { title: 'Kiosk', slot: 'Kiosk', align: 'center' },
-        { title: 'Availability', slot: 'Availability', align: 'center' },
-        { title: 'Response Rate', slot: 'ResponseRate', align: 'center' },
-        { title: 'Actions', slot: 'Actions', align: 'center' },
+        { title: 'Enabled', slot: 'Availability', align: 'center' },
+        { title: 'Responses', slot: 'ResponseRate', align: 'center' },
+        { title: '', slot: 'Actions', align: 'center' },
       ],
     }
   },
@@ -210,6 +215,25 @@ export default {
       })
   },
   methods: {
+    editSurvey(survey) {
+      ModalService.open(NewItemModal, {
+        whichComponent: 'NewSurvey',
+        dataItem: survey,
+        options: { header: `Edit ${survey.name}` },
+      })
+        .then((response) => {
+          this.$store
+            .dispatch('surveys/updateSurvey', response)
+            .then((retSurvey) => {
+              this.$store.dispatch('categories/getCategories')
+              this.$toasted.show(`Survey ${retSurvey.name} updated`)
+            })
+            .catch(() => {
+              this.$toasted.error('There was a problem updating the survey')
+            })
+        })
+        .catch(() => {})
+    },
     showNewItem() {
       const dataItem = {}
       if (this.selectedCategory)
@@ -314,21 +338,32 @@ export default {
     },
     copyUrl(url) {
       url = `${this.$config.siteUrl}survey?id=${url}`
-      navigator.clipboard.writeText(url).then(() => {
-        this.$toasted.show('URL copied to clipboard', {
-          action: { text: 'GO', href: url, target: '_blank' },
-        })
+      this.$toasted.show('Survey URL Generated', {
+        action: { text: 'Go', href: url, target: '_blank' },
+        duration: 10000,
       })
+      // navigator.clipboard.writeText(url).then(() => {
+      //   this.$toasted.show('URL copied to clipboard', {
+      //     action: { text: 'GO', href: url, target: '_blank' },
+      //   })
+      // })
     },
     anonymiseResponses(code) {
-      this.$store
-        .dispatch('invitations/anonymiseResponses', code)
-        .then(() => {
-          this.$toasted.show('Responses anonymised')
-        })
-        .catch(() => {
-          this.$toasted.show('There was a problem anonymising the responses')
-        })
+      ModalService.open(ConfirmModal, {
+        msg: 'This will remove all personal details for all respondents.',
+        deleteButton: 'Anonymise',
+        whichComponent: 'ConfirmModal',
+        options: { header: `Are you sure?` },
+      }).then(() => {
+        this.$store
+          .dispatch('invitations/anonymiseResponses', code)
+          .then(() => {
+            this.$toasted.show('Responses anonymised')
+          })
+          .catch(() => {
+            this.$toasted.show('There was a problem anonymising the responses')
+          })
+      })
     },
     generateDataFile(code) {
       this.$store

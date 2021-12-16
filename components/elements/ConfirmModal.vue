@@ -9,8 +9,12 @@
         <p>{{ msg }}</p>
       </ModalBody>
       <ModalFooter>
-        <l-button color="gray" @click="dismiss('dismissed')">Cancel</l-button>
-        <l-button color="red" @click="confirm('confirm')">Delete</l-button>
+        <l-button color="gray" @click="dismiss('dismissed')">{{
+          cancelButton
+        }}</l-button>
+        <l-button color="red" @click="confirm('confirm')">{{
+          deleteButton
+        }}</l-button>
       </ModalFooter>
     </div>
   </Modal>
@@ -30,6 +34,14 @@ export default {
     msg: {
       type: String,
       default: '',
+    },
+    cancelButton: {
+      type: String,
+      default: 'Cancel',
+    },
+    deleteButton: {
+      type: String,
+      default: 'Delete',
     },
   },
 }
