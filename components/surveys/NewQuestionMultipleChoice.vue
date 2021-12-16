@@ -7,26 +7,36 @@
           <span class="error">all options must be filled in</span>
         </span>
       </div>
-      <div
-        v-for="(option, index) in options"
-        :key="option.ordinalPosition"
-        class="flex w-full mb-1"
-      >
-        <l-input-button
-          :id="'inputOptions' + index"
-          v-model="option.text"
-          :button-disabled="options.length < 3"
-          button-color="red"
-          class="w-full"
-          placeholder="Enter option text"
-          @click="deleteOptionAtIndex(index)"
-          @keyup="updateValues"
-          @input="$v.options.$touch()"
-        >
-          <i class="fas fa-trash-alt fa-fw"></i>
-        </l-input-button>
-      </div>
 
+      <draggable
+        v-model="options"
+        @start="drag = true"
+        @end="
+          drag = false
+          endDrag
+        "
+      >
+        <transition-group name="flip-list">
+          <div
+            v-for="(option, index) in options"
+            :key="option.ordinalPosition"
+            class="flex w-full mb-1"
+          >
+            <l-input-button
+              :id="'inputOptions' + index"
+              v-model="option.text"
+              :button-disabled="options.length < 3"
+              button-color="red"
+              class="w-full"
+              placeholder="Enter option text"
+              @click="deleteOptionAtIndex(index)"
+              @keyup="updateValues"
+              @input="$v.options.$touch()"
+            >
+              <i class="fas fa-trash-alt fa-fw"></i>
+            </l-input-button></div
+        ></transition-group>
+      </draggable>
       <div class="flex justify-start mt-2 mb-4">
         <l-button @click="addNewOption"> Add New Option</l-button>
       </div>
@@ -59,9 +69,11 @@
 <script>
 import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
+import draggable from 'vuedraggable'
 
 export default {
   name: 'NewQuestionMultipleChoice',
+  components: { draggable },
   mixins: [validationMixin],
   props: {
     form: {
@@ -144,10 +156,21 @@ export default {
       })
     },
     updateValues() {
+      let ordinalPosition = 1
       this.options.forEach((item) => {
         item.value = item.text
+        item.ordinalPosition = ordinalPosition++
       })
+    },
+    endDrag() {
+      this.updateValues()
     },
   },
 }
 </script>
+
+<style>
+.flip-list-move {
+  transition: transform 1s;
+}
+</style>

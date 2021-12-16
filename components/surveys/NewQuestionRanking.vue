@@ -32,20 +32,29 @@
     </div>
 
     <div class="flex flex-col space-y-2">
-      <l-input-button
-        v-for="(option, index) in options"
-        :id="'inputOptions' + index"
-        :key="option.ordinalPosition"
-        v-model="option.text"
-        placeholder="Enter option text"
-        button-color="red"
-        :button-disabled="options.length < 3"
-        @keyup="updateValues"
-        @change="$v.options.$touch"
-        @click="deleteOptionAtIndex(index)"
+      <draggable
+        v-model="options"
+        @start="drag = true"
+        @end="
+          drag = false
+          endDrag
+        "
       >
-        <i class="fas fa-trash-alt fa-fw"></i>
-      </l-input-button>
+        <l-input-button
+          v-for="(option, index) in options"
+          :id="'inputOptions' + index"
+          :key="option.ordinalPosition"
+          v-model="option.text"
+          placeholder="Enter option text"
+          button-color="red"
+          :button-disabled="options.length < 3"
+          @keyup="updateValues"
+          @change="$v.options.$touch"
+          @click="deleteOptionAtIndex(index)"
+        >
+          <i class="fas fa-trash-alt fa-fw"></i>
+        </l-input-button>
+      </draggable>
     </div>
     <div class="flex justify-start">
       <l-button @click="addNewOption"> Add New Option </l-button>
@@ -142,9 +151,14 @@ export default {
       })
     },
     updateValues() {
+      let ordinalPosition = 1
       this.options.forEach((item) => {
         item.value = item.text
+        item.ordinalPosition = ordinalPosition++
       })
+    },
+    endDrag() {
+      this.updateValues()
     },
   },
 }

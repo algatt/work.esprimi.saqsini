@@ -1,5 +1,5 @@
 <template>
-  <span class="flex relative items-center mx-1">
+  <span class="flex relative items-center mx-1 z-10">
     <button
       ref="popupButton"
       class="focus:outline-none flex justify-center items-center"
@@ -14,14 +14,14 @@
 
     <button
       v-if="showPopup"
-      class="fixed left-0 top-0 z-10 w-full h-full cursor-default"
-      @click="showPopup = false"
+      class="fixed left-0 top-0 z-20 w-full h-full cursor-default bg-opacity-25"
+      @click.prevent="closePopup"
     ></button>
     <transition name="fade">
       <span
         v-if="showPopup"
         ref="popup"
-        class="bg-gray-100 rounded text-sm px-2 py-1 text-gray-700 border border-gray-300 z-20 absolute flex flex-wrap shadow font-normal"
+        class="bg-gray-100 rounded text-sm px-2 py-1 text-gray-700 border border-gray-300 z-10 absolute flex flex-wrap shadow font-normal"
         :style="{ left: left + 'px', minWidth: width, maxWidth: width }"
         ><slot></slot
       ></span>
@@ -48,6 +48,7 @@ export default {
   },
   methods: {
     managePopup() {
+      console.log('aaa')
       if (!this.$slots.default) return
 
       this.left = this.$refs.popupButton.clientWidth + 5
@@ -64,6 +65,9 @@ export default {
           }
         })
       }
+    },
+    closePopup() {
+      this.managePopup()
     },
   },
 }

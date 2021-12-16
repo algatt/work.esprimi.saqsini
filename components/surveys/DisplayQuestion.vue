@@ -109,7 +109,7 @@ export default {
       type: Object,
       required: false,
       default: () => {
-        return SURVEY_OPTIONS
+        return SURVEY_OPTIONS.theme
       },
     },
     language: {

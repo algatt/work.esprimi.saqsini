@@ -116,9 +116,8 @@
         @clicked="form.isMandatory = $event"
       >
         <template v-slot:label>
-          Required
-          <popup-information>{{ infoRequired }}</popup-information></template
-        >
+          Required<popup-information>{{ infoRequired }}</popup-information>
+        </template>
         <template v-slot:leftLabel>No</template>
         <template v-slot:rightLabel>Yes</template>
       </l-toggle>

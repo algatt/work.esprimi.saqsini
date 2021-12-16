@@ -10,8 +10,7 @@
           style="max-width: calc(100% - 6rem)"
         >
           <h6>
-            <span v-if="showPreview">{{ question.questionNumber }}</span
-            ><span v-else>{{ question.name }}</span>
+            <span>{{ question.questionNumber }} - {{ question.name }}</span>
           </h6>
           <div class="flex flex-wrap space-x-2">
             <l-badge>{{ getQuestionType(question) }}</l-badge>
@@ -110,10 +109,9 @@
     >
       <div class="flex flex-wrap">
         <div class="flex flex-1 flex-col space-y-2 pl-4">
-          <h4 class="text-blue-600 font-bold">
-            <span v-if="showPreview">{{ question.questionNumber }}</span
-            ><span v-else>{{ question.name }}</span>
-          </h4>
+          <h5 class="text-blue-600 font-bold">
+            <span>{{ question.questionNumber }} - {{ question.name }}</span>
+          </h5>
           <div class="flex flex-wrap space-x-2">
             <div @click="showBranching = question.code">
               <l-badge
@@ -274,6 +272,7 @@ export default {
     editQuestion(question) {
       ModalService.open(NewItemModal, {
         whichComponent: 'NewQuestion',
+        options: { header: `Edit ${question.name}` },
         dataItem: question,
       })
         .then((question) => {

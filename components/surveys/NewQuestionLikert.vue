@@ -2,13 +2,15 @@
   <div class="flex flex-col w-full space-y-5">
     <div class="flex flex-col items-start">
       <div class="flex items-center">
-        <label class="font-semibold flex items-center"
-          >Options and Weights
-          <popup-information>
+        <div class="flex space-x-3">
+          <label class="font-semibold flex items-center"
+            >Options and Weights</label
+          ><popup-information>
             Here you can set the text (option) for all options. <br />Every
             option must be assigned a numeric weight.</popup-information
-          ></label
-        >
+          >
+        </div>
+
         <span v-if="$v.options.$error">
           <span class="error"
             >all options and weights (numeric) must be filled in</span
