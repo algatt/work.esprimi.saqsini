@@ -4,8 +4,12 @@
     ref="surveyModal"
     class="flex flex-col p-5 bg-white rounded shadow-lg border border-gray-400"
   >
-    <div class="flex flex-wrap items-center rounded w-full p-5 relative">
+    <div
+      class="flex flex-wrap items-center rounded w-full p-5 relative"
+      :class="survey.options.headerImage === '' ? 'h-24 mb-5' : null"
+    >
       <img
+        v-if="survey.options.headerImage !== ''"
         :src="`${survey.options.headerImage}`"
         :class="survey.options.headerAlignment"
         style="height: 12rem"
@@ -168,7 +172,10 @@
       </div>
     </div>
 
-    <div class="flex flex-wrap items-center rounded w-full p-5 relative mt-5">
+    <div
+      v-if="survey.options.footerImage !== ''"
+      class="flex flex-wrap items-center rounded w-full p-5 relative mt-5"
+    >
       <img
         :src="`${survey.options.footerImage}`"
         :class="survey.options.footerAlignment"

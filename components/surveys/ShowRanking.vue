@@ -1,8 +1,5 @@
 <template>
   <div class="flex flex-col">
-    {{ answers }}
-    {{ dummies }}
-
     <div
       class="flex font-semibold mb-2 items-center"
       :class="displayStyle.textColour"
