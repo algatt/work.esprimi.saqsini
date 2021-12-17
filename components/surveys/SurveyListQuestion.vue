@@ -348,7 +348,7 @@ export default {
             surveyCode: Number(this.$route.params.id),
             flags: result.flags,
             ordinalPosition: ordinalPosition + 1,
-            surveyOptions: JSON.stringify({}),
+            surveyOptions: result.surveyOptions,
             name: result.name,
             options: result.options,
             text: result.text,

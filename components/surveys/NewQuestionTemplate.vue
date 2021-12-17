@@ -204,6 +204,7 @@ export default {
   },
   created() {
     this.form = convertQuestionFromApiToForm(this.dataItem)
+    if (!this.form.tags) this.form.tags = []
   },
   mounted() {
     document.getElementById('inputName').focus()

@@ -26,7 +26,7 @@
             <button
               v-for="button in QUESTION_TYPES"
               :key="button.code"
-              @click="newQuestion(button.flag)"
+              @click="newQuestion(button)"
             >
               <i :class="button.icon"></i>{{ button.text }}
             </button>
@@ -36,15 +36,22 @@
       <template v-slot:name="slotProps">
         <div class="flex items-center space-x-3">
           <span>{{ slotProps.item.name }}</span>
-          <l-badge>{{ getQuestionTypeText(slotProps.item.flags) }}</l-badge>
+        </div>
+      </template>
+      <template v-slot:questionType="slotProps">{{
+        getQuestionTypeText(slotProps.item.flags)
+      }}</template>
+      <template v-slot:tags="slotProps">
+        <div class="flex flex-wrap">
           <l-badge
             v-for="(tag, index) in slotProps.item.tags"
             :key="index"
             color="blue"
+            class="mr-2"
             >{{ tag }}</l-badge
           >
-        </div>
-      </template>
+        </div></template
+      >
       <template v-slot:actions="slotProps">
         <div class="flex justify-end">
           <LPopupMenu>
@@ -95,6 +102,8 @@ export default {
       error: false,
       tableQuestions: [
         { title: 'Name', field: 'name', slot: 'name', sortable: true },
+        { title: 'Question Type', slot: 'questionType', sortable: false },
+        { title: 'Tags', slot: 'tags', sortable: false },
         { title: '', slot: 'actions' },
       ],
       QUESTION_TYPES,
@@ -131,13 +140,16 @@ export default {
       })
   },
   methods: {
-    newQuestion(flag) {
+    newQuestion(button) {
       ModalService.open(NewItemModal, {
         whichComponent: 'NewQuestionTemplate',
         dataItem: {
-          flags: [flag],
+          flags: [button.flag],
           tags: [],
           surveyOptions: JSON.stringify({}),
+        },
+        options: {
+          header: `New ${button.text}`,
         },
       })
         .then((question) => {
@@ -160,6 +172,9 @@ export default {
       ModalService.open(NewItemModal, {
         whichComponent: 'NewQuestionTemplate',
         dataItem: item,
+        options: {
+          header: `Edit ${item.name}`,
+        },
       })
         .then((question) => {
           this.$store.dispatch(
@@ -169,6 +184,7 @@ export default {
         })
         .then(() => {
           this.$toasted.show(`Question updated`)
+          this.$store.dispatch('questionstempplate/getQuestions', {})
         })
         .catch((error) => {
           if (error !== 'dismissed')

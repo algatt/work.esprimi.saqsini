@@ -109,6 +109,7 @@ export const mutations = {
     const foundQuestion = state.items.find((el) => {
       return el.code === question.code
     })
+
     Object.assign(foundQuestion, question)
   },
   //
