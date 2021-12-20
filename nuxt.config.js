@@ -59,6 +59,7 @@ export default {
     { src: '~plugins/draggable.js', ssr: false },
     { src: '~plugins/chartjs-datalabels.js', ssr: false },
     '@/plugins/components.js',
+    { src: '@/plugins/apexcharts.js', ssr: false },
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)

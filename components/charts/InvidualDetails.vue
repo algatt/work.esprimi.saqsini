@@ -89,6 +89,7 @@ import DataTable from '~/components/elements/DataTable/DataTable'
 import LPopupMenu from '~/components/LPopupMenu'
 import ModalService from '~/services/modal-services'
 import PlainModal from '~/components/elements/PlainModal'
+import ConfirmModal from '~/components/elements/ConfirmModal'
 
 export default {
   name: 'InvidualDetailsVue',
@@ -154,24 +155,39 @@ export default {
       })
     },
     anonymiseByToken(token) {
-      this.$store
-        .dispatch('invitations/anonymiseResponsesByToken', token)
+      ModalService.open(ConfirmModal, {
+        msg: 'This will remove all identifying details for this respondent.',
+        deleteButton: 'Anonymise',
+      })
         .then(() => {
-          this.$toasted.show('Response anonymisation in process')
+          this.$store
+            .dispatch('invitations/anonymiseResponsesByToken', token)
+            .then(() => {
+              this.$toasted.show('Response anonymisation in process')
+            })
+            .catch(() => {
+              this.$toasted.error(
+                'There was a problem anonymising the responses'
+              )
+            })
         })
-        .catch(() => {
-          this.$toasted.error('There was a problem anonymising the responses')
-        })
+        .catch(() => {})
     },
     deleteResponse(token) {
-      this.$store
-        .dispatch('invitations/delete', token)
+      ModalService.open(ConfirmModal, {
+        msg: 'This will delete all the responses for this user.',
+      })
         .then(() => {
-          this.$toasted.show(`Invite deleted`)
+          this.$store
+            .dispatch('invitations/delete', token)
+            .then(() => {
+              this.$toasted.show(`Invite deleted`)
+            })
+            .catch(() => {
+              this.$toasted.error('There was a problem deleting the invite')
+            })
         })
-        .catch(() => {
-          this.$toasted.error('There was a problem deleting the invite')
-        })
+        .catch(() => {})
     },
   },
 }

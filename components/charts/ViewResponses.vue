@@ -113,7 +113,7 @@ export default {
               return a.value > b.value ? 1 : -1
             })
             .map((value) => {
-              return `${value.option} (${value.value})`
+              return `${value.option ?? ''}(${value.value})`
             })
         } else if (el.flags.includes('TYPE_IN')) {
           data[questionCode].answers = question.map((value) => {

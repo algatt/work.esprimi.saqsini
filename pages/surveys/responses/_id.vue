@@ -1,6 +1,6 @@
 <template>
   <list-layout v-if="!loading && !error">
-    <div class="w-full flex flex-wrap items-center mb-10">
+    <div class="w-full flex flex-wrap items-center mb-10 print:hidden">
       <div class="flex w-full md:flex-1">
         <h5>{{ responses.survey.name }}</h5>
       </div>
@@ -29,7 +29,7 @@
           >Cross Table<template v-slot:icon
             ><i class="fas fa-table fa-fw"></i></template
         ></menu-icon-button>
-        <LPopupMenu class="mt-2">
+        <LPopupMenu class="">
           <template #icon>
             <l-button
               >Settings<template v-slot:rightIcon

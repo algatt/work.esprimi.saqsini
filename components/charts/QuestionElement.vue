@@ -1,7 +1,7 @@
 <template>
   <div v-if="!loading" class="flex flex-wrap w-full">
     <template v-if="data.responses.length !== 0">
-      <div class="w-full md:w-3/12 flex flex-col">
+      <div class="w-full md:w-3/12 flex flex-col print:hidden">
         <multi-select
           v-if="
             data.availableAnswers.length !== 0 &&
@@ -17,7 +17,7 @@
       </div>
       <div
         :id="`question_graph_${data.question.code}`"
-        class="w-full md:w-auto mx-auto flex flex-col p-5"
+        class="w-full md:w-9/12 flex flex-col p-5"
       >
         <component
           :is="CHART_TYPE_COMPONENT[data.question.type]"

@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col">
-    <div class="flex justify-start">
+    <div v-if="false" class="flex justify-start">
       <l-button @click="print"
         >Save to PDF<template v-slot:rightIcon
           ><i class="fas fa-file-pdf fa-fw"></i></template
@@ -13,21 +13,23 @@
         :key="item.question.code"
         class="flex flex-col mb-16"
       >
-        <div class="flex justify-center items-center w-full space-x-2">
-          <h6>{{ item.question.name }}</h6>
-          <p class="bg-gray-100 rounded-xl px-2 py-0.5 text-gray-700">
+        <div class="flex justify-start items-center w-full space-x-2 pl-5 mb-2">
+          <p
+            class="bg-gray-100 rounded px-1 py-0.5 text-gray-700 font-semibold"
+          >
             {{ item.question.questionNumber }}
           </p>
+          <h6>{{ item.question.name }}</h6>
 
           <span class="text-gray-700 font-semibold"
             >{{ item.question.type.text }}
           </span>
         </div>
-        <div class="flex justify-center items-center w-full space-x-2 my-2">
+        <div class="flex justify-start items-center w-full space-x-2 pl-5 mb-4">
           {{ getQuestionTitle(item.question) }}
         </div>
 
-        <div class="flex flex-wrap w-full">
+        <div class="flex flex-wrap w-full px-5">
           <question-element
             :key="item.question.questionCode"
             :data="item"
@@ -208,5 +210,3 @@ export default {
   },
 }
 </script>
-
-<style scoped></style>

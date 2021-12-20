@@ -134,8 +134,6 @@ export default {
           data.responses[el.option][el.value] += 1
       })
 
-      console.log(data.responses)
-
       // Object.keys(data.responses).forEach((el) => {
       //   Object.keys(data.responses[el]).forEach((val) => {
       //     const value = data.responses[el][val]

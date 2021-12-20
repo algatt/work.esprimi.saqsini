@@ -3,8 +3,6 @@ import {
   PREFERRED_LANGUAGE,
 } from '~/assets/settings/survey-settings'
 
-import colours from '~/assets/settings/colours.json'
-
 export function getQuestionTypeText(flags) {
   for (const i in flags) {
     Object.keys(QUESTION_TYPES).includes(flags[i])
@@ -168,7 +166,7 @@ export function getDifferentAnswers(question, responses) {
     // })
     let tempOptions = Array.from(
       new Set(
-        responses.map((el) => {
+        question.options.map((el) => {
           return el.value
         })
       )
@@ -220,12 +218,9 @@ export function getDifferentAnswers(question, responses) {
 export function getDataAggregate(legendData, selectedList, originalData) {
   let data = {}
 
-  const selectedColours = []
-
   legendData.forEach((el) => {
     if (selectedList.includes(el)) {
       data[el] = 0
-      selectedColours.push(colours[legendData.indexOf(el)])
     }
   })
 
@@ -235,16 +230,15 @@ export function getDataAggregate(legendData, selectedList, originalData) {
   data = Object.values(data)
 
   return {
-    labels: selectedList.map((el) => {
-      return el.length > 25 ? el.substr(0, 23) + '...' : el
-    }),
-    datasets: [
-      {
-        data,
-        maxBarThickness: 56,
-        backgroundColor: selectedColours,
-      },
-    ],
+    labels: selectedList
+      .map((el) => {
+        if (isNaN(el)) return el.length > 25 ? el.substr(0, 23) + '...' : el
+        else return Number(el)
+      })
+      .sort((a, b) => {
+        return a > b ? 1 : -1
+      }),
+    data,
   }
 }
 
@@ -302,63 +296,44 @@ export function getDataAggregateRanking(
   selectedList,
   originalData
 ) {
-  let answers = getDifferentAnswers(
-    originalData.question,
-    originalData.responses
-  )
-
-  const originalAnswers = answers.map((el) => {
-    return el.code
-  })
-
-  answers = originalAnswers.filter((el) => {
-    return selectedList.includes(el)
+  const originalAnswers = originalData.responses.map((el) => {
+    return el.value
   })
 
   const dataToReturn = {
     labels: [],
-    datasets: [],
+    categories: [],
+    series: [],
   }
 
-  dataToReturn.labels = answers
-  dataToReturn.datasets.push({ data: [], backgroundColor: [] })
+  const numberOfChoices = JSON.parse(originalData.question.surveyOptions)
+    .maxChoice
 
-  for (let i = 1; i <= answers.length; i++) {
-    const count = originalData.responses.filter((el) => {
-      return el.value === answers[i]
+  for (let i = 1; i <= numberOfChoices; i++) dataToReturn.labels.push(i)
+
+  dataToReturn.categories = originalData.question.options
+    .filter((el) => {
+      return selectedList.includes(el.value)
     })
-    dataToReturn.datasets[0].data.push(count.length)
-    dataToReturn.datasets[0].backgroundColor.push(
-      colours[originalAnswers.indexOf(answers[i])]
-    )
-  }
+    .map((el) => {
+      return el.value
+    })
+    .sort((a, b) => {
+      return a > b ? 1 : -1
+    })
 
-  // dataToReturn.datasets.push({ data: [1, 2, 3, 4] })
+  dataToReturn.labels.forEach((choice) => {
+    const data = []
+    dataToReturn.categories.forEach((category) => {
+      if (selectedList.includes(category))
+        data.push(
+          originalAnswers.filter((el) => {
+            return el === `${category} (${choice})`
+          }).length
+        )
+    })
+    dataToReturn.series.push({ name: choice, data })
+  })
 
-  // for (let i = 1; i <= originalAnswers.length; i++) {
-  //   dataToReturn.labels.push(i)
-  // }
-  //
-  // for (let i = 0; i < answers.length; i++) {
-  //   dataToReturn.datasets.push({
-  //     maxBarThickness: 56,
-  //     label: answers[i],
-  //     data: new Array(originalAnswers.length).fill(0),
-  //     backgroundColor: colours[originalAnswers.indexOf(answers[i])],
-  //   })
-  // }
-  //
-  //
-  //
-  // const whichResponses = originalData.responses
-  //
-  // whichResponses.forEach((response) => {
-  //   const x = dataToReturn.datasets.find((el) => {
-  //     return el.label === response.option
-  //   })
-  //
-  //   const index = dataToReturn.labels.indexOf(Number(response.value))
-  //   if (x) x.data[index]++
-  // })
   return dataToReturn
 }

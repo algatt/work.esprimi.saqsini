@@ -49,7 +49,7 @@
                 >{{ field }}</span
               >
               <span v-else>{{ field }}</span>
-              <span v-if="index !== 0 && !hidePercentages">
+              <span v-if="false && index !== 0 && !hidePercentages">
                 {{ calculatePercentage(field, totalCount) }}%</span
               >
             </span>

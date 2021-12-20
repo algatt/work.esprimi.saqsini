@@ -13,6 +13,7 @@ module.exports = {
   },
   theme: {
     extend: {
+      screens: { print: { raw: 'print' } },
       colors: {
         primary: {
           light: 'var(--primary-light)',

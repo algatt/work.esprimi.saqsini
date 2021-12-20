@@ -93,7 +93,7 @@
       <div v-else class="w-full">
         <CrossTable
           v-if="allowCrossTab"
-          :data="getCrossTabData()"
+          :data="getCrossTabData"
           :details="details"
         ></CrossTable>
       </div>
@@ -180,8 +180,6 @@ export default {
         })
       return x
     },
-  },
-  methods: {
     getCrossTabData() {
       const xResponses = this.surveyData.responses.filter((el) => {
         return el.questionCode === this.crossTabX.code
@@ -280,6 +278,8 @@ export default {
 
       return data
     },
+  },
+  methods: {
     getDifferentAnswers(question) {
       return getDifferentAnswers(
         question,

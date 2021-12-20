@@ -1,16 +1,32 @@
 <template>
-  <div class="flex flex-wrap max-h-64 overflow-y-auto">
-    <div
-      v-for="(item, index) in datasets"
-      :key="index"
-      class="p-2 my-2 mx-2 bg-gray-100 rounded"
-    >
-      <span>{{ item.text }}</span>
-      <span
-        v-if="item.count > 1"
-        class="text-sm bg-primary rounded text-white font-semibold px-1 py-0.5"
-        >{{ item.count }}</span
+  <div class="flex flex-col items-center w-full">
+    <div class="flex space-x-2 items-center">
+      <span>Base</span
+      ><span class="font-semibold bg-gray-100 rounded px-1 py-0.5">
+        {{
+          datasets
+            .map((el) => {
+              return el.count
+            })
+            .reduce((acc, val) => {
+              return (acc += val)
+            })
+        }}</span
       >
+    </div>
+    <div class="flex flex-wrap max-h-64 overflow-y-auto">
+      <div
+        v-for="(item, index) in datasets"
+        :key="index"
+        class="p-2 my-2 mx-2 bg-gray-100 rounded"
+      >
+        <span>{{ item.text }}</span>
+        <span
+          v-if="item.count > 1"
+          class="text-sm bg-primary rounded text-white font-semibold px-1 py-0.5"
+          >{{ item.count }}</span
+        >
+      </div>
     </div>
   </div>
 </template>

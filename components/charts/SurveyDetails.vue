@@ -3,42 +3,33 @@
     <div
       v-for="(chart, index) in chartsToDraw"
       :key="index"
-      class="w-full flex justify-center items-center mb-20"
-      :class="chart.width"
+      class="w-full flex justify-center items-center mb-10"
+      :class="chart.class"
+      :style="`height: ${chart.height}px`"
     >
-      <component
-        :is="chart.type"
-        style="max-height: 300px"
-        :chart-data="chart.chartData"
-        :properties="chart.properties"
-      ></component>
+      <apexchart
+        :options="chart.chartOptions"
+        :series="chart.series"
+        height="100%"
+        class="w-full"
+      ></apexchart>
     </div>
   </div>
 </template>
 
 <script>
-import PieChart from '~/components/charts/PieChart'
-import colours from '~/assets/settings/colours.json'
-import LineChart from '~/components/charts/LineChart'
-import BarChart from '~/components/charts/BarChart'
 import {
-  OPTIONS_PIE_CHART,
-  OPTIONS_LINE_CHART,
-  OPTIONS_BAR_CHART,
+  PIE_CHART_SETTINGS,
+  LINE_CHART_SETTINGS,
+  HORIZONTAL_BAR_CHART_SETTINGS,
+  REPORT_CHART_SETTINGS,
 } from '~/assets/settings/charts-settings'
+
 export default {
   name: 'SurveyDetails',
-  components: {
-    BarChart,
-    LineChart,
-    PieChart,
-  },
 
   data() {
     return {
-      OPTIONS_PIE_CHART,
-      OPTIONS_LINE_CHART,
-      OPTIONS_BAR_CHART,
       chartsToDraw: [],
     }
   },
@@ -53,14 +44,8 @@ export default {
         return sums
       }, {})
 
-      const data = {
-        datasets: [
-          {
-            data: [],
-            fill: false,
-            borderColor: colours[0],
-          },
-        ],
+      const obj = {
+        data: [],
         labels: [],
       }
 
@@ -74,27 +59,19 @@ export default {
       })
 
       tempData.forEach((el) => {
-        data.labels.push(el[0])
-        data.datasets[0].data.push(el[1])
+        obj.labels.push(el[0])
+        obj.data.push(el[1])
       })
-      return data
+      return obj
     },
     responseRates() {
-      const data = {
-        datasets: [
-          {
-            data: [
-              this.surveyData.survey.responses,
-              this.surveyData.survey.invitees -
-                this.surveyData.survey.responses,
-            ],
-            backgroundColor: colours,
-          },
+      return {
+        data: [
+          this.surveyData.survey.responses,
+          this.surveyData.survey.invitees - this.surveyData.survey.responses,
         ],
         labels: ['Replied', 'Did Not Reply'],
       }
-
-      return data
     },
     kioskResponse() {
       const kioskCount = this.surveyData.invitations.filter((el) => {
@@ -103,16 +80,10 @@ export default {
       const inviteeCount = this.surveyData.invitations.filter((el) => {
         return !el.flags.includes('KIOSK')
       }).length
-      const data = {
-        datasets: [
-          {
-            data: [kioskCount, inviteeCount],
-            backgroundColor: colours,
-          },
-        ],
+      return {
+        data: [kioskCount, inviteeCount],
         labels: ['Kiosk', 'Invited'],
       }
-      return data
     },
     totalResponsesPerQuestion() {
       const obj = {}
@@ -134,39 +105,53 @@ export default {
 
       return {
         labels,
-        datasets: [{ data: result, backgroundColor: colours }],
+        data: result,
       }
     },
   },
   mounted() {
     this.chartsToDraw = [
       {
-        type: 'pie-chart',
-        chartData: this.responseRates,
-        properties: { title: 'Response Rate' },
-        width: 'md:w-4/12',
+        ...PIE_CHART_SETTINGS(
+          this.responseRates.labels,
+          this.responseRates.data,
+          'Response Rate'
+        ),
+        class: 'w-full lg:w-6/12',
+        height: 300,
       },
       {
-        type: 'pie-chart',
-        chartData: this.kioskResponse,
-        properties: { title: 'Kiosk Vs Invites' },
-        width: 'md:w-4/12',
+        ...PIE_CHART_SETTINGS(
+          this.kioskResponse.labels,
+          this.kioskResponse.data,
+          'Kiosk Response Rate'
+        ),
+        class: 'w-full lg:w-6/12',
+        height: 300,
       },
       {
-        type: 'line-chart',
-        chartData: this.sessionStats,
-        properties: {
-          title: 'Sessions Statistics',
-          xAxes: 'Date',
-          yAxes: 'Count',
-        },
-        width: 'md:w-4/12',
+        ...LINE_CHART_SETTINGS(
+          this.sessionStats.labels,
+          this.sessionStats.data,
+          'Daily Responses',
+          'Responses'
+        ),
+        class: 'w-full px-20',
+        height: 300,
       },
       {
-        type: 'bar-chart',
-        chartData: this.totalResponsesPerQuestion,
-        properties: { title: 'Responses Per Question' },
-        width: 'md:w-full',
+        ...HORIZONTAL_BAR_CHART_SETTINGS(
+          this.totalResponsesPerQuestion.labels,
+          this.totalResponsesPerQuestion.data,
+          'Responses per Question',
+          'Responses'
+        ),
+        class: 'w-full px-20',
+        height:
+          this.totalResponsesPerQuestion.data.length < 6
+            ? 300
+            : REPORT_CHART_SETTINGS.horizontalBar.barHeight *
+              this.totalResponsesPerQuestion.data.length,
       },
     ]
   },
