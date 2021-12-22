@@ -156,6 +156,8 @@ export const CHART_TYPE_COMPONENT = {
 // }
 //
 export const REPORT_CHART_SETTINGS = {
+  maxQuestionHeight: 500,
+  minQuestionHeight: 300,
   horizontalBar: {
     barHeight: 70,
   },

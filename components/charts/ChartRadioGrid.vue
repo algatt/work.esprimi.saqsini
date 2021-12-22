@@ -1,66 +1,61 @@
 <template>
-  <div class="flex flex-col overflow-x-auto w-full">
-    <div
-      class="flex flex-col w-full"
-      :style="{ minWidth: `${datasets.columns.length + minElWidth}px` }"
-    >
-      <div class="flex">
-        <div
-          class="border-b-2 py-2"
-          :style="{
-            width: `${100 / (datasets.columns.length + 1)}%`,
-            minWidth: `${minElWidth}px`,
-          }"
-        ></div>
-        <div
-          v-for="(item, index) in datasets.columns"
+  <div class="flex flex-col">
+    <div class="overflow-auto">
+      <table class="w-full min-w-md table-auto">
+        <tr class="border-b-2 border-gray-200 bg-gray-100">
+          <th class="py-4">
+            <div class="flex justify-start pl-3 items-center space-x-2">
+              <span>Display %</span>
+              <input v-model="asPercentages" type="checkbox" />
+            </div>
+          </th>
+          <th
+            v-for="(header, index) in grid.columns"
+            :key="index"
+            style="min-width: 125px"
+          >
+            {{ header.value }}
+          </th>
+        </tr>
+        <tr
+          v-for="(row, index) in grid.rows"
           :key="index"
-          class="font-semibold text-center border-b-2 py-2"
-          :style="{
-            width: `${100 / (datasets.columns.length + 1)}%`,
-            minWidth: `${minElWidth}px`,
-          }"
+          class="border-b border-gray-200"
         >
-          {{ item }}
-        </div>
-      </div>
-    </div>
-    <div
-      v-for="(item, indexResponse) in Object.keys(datasets.responses)"
-      :key="indexResponse"
-      class="flex"
-    >
-      <div
-        class="text-center font-semibold py-2 border-b-2 flex items-center justify-center"
-        :style="{
-          width: `${100 / (datasets.columns.length + 1)}%`,
-          minWidth: `${minElWidth}px`,
-        }"
-      >
-        {{ item }}
-      </div>
-      <div
-        v-for="(score, index) in datasets.responses[item]"
-        :key="index"
-        class="text-center font-semibold py-2 border-b-2 flex flex-col items-center"
-        :style="{
-          width: `${100 / (datasets.columns.length + 1)}%`,
-          minWidth: `${minElWidth}px`,
-        }"
-      >
-        <span
-          v-if="score === datasets.min[item]"
-          class="bg-red-100 text-red-700 rounded-lg px-2 py-0.5"
-          >{{ score }}</span
-        >
-        <span
-          v-else-if="score === datasets.max[item]"
-          class="bg-green-100 text-green-700 rounded-lg px-2 py-0.5"
-          >{{ score }}</span
-        >
-        <span v-else>{{ score }}</span>
-        <span> {{ calculatePercentage(score, datasets.totals[item]) }}%</span>
-      </div>
+          <td class="py-2">{{ row.value }}</td>
+          <td
+            v-for="(val, colIndex) in grid.responses[index]"
+            :key="colIndex"
+            class="text-center"
+          >
+            <span
+              v-if="val === grid.stats[index].min"
+              class="bg-red-200 text-red-500 px-1 py-1 rounded"
+              ><template v-if="asPercentages"
+                >{{
+                  Number((val / grid.stats[index].total) * 100).toFixed(2)
+                }}%</template
+              ><template v-else>{{ val }}</template></span
+            >
+            <span
+              v-else-if="val === grid.stats[index].max"
+              class="bg-green-200 text-green-500 px-1 py-1 rounded"
+              ><template v-if="asPercentages"
+                >{{
+                  Number((val / grid.stats[index].total) * 100).toFixed(2)
+                }}%</template
+              ><template v-else>{{ val }}</template></span
+            >
+            <span v-else
+              ><template v-if="asPercentages"
+                >{{
+                  Number((val / grid.stats[index].total) * 100).toFixed(2)
+                }}%</template
+              ><template v-else>{{ val }}</template></span
+            >
+          </td>
+        </tr>
+      </table>
     </div>
   </div>
 </template>
@@ -68,104 +63,52 @@
 <script>
 export default {
   name: 'ChartRadioGrid',
-
   props: {
-    data: {
-      type: Object,
+    elements: {
+      type: Array,
       required: true,
     },
-    selectedList: {
+    responses: {
       type: Array,
       required: true,
     },
   },
   data() {
     return {
-      minElWidth: 100,
+      asPercentages: true,
     }
   },
   computed: {
-    legendData() {
-      return this.data.availableAnswers.map((el) => {
-        return el.code
+    grid() {
+      const rows = this.elements.filter((el) => {
+        if (el.flags) return el.flags.includes('ROW')
       })
-    },
-    datasets() {
-      const data = {}
-
-      const whichRows = this.selectedList.map((el) => {
-        return el.code
+      const columns = this.elements.filter((el) => {
+        if (el.flags) return el.flags.includes('COLUMN')
       })
 
-      data.rows = this.data.question.options
-        .filter((el) => {
-          return el.flags.includes('ROW')
-        })
-        .sort((a, b) => {
-          return a.ordinalPosition > b.ordinalPosition ? 1 : -1
-        })
-        .map((el) => {
-          return el.value
-        })
-        .filter((el) => {
-          return whichRows.includes(el)
-        })
+      const responses = new Array(rows.length)
+        .fill(0)
+        .map(() => new Array(columns.length).fill(0))
 
-      data.columns = this.data.question.options
-        .filter((el) => {
-          return el.flags.includes('COLUMN')
-        })
-        .sort((a, b) => {
-          return a.ordinalPosition > b.ordinalPosition ? 1 : -1
-        })
-        .map((el) => {
-          return el.value
-        })
+      const stats = new Array(rows.length).fill({})
 
-      data.responses = {}
-      data.rows.forEach((row) => {
-        data.responses[row] = {}
-        data.columns.forEach((col) => {
-          data.responses[row][col] = 0
-        })
-      })
-      this.data.responses.forEach((el) => {
-        if (whichRows.includes(el.option))
-          data.responses[el.option][el.value] += 1
-      })
+      for (let i = 0; i < rows.length; i++) {
+        for (let j = 0; j < columns.length; j++) {
+          responses[i][j] = this.responses.filter((el) => {
+            return el.option === rows[i].value && el.value === columns[j].value
+          }).length
+        }
+        stats[i] = {
+          min: Math.min(...responses[i]),
+          max: Math.max(...responses[i]),
+          total: responses[i].reduce((p, n) => {
+            return p + n
+          }),
+        }
+      }
 
-      // Object.keys(data.responses).forEach((el) => {
-      //   Object.keys(data.responses[el]).forEach((val) => {
-      //     const value = data.responses[el][val]
-      //     if (!data.totalCount) data.totalCount = value
-      //     else data.totalCount += value
-      //     if (!data.minValue) data.minValue = value
-      //     if (!data.maxValue) data.maxValue = value
-      //     if (value < data.minValue) data.minValue = value
-      //     if (value > data.maxValue) data.maxValue = value
-      //   })
-      // })
-
-      data.totals = {}
-      data.max = {}
-      data.min = {}
-      Object.keys(data.responses).forEach((val) => {
-        const values = Object.values(data.responses[val])
-        data.totals[val] = values.reduce(
-          (previousValue, currentValue) => previousValue + currentValue,
-          0
-        )
-        data.max[val] = Math.max(...values)
-        data.min[val] = Math.min(...values)
-      })
-
-      console.log(data)
-      return data
-    },
-  },
-  methods: {
-    calculatePercentage(value, total) {
-      return Math.round((value / total) * 100)
+      return { rows, columns, responses, stats }
     },
   },
 }

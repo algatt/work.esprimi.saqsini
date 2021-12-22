@@ -1,60 +1,72 @@
 <template>
-  <div
-    class="flex flex-col items-center w-full"
-    :style="`height: ${chartData.height}px`"
-  >
-    <div class="flex space-x-2 items-center">
-      <span>Base</span
-      ><span class="font-semibold bg-gray-100 rounded px-1 py-0.5">
-        {{
-          chartData.series[0].data.reduce((acc, val) => {
-            return (acc += val)
-          })
-        }}</span
-      >
+  <div>
+    <div class="flex flex-col" :style="`min-height: ${dataChart.height}px`">
+      <apexchart
+        :options="dataChart.chartOptions"
+        :series="dataChart.series"
+        height="100%"
+        class="w-full"
+      ></apexchart>
     </div>
-    <apexchart
-      :options="chartData.chartOptions"
-      :series="chartData.series"
-      height="100%"
-      class="w-full"
-    ></apexchart>
   </div>
 </template>
 
 <script>
-import { getDataAggregateRanking } from '~/services/question-helpers'
 import { REPORT_CHART_SETTINGS } from '~/assets/settings/charts-settings'
 
 export default {
   name: 'ChartRanking',
 
   props: {
-    data: {
-      type: Object,
+    elements: {
+      type: Array,
       required: true,
     },
-    selectedList: {
+    responses: {
       type: Array,
       required: true,
     },
   },
 
   computed: {
-    legendData() {
-      return this.data.availableAnswers.map((el) => {
-        return el.code
+    dataChart() {
+      const categories = this.elements.map((el) => {
+        return el.value
       })
-    },
-    rankingData() {
-      const selectedList = this.selectedList.map((el) => {
-        return el.code
-      })
-      return getDataAggregateRanking(this.legendData, selectedList, this.data)
-    },
-    chartData() {
+
+      const regex = /(\(\d*\))$/
+      const allValues = new Set(
+        this.responses.map((el) => {
+          return el.value.match(regex)[0].replace('(', '').replace(')', '')
+        })
+      ).size
+
+      const series = []
+
+      for (let i = 1; i <= allValues; i++) {
+        const data = []
+        categories.forEach((category) => {
+          const searchString = `${category} (${i})`
+          data.push(
+            this.responses.filter((el) => {
+              return el.value === searchString
+            }).length
+          )
+        })
+
+        series.push({ name: i, data })
+      }
+
+      let height =
+        categories.length * REPORT_CHART_SETTINGS.horizontalBar.barHeight
+
+      height =
+        height < REPORT_CHART_SETTINGS.minQuestionHeight
+          ? REPORT_CHART_SETTINGS.minQuestionHeight
+          : height
+
       return {
-        series: this.rankingData.series,
+        series,
         chartOptions: {
           colors: REPORT_CHART_SETTINGS.colors,
           chart: {
@@ -68,18 +80,14 @@ export default {
             },
           },
           xaxis: {
-            categories: this.rankingData.categories,
+            categories,
           },
           legend: {
             position: 'bottom',
             horizontalAlign: 'center',
           },
         },
-        height:
-          this.rankingData.categories.length < 6
-            ? 300
-            : this.rankingData.categories.length *
-              REPORT_CHART_SETTINGS.horizontalBar.barHeight,
+        height,
       }
     },
   },

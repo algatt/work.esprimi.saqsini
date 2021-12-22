@@ -337,3 +337,43 @@ export function getDataAggregateRanking(
 
   return dataToReturn
 }
+
+export function getOptionText(option, language) {
+  return option.find((el) => {
+    return el.language === language
+  }).text
+}
+
+export function getQuestionOptionsAndOtherAnswers(question, answers) {
+  const options = question.options
+    .sort((a, b) => {
+      return a.ordinalPosition > b.ordinalPosition ? 1 : -1
+    })
+    .map((option) => {
+      return {
+        ordinalPosition: option.ordinalPosition,
+        text: getOptionText(option.text, PREFERRED_LANGUAGE),
+        value: option.value,
+        flags: option.flags,
+        surveyOptions: option.surveyOptions,
+      }
+    })
+
+  const answerOptions = answers.map((answer) => {
+    return {
+      ordinalPosition: null,
+      text:
+        answer.option && answer.option !== '' ? answer.option : answer.value,
+      value: answer.value,
+    }
+  })
+
+  if (!['RANKING', 'LIKERT'].includes(getQuestionType(this.question)))
+    answerOptions.forEach((el) => {
+      const found = options.find((option) => {
+        return option.text === el.text && option.value === el.value
+      })
+      if (!found) options.push(el)
+    })
+  return options
+}

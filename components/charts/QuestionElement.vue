@@ -1,81 +1,165 @@
 <template>
-  <div v-if="!loading" class="flex flex-wrap w-full">
-    <template v-if="data.responses.length !== 0">
-      <div class="w-full md:w-3/12 flex flex-col print:hidden">
-        <multi-select
-          v-if="
-            data.availableAnswers.length !== 0 &&
-            data.question.type !== 'TYPE_IN'
-          "
-          :original-list="data.availableAnswers"
-          :selected-list="selectedList"
-          display-field="text"
-          @selectedItems="updateChart"
+  <div class="flex flex-wrap w-full">
+    <div class="w-full lg:w-4/12 px-3">
+      <div class="flex space-x-3 mb-3">
+        <div
+          v-if="selectedList.length !== optionsAndAnswers.length"
+          class="flex items-center space-x-2 border-2 border-gray-200 p-1 rounded"
         >
-          <template v-slot:title>Available answers</template>
-        </multi-select>
+          <span class="font-semibold">Filtered Base</span>
+          <span
+            class="font-semibold bg-blue-600 text-white rounded px-1 py-0"
+            >{{ filteredBaseCount }}</span
+          >
+        </div>
+        <div
+          class="flex items-center space-x-2 border-2 border-gray-200 p-1 rounded"
+        >
+          <span class="font-semibold">Base</span>
+          <span
+            class="font-semibold bg-blue-600 text-white rounded px-1 py-0"
+            >{{ baseCount }}</span
+          >
+        </div>
       </div>
-      <div
-        :id="`question_graph_${data.question.code}`"
-        class="w-full md:w-9/12 flex flex-col p-5"
+      <multi-select
+        :original-list="optionsAndAnswers"
+        display-field="text"
+        :selected-list="selectedList"
+        key-field="value"
+        @selectedItems="updateSelectedItems"
+        ><template #title>Select Values</template></multi-select
       >
-        <component
-          :is="CHART_TYPE_COMPONENT[data.question.type]"
-          :data="data"
-          :selected-list="selectedList"
-        ></component>
-      </div>
-    </template>
-    <div v-else class="flex justify-center w-full pt-5">No Responses</div>
+    </div>
+    <div class="w-full lg:w-8/12 px-3">
+      <component
+        :is="chartTypeComponent"
+        :elements="processedSelectedList"
+        :responses="filteredResponses"
+      ></component>
+    </div>
   </div>
 </template>
 
 <script>
-import MultiSelect from '~/components/elements/MultiSelect'
-import { CHART_TYPE_COMPONENT } from '~/assets/settings/charts-settings'
 import ChartMultipleChoice from '~/components/charts/ChartMultipleChoice'
 import ChartLikert from '~/components/charts/ChartLikert'
 import ChartRanking from '~/components/charts/ChartRanking'
 import ChartTypeIn from '~/components/charts/ChartTypeIn'
 import ChartRadioGrid from '~/components/charts/ChartRadioGrid'
+import {
+  getQuestionOptionsAndOtherAnswers,
+  getQuestionType,
+} from '~/services/question-helpers'
+import MultiSelect from '~/components/elements/MultiSelect'
+import { CHART_TYPE_COMPONENT } from '~/assets/settings/charts-settings'
 
 export default {
-  name: 'QuestionElementVue',
+  name: 'QuestionElement',
   components: {
+    MultiSelect,
     ChartRanking,
     ChartLikert,
-    MultiSelect,
     ChartMultipleChoice,
-    ChartTypeIn,
     ChartRadioGrid,
+    ChartTypeIn,
   },
   props: {
-    data: {
+    question: {
       required: true,
       type: Object,
+    },
+    responses: {
+      type: Array,
+      default: () => {
+        return []
+      },
     },
   },
   data() {
     return {
-      selectedList: [],
-      loading: true,
+      getQuestionOptionsAndOtherAnswers,
+      getQuestionType,
       CHART_TYPE_COMPONENT,
+      selectedList: [],
     }
   },
+  computed: {
+    isRadioQuestion() {
+      return getQuestionType(this.question) === 'RADIO_GRID'
+    },
+    isRankingQuestion() {
+      return getQuestionType(this.question) === 'RANKING'
+    },
+    processedSelectedList() {
+      const x = JSON.parse(JSON.stringify(this.selectedList))
+      if (this.isRadioQuestion)
+        x.push(
+          ...this.getQuestionOptionsAndOtherAnswers(
+            this.question,
+            this.responses
+          ).filter((el) => {
+            return el.flags && el.flags.includes('COLUMN')
+          })
+        )
+      return x
+    },
+    baseOptionsAndAnswers() {
+      return this.getQuestionOptionsAndOtherAnswers(
+        this.question,
+        this.responses
+      )
+    },
+    optionsAndAnswers() {
+      let x = this.baseOptionsAndAnswers
+      if (this.isRadioQuestion)
+        x = x.filter((el) => {
+          return el.flags && el.flags.includes('ROW')
+        })
+      return x
+    },
 
-  mounted() {
-    this.selectedList = this.data.availableAnswers
-    this.loading = false
-  },
-  methods: {
-    updateChart(newSelectedList) {
-      this.selectedList = newSelectedList.sort((a, b) => {
-        return a.code > b.code ? 1 : -1
+    filteredResponses() {
+      const resp = JSON.parse(JSON.stringify(this.responses))
+
+      const availableValues = this.processedSelectedList.map((el) => {
+        return el.value
+      })
+
+      return resp.filter((el) => {
+        if (this.isRankingQuestion) {
+          const regex = /(\(\d*\))$/
+          return availableValues.includes(el.value.replace(regex, '').trim())
+        } else return availableValues.includes(el.value)
       })
     },
-    updateChartRanking(newList) {
-      this.selectedListForRanking = newList
-      this.$forceUpdate()
+    baseCount() {
+      return new Set(
+        this.responses.map((el) => {
+          return el.token
+        })
+      ).size
+    },
+    filteredBaseCount() {
+      return new Set(
+        this.filteredResponses.map((el) => {
+          return el.token
+        })
+      ).size
+    },
+    chartTypeComponent() {
+      return CHART_TYPE_COMPONENT[getQuestionType(this.question)]
+    },
+  },
+
+  beforeMount() {
+    this.selectedList = this.optionsAndAnswers
+    // this.selectedList = this.data.availableAnswers
+    // this.loading = false
+  },
+  methods: {
+    updateSelectedItems(list) {
+      this.selectedList = list
     },
   },
 }

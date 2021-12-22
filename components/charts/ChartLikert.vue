@@ -1,24 +1,11 @@
 <template>
-  <div class="flex flex-col items-center w-full">
-    <div class="flex space-x-2 items-center">
-      <span>Base</span
-      ><span class="font-semibold bg-gray-100 rounded px-1 py-0.5">
-        {{
-          datasets.data.reduce((acc, val) => {
-            return (acc += val)
-          })
-        }}</span
-      >
-    </div>
-    <div class="flex w-full" :style="`height: ${chartData.height}px`">
-      <apexchart
-        :options="chartData.chartOptions"
-        :series="chartData.series"
-        height="100%"
-        class="w-full"
-      ></apexchart>
-    </div>
-
+  <div class="flex flex-col" :style="`min-height: ${dataChart.height}px`">
+    <apexchart
+      :options="dataChart.chartOptions"
+      :series="dataChart.series"
+      height="100%"
+      class="w-full"
+    ></apexchart>
     <div class="flex flex-wrap justify-center items-center space-x-5 mt-4">
       <div class="flex flex-col border border-gray-200 shadow-sm w-24">
         <span
@@ -29,7 +16,8 @@
           calculateAverage()
         }}</span>
       </div>
-      <template v-if="datasets.data.length === 10">
+
+      <template v-if="categories.length === 10">
         <div
           v-for="(item, index) in getNPS()"
           :key="index"
@@ -62,45 +50,38 @@
 </template>
 
 <script>
-import { getDataAggregate } from '~/services/question-helpers'
 import { REPORT_CHART_SETTINGS } from '~/assets/settings/charts-settings'
 
 export default {
   name: 'ChartLikert',
   components: {},
   props: {
-    data: {
-      type: Object,
+    elements: {
+      type: Array,
       required: true,
     },
-    selectedList: {
+    responses: {
       type: Array,
       required: true,
     },
   },
   computed: {
-    legendData() {
-      return this.data.availableAnswers.map((el) => {
-        return el.code
+    categories() {
+      return this.elements.map((el) => {
+        return el.value
       })
     },
-    datasets() {
-      const selectedList = this.selectedList.map((el) => {
-        return el.code
-      })
-
-      return getDataAggregate(this.legendData, selectedList, this.data)
-    },
-    chartData() {
-      const formattedData = []
-      for (let i = 0; i < this.datasets.labels.length; i++) {
-        formattedData.push({
-          name: this.datasets.labels[i],
-          data: [this.datasets.data[i]],
-        })
+    dataChart() {
+      const data = []
+      for (const el of this.categories) {
+        const foundItems = this.responses.filter((res) => {
+          return res.value === el
+        }).length
+        data.push({ name: el, data: [foundItems] })
       }
+
       return {
-        series: formattedData,
+        series: data,
         chartOptions: {
           colors: REPORT_CHART_SETTINGS.colors,
           chart: {
@@ -129,14 +110,17 @@ export default {
 
   methods: {
     calculateAverage() {
-      let total = 0
-      let average = 0
-      for (const i in this.datasets.data) {
-        total += this.datasets.data[i]
-        average += this.datasets.data[i] * this.datasets.labels[i]
-      }
+      const values = this.responses.map((el) => {
+        return Number(el.value)
+      })
 
-      return Math.round((average / total) * 100) / 100
+      const totalNumbers = values.length
+
+      const total = values.reduce((a, v) => {
+        return a + v
+      })
+
+      return (total / totalNumbers).toFixed(2)
     },
     getNPS() {
       const nps = {
@@ -146,16 +130,16 @@ export default {
         NPS: 0,
       }
 
-      for (const i in this.datasets.data) {
+      for (const i in this.responses) {
         const which =
-          this.datasets.labels[i] < 7
+          this.responses[i].value < 7
             ? 'Detractors'
-            : this.datasets.labels[i] < 9
+            : this.responses[i].value < 9
             ? 'Passive'
             : 'Promoters'
 
-        nps[which] += this.datasets.data[i]
-        nps.NPS += this.datasets.data[i]
+        nps[which] += 1
+        nps.NPS += 1
       }
 
       nps.NPS = ((nps.Promoters - nps.Detractors) / nps.NPS) * 100

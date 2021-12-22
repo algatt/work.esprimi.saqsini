@@ -1,21 +1,8 @@
 <template>
-  <div
-    class="flex flex-col items-center"
-    :style="`height: ${chartData.height}px`"
-  >
-    <div class="flex space-x-2 items-center">
-      <span>Base</span
-      ><span class="font-semibold bg-gray-100 rounded px-1 py-0.5">
-        {{
-          chartData.series[0].data.reduce((acc, val) => {
-            return (acc += val)
-          })
-        }}</span
-      >
-    </div>
+  <div class="flex flex-col" :style="`min-height: ${dataChart.height}px`">
     <apexchart
-      :options="chartData.chartOptions"
-      :series="chartData.series"
+      :options="dataChart.chartOptions"
+      :series="dataChart.series"
       height="100%"
       class="w-full"
     ></apexchart>
@@ -23,18 +10,17 @@
 </template>
 
 <script>
-import { getDataAggregate } from '~/services/question-helpers'
 import { REPORT_CHART_SETTINGS } from '~/assets/settings/charts-settings'
 
 export default {
   name: 'ChartMultipleChoice',
   components: {},
   props: {
-    data: {
-      type: Object,
+    elements: {
+      type: Array,
       required: true,
     },
-    selectedList: {
+    responses: {
       type: Array,
       required: true,
     },
@@ -45,21 +31,31 @@ export default {
     }
   },
   computed: {
-    legendData() {
-      return this.data.availableAnswers.map((el) => {
-        return el.code
-      })
-    },
-    multipleData() {
-      const selectedList = this.selectedList.map((el) => {
-        return el.code
+    dataChart() {
+      const categories = this.elements.map((el) => {
+        return el.value
       })
 
-      return getDataAggregate(this.legendData, selectedList, this.data)
-    },
-    chartData() {
+      const data = []
+      for (const el of categories) {
+        const foundItems = this.responses.filter((res) => {
+          return res.value === el
+        }).length
+        data.push(foundItems)
+      }
+
+      let height =
+        categories.length * REPORT_CHART_SETTINGS.horizontalBar.barHeight
+
+      height =
+        height < REPORT_CHART_SETTINGS.minQuestionHeight
+          ? REPORT_CHART_SETTINGS.minQuestionHeight
+          : height
+
+      this.$emit('emitHeight', height)
+
       return {
-        series: [{ name: 'Responses', data: this.multipleData.data }],
+        series: [{ name: 'Responses', data }],
         chartOptions: {
           colors: REPORT_CHART_SETTINGS.colors,
           chart: {
@@ -71,14 +67,10 @@ export default {
             },
           },
           xaxis: {
-            categories: this.multipleData.labels,
+            categories,
           },
         },
-        height:
-          this.multipleData.labels.length < 4
-            ? 175
-            : this.multipleData.labels.length *
-              REPORT_CHART_SETTINGS.horizontalBar.barHeight,
+        height,
       }
     },
   },

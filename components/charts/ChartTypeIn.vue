@@ -1,20 +1,9 @@
 <template>
   <div class="flex flex-col items-center w-full">
-    <div class="flex space-x-2 items-center">
-      <span>Base</span
-      ><span class="font-semibold bg-gray-100 rounded px-1 py-0.5">
-        {{
-          datasets
-            .map((el) => {
-              return el.count
-            })
-            .reduce((acc, val) => {
-              return (acc += val)
-            })
-        }}</span
-      >
-    </div>
-    <div class="flex flex-wrap max-h-64 overflow-y-auto">
+    <div
+      class="flex flex-wrap overflow-y-auto items-start justify-start w-full"
+      :style="`min-height: ${REPORT_CHART_SETTINGS.minQuestionHeight}px`"
+    >
       <div
         v-for="(item, index) in datasets"
         :key="index"
@@ -32,29 +21,29 @@
 </template>
 
 <script>
+import { REPORT_CHART_SETTINGS } from '~/assets/settings/charts-settings'
+
 export default {
   name: 'ChartTypeIn',
 
   props: {
-    data: {
-      type: Object,
+    elements: {
+      type: Array,
       required: true,
     },
-    selectedList: {
+    responses: {
       type: Array,
       required: true,
     },
   },
+  data() {
+    return { REPORT_CHART_SETTINGS }
+  },
 
   computed: {
-    legendData() {
-      return this.data.availableAnswers.map((el) => {
-        return el.code
-      })
-    },
     datasets() {
-      let temp = this.data.availableAnswers.map((el) => {
-        return el.code.toLowerCase().trim()
+      let temp = this.responses.map((el) => {
+        return el.value.toLowerCase().trim()
       })
 
       const data = {}
@@ -68,7 +57,9 @@ export default {
         temp.push({ text: el, count: data[el] })
       })
 
-      return temp
+      return temp.sort((a, b) => {
+        return a.count > b.count ? -1 : 1
+      })
     },
   },
 }

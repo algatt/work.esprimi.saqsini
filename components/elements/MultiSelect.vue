@@ -12,13 +12,14 @@
       ></span>
 
       <div
-        class="flex w-full border-2 border-gray-200 rounded-l py-1.5 px-2 focus:ring-0 focus:outline-none transition duration-300 disabled:border-gray-300 disabled:bg-gray-100"
+        class="flex w-full border-2 border-gray-200 rounded py-1.5 px-1 focus:ring-0 focus:outline-none transition duration-300 disabled:border-gray-300 disabled:bg-gray-100"
         :class="color ? `focus:border-${color}-700` : `focus:border-primary`"
         @click="toggleMenu"
       >
         <span class="flex flex-grow text-gray-800 px-1"
           ><slot name="title"></slot
         ></span>
+
         <div class="flex w-12 justify-end pr-3 items-center">
           <i
             v-if="isSubMenuVisible"
@@ -33,10 +34,11 @@
           <transition name="fade">
             <div
               v-if="isSubMenuVisible"
-              class="flex flex-col bg-white border border-gray-100 shadow"
+              class="flex flex-col bg-white border border-gray-100 shadow overflow-auto z-30"
+              style="max-height: 250px"
             >
               <button
-                class="flex flex-grow text-left items-center px-3 py-2 hover:bg-gray-100 transition duration-300 cursor-pointer"
+                class="flex flex-1 text-left items-center px-3 py-2 hover:bg-gray-100 transition duration-300 cursor-pointer"
                 @click="selectAll"
               >
                 <span class="flex w-8 justify-center items-center"
@@ -46,11 +48,11 @@
                     :class="color ? `text-${color}-600` : `text-primary`"
                   ></i
                 ></span>
-                <span class="flex flex-grow"> Select all</span>
+                <span class="flex"> Select all</span>
               </button>
               <button
                 v-for="item in originalList"
-                :key="item.code"
+                :key="item[keyField]"
                 class="flex flex-grow items-center text-left px-3 py-2 hover:bg-gray-100 transition duration-300 cursor-pointer"
                 @click="addOrRemoveItem(item)"
               >
@@ -61,7 +63,7 @@
                     :class="color ? `text-${color}-600` : `text-primary`"
                   ></i
                 ></span>
-                <span class="flex flex-grow"> {{ item[displayField] }}</span>
+                <span class="flex flex-1"> {{ item[displayField] }}</span>
               </button>
             </div>
           </transition>
@@ -72,6 +74,15 @@
         >
           <transition name="fade">
             <div class="flex flex-wrap">
+              <span v-if="list.length > 0" class="px-2 my-1 mr-1">
+                <button
+                  class="hover:text-gray-500"
+                  :class="color ? `text-${color}-600` : `text-primary`"
+                  @click="clearAll"
+                >
+                  clear all
+                </button>
+              </span>
               <span
                 v-for="(selectedItem, index) in list"
                 :key="index"
@@ -82,15 +93,6 @@
                   <i
                     class="fas fa-times-circle fa-sm fa-fw text-gray-400 hover:text-gray-500 transition duration-300"
                   ></i>
-                </button>
-              </span>
-              <span v-if="list.length > 0" class="px-2 my-1 mr-1">
-                <button
-                  class="hover:text-gray-500"
-                  :class="color ? `text-${color}-600` : `text-primary`"
-                  @click="clearAll"
-                >
-                  clear all
                 </button>
               </span>
             </div>
@@ -121,6 +123,10 @@ export default {
       type: String,
       default: null,
     },
+    keyField: {
+      type: String,
+      default: 'code',
+    },
   },
   data() {
     return {
@@ -128,7 +134,7 @@ export default {
       list: [],
     }
   },
-  mounted() {
+  beforeMount() {
     this.list = this.selectedList
   },
   methods: {
@@ -142,14 +148,14 @@ export default {
     },
     removeItem(item) {
       this.list = this.list.filter((e) => {
-        return e.code !== item.code
+        return e[this.keyField] !== item[this.keyField]
       })
       this.$emit('selectedItems', this.list)
     },
     addOrRemoveItem(item) {
       if (
         this.list.find((el) => {
-          return el.code === item.code
+          return el[this.keyField] === item[this.keyField]
         })
       ) {
         this.removeItem(item)
@@ -168,7 +174,7 @@ export default {
     },
     includesItem(item) {
       return this.list.find((el) => {
-        return el.code === item.code
+        return el[this.keyField] === item[this.keyField]
       })
     },
   },
