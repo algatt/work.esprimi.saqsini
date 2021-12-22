@@ -26,6 +26,7 @@ module.exports = {
     },
   },
   purge: {
+    content: [`assets/settings/**/*.js`],
     options: {
       safelist: [/red/, /blue/, /gray/, /yellow/, /green/, /indigo/, /pink/],
     },
