@@ -6,7 +6,7 @@ module.exports = {
       borderColor: ['active', 'disabled'],
       borderWidth: ['active', 'hover'],
       height: ['hover'],
-      textColor: ['disabled'],
+      textColor: ['disabled', 'active'],
       cursor: ['disabled'],
       animation: ['hover'],
     },

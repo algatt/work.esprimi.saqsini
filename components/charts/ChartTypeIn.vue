@@ -1,8 +1,10 @@
 <template>
-  <div class="flex flex-col items-center w-full">
+  <div
+    class="flex flex-col items-center w-full"
+    :style="`min-height: ${REPORT_CHART_SETTINGS.minQuestionHeight}px`"
+  >
     <div
       class="flex flex-wrap overflow-y-auto items-start justify-start w-full"
-      :style="`min-height: ${REPORT_CHART_SETTINGS.minQuestionHeight}px`"
     >
       <div
         v-for="(item, index) in datasets"

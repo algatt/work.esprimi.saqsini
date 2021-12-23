@@ -31,10 +31,9 @@
 
       <div class="w-6/12 flex flex-col">
         <div v-for="n in question.maxChoice" :key="n">
-          <!--          {{ n }} {{ question.maxChoice }} {{ answers.length }}-->
           <div v-if="n <= answers.length">
             <div
-              :key="`${index} ${languageText.title}`"
+              :key="`${n} ${languageText.title}`"
               class="w-11/12 md:w-7/12 p-3 my-2 text-white rounded shadow-sm cursor-pointer mx-auto border-2 border-transparent"
               :class="displayStyle.accentBackground"
               @click="moveAnswerToOptions(answers[n - 1])"

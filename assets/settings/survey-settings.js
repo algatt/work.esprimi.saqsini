@@ -42,6 +42,46 @@ export const SURVEY_COLOURS = {
       buttons:
         'bg-green-600 text-white hover:text-green-600 hover:bg-white active:text-green-600 active:bg-white transition duration-300 border-2 border-transparent hover:border-green-600 disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-transparent ',
     },
+    {
+      name: 'gray',
+      textColour: 'text-gray-700',
+      background: 'bg-gradient-to-r from-gray-500 to-gray-700',
+      accentText: 'text-gray-600',
+      accentBackground: 'bg-gray-600',
+      borderColour: 'border-gray-600',
+      buttons:
+        'bg-gray-600 text-white hover:text-gray-600 hover:bg-white active:text-gray-600 active:bg-white transition duration-300 border-2 border-transparent hover:border-gray-600 disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-transparent ',
+    },
+    {
+      name: 'yellow',
+      textColour: 'text-gray-700',
+      background: 'bg-gradient-to-r from-yellow-500 to-yellow-700',
+      accentText: 'text-yellow-600',
+      accentBackground: 'bg-yellow-600',
+      borderColour: 'border-yellow-600',
+      buttons:
+        'bg-yellow-600 text-white hover:text-yellow-600 hover:bg-white active:text-yellow-600 active:bg-white transition duration-300 border-2 border-transparent hover:border-yellow-600 disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-transparent ',
+    },
+    {
+      name: 'indigo',
+      textColour: 'text-gray-700',
+      background: 'bg-gradient-to-r from-indigo-500 to-indigo-700',
+      accentText: 'text-indigo-600',
+      accentBackground: 'bg-indigo-600',
+      borderColour: 'border-indigo-600',
+      buttons:
+        'bg-indigo-600 text-white hover:text-indigo-600 hover:bg-white active:text-indigo-600 active:bg-white transition duration-300 border-2 border-transparent hover:border-indigo-600 disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-transparent ',
+    },
+    {
+      name: 'purple',
+      textColour: 'text-gray-700',
+      background: 'bg-gradient-to-r from-purple-500 to-purple-700',
+      accentText: 'text-purple-600',
+      accentBackground: 'bg-purple-600',
+      borderColour: 'border-purple-600',
+      buttons:
+        'bg-purple-600 text-white hover:text-purple-600 hover:bg-white active:text-purple-600 active:bg-white transition duration-300 border-2 border-transparent hover:border-purple-600 disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-transparent ',
+    },
   ],
 
   accentColours: [

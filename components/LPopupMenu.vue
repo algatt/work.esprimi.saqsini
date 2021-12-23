@@ -16,6 +16,7 @@
       <div
         ref="popup"
         class="rounded min-w-max text-gray-700 border border-gray-300 z-20 fixed flex flex-col shadow popup-menu bg-white"
+        style="max-height: 500px; overflow: auto"
         :style="{
           left: left + 'px',
           top: top + 'px',
