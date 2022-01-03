@@ -1,73 +1,125 @@
 <template>
   <div
-    class="flex flex-col bg-gradient-to-br from-blue-600 to-blue-900 min-h-screen"
+    class="flex flex-col bg-white min-h-screen"
+    style="font-family: 'Poppins', sans-serif"
   >
-    <div class="w-full flex items-center justify-end px-10 py-5">
+    <div
+      class="w-full flex items-center justify-between front-page-spacing mb-10"
+    >
+      <h3 class="text-blue-600">
+        Saqsini <i class="far fa-comments fa-fw"></i>
+      </h3>
       <div
-        class="text-white text-lg border-2 border-white px-2 py-1 rounded hover:text-blue-600 hover:bg-white transition duration-300"
+        class="text-blue-600 text-lg border-2 border-blue-600 px-2 py-1 rounded hover:text-white hover:bg-blue-600 transition duration-300"
       >
         <nuxt-link v-if="!isLoggedIn" :to="{ name: 'login' }">login</nuxt-link
         ><nuxt-link v-else :to="{ name: 'surveys' }">home</nuxt-link>
       </div>
     </div>
 
-    <div class="w-full text-white flex flex-wrap justify-center mt-5 mb-14">
-      <h1>Saqsini <i class="far fa-comments fa-fw"></i></h1>
-    </div>
-
     <div
-      class="w-11/12 md:w-10/12 lg:w-8/12 mx-auto rounded flex flex-wrap bg-gray-100 shadow-lg border-2 p-5 mb-14"
+      class="w-full flex flex-wrap-reverse md:flex-wrap front-page-spacing my-24"
     >
-      <div class="w-full md:w-6/12 flex flex-col p-5 space-y-5">
-        <div class="w-full flex justify-center">
-          <h3 class="tracking-wide">Build Surveys</h3>
-        </div>
-        <img :src="image1" class="w-64 h-32 mx-auto" />
-        <p class="text-xl">
-          Saqsini allows you to build unlimited surveys, with unlimited
-          responses for each survey.
-        </p>
+      <div class="front-page-text">
+        <span class="front-page-header"
+          >Welcome to <span class="text-blue-600">Saqsini</span>.</span
+        >
+        <span class="front-page-header"
+          >Create surveys and analyse results in a flash!</span
+        >
+        <span class="front-page-subheader"
+          >With Saqsini, you can create surveys with various question types,
+          invite users, analyse their responses with automatically generated
+          visuals, and export your data for further analysis.
+        </span>
       </div>
-
-      <div class="w-full md:w-6/12 flex flex-col p-5 space-y-5">
-        <div class="w-full flex justify-center">
-          <h3 class="tracking-wide">Multiple Question Types</h3>
-        </div>
-        <img :src="image2" class="w-64 h-32 mx-auto" />
-        <p class="text-xl">
-          You can create different type of questions like multiple choice,
-          likert, drop-down, radio grid, and others to get the best responses.
-        </p>
-      </div>
-
-      <div class="w-full md:w-6/12 flex flex-col p-5 space-y-5">
-        <div class="w-full flex justify-center">
-          <h3 class="tracking-wide">Visualise your responses</h3>
-        </div>
-        <img :src="image3" class="w-64 h-32 mx-auto" />
-        <p class="text-xl">
-          Multiple visualisations for each question and every individual
-          response.
-        </p>
-      </div>
-
-      <div class="w-full md:w-6/12 flex flex-col p-5 space-y-5">
-        <div class="w-full flex justify-center">
-          <h3 class="tracking-wide">Contact List</h3>
-        </div>
-        <img :src="image4" class="w-64 h-32 mx-auto" />
-        <p class="text-xl">
-          You can also manage your own contact lists, so that you can re-invite
-          your contacts or intelligently invite according to survey.
-        </p>
+      <div class="front-page-image">
+        <img :src="image0" />
       </div>
     </div>
 
+    <div class="front-page-spacing" data-aos="fade-in">
+      <div class="front-page-element">
+        <div class="front-page-image">
+          <img :src="image1" class="h-48" />
+        </div>
+        <div class="front-page-text">
+          <span class="front-page-header">Build Surveys</span>
+
+          <span class="front-page-subheader">
+            Saqsini allows you to build
+            <span class="front-page-emphasis">unlimited surveys</span>, with
+            <span class="front-page-emphasis">unlimited responses</span> for
+            each survey.
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="front-page-spacing" data-aos="fade-in">
+      <div class="front-page-element">
+        <div class="front-page-image">
+          <img :src="image2" class="h-48" />
+        </div>
+        <div class="front-page-text">
+          <span class="front-page-header">Mutliple Question Types</span>
+
+          <span class="front-page-subheader">
+            You can create
+            <span class="front-page-emphasis">different type of questions</span>
+            like multiple choice, likert, drop-down, radio grid, and others to
+            get the best responses.
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="front-page-spacing" data-aos="fade-in">
+      <div class="front-page-element">
+        <div class="front-page-image">
+          <img :src="image3" class="h-48" />
+        </div>
+        <div class="front-page-text">
+          <span class="front-page-header">Visualise Your Responses</span>
+
+          <span class="front-page-subheader">
+            Multiple <span class="front-page-emphasis">visualisations</span> for
+            each question and every individual response.
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="front-page-spacing" data-aos="fade-in">
+      <div class="front-page-element">
+        <div class="front-page-image">
+          <img :src="image4" class="h-48" />
+        </div>
+        <div class="front-page-text">
+          <span class="front-page-header">Contact List</span>
+
+          <span class="front-page-subheader">
+            You can also manage your own contact lists, so that you can
+            re-invite your contacts or
+            <span class="front-page-emphasis">intelligently invite</span>
+            according to survey.
+          </span>
+        </div>
+      </div>
+    </div>
+
     <div
-      class="w-11/12 md:w-10/12 lg:w-8/12 mx-auto rounded flex flex-wrap bg-gray-100 shadow-lg border-2 p-5 mb-14"
+      data-aos="fade-in"
+      class="w-full flex flex-wrap-reverse md:flex-wrap py-10 my-12 front-page-spacing"
     >
-      <div class="w-full flex justify-center">
-        <h2 class="tracking-wide">Trusted By</h2>
+      <div
+        class="w-full flex flex-wrap flex-col pr-20 font-normal space-y-4 items-center mb-4"
+      >
+        <span class="front-page-header">Trusted By</span>
+
+        <span class="front-page-subheader"
+          >Saqsini is trusted and used by these companies.
+        </span>
       </div>
       <div class="w-full flex flex-wrap items-center justify-around">
         <div class="w-full md:w-6/12 flex justify-center">
@@ -87,35 +139,34 @@
       </div>
     </div>
 
-    <div
-      class="w-11/12 md:w-10/12 lg:w-8/12 mx-auto rounded flex flex-wrap bg-gray-100 shadow-lg border-2 p-5 mb-14"
-    >
-      <div class="w-full flex justify-center mb-4">
-        <h2 class="tracking-wide">Register Now!</h2>
-      </div>
-
-      <div class="w-full flex flex-wrap mb-6 px-10">
-        <p>
-          All you need to register is an email address, and you can start using
-          our services immediately. Our survey builder comes at no cost, it is
-          offered as a free service.
-        </p>
-      </div>
-
-      <div class="w-full flex flex-col justify-center items-center space-y-5">
-        <l-input v-model="name" class="w-64">Your Name</l-input>
-        <l-input v-model="email" class="w-64" type="email"
-          >Email Address</l-input
+    <div class="front-page-spacing mb-12" data-aos="fade-in">
+      <div class="w-full flex flex-wrap py-8 shadow bg-gray-100 items-center">
+        <div
+          class="w-full flex flex-col justify-center items-center space-y-6 px-10"
         >
+          <p class="front-page-header">Register Now!</p>
+          <p class="text-gray-600">
+            All you need to register is an email address, and you can start
+            using our services immediately. Our survey builder comes at no cost,
+            it is offered as a free service.
+          </p>
+        </div>
 
-        <l-button :disabled="!enableRegister || $v.$invalid" @click="register"
-          >Register</l-button
-        >
+        <div class="w-full flex flex-col justify-center items-center space-y-5">
+          <l-input v-model="name" class="w-64">Your Name</l-input>
+          <l-input v-model="email" class="w-64" type="email"
+            >Email Address</l-input
+          >
+
+          <l-button :disabled="!enableRegister || $v.$invalid" @click="register"
+            >Register</l-button
+          >
+        </div>
       </div>
     </div>
 
     <div
-      class="w-11/12 md:w-10/12 lg:w-8/12 mx-auto rounded flex flex-wrap bg-gray-600 shadow-lg border-2 border-gray-700 p-5 mb-14"
+      class="w-full flex flex-wrap bg-gradient-to-br from-gray-500 to-gray-700 p-5"
     >
       <div class="w-full md:w-6/12 flex flex-col text-white p-10 space-y-5">
         <h5>LobesLab Ltd</h5>
@@ -163,6 +214,7 @@
 </template>
 
 <script>
+import image0 from '@/assets/images/front_page_first.svg'
 import image1 from '@/assets/images/front_page_survey.svg'
 import image2 from '@/assets/images/front_page_questions.svg'
 import image3 from '@/assets/images/front_page_analysis.svg'
@@ -178,6 +230,7 @@ export default {
   mixins: [validationMixin],
   data() {
     return {
+      image0,
       image1,
       image2,
       image3,
@@ -224,3 +277,33 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.front-page-spacing {
+  @apply px-4 md:px-48 py-4;
+}
+
+.front-page-text {
+  @apply w-full md:w-8/12 flex flex-wrap flex-col pl-4 md:pl-0 md:pr-20  mb-4 md:mb-0 font-normal space-y-4;
+}
+
+.front-page-image {
+  @apply w-full md:w-4/12 mb-5 md:mb-0 px-20 md:px-4 flex items-center justify-center;
+}
+
+.front-page-header {
+  @apply text-2xl md:text-4xl leading-relaxed;
+}
+
+.front-page-subheader {
+  @apply text-lg md:text-2xl text-gray-500 leading-relaxed;
+}
+
+.front-page-element {
+  @apply w-full flex flex-wrap-reverse md:flex-wrap py-4 md:py-16 shadow bg-gray-100 items-center;
+}
+
+.front-page-emphasis {
+  @apply text-blue-600 font-medium;
+}
+</style>

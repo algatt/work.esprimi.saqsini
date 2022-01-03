@@ -24,7 +24,7 @@ export default {
       {
         rel: 'stylesheet',
         href:
-          'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Quicksand:wght@400;500;600;700&display=swap',
+          'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Quicksand:wght@400;500;600;700&display=swap',
       },
     ],
     script: [
@@ -60,6 +60,7 @@ export default {
     { src: '~plugins/chartjs-datalabels.js', ssr: false },
     '@/plugins/components.js',
     { src: '@/plugins/apexcharts.js', ssr: false },
+    { src: '@/plugins/aos.js', ssr: false },
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
