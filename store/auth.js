@@ -9,6 +9,26 @@ export const state = () => ({
 })
 
 export const actions = {
+  register({ commit }, { email, name }) {
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .post(
+          '/builder/tokens/registerUser',
+          qs.stringify({
+            email,
+            displayName: name,
+            siteUrl: `${this.$config.siteUrl}activate`,
+          })
+        )
+        .then(() => {
+          resolve('ok')
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
   loginWithEmailAndPassword({ dispatch, commit }, { email, password }) {
     return new Promise((resolve, reject) => {
       this.$axios

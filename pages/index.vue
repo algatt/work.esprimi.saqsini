@@ -1,74 +1,61 @@
 <template>
-  <div class="flex flex-col">
+  <div
+    class="flex flex-col bg-gradient-to-br from-blue-600 to-blue-900 min-h-screen"
+  >
     <div class="w-full flex items-center justify-end px-10 py-5">
-      <nuxt-link v-if="!isLoggedIn" :to="{ name: 'login' }"
-        ><l-text-link class="text-lg">login</l-text-link></nuxt-link
-      ><nuxt-link v-else :to="{ name: 'surveys' }"
-        ><l-text-link class="text-lg">home</l-text-link></nuxt-link
+      <div
+        class="text-white text-lg border-2 border-white px-2 py-1 rounded hover:text-blue-600 hover:bg-white transition duration-300"
       >
+        <nuxt-link v-if="!isLoggedIn" :to="{ name: 'login' }">login</nuxt-link
+        ><nuxt-link v-else :to="{ name: 'surveys' }">home</nuxt-link>
+      </div>
+    </div>
+
+    <div class="w-full text-white flex flex-wrap justify-center mt-5 mb-14">
+      <h1>Saqsini <i class="far fa-comments fa-fw"></i></h1>
     </div>
 
     <div
-      class="w-full flex flex-wrap bg-white md:pl-20 md:justify-start justify-center mt-5 mb-14"
+      class="w-11/12 md:w-10/12 lg:w-8/12 mx-auto rounded flex flex-wrap bg-gray-100 shadow-lg border-2 p-5 mb-14"
     >
-      <h1 class="text-primary">
-        Saqsini <i class="far fa-comments fa-fw"></i>
-      </h1>
-    </div>
-
-    <div class="w-full flex flex-wrap bg-gray-100">
-      <div
-        class="w-full flex flex-col md:w-6/12 py-5 md:pl-20 px-5 text-gray-600 justify-center"
-      >
-        <h2 class="tracking-wide mb-5">Build Surveys</h2>
+      <div class="w-full md:w-6/12 flex flex-col p-5 space-y-5">
+        <div class="w-full flex justify-center">
+          <h3 class="tracking-wide">Build Surveys</h3>
+        </div>
+        <img :src="image1" class="w-64 h-32 mx-auto" />
         <p class="text-xl">
           Saqsini allows you to build unlimited surveys, with unlimited
           responses for each survey.
         </p>
       </div>
-      <div class="w-full md:w-6/12 flex flex-col p-5">
-        <img :src="image1" class="h-64 md:h-80" />
-      </div>
-    </div>
 
-    <div class="w-full flex flex-wrap bg-white">
-      <div class="w-full md:w-6/12 flex flex-col p-5">
-        <img :src="image2" class="h-64 md:h-80" />
-      </div>
-      <div
-        class="w-full flex flex-col md:w-6/12 py-5 md:pr-20 px-5 text-gray-600 justify-center"
-      >
-        <h2 class="tracking-wide mb-5">Question any way you like</h2>
+      <div class="w-full md:w-6/12 flex flex-col p-5 space-y-5">
+        <div class="w-full flex justify-center">
+          <h3 class="tracking-wide">Multiple Question Types</h3>
+        </div>
+        <img :src="image2" class="w-64 h-32 mx-auto" />
         <p class="text-xl">
           You can create different type of questions like multiple choice,
           likert, drop-down, radio grid, and others to get the best responses.
         </p>
       </div>
-    </div>
 
-    <div class="w-full flex flex-wrap bg-gray-100">
-      <div
-        class="w-full flex flex-col md:w-6/12 py-5 md:pl-20 px-5 text-gray-600 justify-center"
-      >
-        <h2 class="tracking-wide mb-5">Visualise your responses</h2>
+      <div class="w-full md:w-6/12 flex flex-col p-5 space-y-5">
+        <div class="w-full flex justify-center">
+          <h3 class="tracking-wide">Visualise your responses</h3>
+        </div>
+        <img :src="image3" class="w-64 h-32 mx-auto" />
         <p class="text-xl">
           Multiple visualisations for each question and every individual
           response.
         </p>
       </div>
-      <div class="w-full md:w-6/12 flex flex-col p-5">
-        <img :src="image3" class="h-64 md:h-80" />
-      </div>
-    </div>
 
-    <div class="w-full flex flex-wrap bg-white">
-      <div class="w-full md:w-6/12 flex flex-col p-5">
-        <img :src="image4" class="h-64 md:h-80" />
-      </div>
-      <div
-        class="w-full flex flex-col md:w-6/12 py-5 md:pr-20 px-5 text-gray-600 justify-center"
-      >
-        <h2 class="tracking-wide mb-5">Contact List</h2>
+      <div class="w-full md:w-6/12 flex flex-col p-5 space-y-5">
+        <div class="w-full flex justify-center">
+          <h3 class="tracking-wide">Contact List</h3>
+        </div>
+        <img :src="image4" class="w-64 h-32 mx-auto" />
         <p class="text-xl">
           You can also manage your own contact lists, so that you can re-invite
           your contacts or intelligently invite according to survey.
@@ -76,7 +63,60 @@
       </div>
     </div>
 
-    <div class="w-full flex flex-wrap bg-gray-600">
+    <div
+      class="w-11/12 md:w-10/12 lg:w-8/12 mx-auto rounded flex flex-wrap bg-gray-100 shadow-lg border-2 p-5 mb-14"
+    >
+      <div class="w-full flex justify-center">
+        <h2 class="tracking-wide">Trusted By</h2>
+      </div>
+      <div class="w-full flex flex-wrap items-center justify-around">
+        <div class="w-full md:w-6/12 flex justify-center">
+          <img
+            :src="imageEsprimi"
+            class="w-48 h-62 filter grayscale hover:grayscale-0 transition duration-300 cursor-pointer"
+            @click="goto('https://www.esprimi.eu')"
+          />
+        </div>
+        <div class="w-full md:w-6/12 flex justify-center">
+          <img
+            :src="imageRichmond"
+            class="w-48 h-60 filter grayscale hover:grayscale-0 transition duration-300 cursor-pointer"
+            @click="goto('https://www.richmond.org.mt')"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="w-11/12 md:w-10/12 lg:w-8/12 mx-auto rounded flex flex-wrap bg-gray-100 shadow-lg border-2 p-5 mb-14"
+    >
+      <div class="w-full flex justify-center mb-4">
+        <h2 class="tracking-wide">Register Now!</h2>
+      </div>
+
+      <div class="w-full flex flex-wrap mb-6 px-10">
+        <p>
+          All you need to register is an email address, and you can start using
+          our services immediately. Our survey builder comes at no cost, it is
+          offered as a free service.
+        </p>
+      </div>
+
+      <div class="w-full flex flex-col justify-center items-center space-y-5">
+        <l-input v-model="name" class="w-64">Your Name</l-input>
+        <l-input v-model="email" class="w-64" type="email"
+          >Email Address</l-input
+        >
+
+        <l-button :disabled="!enableRegister || $v.$invalid" @click="register"
+          >Register</l-button
+        >
+      </div>
+    </div>
+
+    <div
+      class="w-11/12 md:w-10/12 lg:w-8/12 mx-auto rounded flex flex-wrap bg-gray-600 shadow-lg border-2 border-gray-700 p-5 mb-14"
+    >
       <div class="w-full md:w-6/12 flex flex-col text-white p-10 space-y-5">
         <h5>LobesLab Ltd</h5>
         <div class="flex items-center space-x-3">
@@ -127,21 +167,59 @@ import image1 from '@/assets/images/front_page_survey.svg'
 import image2 from '@/assets/images/front_page_questions.svg'
 import image3 from '@/assets/images/front_page_analysis.svg'
 import image4 from '@/assets/images/front_page_contacts.svg'
-import LTextLink from '~/components/LTextLink'
+import imageEsprimi from '@/assets/images/esprimi.png'
+import imageRichmond from '@/assets/images/richmond.png'
+import { validationMixin } from 'vuelidate'
+import { required, email } from 'vuelidate/lib/validators'
+
 export default {
-  components: { LTextLink },
+  components: {},
   layout: 'default',
+  mixins: [validationMixin],
   data() {
     return {
       image1,
       image2,
       image3,
       image4,
+      imageEsprimi,
+      imageRichmond,
+      name: '',
+      email: '',
+      enableRegister: true,
     }
+  },
+  validations: {
+    name: {
+      required,
+    },
+    email: {
+      required,
+      email,
+    },
   },
   computed: {
     isLoggedIn() {
       return this.$store.state.auth.authUser
+    },
+  },
+  methods: {
+    goto(url) {
+      window.location.href = url
+    },
+    register() {
+      this.$store
+        .dispatch('auth/register', {
+          email: this.email,
+          name: this.name,
+        })
+        .then(() => {
+          this.$toasted.show('Account created successfully. Check your inbox.')
+          this.enableRegister = false
+        })
+        .catch((error) => {
+          this.$toasted.error(error.response.data.message)
+        })
     },
   },
 }

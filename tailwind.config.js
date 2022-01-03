@@ -9,6 +9,7 @@ module.exports = {
       textColor: ['disabled', 'active'],
       cursor: ['disabled'],
       animation: ['hover'],
+      grayscale: ['hover'],
     },
   },
   theme: {
