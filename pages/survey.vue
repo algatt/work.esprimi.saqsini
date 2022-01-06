@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="!loading && !error && !disqualify && !finished"
+    v-if="!loading && error === '' && !disqualify && !finished"
     class="min-h-screen p-3 lg:p-10 w-full"
     :class="parsedSurvey.options.theme.background"
   >
@@ -26,21 +26,15 @@
     </modal-generic>
   </div>
   <div
-    v-else-if="!loading && error === true"
+    v-else-if="!loading && error !== ''"
     class="flex flex-col justify-center items-center h-screen w-full"
   >
     <app-logo></app-logo>
-    <div class="my-10">There was a problem loading the survey.</div>
+    <div class="my-10">{{ error }}</div>
   </div>
+
   <div
-    v-else-if="!loading && error === 'ready'"
-    class="flex flex-col justify-center items-center h-screen w-full"
-  >
-    <app-logo></app-logo>
-    <div class="my-10">You have already participated in this survey.</div>
-  </div>
-  <div
-    v-else-if="!loading && !error && disqualify && !finished"
+    v-else-if="!loading && error === '' && disqualify && !finished"
     class="flex flex-col justify-center items-center h-screen w-full"
   >
     <app-logo></app-logo>
@@ -80,7 +74,7 @@ export default {
   layout: 'default',
   data() {
     return {
-      error: false,
+      error: '',
       surveyData: [],
       loading: true,
       answers: [],
@@ -138,8 +132,9 @@ export default {
         this.surveyData = response
       })
       .catch((error) => {
-        if (error.response.status === 406) this.error = 'ready'
-        else this.error = true
+        // if (error.response.status === 406) this.error = 'ready'
+        // else this.error = true
+        this.error = error.response.data.message
       })
       .finally(() => {
         this.loading = false
@@ -219,8 +214,8 @@ export default {
         .then(() => {
           this.disqualify = true
         })
-        .catch(() => {
-          this.error = true
+        .catch((error) => {
+          this.error = error.response
         })
     },
     sendEmailWithResponses() {
