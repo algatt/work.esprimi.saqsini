@@ -40,6 +40,8 @@
               ? 'required'
               : !$v.form.questionNumber.duplicate
               ? 'duplicate'
+              : !$v.form.questionNumber.integer
+              ? 'must be a whole number'
               : null
             : null
         "
@@ -155,7 +157,7 @@
 </template>
 
 <script>
-import { required } from 'vuelidate/lib/validators'
+import { required, integer } from 'vuelidate/lib/validators'
 import { validationMixin } from 'vuelidate'
 import NewQuestionSection from '~/components/surveys/NewQuestionSection'
 import NewQuestionDropDown from '~/components/surveys/NewQuestionDropDown'
@@ -249,6 +251,7 @@ export default {
       },
       questionNumber: {
         required,
+        integer,
         duplicate(value) {
           const questions = JSON.parse(JSON.stringify(this.questions))
 

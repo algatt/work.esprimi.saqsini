@@ -219,6 +219,7 @@
 
 <script>
 import {
+  convertQuestionFromApiToForm,
   convertQuestionFromFormToApi,
   getQuestionTypeText,
 } from '~/services/question-helpers'
@@ -335,40 +336,36 @@ export default {
         })
     },
     newQuestionFromTemplate(ordinalPosition) {
+      let ordPos = ordinalPosition
+      let nextQuestionNumber = Math.max(
+        ...this.questions.map((el) => {
+          return el.questionNumber
+        })
+      )
       ModalService.open(PlainModal, {
         whichComponent: 'SelectQuestionTemplate',
         options: {
-          saveName: 'Select',
+          saveName: 'Add',
           saveIcon: 'fas fa-check fa-fw',
+          header: 'Select Questions',
         },
-      }).then((result) => {
-        ModalService.open(NewItemModal, {
-          whichComponent: 'NewQuestion',
-          dataItem: {
+      }).then(async (result) => {
+        for (const el of result) {
+          const item = {
             surveyCode: Number(this.$route.params.id),
-            flags: result.flags,
-            ordinalPosition: ordinalPosition + 1,
-            surveyOptions: result.surveyOptions,
-            name: result.name,
-            options: result.options,
-            text: result.text,
-          },
-        })
-          .then((question) => {
-            this.$store.dispatch(
-              'questions/newQuestion',
-              convertQuestionFromFormToApi(question)
-            )
-          })
-          .then(() => {
-            this.$toasted.show(`Question created`)
-          })
-          .catch((error) => {
-            if (error !== 'dismissed')
-              this.$toasted.error(
-                `There was a problem creating the question ${error}`
-              )
-          })
+            flags: el.flags,
+            ordinalPosition: ++ordPos,
+            surveyOptions: el.surveyOptions,
+            name: el.name,
+            options: el.options,
+            text: el.text,
+            questionNumber: ++nextQuestionNumber,
+          }
+          await this.$store.dispatch(
+            'questions/newQuestion',
+            convertQuestionFromFormToApi(convertQuestionFromApiToForm(item))
+          )
+        }
       })
     },
     deleteQuestion(question) {

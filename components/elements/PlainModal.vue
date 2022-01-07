@@ -16,6 +16,7 @@
           <component
             :is="whichComponent"
             :data-item="dataItem"
+            @isValid="isValid = $event"
             @update="updatedItem = $event"
           ></component>
         </div>
@@ -27,8 +28,10 @@
               >Cancel<template #rightIcon
                 ><i class="fas fa-times fa-fw"></i></template
             ></l-button>
+
             <l-button
               :color="options.color ? options.color : 'blue'"
+              :disabled="!isValid"
               @click="confirm(updatedItem)"
               ><span v-if="options && options.saveName">{{
                 options.saveName
@@ -112,8 +115,13 @@ export default {
   data() {
     return {
       updatedItem: {},
-      isValid: false,
+      isValid: true,
     }
+  },
+  watch: {
+    isValid(ev) {
+      console.log(ev)
+    },
   },
 }
 </script>
