@@ -69,6 +69,21 @@ export default {
           xaxis: {
             categories,
           },
+          tooltip: {
+            enabled: true,
+            y: {
+              formatter(value, { series, seriesIndex, dataPointIndex, w }) {
+                let total = 0
+                for (const x of series[seriesIndex]) {
+                  total += x
+                }
+                return `${(
+                  (series[seriesIndex][dataPointIndex] / total) *
+                  100
+                ).toPrecision(2)}%`
+              },
+            },
+          },
         },
         height,
       }
