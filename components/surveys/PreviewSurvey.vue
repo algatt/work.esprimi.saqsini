@@ -32,41 +32,52 @@
           {{ languageText['survey_title'] }}
         </h3>
 
-        <l-popup-menu
-          v-if="
-            survey.flags.includes('HAS_LANGUAGE_PACK_FILE') &&
-            !survey.flags.includes('OUTDATED_LANGUAGE_PACK')
+        <div
+          class="flex"
+          :class="
+            survey.options.headerAlignment === 'mr-auto'
+              ? 'justify-end'
+              : 'justify-start'
           "
-          class="mt-2"
-          :class="[
-            survey.options.headerImage === '' ? null : 'bg-white bg-opacity-90',
-            survey.options.theme.accentText,
-          ]"
         >
-          <template v-slot:icon>
-            <span
-              class="border-2 px-2 rounded"
-              :class="survey.options.theme.borderColour"
-            >
-              <i class="far fa-flag fa-fw"></i
-              ><i class="fas fa-caret-down"></i></span
-          ></template>
-
-          <template v-slot:menu>
-            <div
-              v-for="(language, index) in survey.languages"
-              :key="language + index"
-            >
-              <button
-                v-if="language !== currentLanguage"
-                class="px-5 py-2 w-full"
-                @click="changeLanguage(language)"
+          <l-popup-menu
+            v-if="
+              survey.flags.includes('HAS_LANGUAGE_PACK_FILE') &&
+              !survey.flags.includes('OUTDATED_LANGUAGE_PACK')
+            "
+            class="mt-2"
+            :class="[
+              survey.options.headerImage === ''
+                ? null
+                : 'bg-white bg-opacity-90',
+              survey.options.theme.accentText,
+            ]"
+          >
+            <template v-slot:icon>
+              <span
+                class="border-2 px-2 rounded"
+                :class="survey.options.theme.borderColour"
               >
-                {{ getCountryFromLanguage(language) }}
-              </button>
-            </div>
-          </template></l-popup-menu
-        >
+                <i class="far fa-flag fa-fw"></i
+                ><i class="fas fa-caret-down"></i></span
+            ></template>
+
+            <template v-slot:menu>
+              <div
+                v-for="(language, index) in survey.languages"
+                :key="language + index"
+              >
+                <button
+                  v-if="language !== currentLanguage"
+                  class="px-5 py-2 w-full"
+                  @click="changeLanguage(language)"
+                >
+                  {{ getCountryFromLanguage(language) }}
+                </button>
+              </div>
+            </template></l-popup-menu
+          >
+        </div>
       </div>
     </div>
     <div ref="questionsSection" class="w-full flex flex-col">

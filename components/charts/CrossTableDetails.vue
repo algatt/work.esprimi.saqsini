@@ -81,6 +81,11 @@
           </option>
         </select>
       </template>
+      <l-toggle :change-color="false" @clicked="showAsPercentages = $event"
+        ><template #label>Display Results</template>
+        <template #leftLabel>Numbers</template>
+        <template #rightLabel>Percentages</template></l-toggle
+      >
     </div>
 
     <div class="flex w-full md:w-8/12 justify-center items-center">
@@ -90,11 +95,14 @@
       <div v-else-if="crossTabX.code === crossTabY.code">
         <p>You need to select different questions</p>
       </div>
-      <div v-else class="w-full">
+      <div v-else class="w-full flex flex-col">
         <CrossTable
           v-if="allowCrossTab"
-          :data="getCrossTabData"
+          :data="
+            showAsPercentages ? getCrossTabDataPercentage : getCrossTabData
+          "
           :details="details"
+          :is-percent="showAsPercentages"
         ></CrossTable>
       </div>
     </div>
@@ -107,10 +115,11 @@ import {
   getQuestionType,
 } from '~/services/question-helpers'
 import CrossTable from '~/components/charts/CrossTable'
+import LToggle from '~/components/LToggle'
 
 export default {
   name: 'CrossTableDetails',
-  components: { CrossTable },
+  components: { LToggle, CrossTable },
 
   data() {
     return {
@@ -119,6 +128,7 @@ export default {
       optionX: null,
       optionY: null,
       crossTabXX: null,
+      showAsPercentages: false,
     }
   },
   computed: {
@@ -208,6 +218,11 @@ export default {
           return el.code
         })
 
+      xAxis = xAxis.sort((a, b) => {
+        if (isNaN(a) || isNaN(b)) return a > b ? 1 : -1
+        else return Number(a) > Number(b) ? 1 : -1
+      })
+
       let yAxis = []
 
       if (this.crossTabY.flags.includes('RANKING')) {
@@ -226,6 +241,11 @@ export default {
         yAxis = getDifferentAnswers(this.crossTabY, yResponses).map((el) => {
           return el.code
         })
+
+      yAxis = yAxis.sort((a, b) => {
+        if (isNaN(a) || isNaN(b)) return a > b ? 1 : -1
+        else return Number(a) > Number(b) ? 1 : -1
+      })
 
       const data = []
       data.push(['', ...xAxis])
@@ -277,6 +297,27 @@ export default {
       })
 
       return data
+    },
+    getCrossTabDataPercentage() {
+      const temp = JSON.parse(JSON.stringify(this.getCrossTabData))
+
+      const result = [temp[0]]
+      for (let i = 1; i < temp.length; i++) {
+        let total = 0
+        const pcts = [temp[i][0]]
+        for (let j = 1; j < temp[i].length; j++) {
+          total += temp[i][j]
+        }
+        for (let j = 1; j < temp[i].length; j++) {
+          const val = Number(
+            ((Number(temp[i][j]) / total) * 100).toPrecision(2)
+          )
+          pcts.push(isNaN(val) ? 0 : val)
+        }
+        result.push(pcts)
+      }
+
+      return result
     },
   },
   methods: {

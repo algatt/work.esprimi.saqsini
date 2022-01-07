@@ -39,19 +39,19 @@
           >
             <span class="flex flex-col items-center py-2">
               <span
-                v-if="field === minValue"
+                v-if="field === getMinValueRow(rows)"
                 class="bg-red-100 text-red-700 rounded-lg px-2 py-0.5"
-                >{{ field }}</span
+                >{{ field }}<span v-if="isPercent">%</span></span
               >
               <span
-                v-else-if="field === maxValue"
+                v-else-if="field === getMaxValueRow(rows)"
                 class="bg-green-100 text-green-700 rounded-lg px-2 py-0.5"
-                >{{ field }}</span
+                >{{ field }}<span v-if="isPercent">%</span></span
+              >
+              <span v-else-if="index !== 0"
+                >{{ field }}<span v-if="isPercent">%</span></span
               >
               <span v-else>{{ field }}</span>
-              <span v-if="false && index !== 0 && !hidePercentages">
-                {{ calculatePercentage(field, totalCount) }}%</span
-              >
             </span>
           </td>
         </tr>
@@ -82,6 +82,10 @@ export default {
         return {}
       },
     },
+    isPercent: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -89,7 +93,6 @@ export default {
       minValue: null,
       totalCount: null,
       minElWidth: 150,
-      hidePercentages: false,
     }
   },
   computed: {
@@ -109,6 +112,12 @@ export default {
     this.totalCount = this.getTotalCount()
   },
   methods: {
+    getMinValueRow(row) {
+      return Math.min(...row.slice(1))
+    },
+    getMaxValueRow(row) {
+      return Math.max(...row.slice(1))
+    },
     getMaxValue() {
       let maxValue = null
       for (let i = 1; i < this.data.length; i++) {
@@ -139,12 +148,8 @@ export default {
       }
       return totalCount
     },
-    calculatePercentage(value, total) {
-      const x = Math.round((value / total) * 100)
-      return isNaN(x) ? 0 : x
-    },
+
     copyTableToClipboard() {
-      this.hidePercentages = true
       this.$nextTick(() => {
         navigator.clipboard
           .writeText(this.$refs.crossTable.innerHTML)
@@ -152,7 +157,6 @@ export default {
             this.$toasted.show(
               'Table copied to clipboard. You can paste it in Excel.'
             )
-            this.hidePercentages = false
           })
       })
     },
