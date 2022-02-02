@@ -38,7 +38,7 @@
       </div>
     </div>
 
-    <div class="front-page-spacing" data-aos="fade-in">
+    <div class="front-page-spacing">
       <div class="front-page-element">
         <div class="front-page-image">
           <img :src="image1" class="h-48" />
@@ -56,7 +56,7 @@
       </div>
     </div>
 
-    <div class="front-page-spacing" data-aos="fade-in">
+    <div class="front-page-spacing">
       <div class="front-page-element">
         <div class="front-page-image">
           <img :src="image2" class="h-48" />
@@ -74,7 +74,7 @@
       </div>
     </div>
 
-    <div class="front-page-spacing" data-aos="fade-in">
+    <div class="front-page-spacing">
       <div class="front-page-element">
         <div class="front-page-image">
           <img :src="image3" class="h-48" />
@@ -90,7 +90,7 @@
       </div>
     </div>
 
-    <div class="front-page-spacing" data-aos="fade-in">
+    <div class="front-page-spacing">
       <div class="front-page-element">
         <div class="front-page-image">
           <img :src="image4" class="h-48" />
@@ -109,7 +109,6 @@
     </div>
 
     <div
-      data-aos="fade-in"
       class="w-full flex flex-wrap-reverse md:flex-wrap py-10 my-12 front-page-spacing"
     >
       <div
@@ -139,7 +138,7 @@
       </div>
     </div>
 
-    <div class="front-page-spacing mb-12" data-aos="fade-in">
+    <div class="front-page-spacing mb-12">
       <div class="w-full flex flex-wrap py-8 shadow bg-gray-100 items-center">
         <div
           class="w-full flex flex-col justify-center items-center space-y-6 px-10"
