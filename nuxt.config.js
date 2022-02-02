@@ -23,8 +23,7 @@ export default {
       { rel: 'preconnect', href: 'https://fonts.gstatic.com' },
       {
         rel: 'stylesheet',
-        href:
-          'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Quicksand:wght@400;500;600;700&display=swap',
+        href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Quicksand:wght@400;500;600;700&display=swap',
       },
     ],
     script: [
@@ -54,10 +53,8 @@ export default {
   plugins: [
     '@/plugins/axios.js',
     { src: '@/plugins/plugins-client.js', ssr: false },
-    { src: '@/plugins/refresh.js', ssr: false },
     '@/plugins/vuetelinput.js',
     { src: '~plugins/draggable.js', ssr: false },
-    { src: '~plugins/chartjs-datalabels.js', ssr: false },
     '@/plugins/components.js',
     { src: '@/plugins/apexcharts.js', ssr: false },
   ],

@@ -271,9 +271,8 @@ export default {
     updateQuestion(newCode, groupIndex, conditionQuestionIndex) {
       for (const i in this.conditions) {
         if (this.conditions[i].groupIndex === groupIndex) {
-          this.conditions[i].ruleList[
-            conditionQuestionIndex
-          ].questionNumber = newCode
+          this.conditions[i].ruleList[conditionQuestionIndex].questionNumber =
+            newCode
           this.conditions[i].ruleList[conditionQuestionIndex].options = []
         }
       }

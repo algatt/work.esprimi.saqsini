@@ -306,8 +306,9 @@ export function getDataAggregateRanking(
     series: [],
   }
 
-  const numberOfChoices = JSON.parse(originalData.question.surveyOptions)
-    .maxChoice
+  const numberOfChoices = JSON.parse(
+    originalData.question.surveyOptions
+  ).maxChoice
 
   for (let i = 1; i <= numberOfChoices; i++) dataToReturn.labels.push(i)
 

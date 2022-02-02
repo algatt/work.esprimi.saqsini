@@ -1,4 +1,5 @@
 module.exports = {
+  mode: 'jit',
   variants: {
     extend: {
       opacity: ['disabled'],

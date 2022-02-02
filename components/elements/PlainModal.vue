@@ -119,9 +119,7 @@ export default {
     }
   },
   watch: {
-    isValid(ev) {
-      console.log(ev)
-    },
+    isValid(ev) {},
   },
 }
 </script>

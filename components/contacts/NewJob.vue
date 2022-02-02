@@ -238,11 +238,10 @@ export default {
 
   methods: {
     addAdditionalAttribute(attr) {
-      this.availableAdditionalAttributes = this.availableAdditionalAttributes.filter(
-        (el) => {
+      this.availableAdditionalAttributes =
+        this.availableAdditionalAttributes.filter((el) => {
           return el !== attr
-        }
-      )
+        })
       this.form.additionalAttributes[attr] = ''
     },
     removeAdditionalAttribute(attr) {

@@ -48,7 +48,6 @@ export default {
   },
   methods: {
     managePopup() {
-      console.log('aaa')
       if (!this.$slots.default) return
 
       this.left = this.$refs.popupButton.clientWidth + 5

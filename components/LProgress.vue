@@ -24,7 +24,7 @@
       :title="`${currentValue} / ${totalValue}`"
       class="font-bold h-full absolute w-full flex justify-center items-center left-0 top-0 text-xs h-4"
     >
-      <span class="bg-white px-1 rounded-md bg-opacity-50"
+      <span class="bg-white px-1 mt-2 rounded-md bg-opacity-50"
         >{{ barWidth }}%
       </span>
     </span>

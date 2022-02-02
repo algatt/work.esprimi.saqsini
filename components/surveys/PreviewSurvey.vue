@@ -262,9 +262,8 @@ export default {
     languageText() {
       const data = {}
       Object.keys(SURVEY_LANGUAGE_GENERIC_TERMS).forEach((el) => {
-        data[el] = this.survey.translatedText[
-          SURVEY_LANGUAGE_GENERIC_TERMS[el]
-        ].text
+        data[el] =
+          this.survey.translatedText[SURVEY_LANGUAGE_GENERIC_TERMS[el]].text
       })
       return data
     },
@@ -441,9 +440,8 @@ export default {
                 return el.name
               })
 
-              const invitiationValue = this.invitationFilters[
-                branchingRule.filterName
-              ]
+              const invitiationValue =
+                this.invitationFilters[branchingRule.filterName]
               rulesOutcome[rule] += `${availableValues.includes(
                 invitiationValue
               )}${operator}`

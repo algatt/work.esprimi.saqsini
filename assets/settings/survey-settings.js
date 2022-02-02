@@ -182,8 +182,7 @@ export const QUESTION_TYPES = {
 export const QUESTION_HELP = {
   NUMBER: 'This is an internal number that can be used for reference.',
   TEXT: 'This is the question text that will be seen by a respondent.',
-  NAME:
-    'This is an internal name for the question that can be used for reference.',
+  NAME: 'This is an internal name for the question that can be used for reference.',
   REQUIRED:
     'If set to yes the respondent must answer the question before progressing.',
 }

@@ -155,9 +155,9 @@
 <script>
 import { Editor, EditorContent } from '@tiptap/vue-2'
 import StarterKit from '@tiptap/starter-kit'
-import Image from '@tiptap/extension-image'
-import Underline from '@tiptap/extension-underline'
-import Link from '@tiptap/extension-link'
+import { Image } from '@tiptap/extension-image'
+import { Underline } from '@tiptap/extension-underline'
+import { Link } from '@tiptap/extension-link'
 import { NOTIFICATION_EDITOR_FIELDS } from '~/assets/settings/survey-settings'
 
 export default {
