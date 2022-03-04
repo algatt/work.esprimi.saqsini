@@ -17,6 +17,10 @@ export default {
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: '' },
+      {
+        name: 'google-site-verification',
+        content: 'UUha02EELf4Fn1U5R6I9yIaJbMK1VF0ldMpA6M9TuyE',
+      },
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
@@ -69,10 +73,10 @@ export default {
     // https://go.nuxtjs.dev/tailwindcss
     '@nuxtjs/tailwindcss',
   ],
-
-  tailwindcss: {
-    jit: true,
-  },
+  //
+  // tailwindcss: {
+  //   jit: true,
+  // },
 
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
