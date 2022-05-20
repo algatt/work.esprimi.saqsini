@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col">
+  <div ref="questionContainer" class="flex flex-col">
     <div
       class="flex font-semibold mb-2 items-center"
       :class="displayStyle.textColour"
@@ -9,8 +9,9 @@
         {{ languageText['required'] }}</span
       >
     </div>
-    <div class="overflow-auto">
-      <div class="block lg:hidden">
+
+    <div ref="tableContainer">
+      <div class="block" :class="breakTable ? 'lg:block' : 'lg:hidden'">
         <div
           v-for="(option, optionIndex) in rows"
           :key="optionIndex"
@@ -38,11 +39,11 @@
           </div>
         </div>
       </div>
-      <table class="hidden lg:block">
-        <tr class="border-b border-gray-200">
+      <table class="hidden" :class="breakTable ? 'hidden' : 'lg:block'">
+        <tr class="border-b border-gray-200 w-full">
           <td
             :style="{
-              width: `${100 / columns}%`,
+              width: `${100 / (columns.length + 1)}%`,
               minWidth: `${minElWidth * 1.5}px`,
             }"
           >
@@ -52,7 +53,7 @@
             v-for="(item, index) in columns"
             :key="index"
             :style="{
-              width: `${100 / columns}%`,
+              width: `${100 / (columns.length + 1)}%`,
               minWidth: `${minElWidth}px`,
             }"
             class="text-center py-2"
@@ -129,6 +130,7 @@ export default {
         rows: [],
       },
       minElWidth: 150,
+      breakTable: false,
     }
   },
 
@@ -158,11 +160,26 @@ export default {
       this.$emit('answers', this.answers)
     },
   },
+  mounted() {
+    this.checkTableBreak()
+    window.addEventListener('resize', this.checkTableBreak)
+  },
+  destroyed() {
+    window.removeEventListener('resize', this.checkTableBreak)
+  },
   created() {
     if (this.existingAnswer)
       this.answers = JSON.parse(JSON.stringify(this.existingAnswer))
   },
   methods: {
+    checkTableBreak() {
+      if (!this.$refs.questionContainer || !this.$refs.tableContainer) return
+      const containerWidth =
+        this.$refs.questionContainer.getBoundingClientRect().width
+      const colsWidth = (this.columns.length + 1) * this.minElWidth
+
+      this.breakTable = colsWidth > containerWidth - 100
+    },
     checkIfExists(row, column) {
       return this.answers.find((el) => {
         return el.questionOption === row.value && el.value === column.value

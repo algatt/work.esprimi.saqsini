@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { getQuestionTypeText } from '~/services/question-helpers'
+import { getQuestionTypeText } from '@/services/question-helpers'
 
 export default {
   name: 'ViewResponses',

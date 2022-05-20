@@ -126,8 +126,8 @@
 import { validationMixin } from 'vuelidate'
 import { email } from 'vuelidate/lib/validators'
 
-import LSelect from '~/components/LSelect'
-import LToggle from '~/components/LToggle'
+import LSelect from '@/components/LSelect'
+import LToggle from '@/components/LToggle'
 
 export default {
   name: 'NewJob',

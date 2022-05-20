@@ -75,7 +75,7 @@
 import { validationMixin } from 'vuelidate'
 import { required, email } from 'vuelidate/lib/validators'
 import { DateTime } from 'luxon'
-import LSelect from '~/components/LSelect'
+import LSelect from '@/components/LSelect'
 
 export default {
   name: 'NewContact',

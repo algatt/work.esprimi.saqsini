@@ -123,9 +123,9 @@
 import {
   convertQuestionFromApiToForm,
   getQuestionTypeText,
-} from '~/services/question-helpers'
-import QuestionElement from '~/components/charts/QuestionElement'
-import LPopupMenu from '~/components/LPopupMenu'
+} from '@/services/question-helpers'
+import QuestionElement from '@/components/charts/QuestionElement'
+import LPopupMenu from '@/components/LPopupMenu'
 
 export default {
   name: 'ChartsQuestionList',

@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import TreeView from '~/components/elements/TreeView/TreeView'
+import TreeView from '@/components/elements/TreeView/TreeView'
 export default {
   name: 'CompanySectorTreeView',
   components: { TreeView },

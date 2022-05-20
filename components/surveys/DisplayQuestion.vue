@@ -73,20 +73,20 @@
 </template>
 
 <script>
-import ShowMultipleChoice from '~/components/surveys/ShowMultipleChoice'
+import ShowMultipleChoice from '@/components/surveys/ShowMultipleChoice'
+
+import ShowSection from '@/components/surveys/ShowSection'
+import ShowDropdown from '@/components/surveys/ShowDropdown'
+import ShowTypeIn from '@/components/surveys/ShowTypeIn'
+import ShowRanking from '@/components/surveys/ShowRanking'
+import ShowLikert from '@/components/surveys/ShowLikert'
+import ShowRadioGrid from '@/components/surveys/ShowRadioGrid'
+import ShowMultipleChoiceImage from '@/components/surveys/ShowMultipleChoiceImage'
+import { SURVEY_OPTIONS } from '@/assets/settings/survey-settings'
 import {
   convertQuestionFromApiToForm,
   getQuestionType,
 } from '~/services/question-helpers'
-
-import ShowSection from '~/components/surveys/ShowSection'
-import ShowDropdown from '~/components/surveys/ShowDropdown'
-import ShowTypeIn from '~/components/surveys/ShowTypeIn'
-import ShowRanking from '~/components/surveys/ShowRanking'
-import ShowLikert from '~/components/surveys/ShowLikert'
-import ShowRadioGrid from '~/components/surveys/ShowRadioGrid'
-import ShowMultipleChoiceImage from '~/components/surveys/ShowMultipleChoiceImage'
-import { SURVEY_OPTIONS } from '~/assets/settings/survey-settings'
 
 export default {
   name: 'DisplayQuestion',

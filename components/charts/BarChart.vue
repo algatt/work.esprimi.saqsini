@@ -1,6 +1,6 @@
 <script>
 import { Bar, mixins } from 'vue-chartjs'
-import { OPTIONS_BAR_CHART } from '~/assets/settings/charts-settings'
+import { OPTIONS_BAR_CHART } from '@/assets/settings/charts-settings'
 
 export default {
   extends: Bar,

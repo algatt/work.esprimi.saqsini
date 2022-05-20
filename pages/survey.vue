@@ -5,7 +5,7 @@
     :class="parsedSurvey.options.theme.background"
   >
     <PreviewSurvey
-      class="w-11/12 md:w-8/12 mx-auto"
+      class="w-11/12 md:w-10/12 mx-auto"
       :original-survey="survey.survey"
       :questions="surveyData.questions"
       :has-token="hasToken"

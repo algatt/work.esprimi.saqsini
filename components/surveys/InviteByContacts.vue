@@ -73,11 +73,11 @@
 
 <script>
 import { DateTime } from 'luxon'
-import { convertSurveyFromApiToForm } from '~/services/survey-helpers'
-import NotificationReminderSection from '~/components/surveys/NotificationReminderSection'
-import LTextLink from '~/components/LTextLink'
-import LButton from '~/components/LButton'
-import Spinner from '~/components/elements/Spinner'
+import { convertSurveyFromApiToForm } from '@/services/survey-helpers'
+import NotificationReminderSection from '@/components/surveys/NotificationReminderSection'
+import LTextLink from '@/components/LTextLink'
+import LButton from '@/components/LButton'
+import Spinner from '@/components/elements/Spinner'
 
 export default {
   name: 'InviteByContacts',

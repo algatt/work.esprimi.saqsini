@@ -23,7 +23,7 @@ import {
   LINE_CHART_SETTINGS,
   HORIZONTAL_BAR_CHART_SETTINGS,
   REPORT_CHART_SETTINGS,
-} from '~/assets/settings/charts-settings'
+} from '@/assets/settings/charts-settings'
 
 export default {
   name: 'SurveyDetails',

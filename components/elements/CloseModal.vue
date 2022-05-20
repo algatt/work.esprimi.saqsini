@@ -16,11 +16,11 @@
 </template>
 
 <script>
-import ModalHeader from '~/components/elements/Modal/ModalHeader'
-import ModalFooter from '~/components/elements/Modal/ModalFooter'
-import Modal from '~/components/elements/Modal/Modal'
-import ModalBody from '~/components/elements/Modal/ModalBody'
-import ModalMixin from '~/components/elements/Modal/ModalMixin'
+import ModalHeader from '@/components/elements/Modal/ModalHeader'
+import ModalFooter from '@/components/elements/Modal/ModalFooter'
+import Modal from '@/components/elements/Modal/Modal'
+import ModalBody from '@/components/elements/Modal/ModalBody'
+import ModalMixin from '@/components/elements/Modal/ModalMixin'
 
 export default {
   components: { ModalFooter, ModalBody, ModalHeader, Modal },

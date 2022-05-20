@@ -31,13 +31,13 @@
 </template>
 
 <script>
-import MultiSelect from '~/components/elements/MultiSelect'
-import { CHART_TYPE_COMPONENT } from '~/assets/settings/charts-settings'
-import ChartMultipleChoice from '~/components/charts/ChartMultipleChoice'
-import ChartLikert from '~/components/charts/ChartLikert'
-import ChartRanking from '~/components/charts/ChartRanking'
-import ChartTypeIn from '~/components/charts/ChartTypeIn'
-import ChartRadioGrid from '~/components/charts/ChartRadioGrid'
+import MultiSelect from '@/components/elements/MultiSelect'
+import { CHART_TYPE_COMPONENT } from '@/assets/settings/charts-settings'
+import ChartMultipleChoice from '@/components/charts/ChartMultipleChoice'
+import ChartLikert from '@/components/charts/ChartLikert'
+import ChartRanking from '@/components/charts/ChartRanking'
+import ChartTypeIn from '@/components/charts/ChartTypeIn'
+import ChartRadioGrid from '@/components/charts/ChartRadioGrid'
 
 export default {
   name: 'QuestionElementVue',

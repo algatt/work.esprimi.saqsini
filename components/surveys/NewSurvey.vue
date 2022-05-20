@@ -324,11 +324,11 @@ import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
 import { isDateBefore } from '@/services/date-helpers'
 import { DateTime } from 'luxon'
-import MenuIconButton from '~/components/elements/MenuIconButton'
+import MenuIconButton from '@/components/elements/MenuIconButton'
 import {
   SURVEY_COLOURS,
   SURVEY_OPTIONS,
-} from '~/assets/settings/survey-settings'
+} from '@/assets/settings/survey-settings'
 
 const checkDates = (value, vm) => {
   if (

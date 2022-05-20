@@ -84,12 +84,12 @@
 </template>
 
 <script>
-import LSelect from '~/components/LSelect'
-import DataTable from '~/components/elements/DataTable/DataTable'
-import LPopupMenu from '~/components/LPopupMenu'
-import ModalService from '~/services/modal-services'
-import PlainModal from '~/components/elements/PlainModal'
-import ConfirmModal from '~/components/elements/ConfirmModal'
+import LSelect from '@/components/LSelect'
+import DataTable from '@/components/elements/DataTable/DataTable'
+import LPopupMenu from '@/components/LPopupMenu'
+import ModalService from '@/services/modal-services'
+import PlainModal from '@/components/elements/PlainModal'
+import ConfirmModal from '@/components/elements/ConfirmModal'
 
 export default {
   name: 'InvidualDetailsVue',

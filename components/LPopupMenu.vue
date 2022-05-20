@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import ScreenOverlay from '~/components/elements/ScreenOverlay'
+import ScreenOverlay from '@/components/elements/ScreenOverlay'
 export default {
   name: 'LPopupMenu',
   components: { ScreenOverlay },

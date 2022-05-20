@@ -48,8 +48,8 @@
 </template>
 
 <script>
-import { getQuestionType } from '~/services/question-helpers'
-import { QUESTION_TYPES } from '~/assets/settings/survey-settings'
+import { getQuestionType } from '@/services/question-helpers'
+import { QUESTION_TYPES } from '@/assets/settings/survey-settings'
 
 export default {
   name: 'QuestionMoveMenu',

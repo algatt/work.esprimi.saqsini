@@ -1,6 +1,6 @@
 <script>
 import { HorizontalBar, mixins } from 'vue-chartjs'
-import { OPTIONS_HORIZONTAL_BAR } from '~/assets/settings/charts-settings'
+import { OPTIONS_HORIZONTAL_BAR } from '@/assets/settings/charts-settings'
 
 export default {
   extends: HorizontalBar,

@@ -46,8 +46,8 @@
 <script>
 import { validationMixin } from 'vuelidate'
 import { email } from 'vuelidate/lib/validators'
-import { convertSurveyFromApiToForm } from '~/services/survey-helpers'
-import NotificationReminderSection from '~/components/surveys/NotificationReminderSection'
+import { convertSurveyFromApiToForm } from '@/services/survey-helpers'
+import NotificationReminderSection from '@/components/surveys/NotificationReminderSection'
 
 export default {
   name: 'InviteByEmail',

@@ -159,23 +159,23 @@
 <script>
 import { required, integer } from 'vuelidate/lib/validators'
 import { validationMixin } from 'vuelidate'
-import NewQuestionSection from '~/components/surveys/NewQuestionSection'
-import NewQuestionDropDown from '~/components/surveys/NewQuestionDropDown'
-import NewQuestionTypeIn from '~/components/surveys/NewQuestionTypeIn'
-import NewQuestionRanking from '~/components/surveys/NewQuestionRanking'
-import NewQuestionMultipleChoice from '~/components/surveys/NewQuestionMultipleChoice'
-import NewQuestionMultipleChoiceImage from '~/components/surveys/NewQuestionMultipleChoiceImage'
-import NewQuestionLikert from '~/components/surveys/NewQuestionLikert'
+import NewQuestionSection from '@/components/surveys/NewQuestionSection'
+import NewQuestionDropDown from '@/components/surveys/NewQuestionDropDown'
+import NewQuestionTypeIn from '@/components/surveys/NewQuestionTypeIn'
+import NewQuestionRanking from '@/components/surveys/NewQuestionRanking'
+import NewQuestionMultipleChoice from '@/components/surveys/NewQuestionMultipleChoice'
+import NewQuestionMultipleChoiceImage from '@/components/surveys/NewQuestionMultipleChoiceImage'
+import NewQuestionLikert from '@/components/surveys/NewQuestionLikert'
 import {
   QUESTION_TYPES,
   QUESTION_HELP,
-} from '~/assets/settings/survey-settings'
+} from '@/assets/settings/survey-settings'
 
-import QuestionBranching from '~/components/surveys/QuestionBranching'
-import NewQuestionRadioGrid from '~/components/surveys/NewQuestionRadioGrid'
-import MenuIconButton from '~/components/elements/MenuIconButton'
+import QuestionBranching from '@/components/surveys/QuestionBranching'
+import NewQuestionRadioGrid from '@/components/surveys/NewQuestionRadioGrid'
+import MenuIconButton from '@/components/elements/MenuIconButton'
 
-import { convertQuestionFromApiToForm } from '~/services/question-helpers'
+import { convertQuestionFromApiToForm } from '@/services/question-helpers'
 
 export default {
   name: 'NewQuestion',

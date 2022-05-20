@@ -113,9 +113,9 @@
 import {
   getDifferentAnswers,
   getQuestionType,
-} from '~/services/question-helpers'
-import CrossTable from '~/components/charts/CrossTable'
-import LToggle from '~/components/LToggle'
+} from '@/services/question-helpers'
+import CrossTable from '@/components/charts/CrossTable'
+import LToggle from '@/components/LToggle'
 
 export default {
   name: 'CrossTableDetails',

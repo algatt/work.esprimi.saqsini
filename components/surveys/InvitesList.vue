@@ -42,9 +42,9 @@
 </template>
 
 <script>
-import DataTable from '~/components/elements/DataTable/DataTable'
-import LPopupMenu from '~/components/LPopupMenu'
-import Spinner from '~/components/elements/Spinner'
+import DataTable from '@/components/elements/DataTable/DataTable'
+import LPopupMenu from '@/components/LPopupMenu'
+import Spinner from '@/components/elements/Spinner'
 export default {
   name: 'InvitesList',
   components: { Spinner, LPopupMenu, DataTable },

@@ -41,7 +41,7 @@
 <script>
 import { validationMixin } from 'vuelidate'
 import { required, email } from 'vuelidate/lib/validators'
-import LButtonCircle from '~/components/LButtonCircle'
+import LButtonCircle from '@/components/LButtonCircle'
 
 export default {
   name: 'ContactListCollaborators',

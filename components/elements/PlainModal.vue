@@ -60,19 +60,19 @@
 <script>
 import ModalHeader from '@/components/elements/Modal/ModalHeader'
 import ModalFooter from '@/components/elements/Modal/ModalFooter'
-import ModalMixin from '~/components/elements/Modal/ModalMixin'
-import Modal from '~/components/elements/Modal/Modal'
-import ModalBody from '~/components/elements/Modal/ModalBody'
-import LButton from '~/components/LButton'
+import ModalMixin from '@/components/elements/Modal/ModalMixin'
+import Modal from '@/components/elements/Modal/Modal'
+import ModalBody from '@/components/elements/Modal/ModalBody'
+import LButton from '@/components/LButton'
 
-import QuestionMoveMenu from '~/components/surveys/QuestionMoveMenu'
-import SurveyLanguageSettings from '~/components/surveys/SurveyLanguageSettings'
-import SurveyCollaborators from '~/components/surveys/SurveyCollaborators'
-import SurveyInvitesSettings from '~/components/surveys/SurveyInvitesSettings'
-import ContactListCollaborators from '~/components/contacts/ContactListCollaborators'
-import ShowNotifications from '~/components/elements/ShowNotifications'
-import ViewResponses from '~/components/charts/ViewResponses'
-import SelectQuestionTemplate from '~/components/surveys/SelectQuestionTemplate'
+import QuestionMoveMenu from '@/components/surveys/QuestionMoveMenu'
+import SurveyLanguageSettings from '@/components/surveys/SurveyLanguageSettings'
+import SurveyCollaborators from '@/components/surveys/SurveyCollaborators'
+import SurveyInvitesSettings from '@/components/surveys/SurveyInvitesSettings'
+import ContactListCollaborators from '@/components/contacts/ContactListCollaborators'
+import ShowNotifications from '@/components/elements/ShowNotifications'
+import ViewResponses from '@/components/charts/ViewResponses'
+import SelectQuestionTemplate from '@/components/surveys/SelectQuestionTemplate'
 
 export default {
   name: 'PlainModal',

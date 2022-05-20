@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { REPORT_CHART_SETTINGS } from '~/assets/settings/charts-settings'
+import { REPORT_CHART_SETTINGS } from '@/assets/settings/charts-settings'
 
 export default {
   name: 'ChartMultipleChoice',

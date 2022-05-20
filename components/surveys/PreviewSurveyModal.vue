@@ -23,10 +23,10 @@
 </template>
 
 <script>
-import PreviewSurvey from '~/components/surveys/PreviewSurvey'
-import { convertSurveyFromApiToForm } from '~/services/survey-helpers'
-import LButtonCircle from '~/components/LButtonCircle'
-import ScreenOverlay from '~/components/elements/ScreenOverlay'
+import PreviewSurvey from '@/components/surveys/PreviewSurvey'
+import { convertSurveyFromApiToForm } from '@/services/survey-helpers'
+import LButtonCircle from '@/components/LButtonCircle'
+import ScreenOverlay from '@/components/elements/ScreenOverlay'
 
 export default {
   name: 'PreviewSurveyModal',
